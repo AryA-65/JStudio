@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Canvas fx:id="visualizerCanvas" height="134.0" layoutX="230.0" layoutY="133.0" width="140.0" />
+      <Slider fx:id="rateSlider" layoutX="58.0" layoutY="133.0" />
+      <Slider fx:id="depthSlider" layoutX="58.0" layoutY="230.0" />
+      <Slider fx:id="feedbackSlider" layoutX="110.0" layoutY="319.0" />
+      <Slider fx:id="mixSlider" layoutX="402.0" layoutY="137.0" />
+      <Slider fx:id="lfoSlider" layoutX="402.0" layoutY="231.0" />
+      <Slider fx:id="stagesSlider" layoutX="350.0" layoutY="319.0" />
+      <Label fx:id="phaserLabel" layoutX="247.0" layoutY="36.0" text="Phaser">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <Label fx:id="rateLabel" layoutX="116.0" layoutY="153.0" text="Rate" />
+      <Label fx:id="depthLabel" layoutX="111.0" layoutY="250.0" text="Depth" />
+      <Label fx:id="feedbackLabel" layoutX="155.0" layoutY="339.0" text="Feedback" />
+      <Label fx:id="stagesLabel" layoutX="403.0" layoutY="339.0" text="Stages" />
+      <Label fx:id="mixLabel" layoutX="462.0" layoutY="153.0" text="Mix" />
+      <Label fx:id="lfoLabel" layoutX="458.0" layoutY="251.0" text="LFO" />
+   </children>
+</Pane>

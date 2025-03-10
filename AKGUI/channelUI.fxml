@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="256.0" prefWidth="92.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox id="container" alignment="TOP_CENTER" prefHeight="256.0" prefWidth="32.0" style="-fx-background-color: #D9D9D9; -fx-background-radius: 5px;">
+         <children>
+            <Label text="1">
+               <font>
+                  <Font name="Inter Regular" size="8.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="2.0" top="2.0" />
+               </VBox.margin>
+            </Label>
+            <Pane prefHeight="243.0" prefWidth="32.0" style="-fx-background-color: #404040; -fx-background-radius: 5px;">
+               <children>
+                  <Pane prefHeight="64.0" prefWidth="32.0" style="-fx-background-color: #808080; -fx-background-radius: 5px;">
+                     <children>
+                        <StackPane layoutX="7.0" layoutY="4.0" prefHeight="42.0" prefWidth="18.0" style="-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1px;">
+                           <children>
+                              <Canvas height="40.0" width="16.0" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </Pane>
+                  <Slider layoutX="9.0" layoutY="96.0" orientation="VERTICAL" prefHeight="96.0" prefWidth="14.0" value="100.0" />
+                  <Pane layoutX="12.0" layoutY="224.0" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: #00FD11; -fx-border-color: black; -fx-border-width: 1px; -fx-background-radius: 4px; -fx-border-radius: 4px;" styleClass="active" />
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </children>
+</HBox>

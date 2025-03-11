@@ -1,0 +1,18 @@
+#Source code for the project will go here.
+
+#List of all current known bugs and glitches
+|Bug|Description|Code Snippet|Time Recorded|Person Recorded|
+|---|-----------|------------|-------------|---------------|
+
+#List of what people are currently working on
+|Name|Code Snippet|Time Recorded|Time Finished|
+|----|------------|-------------|-------------|
+
+#Features to add
+**Not a concern to undertake at the moment**
+
+#Current project completion
+General ![0%](https://progress-bar.xyz/0)
+- Synthesizer
+- Reverb
+- *Adding the rest later*

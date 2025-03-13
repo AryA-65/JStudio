@@ -7,10 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -19,11 +16,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import static java.lang.reflect.Array.getInt;
 
 public class UIController {
 
@@ -119,7 +122,7 @@ public class UIController {
         });
 
         curUser = System.getProperty("user.name");
-        System.out.println(curUser);
+//        System.out.println(curUser);
         try {
             loadFolders("C:\\Users\\" + curUser + "\\Music\\JStudio\\audio_Files");
         } catch (Exception e) {
@@ -127,9 +130,9 @@ public class UIController {
         }
     }
 
-    //tempo function
+    //temporary function (this shit needs to be optimized and put into another class)
     public void loadFolders(String path) throws Exception {
-        System.out.println(path);
+//        System.out.println(path);
 
         File file = new File(path);
         if (file.exists() && file.isDirectory() && file.listFiles() != null) {
@@ -137,7 +140,7 @@ public class UIController {
             for (File f : file.listFiles()) {
                 if (f.isDirectory()) {
                     folderIntex++;
-                    System.out.println("Num Folders: " + folderIntex);
+//                    System.out.println("Num Folders: " + folderIntex);
                     Node section = audioSection(f);
                     tab_vbox.getChildren().add(section);
                 }
@@ -153,7 +156,7 @@ public class UIController {
 
         VBox rootVBox = new VBox();
         rootVBox.setId(f.getName());
-        VBox.setMargin(rootVBox, new Insets(0,0,10,0));
+//        VBox.setMargin(rootVBox, new Insets(0,0,0,0));
 
         Button expandSectionBtn = new Button(f.getName(), imageView);
         expandSectionBtn.setPrefWidth(256 - (5 * 2));
@@ -191,8 +194,8 @@ public class UIController {
         System.out.println(f.getName());
         for (File file : f.listFiles()) {
             if (file.exists() && file.isFile()) {
-                System.out.println(file.getName());
-                fileSectionList.getChildren().add(addAudioFileUI(file.getName()));
+//                System.out.println(file.getName());
+                fileSectionList.getChildren().add(addAudioFileUI(file));
             }
         }
         fileSectionList.setSpacing(10);
@@ -202,14 +205,45 @@ public class UIController {
         return rootVBox;
     }
 
-    public Node addAudioFileUI(String file) {
+    public Node addAudioFileUI(File file) {
         VBox rootVBox = new VBox();
-        rootVBox.setId(file);
+
+        String fileName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+        String extension = file.getName().substring(file.getName().lastIndexOf('.') + 1);
+
+        rootVBox.setId(fileName);
         rootVBox.setPrefHeight(Region.USE_COMPUTED_SIZE);
 
         Pane container = new Pane();
         container.setPrefSize(234, 64);
-        container.setStyle("-fx-background-color: green; -fx-background-radius: 5px");
+        container.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
+
+        Label audioFileName = new Label(fileName);
+        audioFileName.setMaxWidth(128);
+        audioFileName.setTextOverrun(OverrunStyle.ELLIPSIS);
+        Label audioFileExt = new Label(extension);
+        audioFileExt.setMaxWidth(32);
+        audioFileExt.setTextOverrun(OverrunStyle.ELLIPSIS);
+        Label audioFileLength = new Label("0:00");
+        audioFileLength.setMaxWidth(32);
+        audioFileLength.setTextOverrun(OverrunStyle.ELLIPSIS);
+
+        Canvas audioFileDataVis = new Canvas();
+        audioFileDataVis.setWidth(234);
+        audioFileDataVis.setHeight(64);
+        audioFileDataVis.setStyle("-fx-background-color: transparent;");
+
+        GraphicsContext gc = audioFileDataVis.getGraphicsContext2D();
+        gc.setFill(Color.web("D9D9D9"));
+        gc.fillRoundRect(0, 0, audioFileDataVis.getWidth(), audioFileDataVis.getHeight(), 10, 10);
+
+        HBox audioFileInfo = new HBox();
+        audioFileInfo.setSpacing(5);
+        audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
+        audioFileInfo.setLayoutX(2);
+        container.prefHeightProperty().addListener((observable, oldValue, newValue) -> {
+            audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
+        });
 
         Timeline expandTimeline = new Timeline(
                 new KeyFrame(Duration.millis(150),
@@ -221,15 +255,6 @@ public class UIController {
                         new KeyValue(container.prefHeightProperty(), 64, Interpolator.EASE_OUT))
         );
 
-        Canvas audioFileDataVis = new Canvas();
-        audioFileDataVis.setWidth(234);
-        audioFileDataVis.setHeight(64);
-        audioFileDataVis.setStyle("-fx-background-color: transparent;");
-
-        GraphicsContext gc = audioFileDataVis.getGraphicsContext2D();
-        gc.setFill(javafx.scene.paint.Color.RED);
-        gc.fillRoundRect(0, 0, audioFileDataVis.getWidth(), audioFileDataVis.getHeight(), 10, 10);
-
         audioFileDataVis.setOnMouseEntered(e -> {
             expandTimeline.play();
 //            System.out.println("entered" + container.getPrefHeight());
@@ -239,12 +264,6 @@ public class UIController {
             shrinkTimeline.play();
 //            System.out.println("exited" + container.getPrefHeight());
         });
-
-        HBox audioFileInfo = new HBox();
-
-        Label audioFileName = new Label("test");
-        Label audioFileExt = new Label(".wav");
-        Label audioFileLength = new Label("2:38");
 
         audioFileInfo.getChildren().addAll(audioFileName, audioFileExt, audioFileLength);
         audioFileInfo.setStyle("-fx-background-color: transparent;");

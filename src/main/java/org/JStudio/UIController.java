@@ -3,6 +3,7 @@ package org.JStudio;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -12,21 +13,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import static java.lang.reflect.Array.getInt;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UIController {
 
@@ -34,6 +29,8 @@ public class UIController {
     private Circle record_control;
     @FXML
     private HBox info_panel;
+    @FXML
+    private HBox channel_rack;
     @FXML
     private Label playback_pos;
     @FXML
@@ -58,8 +55,11 @@ public class UIController {
     private Stage rootStage;
 
     private double xOffset = 0, yOffset = 0, startX = 0;
+
+    //testing params
     private double temporaryBPM = 120;
     private String curUser;
+    private byte audioChannels = 16;
 
     public void setStage(Stage stage) {
         rootStage = stage;
@@ -121,6 +121,7 @@ public class UIController {
             rootStage.close();
         });
 
+        //Test functions
         curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
         try {
@@ -128,6 +129,8 @@ public class UIController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        channel_rack.setSpacing(1);
+        addChannel();
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
@@ -276,10 +279,94 @@ public class UIController {
         return rootVBox;
     }
 
-    public VBox loadFile() {
-
-
-
-        return null;
+    //adding channels to the channel panel
+    public void addChannel() {
+            for (byte i = 0; i <= audioChannels; i++) {
+                channel_rack.getChildren().add(createChannel(i));
+            }
     }
+
+    public Node createChannel(byte i) {
+        AtomicBoolean clicked = new AtomicBoolean(false);
+
+        System.out.println("Added channel " + (i + 1));
+        VBox channelBox = new VBox();
+        channelBox.setPrefHeight(256);
+        channelBox.setPrefWidth(32);
+        channelBox.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px");
+        channelBox.setAlignment(Pos.TOP_CENTER);
+
+        Label channelID = new Label(String.valueOf(i + 1));
+        channelID.setFont(new Font("Inter Regular", 8));
+        VBox.setMargin(channelID, new Insets(2, 0, 2, 0));
+
+        Pane channelContainer = new Pane();
+        channelContainer.setPrefHeight(243);
+        channelContainer.setPrefWidth(32);
+        channelContainer.setStyle("-fx-background-color: #404040; -fx-background-radius: 5px");
+
+        Pane channelVisContainer = new Pane();
+        channelVisContainer.setPrefHeight(64);
+        channelVisContainer.setPrefWidth(32);
+        channelVisContainer.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
+
+        StackPane visContainer = new StackPane();
+        visContainer.setPrefSize(42,18);
+
+        Canvas channelVis = new Canvas();
+        channelVis.setHeight(40);
+        channelVis.setWidth(16);
+
+        Pane activeBtn = new Pane();
+        activeBtn.setPrefHeight(8);
+        activeBtn.setPrefWidth(8);
+        activeBtn.setLayoutX(12);
+        activeBtn.setLayoutY(224);
+        activeBtn.toFront();
+        activeBtn.getStyleClass().add("active");
+        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+
+        activeBtn.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                clicked.set(true);
+            }
+        });
+
+        activeBtn.setOnMouseReleased(e -> {
+            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
+                clicked.set(false);
+                if (activeBtn.getStyleClass().contains("active")) {
+                    activeBtn.getStyleClass().remove("active");
+                    activeBtn.getStyleClass().add("disabled");
+                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                } else {
+                    activeBtn.getStyleClass().remove("disabled");
+                    activeBtn.getStyleClass().add("active");
+                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                }
+//                        System.out.println("Registered");
+            } else clicked.set(false);
+
+//                    System.out.println("Released");
+        });
+
+        Slider channelAmp = new Slider(0,100,100);
+        channelAmp.setOrientation(Orientation.VERTICAL);
+        channelAmp.setPrefHeight(96);
+        channelAmp.setLayoutY(96);
+        channelAmp.setLayoutX(9);
+
+        visContainer.getChildren().add(channelVis);
+
+        channelVisContainer.getChildren().add(visContainer);
+
+        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, activeBtn);
+
+        channelBox.getChildren().addAll(channelID, channelContainer);
+
+        System.out.println(channelContainer.getHeight());
+
+        return channelBox;
+    }
+
 }

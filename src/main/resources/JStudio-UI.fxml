@@ -139,7 +139,7 @@
                   </Tab>
               </tabs>
             </TabPane>
-            <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
+            <SplitPane dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
                <items>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
@@ -172,7 +172,7 @@
                     <tabs>
                       <Tab text="Channels">
                            <content>
-                              <HBox prefHeight="100.0" prefWidth="200.0" />
+                              <HBox fx:id="channel_rack" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" />
                            </content>
                         </Tab>
                         <Tab text="Pipeline">

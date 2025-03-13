@@ -146,7 +146,7 @@
                         <VBox prefHeight="200.0" prefWidth="128.0">
                            <children>
                               <Pane minHeight="32.0" prefHeight="32.0" prefWidth="200.0" />
-                              <ScrollPane id="track_id_list" fx:id="track_id" hbarPolicy="NEVER" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER">
+                              <ScrollPane id="track_id_list" fx:id="track_id" hbarPolicy="NEVER" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
                                     <VBox fx:id="track_id_vbox" prefHeight="364.0" prefWidth="126.0" />
                                  </content></ScrollPane>

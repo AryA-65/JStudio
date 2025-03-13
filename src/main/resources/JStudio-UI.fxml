@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
+  <columnConstraints>
+    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="1064.0" minHeight="10.0" prefHeight="683.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <HBox fx:id="info_panel" alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="15.0" GridPane.vgrow="NEVER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0">
+               <children>
+                  <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                  <TextField id="file_name" fx:id="song_name" prefHeight="24.0" prefWidth="128.0" />
+                  <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </HBox>
+            <TextField id="bpm_control" fx:id="bpm_control" alignment="CENTER" prefHeight="24.0" prefWidth="64.0" text="120.0" />
+            <Circle id="record_control_btn" fx:id="record_control" fill="RED" radius="12.0" smooth="false" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="6.0" />
+            <ImageView id="tempo_control_btn" fx:id="tempo_control" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+            <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" minWidth="128.0" prefHeight="24.0" text="Playback Position" />
+            <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="128.0" />
+            <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="128.0" />
+            <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="128.0" />
+            <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+            <HBox fx:id="app_options" alignment="CENTER_RIGHT" minWidth="-Infinity" prefHeight="32.0" spacing="15.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ImageView id="minim_btn" fx:id="minim_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="close_btn" fx:id="close_btn" fitHeight="24.0" fitWidth="24.0" layoutX="761.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="13.0" left="15.0" right="15.0" top="13.0" />
+         </padding>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+         <children>
+            <TabPane prefHeight="200.0" prefWidth="256.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab fx:id="sample_tab" text="Samples">
+                     <content>
+                        <VBox alignment="TOP_CENTER" minWidth="256.0" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
+                           <children>
+                              <TextField text="Search">
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ScrollPane fx:id="tab_scroll" hbarPolicy="NEVER" prefHeight="940.0" prefWidth="256.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <VBox fx:id="tab_vbox" prefWidth="254.0">
+                                       <padding>
+                                          <Insets bottom="15.0" />
+                                       </padding>
+                                    </VBox>
+                                 </content></ScrollPane>
+                           </children>
+                           <padding>
+                              <Insets top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="instruments_tab" text="Instruments">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                           <children>
+                              <TextField>
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="940.0" prefWidth="256.0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="synths_tab" text="Synths">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                           <children>
+                              <TextField>
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="940.0" prefWidth="256.0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="plugins_tab" text="Plugins">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                           <children>
+                              <TextField>
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="940.0" prefWidth="256.0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+            <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
+               <items>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="128.0">
+                           <children>
+                              <Pane minHeight="32.0" prefHeight="32.0" prefWidth="200.0" />
+                              <ScrollPane id="track_id_list" fx:id="track_id" hbarPolicy="NEVER" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <VBox fx:id="track_id_vbox" prefHeight="364.0" prefWidth="126.0" />
+                                 </content></ScrollPane>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ScrollPane fx:id="beat_timeline" hbarPolicy="NEVER" minHeight="32.0" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <Canvas fx:id="beat_canvas" height="30.0" width="1533.0" />
+                                 </content>
+                              </ScrollPane>
+                              <ScrollPane fx:id="tracks_timeline" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <VBox fx:id="track_vbox" prefHeight="364.0" prefWidth="1533.0" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <TabPane prefHeight="128.0" prefWidth="1662.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Channels">
+                           <content>
+                              <HBox prefHeight="100.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                        <Tab text="Pipeline">
+                           <content>
+                              <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <Pane prefHeight="227.0" prefWidth="1920.0" />
+                                 </content></ScrollPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </items>
+            </SplitPane>
+         </children>
+      </HBox>
+   </children>
+</GridPane>

@@ -131,6 +131,7 @@ public class UIController {
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
+
     public void loadFolders(String path) throws Exception {
 //        System.out.println(path);
 

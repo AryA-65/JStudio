@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -25,6 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UIController {
 
+    @FXML
+    private ScrollPane tracks_scrollpane;
+    @FXML
+    private VBox track_id_vbox;
+    @FXML
+    private VBox track_vbox;
     @FXML
     private Circle record_control;
     @FXML
@@ -121,6 +128,24 @@ public class UIController {
             rootStage.close();
         });
 
+        track_vbox.addEventFilter(ScrollEvent.SCROLL, e -> {
+            if (e.isControlDown()) {
+                double delta = e.getDeltaY() * 0.005;
+                for (Node track : track_vbox.getChildren()) {
+                    track.setScaleX(track.getScaleX() + delta);
+                }
+//                track_vbox.setPrefWidth(track_vbox.getBoundsInParent().getWidth());
+                e.consume();
+            }
+            if (e.isShiftDown()) {
+                double delta = e.getDeltaX() * 0.005;
+//                System.out.println("Shift pressed");
+                //tempo fix (replace 1533 with something else)
+                tracks_scrollpane.setHvalue(tracks_scrollpane.getHvalue() - delta);
+                e.consume();
+            }
+        });
+
         //Test functions
         curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
@@ -131,6 +156,12 @@ public class UIController {
         }
         channel_rack.setSpacing(1);
         addChannel();
+
+        track_vbox.setSpacing(1);
+        track_id_vbox.setSpacing(1);
+        addTracks(16);
+
+
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
@@ -293,8 +324,9 @@ public class UIController {
         HBox masterContainer = new HBox();
         masterContainer.setPrefHeight(256);
         masterContainer.setPrefWidth(64);
-        masterContainer.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px");
+        masterContainer.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px;");
         masterContainer.setAlignment(Pos.TOP_CENTER);
+        HBox.setMargin(masterContainer, new Insets(0, 5, 0, 0));
 
         VBox masterVisContainer = new VBox();
         masterVisContainer.setPrefHeight(256);
@@ -306,9 +338,18 @@ public class UIController {
         VBox.setMargin(masterLabel, new Insets(2, 0, 2, 0));
 
         StackPane masterVis = new StackPane();
+        masterVis.setPrefSize(18,243);
+        masterVis.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
+        VBox.setMargin(masterVis, new Insets(4,5,4,5));
+
         Canvas masterChannelVis = new Canvas();
         masterChannelVis.setHeight(40);
         masterChannelVis.setWidth(16);
+
+        //testing canvas, remove later
+        GraphicsContext gc = masterChannelVis.getGraphicsContext2D();
+        gc.setFill(Color.RED);
+        gc.fillRect(0, 0, masterChannelVis.getWidth(), masterChannelVis.getHeight());
 
         VBox masterChannelContainer = new VBox();
         masterChannelContainer.setPrefHeight(256);
@@ -330,7 +371,10 @@ public class UIController {
         channelVisContainer.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
 
         StackPane visContainer = new StackPane();
-        visContainer.setPrefSize(42,18);
+        visContainer.setPrefSize(18,42);
+        visContainer.setLayoutX(7);
+        visContainer.setLayoutY(4);
+        visContainer.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
 
         Canvas channelVis = new Canvas();
         channelVis.setHeight(40);
@@ -417,7 +461,10 @@ public class UIController {
         channelVisContainer.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
 
         StackPane visContainer = new StackPane();
-        visContainer.setPrefSize(42,18);
+        visContainer.setPrefSize(18,42);
+        visContainer.setLayoutX(7);
+        visContainer.setLayoutY(4);
+        visContainer.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
 
         Canvas channelVis = new Canvas();
         channelVis.setHeight(40);
@@ -475,4 +522,86 @@ public class UIController {
         return channelBox;
     }
 
+    public void addTracks(int amount) {
+        for (int i = 0; i < amount; i++) {
+            track_vbox.getChildren().add(addTrack());
+
+            track_id_vbox.getChildren().add(addTrackID(i + 1));
+        }
+
+    }
+
+    public Node addTrack() {
+        Canvas canvas = new Canvas();
+        canvas.setWidth(1920);
+        canvas.setHeight(64);
+
+//        System.out.println(canvas.getWidth());
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+//        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.setFill(Color.GREY);
+        gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 10, 10);
+
+        gc.setStroke(Color.BLACK);
+        for (int i = 0; i < 1920; i++) {
+            if (i % 32 == 0 && i != 0) {
+                gc.strokeLine(i, 0, i, canvas.getHeight());
+            }
+        }
+
+        return canvas;
+    }
+
+    public Node addTrackID(int ID) {
+        AtomicBoolean clicked = new AtomicBoolean(false);
+
+        Pane container = new Pane();
+        container.setPrefHeight(64);
+        container.setPrefWidth(126);
+        container.setStyle("-fx-background-color: grey; -fx-background-radius: 5px");
+
+        Label idLabel = new Label(String.valueOf(ID));
+        idLabel.setFont(new Font("Inter Regular", 8));
+        idLabel.setLayoutX(4);
+        idLabel.setLayoutY(4);
+
+        Pane activeBtn = new Pane();
+        activeBtn.setPrefHeight(8);
+        activeBtn.setPrefWidth(8);
+        activeBtn.setLayoutX(114);
+        activeBtn.setLayoutY(52);
+        activeBtn.toFront();
+        activeBtn.getStyleClass().add("active");
+        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+
+        activeBtn.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                clicked.set(true);
+            }
+        });
+
+        activeBtn.setOnMouseReleased(e -> {
+            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
+                clicked.set(false);
+                if (activeBtn.getStyleClass().contains("active")) {
+                    activeBtn.getStyleClass().remove("active");
+                    activeBtn.getStyleClass().add("disabled");
+                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                } else {
+                    activeBtn.getStyleClass().remove("disabled");
+                    activeBtn.getStyleClass().add("active");
+                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                }
+//                        System.out.println("Registered");
+            } else clicked.set(false);
+
+//                    System.out.println("Released");
+        });
+
+        container.getChildren().addAll(idLabel, activeBtn);
+
+        return container;
+    }
 }

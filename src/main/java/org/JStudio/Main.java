@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Main extends Application {
-    public String currentUser;
+//    public String currentUser;
 
     private UIController controller;
 

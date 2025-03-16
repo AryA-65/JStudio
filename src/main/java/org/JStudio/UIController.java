@@ -2,27 +2,37 @@ package org.JStudio;
 
 import javafx.animation.*;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+/*
+MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
+ */
 
 public class UIController {
 
@@ -67,13 +77,17 @@ public class UIController {
     private double temporaryBPM = 120;
     private String curUser;
     private byte audioChannels = 16;
+    private fileChooserController fileLoaderController;
 
+
+    //stage controller functions
     public void setStage(Stage stage) {
         rootStage = stage;
     }
+    public Stage getStage() {return rootStage;}
 
     @FXML
-    public void initialize() {
+    public void initialize() throws IOException {
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/copy-document.png"));
         save_song_btn.setImage(new Image("/save.png"));
@@ -160,6 +174,21 @@ public class UIController {
         track_vbox.setSpacing(1);
         track_id_vbox.setSpacing(1);
         addTracks(16);
+
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
+        Parent root = loader.load();
+
+        fileLoaderController = loader.getController();
+
+        Stage fileLoaderStage = new Stage();
+        Scene fileLoaderScene = new Scene(root);
+
+        fileLoaderController.setStage(fileLoaderStage);
+
+        fileLoaderStage.setScene(fileLoaderScene);
+        fileLoaderStage.initStyle(StageStyle.TRANSPARENT);
+        fileLoaderStage.setResizable(false);
+        fileLoaderStage.show();
 
 
     }
@@ -306,6 +335,14 @@ public class UIController {
         container.getChildren().addAll(audioFileInfo, audioFileDataVis);
 
         rootVBox.getChildren().add(container);
+
+        rootVBox.setOnDragDetected(event -> {
+            Dragboard db = rootVBox.startDragAndDrop(TransferMode.COPY);
+            ClipboardContent content = new ClipboardContent();
+            content.putFiles(Collections.singletonList(file));
+            db.setContent(content);
+            event.consume();
+        });
 
         return rootVBox;
     }
@@ -551,6 +588,43 @@ public class UIController {
             }
         }
 
+        canvas.setOnDragOver(e -> {
+            if (e.getGestureSource() != canvas && e.getDragboard().hasString()) {
+                e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
+            }
+            e.consume();
+        });
+
+        canvas.setOnDragDropped(e -> {
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+
+            if (db.hasString()) {
+
+                double dropX = e.getX();
+
+                gc.setFill(Color.BLACK);
+                gc.fillRoundRect(dropX, 0, 128, canvas.getHeight(), 10, 10);
+
+                success = true;
+            }
+
+            e.setDropCompleted(success);
+            e.consume();
+        });
+
+        canvas.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+
+                if (e.getClickCount() == 2) {
+                    gc.setFill(Color.BLACK);
+                    gc.fillRoundRect(e.getX(), 0, 128, canvas.getHeight(), 10, 10);
+                }
+
+                e.consume();
+            }
+        });
+
         return canvas;
     }
 
@@ -603,5 +677,31 @@ public class UIController {
         container.getChildren().addAll(idLabel, activeBtn);
 
         return container;
+    }
+
+    //idk if this works, but still its part of the testing functions and shit
+    private void handleDragOver(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        if (db.hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+        event.consume();
+    }
+
+    private void handleDragDropped(DragEvent event, GraphicsContext gc) {
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+        if (db.hasFiles()) {
+            List<File> files = db.getFiles();
+
+            double dropX = event.getX();
+
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(dropX, 0, 128, 32, 10, 10);
+
+            success = true;
+        }
+        event.setDropCompleted(success);
+        event.consume();
     }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="300.0" prefWidth="600.0">
+         <children>
+            <VBox prefHeight="300.0" prefWidth="325.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="325.0">
+                     <children>
+                        <ChoiceBox prefWidth="150.0" />
+                        <Slider />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="325.0">
+                     <children>
+                        <ChoiceBox prefWidth="150.0" />
+                        <Slider />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="325.0">
+                     <children>
+                        <ChoiceBox prefWidth="150.0" />
+                        <Slider />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Canvas height="200.0" width="200.0" />
+         </children>
+      </HBox>
+   </children>
+</Pane>

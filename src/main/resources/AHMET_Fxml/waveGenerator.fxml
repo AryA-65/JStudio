@@ -17,7 +17,7 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label text="Waveform 1:" />
+                        <Label prefHeight="17.0" prefWidth="97.0" text="Waveform 1:" />
                         <MenuButton fx:id="functionChooser1" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -27,12 +27,12 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider1" min="0" max="1" value="0.5" />
+                        <Slider fx:id="slider1" max="1" min="0" value="0.5" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label text="Waveform 2:" />
+                        <Label prefHeight="17.0" prefWidth="96.0" text="Waveform 2:" />
                         <MenuButton fx:id="functionChooser2" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -42,12 +42,12 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider2" min="0" max="1" value="0.5" />
+                        <Slider fx:id="slider2" max="1" min="0" value="0.5" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label text="Waveform 3:" />
+                        <Label prefHeight="17.0" prefWidth="102.0" text="Waveform 3:" />
                         <MenuButton fx:id="functionChooser3" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -57,12 +57,12 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider3" min="0" max="1" value="0.5" />
+                        <Slider fx:id="slider3" max="1" min="0" value="0.5" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <Canvas fx:id="waveformCanvas" height="300.0" width="280.0" style="-fx-border-color: #000; -fx-background-color: white;" />
+            <Canvas fx:id="waveformCanvas" height="300.0" style="-fx-border-color: #000; -fx-background-color: white;" width="280.0" />
          </children>
       </HBox>
    </children>

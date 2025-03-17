@@ -8,42 +8,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox prefHeight="40.0" prefWidth="400.0" spacing="60.0">
-         <children>
-          <Button mnemonicParsing="false" text="Low Pass Filter" textAlignment="CENTER">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" text="High Pass Filter" textAlignment="CENTER">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" text="Band Pass Filter" textAlignment="CENTER">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" text="Band Stop Filter" textAlignment="CENTER">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </HBox>
-      <VBox layoutX="53.0" layoutY="60.0" prefHeight="106.0" prefWidth="307.0">
-         <children>
-            <TextField alignment="CENTER" prefHeight="26.0" prefWidth="327.0" promptText="Frequency" />
-            <TextField alignment="CENTER" promptText="Order of filter" />
-            <TextField alignment="CENTER" promptText="Lower Cut-off Frequency" />
-            <TextField alignment="CENTER" promptText="Higher Cut-off Frequency" />
-         </children>
-      </VBox>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: #f4f4f4; -fx-padding: 15px;">
+    <children>
+        <HBox prefHeight="50.0" prefWidth="450.0" spacing="15.0" alignment="CENTER">
+            <children>
+                <Button fx:id="lowPassFilter" text="Low Pass Filter" style="-fx-font-size: 14px;" />
+                <Button fx:id="highPassFilter" text="High Pass Filter" style="-fx-font-size: 14px;" />
+                <Button fx:id="bandPassFilter" text="Band Pass Filter" style="-fx-font-size: 14px;" />
+                <Button fx:id="bandStopFilter" text="Band Stop Filter" style="-fx-font-size: 14px;" />
+            </children>
+        </HBox>
+        <VBox layoutX="20.0" layoutY="70.0" prefHeight="150.0" prefWidth="400.0" spacing="10" alignment="CENTER">
+            <children>
+                <TextField fx:id="frequency" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Frequency (Hz)" />
+                <TextField fx:id="orderFilter" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Order of Filter" />
+                <TextField fx:id="lowerCut-off" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Lower Cut-off Frequency (Hz)" />
+                <TextField fx:id="higherCut-off" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Higher Cut-off Frequency (Hz)" />
+            </children>
+        </VBox>
+    </children>
 </Pane>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: #f4f4f4; -fx-padding: 10px;">
+   <children>
+      <Canvas fx:id="waveformCanvas" height="200.0" width="580.0" layoutX="10.0" layoutY="20.0" style="-fx-border-color: #000; -fx-background-color: white;" />
+      <Label text="Amplitude" layoutX="260.0" layoutY="225.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+      <Slider fx:id="amplitudeSlider" layoutX="150.0" layoutY="250.0" prefWidth="300.0" min="0" max="1" value="0.5" />
+   </children>
+</Pane>

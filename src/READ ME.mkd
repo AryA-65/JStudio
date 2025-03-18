@@ -1,8 +1,9 @@
 #Source code for the project will go here.
 
 #List of all current known bugs and glitches
-|Bug|Description|Code Snippet|Time Recorded|Person Recorded|
+|Bug|Description|Code Snippet|Time Recorded (DDMMYYHHMM)|Person Recorded|
 |---|-----------|------------|-------------|---------------|
+|FXML Optimization|Make the fxml more optimized, and for now bind the Vvalue of the track scrollpane with the Vvalue of the id scrollpane, and bind the Hvalue of the track scrollpane with the Hvalue of the timeline scrollpane|().bind(scrollpane)|1403252152|Arya|
 
 #List of what people are currently working on
 |Name|Code Snippet|Time Recorded|Time Finished|

@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Main extends Application {
-    public String currentUser;
+//    public String currentUser;
 
     private UIController controller;
 
@@ -30,6 +30,7 @@ public class Main extends Application {
 //        Scene scene = new Scene(loadingScreen, 1280, 720);
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
 
         stage.setScene(scene);
 //        stage.setTitle("JStudio");

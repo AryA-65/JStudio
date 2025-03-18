@@ -139,29 +139,29 @@
                   </Tab>
               </tabs>
             </TabPane>
-            <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
+            <SplitPane dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
                <items>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox fx:id="tracks_channels" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <VBox prefHeight="200.0" prefWidth="128.0">
                            <children>
                               <Pane minHeight="32.0" prefHeight="32.0" prefWidth="200.0" />
-                              <ScrollPane id="track_id_list" fx:id="track_id" hbarPolicy="NEVER" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER">
+                              <ScrollPane id="track_id_list" fx:id="track_id_scrollpane" hbarPolicy="NEVER" pannable="true" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <VBox fx:id="track_id_vbox" prefHeight="364.0" prefWidth="126.0" />
+                                    <VBox fx:id="track_id_vbox" prefWidth="126.0" />
                                  </content></ScrollPane>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ScrollPane fx:id="beat_timeline" hbarPolicy="NEVER" minHeight="32.0" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
+                              <ScrollPane fx:id="beat_scrollpane" hbarPolicy="NEVER" minHeight="32.0" pannable="true" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
                                  <content>
                                     <Canvas fx:id="beat_canvas" height="30.0" width="1533.0" />
                                  </content>
                               </ScrollPane>
-                              <ScrollPane fx:id="tracks_timeline" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                              <ScrollPane fx:id="tracks_scrollpane" hbarPolicy="NEVER" maxWidth="1534.0" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <VBox fx:id="track_vbox" prefHeight="364.0" prefWidth="1533.0" />
+                                    <VBox fx:id="track_vbox" alignment="CENTER_LEFT" prefHeight="364.0" />
                                  </content>
                               </ScrollPane>
                            </children>
@@ -172,7 +172,7 @@
                     <tabs>
                       <Tab text="Channels">
                            <content>
-                              <HBox prefHeight="100.0" prefWidth="200.0" />
+                              <HBox fx:id="channel_rack" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" />
                            </content>
                         </Tab>
                         <Tab text="Pipeline">

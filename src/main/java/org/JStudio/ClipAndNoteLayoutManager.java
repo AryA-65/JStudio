@@ -69,10 +69,11 @@ public class ClipAndNoteLayoutManager extends Application {
         //add Event Handler on mouse dragged that allows the rectangles to be dragged along the pane and be resized if the borders are dragged
         dynRect.setOnMouseDragged(mouseEvent -> {
             newMousePos = mouseEvent.getX();
-            double deltaMousePos = newMousePos - xStart;
+            
             double nextPosXResize = mouseEvent.getSceneX() - newMousePos; // Same logic as nextPosX for rectangle position drag
             //resize left
             if (isResizingLeft) {
+                double deltaMousePos = newMousePos - xStart;
                 System.out.println("left");
 //                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
                 dynRect.setLayoutX(nextPosXResize + deltaMousePos);
@@ -84,6 +85,7 @@ public class ClipAndNoteLayoutManager extends Application {
                 oldMousePos = newMousePos;
             //resize right
             } else if (isResizingRight) {
+                double deltaMousePos = newMousePos - oldMousePos;
                 dynRect.setWidth(dynRect.getWidth() + deltaMousePos);
                 if (dynRect.getWidth() < rectMinWidth) {
                     dynRect.setWidth(rectMinWidth);

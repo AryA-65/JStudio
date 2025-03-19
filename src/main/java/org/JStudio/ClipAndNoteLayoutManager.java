@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -23,7 +24,7 @@ public class ClipAndNoteLayoutManager extends Application {
     private Pane pane2;
     private Pane currentPane;
     private VBox vbox;
-    
+
     private double xStart;
     private double oldMousePos;
     private double newMousePos;
@@ -44,28 +45,28 @@ public class ClipAndNoteLayoutManager extends Application {
         vbox = new VBox();
         pane = new Pane();
         pane2 = new Pane();
-        
-        pane.setPrefSize(800,100);
-        pane2.setPrefSize(800,100);
-        
+
+        pane.setPrefSize(800, 100);
+        pane2.setPrefSize(800, 100);
+
         //add Event Handler on mouse pressed that adds a rectangle to the pane
         pane.setOnMousePressed(this::addRectangle);
         pane2.setOnMousePressed(this::addRectangle);
-        
+
         pane.setOnMouseEntered(mouseEvent -> {
             currentPane = pane;
         });
         pane2.setOnMouseEntered(mouseEvent -> {
             currentPane = pane2;
         });
-        
+
         vbox.getChildren().addAll(pane, pane2);
         //create scene
         Scene scene = new Scene(vbox, 800, 200);
         stage.setScene(scene);
         stage.show();
     }
-    
+
     //Makes a rectangle draggable
     private void dragRectangle(Rectangle dynRect) {
         //add Event Hnadler on mouse pressed that saves the starting position of the rectangle
@@ -83,14 +84,14 @@ public class ClipAndNoteLayoutManager extends Application {
             newMousePos = mouseEvent.getX();
             rectangles = getRectangles();
             overlaps = false;
-            
+
             double deltaMousePos = newMousePos - oldMousePos; //get how much the mouse moved since starting the drag
-            
+
             //resize left
             if (isResizingLeft) {
                 double nextPosX = dynRect.getLayoutX() + deltaMousePos; //get the next position that the rectangle will be in once moved
                 double nextWidth = dynRect.getWidth() - deltaMousePos; // get the next width that the rectangle will have once resized
-                
+
                 detectOverlap(dynRect, nextPosX, nextWidth);
 
                 if (!overlaps) {
@@ -102,14 +103,14 @@ public class ClipAndNoteLayoutManager extends Application {
                         dynRect.setWidth(rectMinWidth); //set the width back to the minimum
                         dynRect.setLayoutX(dynRect.getLayoutX() - (rectMinWidth - shrunkenWidth)); //move the rectangle back by the difference between the minimum width and the width it was reduced to
                     }
-                    
+
                 }
                 //resize right
             } else if (isResizingRight) {
                 double nextWidth = dynRect.getWidth() + deltaMousePos; //get the next position that the rectangle will be in once moved
                 overlaps = false;
-                
-                detectOverlap(dynRect, dynRect.getLayoutX(),nextWidth);
+
+                detectOverlap(dynRect, dynRect.getLayoutX(), nextWidth);
 
                 if (!overlaps) {
                     dynRect.setWidth(nextWidth);
@@ -165,21 +166,27 @@ public class ClipAndNoteLayoutManager extends Application {
             Rectangle rectangle = new Rectangle(rectangleBaseWidth, rectangleHeight);
             rectangle.setLayoutX(x - rectangleBaseWidth / 2);
             dragRectangle(rectangle); //make the rectangle draggable
+            rectangle.setOnMouseEntered(mouseEvent -> {
+                rectangle.setFill(Color.BLUE);
+            });
+            rectangle.setOnMouseExited(mouseEvent -> {
+                rectangle.setFill(Color.BLACK);
+            });
             currentPane.getChildren().add(rectangle);
         }
     }
-    
-    private void detectOverlap(Rectangle rectangle, double nextPosX,  double nextWidth) {
+
+    private void detectOverlap(Rectangle rectangle, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other rectangles once moved
         Rectangle tempRect = new Rectangle(nextWidth, rectangle.getHeight());
         tempRect.setLayoutX(nextPosX);
-        
+
         //Determine if intersection with the edge of the pane
-        if(tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > currentPane.getWidth()){
+        if (tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > currentPane.getWidth()) {
             overlaps = true;
             return;
         }
-        
+
         //Determine if intersecting with other rectangles
         for (int i = 0; i < rectangles.size(); i++) {
             if (rectangles.get(i) != rectangle) {

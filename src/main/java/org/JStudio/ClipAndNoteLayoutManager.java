@@ -22,12 +22,9 @@ public class ClipAndNoteLayoutManager extends Application {
     private double xStart;
     private double oldMousePos;
     private double newMousePos;
-    private double rectInitialRightPos;
-    private double rectInitialWidth;
     
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
-    private boolean isDragging = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -57,36 +54,28 @@ public class ClipAndNoteLayoutManager extends Application {
             
             isResizingLeft = (newMousePos > 0) && (newMousePos < resizeBorder);
             isResizingRight = (newMousePos < dynRect.getWidth()) && (newMousePos > dynRect.getWidth() - resizeBorder);
-            isDragging = !isResizingRight && !isResizingLeft;
-            
-            
-            if (isResizingLeft) {
-                rectInitialRightPos = mouseEvent.getSceneX() + dynRect.getWidth();
-                rectInitialWidth = dynRect.getWidth();
-            }
         });
 
         //add Event Handler on mouse dragged that allows the rectangles to be dragged along the pane and be resized if the borders are dragged
         dynRect.setOnMouseDragged(mouseEvent -> {
             newMousePos = mouseEvent.getX();
             
-            double nextPosXResize = mouseEvent.getSceneX() - newMousePos; // Same logic as nextPosX for rectangle position drag
             //resize left
             if (isResizingLeft) {
                 double deltaMousePos = newMousePos - xStart;
-                System.out.println("left");
-//                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
-                dynRect.setLayoutX(nextPosXResize + deltaMousePos);
+                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
                 dynRect.setWidth(dynRect.getWidth() - deltaMousePos);
-                if (dynRect.getWidth() < rectMinWidth) {
-                    dynRect.setWidth(rectMinWidth);
-                    dynRect.setLayoutX(rectInitialRightPos - rectInitialWidth);
+                
+                if (dynRect.getWidth() < rectMinWidth) { //width is now below the minimum
+                    double shrunkenWidth = dynRect.getWidth(); //get the width it was reduced to
+                    dynRect.setWidth(rectMinWidth); //set the width back to the minimum
+                    dynRect.setLayoutX(dynRect.getLayoutX() - (rectMinWidth - shrunkenWidth)); //move the rectangle back by the difference between the minimum width and the width it was reduced to
                 }
-                oldMousePos = newMousePos;
             //resize right
             } else if (isResizingRight) {
                 double deltaMousePos = newMousePos - oldMousePos;
                 dynRect.setWidth(dynRect.getWidth() + deltaMousePos);
+                
                 if (dynRect.getWidth() < rectMinWidth) {
                     dynRect.setWidth(rectMinWidth);
                 }
@@ -97,6 +86,7 @@ public class ClipAndNoteLayoutManager extends Application {
                 List<Rectangle> rectangles = getSprites();
                 boolean overlaps = false;
                 double nextPosX = mouseEvent.getSceneX() - xStart; //get the next position that the rectangle will be in once moved
+                
                 //Create a temporary rectangle to detect if it will intersect with any other rectangles once moved
                 Rectangle tempRect = new Rectangle(dynRect.getTranslateX(), dynRect.getTranslateY(), dynRect.getWidth(), dynRect.getHeight());
                 tempRect.setLayoutX(nextPosX);
@@ -121,7 +111,6 @@ public class ClipAndNoteLayoutManager extends Application {
         dynRect.setOnMouseReleased(mouseEvent -> {            
             isResizingRight = false;
             isResizingLeft = false;
-            isDragging = false;
         });
 
     }

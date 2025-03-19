@@ -10,11 +10,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javax.swing.SwingUtilities;
 
 public class ClipAndNoteLayoutManager extends Application {
 
-    Pane pane;
-    double xStart;
+    private final double rectangleBaseWidth = 50;
+    private final double rectangleHeight = 100;
+    private final double resizeBorder = 10;
+    private final double rectMinWidth = 50;
+    
+    private Pane pane;
+    private double xStart;
+    private double oldMousePos;
+    private double newMousePos;
+    
+    private boolean isResizingRight = false;
+    private boolean isResizingLeft = false;
+    private boolean isDragging = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -24,10 +36,10 @@ public class ClipAndNoteLayoutManager extends Application {
     public void start(Stage stage) throws Exception {
         //create pane
         pane = new Pane();
-        
+
         //add Event Handler on mouse pressed that adds a rectangle to the pane
         pane.setOnMousePressed(this::addRectangle);
-        
+
         //create scene
         Scene scene = new Scene(pane, 800, 100);
         stage.setScene(scene);
@@ -35,36 +47,68 @@ public class ClipAndNoteLayoutManager extends Application {
     }
 
     //Makes a rectangle draggable
-    private void dragRectangle(Rectangle movingRect) {
+    private void dragRectangle(Rectangle dynRect) {
         //add Event Hnadler on mouse pressed that saves the starting position of the rectangle
-        movingRect.setOnMousePressed(mouseEvent -> {
-            xStart = mouseEvent.getSceneX();
+        dynRect.setOnMousePressed(mouseEvent -> {
+            xStart = mouseEvent.getX(); //mouse position relative to the origin of the rectangle
+            oldMousePos = mouseEvent.getX();
+            newMousePos = mouseEvent.getX();
+            
+            isResizingLeft = (newMousePos > 0) && (newMousePos < resizeBorder);
+            isResizingRight = (newMousePos < dynRect.getWidth()) && (newMousePos > dynRect.getWidth() - resizeBorder);
+            isDragging = !isResizingRight && !isResizingLeft;
         });
 
-        //add Event Handler on mouse dragged that allows the rectangles to be dragged along the pane
-        movingRect.setOnMouseDragged(mouseEvent -> {
-        //get arraylist of all rectangles in the pane
-        List<Rectangle> rectangles = getSprites();
-        boolean overlaps = false;
-        double nextPosX = mouseEvent.getSceneX() - xStart; //get the next position that the rectangle will be in once moved
-        //Create a temporary rectangle to detect if it will intersect with any other rectangles once moved
-        Rectangle tempRect = new Rectangle(movingRect.getTranslateX(),movingRect.getTranslateY(),movingRect.getWidth(),movingRect.getHeight());
-        tempRect.setLayoutX(nextPosX);
-        
-            //Determine if intersecting
-            for (int i = 0; i < rectangles.size(); i++) {
-                if (rectangles.get(i) != movingRect) {
-                    if (rectangles.get(i).getBoundsInParent().intersects(tempRect.getBoundsInParent())) {
-                        overlaps = true;
+        //add Event Handler on mouse dragged that allows the rectangles to be dragged along the pane and be resized if the borders are dragged
+        dynRect.setOnMouseDragged(mouseEvent -> {
+            newMousePos = mouseEvent.getX();
+            double deltaMousePos = newMousePos - oldMousePos;
+            //resize left
+            if (isResizingLeft) {
+                System.out.println("Left");
+                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
+                dynRect.setWidth(dynRect.getWidth() - deltaMousePos);
+                oldMousePos = newMousePos;
+            //resize right
+            } else if (isResizingRight) {
+                dynRect.setWidth(dynRect.getWidth() + deltaMousePos);
+                if (dynRect.getWidth() < rectMinWidth) {
+                    dynRect.setWidth(rectMinWidth);
+                }
+                oldMousePos = newMousePos;
+            //move along pane
+            } else {
+                //get arraylist of all rectangles in the pane
+                List<Rectangle> rectangles = getSprites();
+                boolean overlaps = false;
+                double nextPosX = mouseEvent.getSceneX() - xStart; //get the next position that the rectangle will be in once moved
+                //Create a temporary rectangle to detect if it will intersect with any other rectangles once moved
+                Rectangle tempRect = new Rectangle(dynRect.getTranslateX(), dynRect.getTranslateY(), dynRect.getWidth(), dynRect.getHeight());
+                tempRect.setLayoutX(nextPosX);
+
+                //Determine if intersecting
+                for (int i = 0; i < rectangles.size(); i++) {
+                    if (rectangles.get(i) != dynRect) {
+                        if (rectangles.get(i).getBoundsInParent().intersects(tempRect.getBoundsInParent())) {
+                            overlaps = true;
+                        }
                     }
                 }
+
+                //if it doesn't intersect then move the original rectangle to that position
+                if (!overlaps) {
+                    dynRect.setLayoutX(nextPosX);
+                }
             }
-            
-            //if it doesn't intersect then move the original rectangle to that position
-            if(!overlaps){
-                movingRect.setLayoutX(nextPosX);
-            }
+        }
+        );
+        
+        dynRect.setOnMouseReleased(mouseEvent -> {            
+            isResizingRight = false;
+            isResizingLeft = false;
+            isDragging = false;
         });
+
     }
 
     //Adds a rectangle to the pane centered at the current mouse position
@@ -77,8 +121,8 @@ public class ClipAndNoteLayoutManager extends Application {
         //if there are already rectangles in the array list (not placing the first one)
         if (!rectangles.isEmpty()) {
             for (int i = 0; i < rectangles.size(); i++) {
-                Rectangle rectangle = new Rectangle(50, 100);
-                rectangle.setTranslateX(x - 25);
+                Rectangle rectangle = new Rectangle(rectangleBaseWidth, rectangleHeight);
+                rectangle.setLayoutX(x - rectangleBaseWidth / 2);
                 //make sure it does not intersect with other rectangles in the pane
                 if (rectangles.get(i).getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
                     overlaps = true;
@@ -87,8 +131,8 @@ public class ClipAndNoteLayoutManager extends Application {
         }
         //if the are not intersection issues then add a rectangle to the pane
         if (!overlaps) {
-            Rectangle rectangle = new Rectangle(50, 100);
-            rectangle.setTranslateX(x - 25);
+            Rectangle rectangle = new Rectangle(rectangleBaseWidth, rectangleHeight);
+            rectangle.setLayoutX(x - rectangleBaseWidth / 2);
             dragRectangle(rectangle); //make the rectangle draggable
             pane.getChildren().add(rectangle);
         }

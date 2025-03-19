@@ -10,7 +10,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javax.swing.SwingUtilities;
 
 public class ClipAndNoteLayoutManager extends Application {
 
@@ -23,6 +22,8 @@ public class ClipAndNoteLayoutManager extends Application {
     private double xStart;
     private double oldMousePos;
     private double newMousePos;
+    private double rectInitialRightPos;
+    private double rectInitialWidth;
     
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
@@ -57,17 +58,29 @@ public class ClipAndNoteLayoutManager extends Application {
             isResizingLeft = (newMousePos > 0) && (newMousePos < resizeBorder);
             isResizingRight = (newMousePos < dynRect.getWidth()) && (newMousePos > dynRect.getWidth() - resizeBorder);
             isDragging = !isResizingRight && !isResizingLeft;
+            
+            
+            if (isResizingLeft) {
+                rectInitialRightPos = mouseEvent.getSceneX() + dynRect.getWidth();
+                rectInitialWidth = dynRect.getWidth();
+            }
         });
 
         //add Event Handler on mouse dragged that allows the rectangles to be dragged along the pane and be resized if the borders are dragged
         dynRect.setOnMouseDragged(mouseEvent -> {
             newMousePos = mouseEvent.getX();
-            double deltaMousePos = newMousePos - oldMousePos;
+            double deltaMousePos = newMousePos - xStart;
+            double nextPosXResize = mouseEvent.getSceneX() - newMousePos; // Same logic as nextPosX for rectangle position drag
             //resize left
             if (isResizingLeft) {
-                System.out.println("Left");
-                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
+                System.out.println("left");
+//                dynRect.setLayoutX(dynRect.getLayoutX() + deltaMousePos);
+                dynRect.setLayoutX(nextPosXResize + deltaMousePos);
                 dynRect.setWidth(dynRect.getWidth() - deltaMousePos);
+                if (dynRect.getWidth() < rectMinWidth) {
+                    dynRect.setWidth(rectMinWidth);
+                    dynRect.setLayoutX(rectInitialRightPos - rectInitialWidth);
+                }
                 oldMousePos = newMousePos;
             //resize right
             } else if (isResizingRight) {

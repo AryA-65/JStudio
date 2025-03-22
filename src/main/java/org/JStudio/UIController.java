@@ -25,7 +25,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +35,14 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
 
 public class UIController {
 
+    @FXML
+    private ScrollPane track_id_scrollpane;
+    @FXML
+    private HBox tracks_channels;
+    @FXML
+    private ScrollPane beat_scrollpane;
+    @FXML
+    private Canvas beat_canvas;
     @FXML
     private ScrollPane tracks_scrollpane;
     @FXML
@@ -190,7 +197,15 @@ public class UIController {
         fileLoaderStage.setResizable(false);
         fileLoaderStage.show();
 
+        addTimeLine();
 
+        tracks_channels.setStyle("-fx-background-color: black;");
+        beat_scrollpane.setStyle("-fx-background-color: transparent;");
+        beat_canvas.setStyle("-fx-background-color: transparent;");
+        track_vbox.setStyle("-fx-background-color: transparent;");
+        track_id_vbox.setStyle("-fx-background-color: transparent;");
+        tracks_scrollpane.setStyle("-fx-background-color: transparent;");
+        track_id_scrollpane.setStyle("-fx-background-color: transparent;");
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
@@ -677,6 +692,23 @@ public class UIController {
         container.getChildren().addAll(idLabel, activeBtn);
 
         return container;
+    }
+
+    private void addTimeLine() {
+        GraphicsContext gc = beat_canvas.getGraphicsContext2D();
+
+        gc.setFill(Color.GREY);
+        gc.fillRoundRect(0,0,beat_canvas.getWidth(), beat_canvas.getHeight(), 10, 10);
+
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font("Inter Regular", 12));
+
+        for (int i = 0; i < beat_canvas.getWidth(); i++) {
+            if (i % 32 == 0) {
+                byte mult = (byte) (i / 32);
+                gc.fillText(String.valueOf(mult), i + 2, beat_canvas.getHeight() - 4);
+            }
+        }
     }
 
     //idk if this works, but still its part of the testing functions and shit

@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PianoSection.Controllers.NotesController">
    <left>
       <VBox prefHeight="972.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -131,7 +131,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="27.0" prefWidth="111.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" text="C">
+            <Label alignment="CENTER" prefHeight="27.0" prefWidth="111.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" text="Middle C">
                <font>
                   <Font size="16.0" />
                </font>
@@ -202,7 +202,7 @@
    <top>
       <HBox prefHeight="108.0" prefWidth="1920.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="89.0" text="Play">
+            <Button fx:id="playButton" mnemonicParsing="false" prefHeight="38.0" prefWidth="89.0" text="Play">
                <font>
                   <Font size="17.0" />
                </font>
@@ -223,47 +223,47 @@
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="972.0" prefWidth="1820.0">
+            <VBox fx:id="noteTracks" alignment="TOP_CENTER" prefHeight="972.0" prefWidth="1820.0">
                <children>
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
-                  <Pane prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane35" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane34" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane33" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane32" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane31" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane30" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane29" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane28" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane27" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane26" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane25" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane24" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane23" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane22" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane21" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane20" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane19" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane18" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane17" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane16" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane15" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane14" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane13" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane12" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane11" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane10" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane9" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane8" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane7" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane6" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane5" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane4" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane3" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane2" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane1" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #DDDDDD; -fx-border-color: #000000;" />
+                  <Pane fx:id="pane0" prefHeight="27.0" prefWidth="1820.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000;" />
                </children>
             </VBox>
-            <Line endY="969.0" startY="2.0" stroke="#3caeff" strokeWidth="4.0" />
+            <Line fx:id="playbackLine" endY="969.0" startY="2.0" stroke="#3caeff" strokeWidth="4.0" />
          </children>
       </Pane>
    </center>

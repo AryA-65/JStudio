@@ -1,17 +1,9 @@
-package org.JStudio.PianoSection;
+package PianoSection;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 /**
@@ -28,7 +20,9 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(this.getClass().getResource("/Resources/Notes.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/Notes.fxml"));
+        Parent root = loader.load();
+        System.out.println(root);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();

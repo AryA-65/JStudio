@@ -156,7 +156,7 @@
                            <children>
                               <ScrollPane fx:id="beat_scrollpane" hbarPolicy="NEVER" minHeight="32.0" pannable="true" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
                                  <content>
-                                    <Canvas fx:id="beat_canvas" height="30.0" width="1533.0" />
+                                    <Canvas fx:id="beat_canvas" height="30.0" width="1920.0" />
                                  </content>
                               </ScrollPane>
                               <ScrollPane fx:id="tracks_scrollpane" hbarPolicy="NEVER" maxWidth="1534.0" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">

@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class ClipAndNoteLayoutManager extends Application {
+public class ClipAndNoteLayoutManager { //removed extends app since it will be its own class
 
     private final double rectangleBaseWidth = 50;
     private final double rectangleHeight = 100;
@@ -39,7 +39,7 @@ public class ClipAndNoteLayoutManager extends Application {
         launch(args);
     }
 
-    @Override
+    //instead of @Override start, ill make this its own init method -> ARYA
     public void start(Stage stage) throws Exception {
         //create pane
         vbox = new VBox();

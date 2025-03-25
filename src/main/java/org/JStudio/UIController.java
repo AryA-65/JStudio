@@ -26,7 +26,9 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
@@ -35,6 +37,8 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
 
 public class UIController {
 
+    @FXML
+    private GridPane grid_root;
     @FXML
     private ScrollPane track_id_scrollpane;
     @FXML
@@ -85,6 +89,7 @@ public class UIController {
     private String curUser;
     private byte audioChannels = 16;
     private fileChooserController fileLoaderController;
+    private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     //part of test params, but this should its own thing
     private Song song = new Song("test");
@@ -169,25 +174,15 @@ public class UIController {
             }
         });
 
-        tracks_scrollpane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
-            track_id_scrollpane.setVvalue(tracks_scrollpane.getVvalue());
-        });
+        tracks_scrollpane.vvalueProperty().bindBidirectional(track_id_scrollpane.vvalueProperty());
 
-        track_id_scrollpane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
-            tracks_scrollpane.setVvalue(track_id_scrollpane.getVvalue());
-        });
-
-        tracks_scrollpane.hvalueProperty().addListener((observable, oldValue, newValue) -> {
-            beat_scrollpane.setHvalue(tracks_scrollpane.getHvalue());
-        });
-
-        beat_scrollpane.hvalueProperty().addListener((observable, oldValue, newValue) -> {
-            tracks_scrollpane.setHvalue(tracks_scrollpane.getHvalue());
-        });
+        tracks_scrollpane.hvalueProperty().bindBidirectional(beat_scrollpane.hvalueProperty());
 
         for (Track track : song.getTracks()) {
             track_vbox.getChildren().add(track.addTrack());
             track_id_vbox.getChildren().add(track.addTrackID());
+            channel_rack.getChildren().add(track.createChannel((byte) (track.getId() - 1)));
+            System.out.println(track.getId());
         }
 
         //Test functions
@@ -199,27 +194,48 @@ public class UIController {
             throw new RuntimeException(e);
         }
         channel_rack.setSpacing(1);
-        addChannel();
 
         track_vbox.setSpacing(1);
         track_id_vbox.setSpacing(1);
+        channel_rack.getChildren().add(0, creatingMasterChannel()); //test
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
-        Parent root = loader.load();
+//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
+//        Parent root = loader.load();
 
-        fileLoaderController = loader.getController();
-
-        Stage fileLoaderStage = new Stage();
-        Scene fileLoaderScene = new Scene(root);
-
-        fileLoaderController.setStage(fileLoaderStage);
-
-        fileLoaderStage.setScene(fileLoaderScene);
-        fileLoaderStage.initStyle(StageStyle.TRANSPARENT);
-        fileLoaderStage.setResizable(false);
-        fileLoaderStage.show();
+//        fileLoaderController = loader.getController();
+//
+//        Stage fileLoaderStage = new Stage();
+//        Scene fileLoaderScene = new Scene(root);
+//
+//        fileLoaderController.setStage(fileLoaderStage);
+//
+//        fileLoaderStage.setScene(fileLoaderScene);
+//        fileLoaderStage.initStyle(StageStyle.TRANSPARENT);
+//        fileLoaderStage.setResizable(false);
+//        fileLoaderStage.show();
 
         addTimeLine();
+
+        grid_root.setOnKeyPressed(e -> {
+            pressedKeys.add(e.getCode());
+            if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.A)) {
+                Track addedTrack = new Track("");
+                song.addTrack(addedTrack);
+                track_vbox.getChildren().add(addedTrack.addTrack());
+                track_id_vbox.getChildren().add(addedTrack.addTrackID());
+                System.out.println("Track added");
+            }
+            if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.D)) {
+                song.removeTrack();
+                track_vbox.getChildren().remove(track_vbox.getChildren().size() - 1);
+                track_id_vbox.getChildren().remove(track_id_vbox.getChildren().size() - 1);
+                System.out.println("Track removed");
+            }
+        });
+
+        grid_root.setOnKeyReleased(e -> {
+            pressedKeys.remove(e.getCode());
+        });
 
         tracks_channels.setStyle("-fx-background-color: black;");
         beat_scrollpane.setStyle("-fx-background-color: transparent;");
@@ -384,14 +400,6 @@ public class UIController {
         return rootVBox;
     }
 
-    //adding channels to the channel panel
-    public void addChannel() {
-        channel_rack.getChildren().add(creatingMasterChannel());
-            for (byte i = 0; i <= audioChannels; i++) {
-                channel_rack.getChildren().add(createChannel(i));
-            }
-    }
-
     public Node creatingMasterChannel() {
         AtomicBoolean clicked = new AtomicBoolean(false);
 
@@ -508,92 +516,6 @@ public class UIController {
         masterContainer.getChildren().addAll(masterVisContainer, masterChannelContainer);
 
         return masterContainer;
-    }
-
-    public Node createChannel(byte i) {
-        AtomicBoolean clicked = new AtomicBoolean(false);
-
-//        System.out.println("Added channel " + (i + 1));
-        VBox channelBox = new VBox();
-        channelBox.setPrefHeight(256);
-        channelBox.setPrefWidth(32);
-        channelBox.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px");
-        channelBox.setAlignment(Pos.TOP_CENTER);
-
-        Label channelID = new Label(String.valueOf(i + 1));
-        channelID.setFont(new Font("Inter Regular", 8));
-        VBox.setMargin(channelID, new Insets(2, 0, 2, 0));
-
-        Pane channelContainer = new Pane();
-        channelContainer.setPrefHeight(243);
-        channelContainer.setPrefWidth(32);
-        channelContainer.setStyle("-fx-background-color: #404040; -fx-background-radius: 5px");
-
-        Pane channelVisContainer = new Pane();
-        channelVisContainer.setPrefHeight(64);
-        channelVisContainer.setPrefWidth(32);
-        channelVisContainer.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
-
-        StackPane visContainer = new StackPane();
-        visContainer.setPrefSize(18,42);
-        visContainer.setLayoutX(7);
-        visContainer.setLayoutY(4);
-        visContainer.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
-
-        Canvas channelVis = new Canvas();
-        channelVis.setHeight(40);
-        channelVis.setWidth(16);
-
-        Pane activeBtn = new Pane();
-        activeBtn.setPrefHeight(8);
-        activeBtn.setPrefWidth(8);
-        activeBtn.setLayoutX(12);
-        activeBtn.setLayoutY(224);
-        activeBtn.toFront();
-        activeBtn.getStyleClass().add("active");
-        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-
-        activeBtn.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                clicked.set(true);
-            }
-        });
-
-        activeBtn.setOnMouseReleased(e -> {
-            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
-                clicked.set(false);
-                if (activeBtn.getStyleClass().contains("active")) {
-                    activeBtn.getStyleClass().remove("active");
-                    activeBtn.getStyleClass().add("disabled");
-                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                } else {
-                    activeBtn.getStyleClass().remove("disabled");
-                    activeBtn.getStyleClass().add("active");
-                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                }
-//                        System.out.println("Registered");
-            } else clicked.set(false);
-
-//                    System.out.println("Released");
-        });
-
-        Slider channelAmp = new Slider(0,100,100);
-        channelAmp.setOrientation(Orientation.VERTICAL);
-        channelAmp.setPrefHeight(96);
-        channelAmp.setLayoutY(96);
-        channelAmp.setLayoutX(9);
-
-        visContainer.getChildren().add(channelVis);
-
-        channelVisContainer.getChildren().add(visContainer);
-
-        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, activeBtn);
-
-        channelBox.getChildren().addAll(channelID, channelContainer);
-
-//        System.out.println(channelContainer.getHeight());
-
-        return channelBox;
     }
 
     private void addTimeLine() {

@@ -1,13 +1,19 @@
 package org.JStudio;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -18,7 +24,10 @@ public class Track {
     private static short activeTracks = 0;
     private short id;
     private double amplitude, pitch;
+    private short numClips; //tempo param for now
 //    private List<>
+
+    private byte xfx_channels = 16;
 
     Track(String name) {
         this.name = name;
@@ -170,6 +179,92 @@ public class Track {
         container.getChildren().addAll(idLabel, activeBtn);
 
         return container;
+    }
+
+    public Node createChannel(byte i) {
+        AtomicBoolean clicked = new AtomicBoolean(false);
+
+//        System.out.println("Added channel " + (i + 1));
+        VBox channelBox = new VBox();
+        channelBox.setPrefHeight(256);
+        channelBox.setPrefWidth(32);
+        channelBox.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px");
+        channelBox.setAlignment(Pos.TOP_CENTER);
+
+        Label channelID = new Label(String.valueOf(i + 1));
+        channelID.setFont(new Font("Inter Regular", 8));
+        VBox.setMargin(channelID, new Insets(2, 0, 2, 0));
+
+        Pane channelContainer = new Pane();
+        channelContainer.setPrefHeight(243);
+        channelContainer.setPrefWidth(32);
+        channelContainer.setStyle("-fx-background-color: #404040; -fx-background-radius: 5px");
+
+        Pane channelVisContainer = new Pane();
+        channelVisContainer.setPrefHeight(64);
+        channelVisContainer.setPrefWidth(32);
+        channelVisContainer.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
+
+        StackPane visContainer = new StackPane();
+        visContainer.setPrefSize(18,42);
+        visContainer.setLayoutX(7);
+        visContainer.setLayoutY(4);
+        visContainer.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
+
+        Canvas channelVis = new Canvas();
+        channelVis.setHeight(40);
+        channelVis.setWidth(16);
+
+        Pane activeBtn = new Pane();
+        activeBtn.setPrefHeight(8);
+        activeBtn.setPrefWidth(8);
+        activeBtn.setLayoutX(12);
+        activeBtn.setLayoutY(224);
+        activeBtn.toFront();
+        activeBtn.getStyleClass().add("active");
+        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+
+        activeBtn.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                clicked.set(true);
+            }
+        });
+
+        activeBtn.setOnMouseReleased(e -> {
+            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
+                clicked.set(false);
+                if (activeBtn.getStyleClass().contains("active")) {
+                    activeBtn.getStyleClass().remove("active");
+                    activeBtn.getStyleClass().add("disabled");
+                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                } else {
+                    activeBtn.getStyleClass().remove("disabled");
+                    activeBtn.getStyleClass().add("active");
+                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+                }
+//                        System.out.println("Registered");
+            } else clicked.set(false);
+
+//                    System.out.println("Released");
+        });
+
+        Slider channelAmp = new Slider(0,100,100);
+        channelAmp.setOrientation(Orientation.VERTICAL);
+        channelAmp.setPrefHeight(96);
+        channelAmp.setLayoutY(96);
+        channelAmp.setLayoutX(9);
+
+        visContainer.getChildren().add(channelVis);
+
+        channelVisContainer.getChildren().add(visContainer);
+
+        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, activeBtn);
+
+        channelBox.getChildren().addAll(channelID, channelContainer);
+
+//        System.out.println(channelContainer.getHeight());
+
+        return channelBox;
     }
 }
 

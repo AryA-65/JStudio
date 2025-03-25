@@ -35,7 +35,7 @@ public class Main extends Application {
         stage.setScene(scene);
 //        stage.setTitle("JStudio");
         stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setResizable(false);
+//        stage.setResizable(false);
         stage.show();
     }
 

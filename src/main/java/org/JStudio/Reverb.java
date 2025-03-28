@@ -15,75 +15,56 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Reverb extends Application  {
     private String filePath;
+    private ByteArrayInputStream byteArrayInputStream;
+    private AudioInputStream audioInputStream;
     
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            filePath = "C:\\Users\\theog\\OneDrive\\Desktop\\Misc Lasers.wav"; // Use your own .wav file to run (use one of sizeable length for now)
+            filePath = "C:\\Users\\theog\\OneDrive\\Desktop\\30-06_load.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
             Path path = Paths.get(filePath);
             byte[] audioData = Files.readAllBytes(path);
-
             
-//            // Test where the audio lowers in volum towards the end (Ignore this)
-//            byte[] mainAudio =  amplitudeControlAudio(audioData, 0, audioData.length/2, audioData.length);
-//            
-//            // Note: Decay Time would be how quick the amplitude Factor would decrease (to be implemented later)
-//            byte[] reverbedAudio = amplitudeControlAudio(audioData, 0, 100, audioData.length/2);
-//            reverbedAudio = amplitudeControlAudio(audioData, 0.3, audioData.length/2, audioData.length/2 + audioData.length/4);
-//            reverbedAudio = amplitudeControlAudio(audioData, 0.1, audioData.length/2 + audioData.length/2, audioData.length);
-//            playAudio(mainAudio);
-//            playAudio(reverbedAudio);
-            
-            byte[] mainAudio = decayAudio(audioData, 0.1);
-            playAudio(mainAudio);
+            //0.1 - 0.25 -> range for amplitude
+            applyReverb(audioData, 0.25, 3, 0.8);
         } catch (IOException e) {
             System.out.println(e);
         }
     }
     
     /**
-     * Adjusts the audio progressively
-     * @param audioData the audio data to lower
-     * @param decayFactor the factor with which the audio is adjusted
-     * @return the adjusted audio
+     * Applies reverb effects to audio data from a .wav file
+     * @param audioData the original data contained in the .wav file
+     * @param amplitudeFactor the factor by which the amplitude is changed (0.1 - 0.25)
+     * @param decay the amount the audio decaying for
+     * @param wetDryFactor the mix of original audio and reverbed audio
      */
-    private byte[] decayAudio(byte[] audioData, double decayFactor) {
-        byte[] decayedAudio = new byte[audioData.length];
-        for (int i = 0; i < decayedAudio.length; i++) {
-            decayedAudio[i] = audioData[i];
-        }
+    // Need to add pre delay (3 points later)
+    private void applyReverb(byte[] audioData, double amplitudeFactor, int decay, double wetDryFactor) {
+        byte[] reverbAudio = new byte[audioData.length];
         
-        int currentAmplitude = 1;
-        int startPosition = 100;
-        int endPosition = decayedAudio.length;
-        for (int i = 0; i < 20; i++) {
-            decayedAudio = amplitudeControlAudio(audioData, currentAmplitude*decayFactor, startPosition, endPosition);
-            startPosition+=20000;
-        }
-        
-        return decayedAudio;
-    }
-    
-    /**
-     * Trims the beginning of the audio file (Keeps the header)
-     * @param audioData the data from the original file
-     * @param trimFactor the amount the file needs to be trimmed
-     * @return the trimmed audio data
-     */
-    private byte[] trimAudio(byte[] audioData, double trimFactor) {
-        // Cutting off a part of the audio (beginning)
-        // *Note: Still plays silence in the beginning, needs to skip to first sound found, to be implemented later
-        int cutAudioSize = (int) (audioData.length - audioData.length*trimFactor);
-        byte[] trimmedAudio = new byte[audioData.length];
-
+        // reverbAudio has same audio data as the original audio for now
         for (int i = 0; i < audioData.length; i++) {
-            if (i <= 100) {
-                trimmedAudio[i] = audioData[i];
-            } else if (i >= cutAudioSize) {
-                trimmedAudio[i] = audioData[i];
+            reverbAudio[i] = audioData[i];
+        }
+        
+        // Decay time is set (how long is the audio decaying for)
+        for (int j = 0; j < decay; j++) {
+            byte [] softenedAudio = amplitudeControlAudio(reverbAudio, amplitudeFactor);
+        
+            // Wet-Dry Mixing
+            for (int i = 44; i < softenedAudio.length; i++) {
+                reverbAudio[i] *= wetDryFactor; // Reverb hasn't been applied yet, therfore this is dry data
+                softenedAudio[i] *= (1-wetDryFactor); // Wet data
+            }
+            
+            // Adding previous reverbed points to current data point
+            for (int i = 44; i < reverbAudio.length; i++) {
+                reverbAudio[i] += softenedAudio[i-1]*decay/10;
             }
         }
-        return trimmedAudio;
+        
+        playAudio(reverbAudio);
     }
     
     /**
@@ -94,12 +75,13 @@ public class Reverb extends Application  {
      * @param endIndex the index until which amplitude is adjusted
      * @return the adjusted amplitude audio
      */
-    private byte[] amplitudeControlAudio(byte[] audioData, double amplitudeFactor, int startIndex, int endIndex) {
+    private byte[] amplitudeControlAudio(byte[] audioData, double amplitudeFactor) {
         byte[] volumeControlledAudio = new byte[audioData.length];
-            for (int i = 0; i < volumeControlledAudio.length; i++) {
-                volumeControlledAudio[i] = audioData[i];
-            }
-        for (int i=startIndex; i < endIndex; i++) {
+        for (int i=44; i < volumeControlledAudio.length; i++) {
+            volumeControlledAudio[i] = audioData[i];
+        }
+            
+        for (int i=44; i < volumeControlledAudio.length; i++) {
                 volumeControlledAudio[i] = (byte) (volumeControlledAudio[i]*amplitudeFactor);
             }
         return volumeControlledAudio;
@@ -111,12 +93,13 @@ public class Reverb extends Application  {
      */
     private void playAudio(byte[] audioData) {
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioData);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(byteArrayInputStream);
-
+            byteArrayInputStream = new ByteArrayInputStream(audioData);
+            audioInputStream = AudioSystem.getAudioInputStream(byteArrayInputStream);
+            
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
+            
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             System.out.println(e);
         }

@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.reverb;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Reverb extends Application  {
+public class Reverb extends Application {
     private String filePath;
     private ByteArrayInputStream byteArrayInputStream;
     private AudioInputStream audioInputStream;
@@ -71,8 +71,6 @@ public class Reverb extends Application  {
      * Controls the amplitude of the audio (volume)
      * @param audioData the data from the original file
      * @param amplitudeFactor the amount that the amplitude needs to be adjusted by
-     * @param startIndex the index from which amplitude is adjusted
-     * @param endIndex the index until which amplitude is adjusted
      * @return the adjusted amplitude audio
      */
     private byte[] amplitudeControlAudio(byte[] audioData, double amplitudeFactor) {

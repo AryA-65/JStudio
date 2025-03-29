@@ -35,12 +35,8 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
     private List<Rectangle> rectangles;
     private boolean overlaps;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     //instead of @Override start, ill make this its own init method -> ARYA
-    public void start(Stage stage) throws Exception {
+    public void init(Stage stage) throws Exception {
         //create pane
         vbox = new VBox();
         pane = new Pane();

@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Track {
     private String name;
-    private static short activeTracks = 0;
+    private static short activeTracks = 0; //move this to song
     private short id;
     private double amplitude, pitch;
     private short numClips; //tempo param for now
 //    private List<>
 
-    private byte xfx_channels = 16;
+    private byte xfx_channels = 16; //max num of xfx channels for a single audio channel
 
     Track(String name) {
         this.name = name;
@@ -68,6 +68,10 @@ public class Track {
 
     public void setPitch(double pitch) {
         this.pitch = pitch;
+    }
+
+    public void removeActiveTrack() {
+        activeTracks--;
     }
 
     public Node addTrack() {

@@ -36,6 +36,7 @@ public class Song {
 
     public void removeTrack() {
         if (tracks.size() > MIN_TRACKS) {
+            tracks.get(tracks.size() - 1).removeActiveTrack();
             tracks.remove(tracks.size() - 1);
             numTracks--;
         }
@@ -54,5 +55,13 @@ public class Song {
 
     public ArrayList<Track> getTracks() {
         return tracks;
+    }
+
+    public String getSongName() {
+        return songName;
+    }
+
+    public void setSongName(String songName) {
+        this.songName = songName;
     }
 }

@@ -34,6 +34,9 @@ public class Main extends Application {
         stage.initStyle(StageStyle.TRANSPARENT);
 //        stage.setResizable(false);
         stage.show();
+
+//        Reverb testreverb = new Reverb();
+//        testreverb.start(new Stage());
     }
 
     public static void main(String[] args) {

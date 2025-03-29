@@ -15,12 +15,19 @@
     </properties>
 
     <dependencies>
+        <!--   For MP3 File support, decoding and ID3v1 tags     -->
         <dependency>
             <groupId>javazoom</groupId>
             <artifactId>jlayer</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+            <version>0.9.1</version>
+        </dependency>
 
+        <!--    JavaFX Modules used for the project    -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>

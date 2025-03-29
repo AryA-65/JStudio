@@ -2,13 +2,10 @@ package org.JStudio;
 
 import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -20,15 +17,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
@@ -83,6 +75,7 @@ public class UIController {
     private Stage rootStage;
 
     private double xOffset = 0, yOffset = 0, startX = 0;
+    private FileLoader fileLoader;
 
     //testing params
     private double temporaryBPM = 120;
@@ -101,7 +94,7 @@ public class UIController {
     public Stage getStage() {return rootStage;}
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws Exception {
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/copy-document.png"));
         save_song_btn.setImage(new Image("/save.png"));
@@ -188,16 +181,15 @@ public class UIController {
         //Test functions
         curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
-        try {
-            loadFolders("C:\\Users\\" + curUser + "\\Music\\JStudio\\audio_Files");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         channel_rack.setSpacing(1);
 
         track_vbox.setSpacing(1);
         track_id_vbox.setSpacing(1);
         channel_rack.getChildren().add(0, creatingMasterChannel()); //test
+
+        song_name.setText(song.getSongName());
+
+        fileLoader = new FileLoader(tab_vbox);
 
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
 //        Parent root = loader.load();
@@ -216,8 +208,15 @@ public class UIController {
 
         addTimeLine();
 
+//        ClipAndNoteLayoutManager cnlm = new ClipAndNoteLayoutManager();
+//        cnlm.init(new Stage());
+
+//        Knob testKnob = new Knob(0, );
+//        testKnob.setAngle(180);
+
         grid_root.setOnKeyPressed(e -> {
             pressedKeys.add(e.getCode());
+            System.out.println("pressedKey: " + e.getCode());
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.A)) {
                 Track addedTrack = new Track("");
                 song.addTrack(addedTrack);
@@ -230,6 +229,9 @@ public class UIController {
                 track_vbox.getChildren().remove(track_vbox.getChildren().size() - 1);
                 track_id_vbox.getChildren().remove(track_id_vbox.getChildren().size() - 1);
                 System.out.println("Track removed");
+            }
+            if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.Q)) {
+                //get all the children in the track vbox and increase their width to the bpm * n (n being the increment -> default = 1, can increase in fractions or ints)
             }
         });
 
@@ -247,158 +249,6 @@ public class UIController {
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
-
-    public void loadFolders(String path) throws Exception {
-//        System.out.println(path);
-
-        File file = new File(path);
-        if (file.exists() && file.isDirectory() && file.listFiles() != null) {
-            int folderIntex = 0;
-            for (File f : file.listFiles()) {
-                if (f.isDirectory()) {
-                    folderIntex++;
-//                    System.out.println("Num Folders: " + folderIntex);
-                    Node section = audioSection(f);
-                    tab_vbox.getChildren().add(section);
-                }
-            }
-        }
-    }
-
-    public Node audioSection(File f) {
-        Image image = new Image("/down.png");
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(16);
-        imageView.setFitHeight(16);
-
-        VBox rootVBox = new VBox();
-        rootVBox.setId(f.getName());
-//        VBox.setMargin(rootVBox, new Insets(0,0,0,0));
-
-        Button expandSectionBtn = new Button(f.getName(), imageView);
-        expandSectionBtn.setPrefWidth(256 - (5 * 2));
-        expandSectionBtn.setAlignment(Pos.TOP_LEFT);
-        VBox.setMargin(expandSectionBtn, new Insets(0, 5, 10, 5));
-
-        VBox fileSectionList = new VBox();
-        fileSectionList.setAlignment(Pos.TOP_LEFT);
-
-        VBox.setMargin(fileSectionList, new Insets(0, 10, 0, 10));
-
-        Timeline expandTimeline = new Timeline(
-                new KeyFrame(Duration.millis(150), new KeyValue(fileSectionList.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN))
-        );
-
-        Timeline shrinkTimeline = new Timeline(
-                new KeyFrame(Duration.millis(150), new KeyValue(fileSectionList.prefHeightProperty(), 0, Interpolator.EASE_OUT))
-        );
-
-        RotateTransition rotateTransition = new RotateTransition(Duration.millis(150), imageView);
-        rotateTransition.setByAngle(-180);
-
-        expandSectionBtn.setOnAction(e -> {
-            if (fileSectionList.isVisible()) {
-                rotateTransition.play();
-                shrinkTimeline.play();
-                shrinkTimeline.setOnFinished(event -> fileSectionList.setVisible(false));
-            } else {
-                rotateTransition.play();
-                fileSectionList.setVisible(true);
-                expandTimeline.play();
-            }
-        });
-
-        System.out.println(f.getName());
-        for (File file : f.listFiles()) {
-            if (file.exists() && file.isFile()) {
-//                System.out.println(file.getName());
-                fileSectionList.getChildren().add(addAudioFileUI(file));
-            }
-        }
-        fileSectionList.setSpacing(10);
-
-        rootVBox.getChildren().addAll(expandSectionBtn, fileSectionList);
-
-        return rootVBox;
-    }
-
-    public Node addAudioFileUI(File file) {
-        VBox rootVBox = new VBox();
-
-        String fileName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-        String extension = file.getName().substring(file.getName().lastIndexOf('.') + 1);
-
-        rootVBox.setId(fileName);
-        rootVBox.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
-        Pane container = new Pane();
-        container.setPrefSize(234, 64);
-        container.setStyle("-fx-background-color: #808080; -fx-background-radius: 5px");
-
-        Label audioFileName = new Label(fileName);
-        audioFileName.setMaxWidth(128);
-        audioFileName.setTextOverrun(OverrunStyle.ELLIPSIS);
-        Label audioFileExt = new Label(extension);
-        audioFileExt.setMaxWidth(32);
-        audioFileExt.setTextOverrun(OverrunStyle.ELLIPSIS);
-        Label audioFileLength = new Label("0:00");
-        audioFileLength.setMaxWidth(32);
-        audioFileLength.setTextOverrun(OverrunStyle.ELLIPSIS);
-
-        Canvas audioFileDataVis = new Canvas();
-        audioFileDataVis.setWidth(234);
-        audioFileDataVis.setHeight(64);
-        audioFileDataVis.setStyle("-fx-background-color: transparent;");
-
-        GraphicsContext gc = audioFileDataVis.getGraphicsContext2D();
-        gc.setFill(Color.web("D9D9D9"));
-        gc.fillRoundRect(0, 0, audioFileDataVis.getWidth(), audioFileDataVis.getHeight(), 10, 10);
-
-        HBox audioFileInfo = new HBox();
-        audioFileInfo.setSpacing(5);
-        audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
-        audioFileInfo.setLayoutX(2);
-        container.prefHeightProperty().addListener((observable, oldValue, newValue) -> {
-            audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
-        });
-
-        Timeline expandTimeline = new Timeline(
-                new KeyFrame(Duration.millis(150),
-                        new KeyValue(container.prefHeightProperty(), 80, Interpolator.EASE_IN))
-        );
-
-        Timeline shrinkTimeline = new Timeline(
-                new KeyFrame(Duration.millis(150),
-                        new KeyValue(container.prefHeightProperty(), 64, Interpolator.EASE_OUT))
-        );
-
-        audioFileDataVis.setOnMouseEntered(e -> {
-            expandTimeline.play();
-//            System.out.println("entered" + container.getPrefHeight());
-        });
-
-        audioFileDataVis.setOnMouseExited(e -> {
-            shrinkTimeline.play();
-//            System.out.println("exited" + container.getPrefHeight());
-        });
-
-        audioFileInfo.getChildren().addAll(audioFileName, audioFileExt, audioFileLength);
-        audioFileInfo.setStyle("-fx-background-color: transparent;");
-
-        container.getChildren().addAll(audioFileInfo, audioFileDataVis);
-
-        rootVBox.getChildren().add(container);
-
-        rootVBox.setOnDragDetected(event -> {
-            Dragboard db = rootVBox.startDragAndDrop(TransferMode.COPY);
-            ClipboardContent content = new ClipboardContent();
-            content.putFiles(Collections.singletonList(file));
-            db.setContent(content);
-            event.consume();
-        });
-
-        return rootVBox;
-    }
 
     public Node creatingMasterChannel() {
         AtomicBoolean clicked = new AtomicBoolean(false);
@@ -559,5 +409,63 @@ public class UIController {
         }
         event.setDropCompleted(success);
         event.consume();
+    }
+
+    //test
+    public void getWavData(File filePath) {
+        if (!filePath.getName().endsWith(".wav")) {return;}
+        System.out.println(filePath.getName());
+        try (FileInputStream fis = new FileInputStream(filePath);
+             DataInputStream dis = new DataInputStream(fis)) {
+
+            // Read "RIFF" Chunk Descriptor
+            byte[] chunkID = new byte[4];
+            dis.read(chunkID); // Should be "RIFF"
+            String chunkIDStr = new String(chunkID, "UTF-8");
+
+            int chunkSize = Integer.reverseBytes(dis.readInt()); // File size - 8
+
+            byte[] format = new byte[4];
+            dis.read(format); // Should be "WAVE"
+            String formatStr = new String(format, "UTF-8");
+
+            // Read "fmt " Subchunk
+            byte[] subchunk1ID = new byte[4];
+            dis.read(subchunk1ID); // Should be "fmt "
+            String subchunk1IDStr = new String(subchunk1ID, "UTF-8");
+
+            int subchunk1Size = Integer.reverseBytes(dis.readInt()); // 16 for PCM
+            short audioFormat = Short.reverseBytes(dis.readShort()); // 1 = PCM, other = compressed
+            short numChannels = Short.reverseBytes(dis.readShort()); // 1 = Mono, 2 = Stereo
+            int sampleRate = Integer.reverseBytes(dis.readInt()); // e.g., 44100 Hz
+            int byteRate = Integer.reverseBytes(dis.readInt()); // SampleRate * NumChannels * BitsPerSample/8
+            short blockAlign = Short.reverseBytes(dis.readShort()); // NumChannels * BitsPerSample/8
+            short bitsPerSample = Short.reverseBytes(dis.readShort()); // e.g., 16 bits
+
+            // Read "data" Subchunk
+            byte[] subchunk2ID = new byte[4];
+            dis.read(subchunk2ID); // Should be "data"
+            String subchunk2IDStr = new String(subchunk2ID, "UTF-8");
+
+            int subchunk2Size = Integer.reverseBytes(dis.readInt()); // Data size in bytes
+
+            // Print the extracted information
+            System.out.println("Chunk ID: " + chunkIDStr);
+            System.out.println("Chunk Size: " + chunkSize);
+            System.out.println("Format: " + formatStr);
+            System.out.println("Subchunk1 ID: " + subchunk1IDStr);
+            System.out.println("Subchunk1 Size: " + subchunk1Size);
+            System.out.println("Audio Format: " + (audioFormat == 1 ? "PCM" : "Compressed"));
+            System.out.println("Number of Channels: " + numChannels);
+            System.out.println("Sample Rate: " + sampleRate);
+            System.out.println("Byte Rate: " + byteRate);
+            System.out.println("Block Align: " + blockAlign);
+            System.out.println("Bits Per Sample: " + bitsPerSample);
+            System.out.println("Subchunk2 ID: " + subchunk2IDStr);
+            System.out.println("Subchunk2 Size: " + subchunk2Size);
+
+        } catch (IOException e) {
+            System.err.println("Error reading WAV file: " + e.getMessage());
+        }
     }
 }

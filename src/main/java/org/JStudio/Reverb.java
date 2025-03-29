@@ -2,6 +2,8 @@ package org.JStudio;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +15,10 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+/**
+ * Reverb class that plays the audio (will be integrated to UI later)
+ * @author Theodore Georgiou
+ */
 public class Reverb extends Application  {
     private String filePath;
     private ByteArrayInputStream byteArrayInputStream;
@@ -21,12 +27,11 @@ public class Reverb extends Application  {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            filePath = "C:\\Users\\theog\\OneDrive\\Desktop\\30-06_load.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+            filePath = "C:\\Users\\theog\\OneDrive\\Desktop\\beep-10.wav"; // Use your own .wav file (44.1 kHz sample rate or more) to run
             Path path = Paths.get(filePath);
             byte[] audioData = Files.readAllBytes(path);
             
-            //0.1 - 0.25 -> range for amplitude
-            applyReverb(audioData, 0.25, 3, 0.8);
+            applyReverb(audioData, 0.5, 2, 1);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -39,32 +44,50 @@ public class Reverb extends Application  {
      * @param decay the amount the audio decaying for
      * @param wetDryFactor the mix of original audio and reverbed audio
      */
-    // Need to add pre delay (3 points later)
+    // Need to add pre delay
     private void applyReverb(byte[] audioData, double amplitudeFactor, int decay, double wetDryFactor) {
-        byte[] reverbAudio = new byte[audioData.length];
+        byte[] audioToReverb = new byte[audioData.length-44];
         
         // reverbAudio has same audio data as the original audio for now
-        for (int i = 0; i < audioData.length; i++) {
-            reverbAudio[i] = audioData[i];
+        for (int i = 0; i < audioToReverb.length; i++) {
+            audioToReverb[i] = audioData[i+44];
         }
         
+        // Convert audio data to short type to avoid audio warping
+        short[] reverbNums = new short[audioToReverb.length/2];
+        for (int i = 0; i < reverbNums.length; i++) {
+            reverbNums[i]=ByteBuffer.wrap(audioToReverb,i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+
         // Decay time is set (how long is the audio decaying for)
         for (int j = 0; j < decay; j++) {
-            byte [] softenedAudio = amplitudeControlAudio(reverbAudio, amplitudeFactor);
+            short[] decayedAudio = amplitudeControlAudio(reverbNums, amplitudeFactor);
         
             // Wet-Dry Mixing
-            for (int i = 44; i < softenedAudio.length; i++) {
-                reverbAudio[i] *= wetDryFactor; // Reverb hasn't been applied yet, therfore this is dry data
-                softenedAudio[i] *= (1-wetDryFactor); // Wet data
+            for (int i = 0; i < decayedAudio.length; i++) {
+                short dryAudio = (short) (reverbNums[i]*wetDryFactor);
+                short wetAudio = (short) (decayedAudio[i]*(1-wetDryFactor));
+                reverbNums[i] = (short) (dryAudio+wetAudio);
             }
+           
             
             // Adding previous reverbed points to current data point
-            for (int i = 44; i < reverbAudio.length; i++) {
-                reverbAudio[i] += softenedAudio[i-1]*decay/10;
+            for (int i = 1; i < reverbNums.length; i++) {
+                reverbNums[i] += (short) decayedAudio[i-1]*decay/10;
             }
         }
         
-        playAudio(reverbAudio);
+        // Revert back to byte array to have playback functionality
+        byte[] reverbedAudio = new byte[reverbNums.length*2];
+        for (int i = 0; i < reverbNums.length; i++) {
+            ByteBuffer.wrap(reverbedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(reverbNums[i]); // i*2 since each short is 2 bytes long
+        }
+        
+        byte[] finalAudio = new byte[audioData.length];
+        System.arraycopy(reverbedAudio, 0, finalAudio, 44, reverbNums.length*2); // Add the audio data
+        System.arraycopy(audioData, 0, finalAudio, 0, 44); // Add the header
+        
+        playAudio(finalAudio);
     }
     
     /**
@@ -75,14 +98,14 @@ public class Reverb extends Application  {
      * @param endIndex the index until which amplitude is adjusted
      * @return the adjusted amplitude audio
      */
-    private byte[] amplitudeControlAudio(byte[] audioData, double amplitudeFactor) {
-        byte[] volumeControlledAudio = new byte[audioData.length];
-        for (int i=44; i < volumeControlledAudio.length; i++) {
+    private short[] amplitudeControlAudio(short[] audioData, double amplitudeFactor) {
+        short[] volumeControlledAudio = new short[audioData.length];
+        for (int i=0; i < volumeControlledAudio.length; i++) {
             volumeControlledAudio[i] = audioData[i];
         }
             
-        for (int i=44; i < volumeControlledAudio.length; i++) {
-                volumeControlledAudio[i] = (byte) (volumeControlledAudio[i]*amplitudeFactor);
+        for (int i=0; i < volumeControlledAudio.length; i++) {
+                volumeControlledAudio[i] = (short) (volumeControlledAudio[i]*amplitudeFactor);
             }
         return volumeControlledAudio;
     }

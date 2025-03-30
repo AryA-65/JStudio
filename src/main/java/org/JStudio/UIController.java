@@ -191,6 +191,8 @@ public class UIController {
 
         fileLoader = new FileLoader(tab_vbox);
 
+        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
+
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
 //        Parent root = loader.load();
 

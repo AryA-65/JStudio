@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.JStudio.Plugins.Reverb;
 
 public class Main extends Application {
 //    public String currentUser;
@@ -15,6 +16,9 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 //        FileLoader fileLoader = new FileLoader();
+
+//        Reverb reverb = new Reverb();
+//        reverb.play();
 
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
         Parent root = loader.load();

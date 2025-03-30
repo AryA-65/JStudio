@@ -58,7 +58,7 @@
             <Insets bottom="13.0" left="15.0" right="15.0" top="13.0" />
          </padding>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1" pickOnBounds="false">
          <children>
             <TabPane prefHeight="200.0" prefWidth="256.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>

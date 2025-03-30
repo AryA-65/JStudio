@@ -35,8 +35,8 @@ public class Main extends Application {
 
         stage.setScene(scene);
 //        stage.setTitle("JStudio");
-        stage.initStyle(StageStyle.TRANSPARENT);
-//        stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(true);
         stage.show();
 
 //        Reverb testreverb = new Reverb();

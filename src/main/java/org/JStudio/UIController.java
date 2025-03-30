@@ -74,7 +74,8 @@ public class UIController {
     @FXML
     private Stage rootStage;
 
-    private double xOffset = 0, yOffset = 0, startX = 0;
+    private double xOffset = 0, yOffset = 0, startX = 0, startY = 0, initialWidth = 1920, initialHeight = 720;
+    private boolean resizing = false;
     private FileLoader fileLoader;
 
     //testing params
@@ -111,7 +112,6 @@ public class UIController {
         tab_vbox.setSpacing(15);
         tab_vbox.setPrefHeight(Region.USE_COMPUTED_SIZE);
 
-        //initializing events for nodes
         info_panel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             xOffset = rootStage.getX() - event.getScreenX();
             yOffset = rootStage.getY() - event.getScreenY();

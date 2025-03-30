@@ -74,7 +74,8 @@ public class UIController {
     @FXML
     private Stage rootStage;
 
-    private double xOffset = 0, yOffset = 0, startX = 0;
+    private double xOffset = 0, yOffset = 0, startX = 0, startY = 0, initialWidth = 1920, initialHeight = 720;
+    private boolean resizing = false;
     private FileLoader fileLoader;
 
     //testing params
@@ -111,7 +112,6 @@ public class UIController {
         tab_vbox.setSpacing(15);
         tab_vbox.setPrefHeight(Region.USE_COMPUTED_SIZE);
 
-        //initializing events for nodes
         info_panel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             xOffset = rootStage.getX() - event.getScreenX();
             yOffset = rootStage.getY() - event.getScreenY();
@@ -190,6 +190,8 @@ public class UIController {
         song_name.setText(song.getSongName());
 
         fileLoader = new FileLoader(tab_vbox);
+
+        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
 
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
 //        Parent root = loader.load();

@@ -1,10 +1,12 @@
-package org.JStudio.Plugins.reverb;
+package org.JStudio.Plugins;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javax.sound.sampled.AudioInputStream;
@@ -20,13 +22,21 @@ public class Reverb extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        play();
+    }
+
+    public void play() {
         try {
-            filePath = "C:\\Users\\theog\\OneDrive\\Desktop\\30-06_load.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+            filePath = Paths.get(System.getProperty("user.home"), "Downloads") + "\\beep-10.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
             Path path = Paths.get(filePath);
             byte[] audioData = Files.readAllBytes(path);
-            
+
+            System.out.println(Arrays.toString(audioData));
+
             //0.1 - 0.25 -> range for amplitude
-            applyReverb(audioData, 0.25, 3, 0.8);
+            applyReverb(audioData, 0.9, 1, 0.1);
+
+            System.out.println("Reverb played");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -41,26 +51,22 @@ public class Reverb extends Application {
      */
     // Need to add pre delay (3 points later)
     private void applyReverb(byte[] audioData, double amplitudeFactor, int decay, double wetDryFactor) {
-        byte[] reverbAudio = new byte[audioData.length];
-        
         // reverbAudio has same audio data as the original audio for now
-        for (int i = 0; i < audioData.length; i++) {
-            reverbAudio[i] = audioData[i];
-        }
-        
+        byte[] reverbAudio = Arrays.copyOf(audioData, audioData.length);
+
         // Decay time is set (how long is the audio decaying for)
         for (int j = 0; j < decay; j++) {
             byte [] softenedAudio = amplitudeControlAudio(reverbAudio, amplitudeFactor);
-        
+
             // Wet-Dry Mixing
             for (int i = 44; i < softenedAudio.length; i++) {
                 reverbAudio[i] *= wetDryFactor; // Reverb hasn't been applied yet, therfore this is dry data
                 softenedAudio[i] *= (1-wetDryFactor); // Wet data
             }
-            
+
             // Adding previous reverbed points to current data point
-            for (int i = 44; i < reverbAudio.length; i++) {
-                reverbAudio[i] += softenedAudio[i-1]*decay/10;
+            for (int i = 45; i < reverbAudio.length; i++) {
+                reverbAudio[i] += (byte) (softenedAudio[i-1]*decay/10);
             }
         }
         

@@ -1,4 +1,4 @@
-package org.JStudio;
+package org.JStudio.UI;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

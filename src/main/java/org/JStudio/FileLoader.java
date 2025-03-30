@@ -332,28 +332,26 @@ public class FileLoader {
     //Draws both left and right channel for stereo audio, and only left for mono audio
     private void drawWaveform(GraphicsContext gc, float[] left, float[] right) {
         double midY = CANVAS_HEIGHT / 2.0;
-        double offset = (right != null) ? CANVAS_HEIGHT * 0.05 : 0; //Offseting channels slightly for visibility (might remove later)
+//        double offset = (right != null) ? CANVAS_HEIGHT * 0.025 : 0; //Offseting channels slightly for visibility (might remove later)
 
-        gc.setStroke(Color.RED); //Left Channel (Green)
+        gc.setStroke(Color.color(1,0,0,.25)); //Left Channel (Red)
         gc.setLineWidth(1);
-        for (int i = 0; i < left.length - 1; i++) {
-            double y1 = midY - (left[i] * midY);
-            double x2 = i + 1;
-            double y2 = midY - (left[i + 1] * midY);
-            gc.strokeLine(i, y1, x2, y2);
-        }
+        drawPoint(gc, left, midY);
 
         if (right != null) { //Right channel (BLUE)
-            gc.setStroke(Color.BLUE);
-            for (int i = 0; i < right.length - 1; i++) {
-                double x1 = i;
-                double y1 = midY - (right[i] * midY) + offset;
-                double x2 = i + 1;
-                double y2 = midY - (right[i + 1] * midY) + offset;
-                gc.strokeLine(x1, y1, x2, y2);
-            }
+            gc.setStroke(Color.color(0,0,1,.25));
+            drawPoint(gc, right, midY);
         }
     }
 
-
+    private void drawPoint(GraphicsContext gc, float[] right, double midY) {
+        for (int i = 0; i < right.length - 1; i++) {
+//            double y1 = midY - (right[i] * midY) + offset;
+            double y1 = midY - (right[i] * midY);
+            double x2 = i + 1;
+//                double y2 = midY - (right[i + 1] * midY) + offset;
+            double y2 = midY - (right[i + 1] * midY);
+            gc.strokeLine(i, y1, x2, y2);
+        }
+    }
 }

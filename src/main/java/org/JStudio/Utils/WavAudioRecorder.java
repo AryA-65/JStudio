@@ -59,4 +59,24 @@ public class WavAudioRecorder implements Runnable {
             ex.printStackTrace();
         }
     }
+    // Convert 16-bit PCM byte array to double array
+    private static double[] bytesToDouble(byte[] audioBytes) {
+        double[] audioData = new double[audioBytes.length / 2];
+        for (int i = 0; i < audioData.length; i++) {
+            short sample = (short) ((audioBytes[2 * i + 1] << 8) | (audioBytes[2 * i] & 0xFF));
+            audioData[i] = sample / (double) Short.MAX_VALUE;
+        }
+        return audioData;
+    }
+
+    // Convert double array back to 16-bit PCM byte array
+    private static byte[] doubleToBytes(double[] audioData) {
+        byte[] audioBytes = new byte[audioData.length * 2];
+        for (int i = 0; i < audioData.length; i++) {
+            short sample = (short) (audioData[i] * Short.MAX_VALUE);
+            audioBytes[2 * i] = (byte) (sample & 0xFF);
+            audioBytes[2 * i + 1] = (byte) ((sample >> 8) & 0xFF);
+        }
+        return audioBytes;
+    }
 }

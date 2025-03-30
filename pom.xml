@@ -15,6 +15,14 @@
     </properties>
 
     <dependencies>
+        <!-- For FFT Library -->
+        <dependency>
+            <groupId>com.github.wendykierp</groupId>
+            <artifactId>JTransforms</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+        </dependency>
+        
         <!--   For MP3 File support, decoding and ID3v1 tags     -->
         <dependency>
             <groupId>javazoom</groupId>

@@ -1,6 +1,5 @@
 package org.JStudio;
 
-import com.mpatric.mp3agic.Mp3File;
 import javafx.animation.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -68,7 +67,7 @@ public class FileLoader {
     }
 
     public Node audioSection(File f) {
-        Image image = new Image("/down.png");
+        Image image = new Image("/arrow.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(16);
         imageView.setFitHeight(16);
@@ -225,6 +224,7 @@ public class FileLoader {
         } else {
             throw new IllegalArgumentException("Unsupported file format");
         }
+
     }
 
     //wav section
@@ -281,8 +281,8 @@ public class FileLoader {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);
         Decoder decoder = new Decoder();
-        float[] leftChannel = new float[1000000];
-        float[] rightChannel = new float[1000000];
+        float[] leftChannel = new float[10000000];
+        float[] rightChannel = new float[10000000];
 
         int index = 0;
         boolean isStereo = false;

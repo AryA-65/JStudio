@@ -17,6 +17,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Track {
@@ -26,6 +28,20 @@ public class Track {
     private double amplitude, pitch;
     private short numClips; //tempo param for now
 //    private List<>
+
+    //test colors
+    public final List<String> MATTE_COLORS = List.of(
+            "#FF6B6B", // Matte Red
+            "#FF9F5B", // Matte Orange
+            "#FFD166", // Matte Yellow
+            "#06D6A0", // Matte Green
+            "#1B9AAA", // Matte Teal
+            "#118AB2", // Matte Blue
+            "#9A4C95", // Matte Purple
+            "#EF476F", // Matte Pink
+            "#8338EC", // Matte Violet
+            "#FF5F7E"  // Matte Coral
+    );
 
     private byte xfx_channels = 16; //max num of xfx channels for a single audio channel
 
@@ -74,9 +90,9 @@ public class Track {
         activeTracks--;
     }
 
-    public Node addTrack() {
+    public Canvas addTrack(int width) {
         Canvas canvas = new Canvas();
-        canvas.setWidth(1920);
+        canvas.setWidth(width);
         canvas.setHeight(64);
 
 //        System.out.println(canvas.getWidth());
@@ -84,11 +100,16 @@ public class Track {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 //        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
         gc.setFill(Color.GREY);
         gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 10, 10);
 
-        gc.setStroke(Color.BLACK);
-        for (int i = 0; i < 1920; i++) {
+        gc.setStroke(Color.WHITE);
+        for (int i = 0; i < width; i++) {
             if (i % 32 == 0 && i != 0) {
                 gc.strokeLine(i, 0, i, canvas.getHeight());
             }
@@ -134,13 +155,15 @@ public class Track {
         return canvas;
     }
 
-    public Node addTrackID() {
+    public Pane addTrackID() {
         AtomicBoolean clicked = new AtomicBoolean(false);
+
+        String color = MATTE_COLORS.get(new Random().nextInt(MATTE_COLORS.size()));
 
         Pane container = new Pane();
         container.setPrefHeight(64);
         container.setPrefWidth(126);
-        container.setStyle("-fx-background-color: grey; -fx-background-radius: 5px");
+        container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 5px");
 
         Label idLabel = new Label(String.valueOf(id));
         idLabel.setFont(new Font("Inter Regular", 8));

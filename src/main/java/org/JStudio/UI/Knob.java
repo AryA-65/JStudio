@@ -1,68 +1,44 @@
 package org.JStudio.UI;
 
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.Circle;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.StackPane;
 
-public class Knob {
-    private double curAngle, curValue, radius;
-    private final double MIN_ANGLE = 225.0, MAX_ANGLE = 315.0, MIN_VALUE = 0.0, MAX_VALUE = 1.0;
-    private int xPos, yPos, centerX, centerY;
+public class Knob extends StackPane { //Needs more time to think (maybe interface class?)
+    private final double MIN_VAL, MAX_VAL;
+    private final DoubleProperty value = new SimpleDoubleProperty();
 
-    private Arc curValueVis;
-    private Circle dimple, knobCircle;
-    private Pane container;
+    private Canvas canvas;
+    private double centerX, centerY, radius;
 
-    Knob(double angle, int radius) {
-        this.curAngle = MAX_ANGLE;
-        this.curValue = MAX_VALUE;
-
-        this.centerX = centerX;
-        this.centerY = centerY;
-
-        this.radius = radius;
-
-        container = new Pane();
-        container.setPrefSize(radius * 2 + (radius * 0.1), radius * 2 + (radius * 0.1));
-
-        knobCircle.setRadius(radius);
-        knobCircle.setCenterX(centerX);
-        knobCircle.setCenterY(centerY);
-
-        dimple.setRadius(1);
-        dimple.setCenterX(centerX - radius + 2);
-        dimple.setCenterY(centerY);
-
-        container.getChildren().add(knobCircle);
+    enum TYPE {
+        REG, ARC, MIX
     }
 
-    public Node getRoot() {
-        return container;
+    Knob() {
+        this.MIN_VAL = 0.0;
+        this.MAX_VAL = 1.0;
+        this.value.set(this.MAX_VAL);
+
     }
 
-    public void setAngle(double angle) {
-        this.radius = 5.0;
-        this.curAngle = angle;
-        this.curValue = calculateVal();
+    Knob(double minVal, double maxVal, double initVal, double radius) {
+        MIN_VAL = minVal;
+        MAX_VAL = maxVal;
+
+        value.set(initVal);
+
+        canvas = new Canvas(radius * 1.1, radius * 1.1);
     }
 
-    public double getCurAngle() {
-        return curAngle;
+    Knob(double radius) {
+        this();
+
+        canvas = new Canvas(radius * 1.1, radius * 1.1);
     }
 
-    public double calculateVal() {
-        double realAngle = 0;
-        if (curAngle <= MIN_ANGLE && curAngle >= 0) {
-            realAngle = MIN_ANGLE - curAngle;
-        } else if (curAngle <= MAX_ANGLE) {
-            realAngle = curAngle - MAX_ANGLE;
-        }
 
-        return (realAngle / 270);
-    }
 
-    public double getCurValue() {
-        return curValue;
-    }
+
 }

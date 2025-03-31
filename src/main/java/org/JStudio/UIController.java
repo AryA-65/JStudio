@@ -1,10 +1,10 @@
 package org.JStudio;
 
-import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,8 +16,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.*;
 import java.util.*;
@@ -30,6 +30,10 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
 public class UIController {
 
     @FXML
+    private SplitPane splitpane;
+    @FXML
+    private ImageView maxim_btn;
+    @FXML
     private GridPane grid_root;
     @FXML
     private ScrollPane track_id_scrollpane;
@@ -38,7 +42,7 @@ public class UIController {
     @FXML
     private ScrollPane beat_scrollpane;
     @FXML
-    private Canvas beat_canvas;
+    private Canvas timeline_canvas;
     @FXML
     private ScrollPane tracks_scrollpane;
     @FXML
@@ -74,14 +78,14 @@ public class UIController {
     @FXML
     private Stage rootStage;
 
-    private double xOffset = 0, yOffset = 0, startX = 0, startY = 0, initialWidth = 1920, initialHeight = 720;
+    private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
     private boolean resizing = false;
     private FileLoader fileLoader;
+    private float lengthMultiplier = 1;
 
     //testing params
     private double temporaryBPM = 120;
     private String curUser;
-    private byte audioChannels = 16;
     private fileChooserController fileLoaderController;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
@@ -91,17 +95,23 @@ public class UIController {
     //stage controller functions
     public void setStage(Stage stage) {
         rootStage = stage;
+        rootStage.setMaximized(true);
     }
+
     public Stage getStage() {return rootStage;}
 
     @FXML
     public void initialize() throws Exception {
         //initializing nodes (loading images and other stuff)
-        open_song_btn.setImage(new Image("/copy-document.png"));
+        open_song_btn.setImage(new Image("/load.png"));
         save_song_btn.setImage(new Image("/save.png"));
-        export_song_btn.setImage(new Image("/import-export.png"));
+        export_song_btn.setImage(new Image("/export.png"));
         close_btn.setImage(new Image("/close.png"));
-        minim_btn.setImage(new Image("/minimize.png"));
+        minim_btn.setImage(new Image("/inconify.png"));
+        maxim_btn.setImage(new Image("/minimize.png"));
+
+        initialHeight = Screen.getPrimary().getVisualBounds().getHeight();
+        initialWidth = Screen.getPrimary().getVisualBounds().getWidth();
 
         //adding missing nodes
 //        VBox testBox = new VBox();
@@ -126,23 +136,79 @@ public class UIController {
             System.out.println("Pressed record_control");
         });
 
-        bpm_control.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                startX = event.getScreenX();
+//        bpm_control.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+//            if (event.getButton() == MouseButton.SECONDARY) {
+//                startX = event.getScreenX();
+//            }
+//        });
+//
+//        bpm_control.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+//            if (event.getButton() == MouseButton.SECONDARY) {
+//                double currentX = event.getScreenX();
+//                double deltaX = currentX - startX;
+//
+//                temporaryBPM += Math.min(999, deltaX);
+//                temporaryBPM = Math.max(temporaryBPM, 0);
+//                bpm_control.setText(String.valueOf(temporaryBPM));
+//
+//                startX = currentX;
+//            }
+//        });
+
+        bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            reInitTracks();
+        });
+
+        grid_root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            xResize = event.getSceneX();
+            yResize = event.getSceneY();
+//            initialHeight = grid_root.getHeight();
+//            initialWidth = grid_root.getWidth();
+
+            if (event.getX() >= grid_root.getWidth() - 10 && event.getY() >= grid_root.getHeight() - 10) {
+                resizing = true;
+                rootStage.getScene().setCursor(Cursor.SE_RESIZE);
             }
         });
 
-        bpm_control.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                double currentX = event.getScreenX();
-                double deltaX = currentX - startX;
-
-                temporaryBPM += Math.min(999, deltaX);
-                temporaryBPM = Math.max(temporaryBPM, 0);
-                bpm_control.setText(String.valueOf(temporaryBPM));
-
-                startX = currentX; // Reset for smooth adjustment
+        grid_root.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (resizing) {
+                rootStage.setWidth(initialWidth + (event.getSceneX() - xResize));
+                rootStage.setHeight(initialHeight + (event.getSceneY() - yResize));
             }
+        });
+
+        grid_root.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
+            if (resizing) {
+                initialWidth = rootStage.getWidth();
+                initialHeight = rootStage.getHeight();
+                setSplitRatio();
+                resizing = false;
+                rootStage.getScene().setCursor(Cursor.DEFAULT);
+            }
+        });
+
+        minim_btn.setOnMouseClicked(event -> {
+            rootStage.setIconified(true);
+        });
+
+        maxim_btn.setOnMouseClicked(event -> {
+            //rootStage.getWidth() != Screen.getPrimary().getVisualBounds().getWidth() || rootStage.getHeight() != Screen.getPrimary().getVisualBounds().getHeight()
+            if (!rootStage.isMaximized()) {
+//                rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+//                rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+//                rootStage.setX(0);
+//                rootStage.setY(0);
+                rootStage.setMaximized(true);
+                maxim_btn.setImage(new Image("/minimize.png"));
+            } else {
+                rootStage.setMaximized(false);
+                rootStage.setWidth(initialWidth);
+                rootStage.setHeight(initialHeight);
+                maxim_btn.setImage(new Image("/maximize.png"));
+            }
+//            System.out.println(splitpane.getHeight());
+            setSplitRatio();
         });
 
         close_btn.setOnMouseClicked(event -> {
@@ -150,18 +216,16 @@ public class UIController {
         });
 
         track_vbox.addEventFilter(ScrollEvent.SCROLL, e -> {
-            if (e.isControlDown()) {
-                double delta = e.getDeltaY() * 0.005;
-                for (Node track : track_vbox.getChildren()) {
-                    track.setScaleX(track.getScaleX() + delta);
-                }
-//                track_vbox.setPrefWidth(track_vbox.getBoundsInParent().getWidth());
-                e.consume();
-            }
+//            if (e.isControlDown()) { //doesnt work well
+//                double delta = e.getDeltaY() * (beat_scrollpane.getWidth() / (100 * beat_canvas.getWidth()));
+//                for (Node track : track_vbox.getChildren()) {
+//                    track.setScaleX(track.getScaleX() + delta);
+//                }
+//                beat_canvas.setScaleX(beat_canvas.getScaleX() + delta);
+//                e.consume();
+//            }
             if (e.isShiftDown()) {
                 double delta = e.getDeltaX() * 0.005;
-//                System.out.println("Shift pressed");
-                //tempo fix (replace 1533 with something else)
                 tracks_scrollpane.setHvalue(tracks_scrollpane.getHvalue() - delta);
                 e.consume();
             }
@@ -172,26 +236,24 @@ public class UIController {
         tracks_scrollpane.hvalueProperty().bindBidirectional(beat_scrollpane.hvalueProperty());
 
         for (Track track : song.getTracks()) {
-            track_vbox.getChildren().add(track.addTrack());
+            track_vbox.getChildren().add(track.addTrack((int) (song.getBpm() * 32)));
             track_id_vbox.getChildren().add(track.addTrackID());
             channel_rack.getChildren().add(track.createChannel((byte) (track.getId() - 1)));
             System.out.println(track.getId());
         }
 
         //Test functions
+        timeline_canvas.setWidth(song.getBpm() * 32);
         curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
-        channel_rack.setSpacing(1);
 
-        track_vbox.setSpacing(1);
-        track_id_vbox.setSpacing(1);
         channel_rack.getChildren().add(0, creatingMasterChannel()); //test
 
         song_name.setText(song.getSongName());
 
-        fileLoader = new FileLoader(tab_vbox);
+//        fileLoader = new FileLoader(tab_vbox);
 
-        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
+//        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
 
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
 //        Parent root = loader.load();
@@ -222,14 +284,16 @@ public class UIController {
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.A)) {
                 Track addedTrack = new Track("");
                 song.addTrack(addedTrack);
-                track_vbox.getChildren().add(addedTrack.addTrack());
+                track_vbox.getChildren().add(addedTrack.addTrack((int) (song.getBpm() * 32)));
                 track_id_vbox.getChildren().add(addedTrack.addTrackID());
+                channel_rack.getChildren().add(addedTrack.createChannel((byte) (addedTrack.getId() - 1)));
                 System.out.println("Track added");
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.D)) {
                 song.removeTrack();
                 track_vbox.getChildren().remove(track_vbox.getChildren().size() - 1);
                 track_id_vbox.getChildren().remove(track_id_vbox.getChildren().size() - 1);
+                channel_rack.getChildren().remove(channel_rack.getChildren().size() - 1);
                 System.out.println("Track removed");
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.Q)) {
@@ -243,11 +307,23 @@ public class UIController {
 
         tracks_channels.setStyle("-fx-background-color: black;");
         beat_scrollpane.setStyle("-fx-background-color: transparent;");
-        beat_canvas.setStyle("-fx-background-color: transparent;");
-        track_vbox.setStyle("-fx-background-color: transparent;");
-        track_id_vbox.setStyle("-fx-background-color: transparent;");
+        timeline_canvas.setStyle("-fx-background-color: transparent;");
+        track_vbox.setStyle("-fx-background-color: black;");
+        track_id_vbox.setStyle("-fx-background-color: black;");
         tracks_scrollpane.setStyle("-fx-background-color: transparent;");
         track_id_scrollpane.setStyle("-fx-background-color: transparent;");
+    }
+
+    protected void setSplitRatio() {
+        double ratio = ((splitpane.getHeight() - 289) / splitpane.getHeight());
+        splitpane.setDividerPosition(0, ratio);
+    }
+
+    public void setScreenSize() {
+        if (rootStage != null) {
+            rootStage.setWidth(initialWidth);
+            rootStage.setHeight(initialHeight);
+        }
     }
 
     //temporary function (this shit needs to be optimized and put into another class)
@@ -274,7 +350,7 @@ public class UIController {
         StackPane masterVis = new StackPane();
         masterVis.setPrefSize(18,243);
         masterVis.setStyle("-fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px");
-        VBox.setMargin(masterVis, new Insets(4,5,4,5));
+        VBox.setMargin(masterVis, new Insets(0,5,0,5));
 
         Canvas masterChannelVis = new Canvas();
         masterChannelVis.setHeight(40);
@@ -370,19 +446,51 @@ public class UIController {
         return masterContainer;
     }
 
+    private void reInitTracks() {
+        double newSize = 32 * temporaryBPM * lengthMultiplier;
+
+        for (Node track : track_vbox.getChildren()) {
+            if (track instanceof Canvas) {
+                ((Canvas) track).setWidth(newSize);
+                GraphicsContext gc = ((Canvas) track).getGraphicsContext2D();
+
+                double width = ((Canvas) track).getWidth(), height = ((Canvas) track).getHeight();
+
+                gc.clearRect(0,0,width,height);
+                gc.setFill(Color.GREY);
+                gc.fillRoundRect(0, 0, width, height, 10, 10);
+
+                gc.setStroke(Color.BLACK);
+                for (int i = 0; i < newSize; i++) {
+                    if (i % 32 == 0 && i != 0) {
+                        gc.strokeLine(i, 0, i, height);
+                    }
+                }
+            }
+        }
+
+        timeline_canvas.setWidth(newSize);
+        addTimeLine();
+    }
+
     private void addTimeLine() {
-        GraphicsContext gc = beat_canvas.getGraphicsContext2D();
+        GraphicsContext gc = timeline_canvas.getGraphicsContext2D();
+
+        gc.clearRect(0, 0, timeline_canvas.getWidth(), timeline_canvas.getHeight());
+
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, timeline_canvas.getWidth(), timeline_canvas.getHeight());
 
         gc.setFill(Color.GREY);
-        gc.fillRoundRect(0,0,beat_canvas.getWidth(), beat_canvas.getHeight(), 10, 10);
+        gc.fillRoundRect(0,0, timeline_canvas.getWidth(), timeline_canvas.getHeight(), 10, 10);
 
         gc.setFill(Color.BLACK);
         gc.setFont(new Font("Inter Regular", 12));
 
-        for (int i = 0; i < beat_canvas.getWidth(); i++) {
+        for (int i = 0; i < timeline_canvas.getWidth(); i++) {
             if (i % 32 == 0) {
-                byte mult = (byte) (i / 32);
-                gc.fillText(String.valueOf(mult), i + 2, beat_canvas.getHeight() - 4);
+                short mult = (short) ((i / 32) + 1);
+                gc.fillText(String.valueOf(mult), i + 2, timeline_canvas.getHeight() - 4);
             }
         }
     }
@@ -411,63 +519,5 @@ public class UIController {
         }
         event.setDropCompleted(success);
         event.consume();
-    }
-
-    //test
-    public void getWavData(File filePath) {
-        if (!filePath.getName().endsWith(".wav")) {return;}
-        System.out.println(filePath.getName());
-        try (FileInputStream fis = new FileInputStream(filePath);
-             DataInputStream dis = new DataInputStream(fis)) {
-
-            // Read "RIFF" Chunk Descriptor
-            byte[] chunkID = new byte[4];
-            dis.read(chunkID); // Should be "RIFF"
-            String chunkIDStr = new String(chunkID, "UTF-8");
-
-            int chunkSize = Integer.reverseBytes(dis.readInt()); // File size - 8
-
-            byte[] format = new byte[4];
-            dis.read(format); // Should be "WAVE"
-            String formatStr = new String(format, "UTF-8");
-
-            // Read "fmt " Subchunk
-            byte[] subchunk1ID = new byte[4];
-            dis.read(subchunk1ID); // Should be "fmt "
-            String subchunk1IDStr = new String(subchunk1ID, "UTF-8");
-
-            int subchunk1Size = Integer.reverseBytes(dis.readInt()); // 16 for PCM
-            short audioFormat = Short.reverseBytes(dis.readShort()); // 1 = PCM, other = compressed
-            short numChannels = Short.reverseBytes(dis.readShort()); // 1 = Mono, 2 = Stereo
-            int sampleRate = Integer.reverseBytes(dis.readInt()); // e.g., 44100 Hz
-            int byteRate = Integer.reverseBytes(dis.readInt()); // SampleRate * NumChannels * BitsPerSample/8
-            short blockAlign = Short.reverseBytes(dis.readShort()); // NumChannels * BitsPerSample/8
-            short bitsPerSample = Short.reverseBytes(dis.readShort()); // e.g., 16 bits
-
-            // Read "data" Subchunk
-            byte[] subchunk2ID = new byte[4];
-            dis.read(subchunk2ID); // Should be "data"
-            String subchunk2IDStr = new String(subchunk2ID, "UTF-8");
-
-            int subchunk2Size = Integer.reverseBytes(dis.readInt()); // Data size in bytes
-
-            // Print the extracted information
-            System.out.println("Chunk ID: " + chunkIDStr);
-            System.out.println("Chunk Size: " + chunkSize);
-            System.out.println("Format: " + formatStr);
-            System.out.println("Subchunk1 ID: " + subchunk1IDStr);
-            System.out.println("Subchunk1 Size: " + subchunk1Size);
-            System.out.println("Audio Format: " + (audioFormat == 1 ? "PCM" : "Compressed"));
-            System.out.println("Number of Channels: " + numChannels);
-            System.out.println("Sample Rate: " + sampleRate);
-            System.out.println("Byte Rate: " + byteRate);
-            System.out.println("Block Align: " + blockAlign);
-            System.out.println("Bits Per Sample: " + bitsPerSample);
-            System.out.println("Subchunk2 ID: " + subchunk2IDStr);
-            System.out.println("Subchunk2 Size: " + subchunk2Size);
-
-        } catch (IOException e) {
-            System.err.println("Error reading WAV file: " + e.getMessage());
-        }
     }
 }

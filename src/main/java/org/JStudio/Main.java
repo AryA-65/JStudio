@@ -1,12 +1,18 @@
 package org.JStudio;
 
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.JStudio.Plugins.Reverb;
 
 public class Main extends Application {
 //    public String currentUser;
@@ -25,6 +31,8 @@ public class Main extends Application {
 
         controller = loader.getController();
         controller.setStage(stage);
+        controller.setScreenSize();
+
 
 //        LoadingScreen loadingScreen = new LoadingScreen();
 
@@ -35,9 +43,11 @@ public class Main extends Application {
 
         stage.setScene(scene);
 //        stage.setTitle("JStudio");
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(true);
         stage.show();
+
+        controller.setSplitRatio();
 
 //        Reverb testreverb = new Reverb();
 //        testreverb.start(new Stage());

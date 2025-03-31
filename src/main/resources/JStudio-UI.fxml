@@ -17,50 +17,48 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
+<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
   <columnConstraints>
-    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="1064.0" minHeight="10.0" prefHeight="683.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="1064.0" minHeight="300.0" prefHeight="683.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <HBox fx:id="info_panel" alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="15.0" GridPane.vgrow="NEVER">
+      <HBox fx:id="info_panel" alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" minWidth="-Infinity" prefWidth="200.0" spacing="15.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0">
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" spacing="1.0">
                <children>
-                  <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                  <TextField id="file_name" fx:id="song_name" prefHeight="24.0" prefWidth="128.0" />
-                  <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                  <TextField id="file_name" fx:id="song_name" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="128.0" />
+                  <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </HBox>
-            <TextField id="bpm_control" fx:id="bpm_control" alignment="CENTER" prefHeight="24.0" prefWidth="64.0" text="120.0" />
+            <TextField id="bpm_control" fx:id="bpm_control" alignment="CENTER" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="64.0" text="120.0" />
             <Circle id="record_control_btn" fx:id="record_control" fill="RED" radius="12.0" smooth="false" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="6.0" />
             <ImageView id="tempo_control_btn" fx:id="tempo_control" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-            <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" minWidth="128.0" prefHeight="24.0" text="Playback Position" />
+            <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="128.0" prefHeight="24.0" text="Playback Position" />
             <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="128.0" />
             <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="128.0" />
             <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="128.0" />
-            <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-            <HBox fx:id="app_options" alignment="CENTER_RIGHT" minWidth="-Infinity" prefHeight="32.0" spacing="15.0" HBox.hgrow="ALWAYS">
+            <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+            <HBox fx:id="app_options" alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" spacing="15.0" HBox.hgrow="ALWAYS">
                <children>
-                  <ImageView id="minim_btn" fx:id="minim_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView id="close_btn" fx:id="close_btn" fitHeight="24.0" fitWidth="24.0" layoutX="761.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="minim_btn" fx:id="minim_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="minim_btn" fx:id="maxim_btn" fitHeight="18.0" fitWidth="18.0" layoutX="384.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="close_btn" fx:id="close_btn" fitHeight="18.0" fitWidth="18.0" layoutX="761.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" />
                </children>
-               <padding>
-                  <Insets left="15.0" />
-               </padding>
             </HBox>
          </children>
-         <padding>
-            <Insets bottom="13.0" left="15.0" right="15.0" top="13.0" />
-         </padding>
+         <GridPane.margin>
+            <Insets bottom="8.0" left="10.0" right="10.0" top="8.0" />
+         </GridPane.margin>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1" pickOnBounds="false">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
          <children>
-            <TabPane prefHeight="200.0" prefWidth="256.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="NEVER">
               <tabs>
                 <Tab fx:id="sample_tab" text="Samples">
                      <content>
@@ -139,7 +137,7 @@
                   </Tab>
               </tabs>
             </TabPane>
-            <SplitPane dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
+            <SplitPane fx:id="splitpane" dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
                <items>
                   <HBox fx:id="tracks_channels" prefHeight="100.0" prefWidth="200.0">
                      <children>
@@ -148,7 +146,7 @@
                               <Pane minHeight="32.0" prefHeight="32.0" prefWidth="200.0" />
                               <ScrollPane id="track_id_list" fx:id="track_id_scrollpane" hbarPolicy="NEVER" pannable="true" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <VBox fx:id="track_id_vbox" prefWidth="126.0" />
+                                    <VBox fx:id="track_id_vbox" prefWidth="126.0" spacing="1.0" />
                                  </content></ScrollPane>
                            </children>
                         </VBox>
@@ -156,12 +154,12 @@
                            <children>
                               <ScrollPane fx:id="beat_scrollpane" hbarPolicy="NEVER" minHeight="32.0" pannable="true" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
                                  <content>
-                                    <Canvas fx:id="beat_canvas" height="30.0" width="1920.0" />
+                                    <Canvas fx:id="timeline_canvas" height="30.0" width="1920.0" />
                                  </content>
                               </ScrollPane>
                               <ScrollPane fx:id="tracks_scrollpane" hbarPolicy="NEVER" maxWidth="1534.0" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <VBox fx:id="track_vbox" alignment="CENTER_LEFT" prefHeight="364.0" />
+                                    <VBox fx:id="track_vbox" alignment="CENTER_LEFT" prefHeight="364.0" spacing="1.0" />
                                  </content>
                               </ScrollPane>
                            </children>
@@ -172,7 +170,7 @@
                     <tabs>
                       <Tab text="Channels">
                            <content>
-                              <HBox fx:id="channel_rack" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" />
+                              <HBox fx:id="channel_rack" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="1.0" />
                            </content>
                         </Tab>
                         <Tab text="Pipeline">

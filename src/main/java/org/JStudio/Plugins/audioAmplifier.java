@@ -1,8 +1,7 @@
-package org.JStudio.Plugins.audioAmplifier;
+package org.JStudio.Plugins;
 
 import javax.sound.sampled.*;
 import java.io.File;
-import java.io.IOException;
 
 public class audioAmplifier {
 

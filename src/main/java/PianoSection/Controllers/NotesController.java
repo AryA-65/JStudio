@@ -8,6 +8,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -58,7 +59,14 @@ public class NotesController {
             Pane pane = (Pane) noteTracks.lookup("#pane" + i);
             if (pane != null) {
                 pane.setOnMouseEntered(mouseEvent -> currentPane = pane);
-                pane.setOnMousePressed(this::addNote);
+                pane.setOnMousePressed(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY) {
+                        addNote(e);
+                    }
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        removeNote(e);
+                    }
+                });
             }
         }
 
@@ -102,6 +110,21 @@ public class NotesController {
             });
             currentPane.getChildren().add(noteView);
             allNoteViews.add(noteView);
+        }
+    }
+
+    private void removeNote(MouseEvent e) {
+        Rectangle rectangle = null;
+        for (Node node : currentPane.getChildren()) {
+            rectangle = (Rectangle) node;
+            if (e.getX() > rectangle.getLayoutX() && e.getX() < (rectangle.getLayoutX() + rectangle.getWidth()) && e.getY() > rectangle.getLayoutY() && e.getY() < (rectangle.getLayoutY() + rectangle.getHeight())) {
+                int pos = currentPane.getChildren().indexOf(node);
+                allNoteViews.remove(pos);
+//                currentNoteViews.remove(pos);
+                currentPane.getChildren().remove(node);
+
+            }
+
         }
     }
     

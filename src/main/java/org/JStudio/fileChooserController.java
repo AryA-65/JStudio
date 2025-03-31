@@ -53,7 +53,7 @@ public class fileChooserController {
         openCache();
 
         //init buttons/images
-        select_file.setImage(new Image("/copy-document.png"));
+        select_file.setImage(new Image("/load.png"));
         close_btn.setImage(new Image("/close.png"));
 
         //init element functions

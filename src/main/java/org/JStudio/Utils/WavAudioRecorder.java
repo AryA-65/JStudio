@@ -59,6 +59,7 @@ public class WavAudioRecorder implements Runnable {
             ex.printStackTrace();
         }
     }
+
     // Convert 16-bit PCM byte array to double array
     private static double[] bytesToDouble(byte[] audioBytes) {
         double[] audioData = new double[audioBytes.length / 2];

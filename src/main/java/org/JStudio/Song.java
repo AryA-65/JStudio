@@ -53,6 +53,10 @@ public class Song {
         return tracks.get(index);
     }
 
+    public double getBpm() {
+        return bpm;
+    }
+
     public ArrayList<Track> getTracks() {
         return tracks;
     }

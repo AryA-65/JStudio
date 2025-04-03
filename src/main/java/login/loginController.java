@@ -4,7 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
+
+import java.util.function.UnaryOperator;
+
 public class loginController {
 
     @FXML
@@ -43,6 +47,20 @@ public class loginController {
          */
     }
 
-
+    /**
+     * https://www.youtube.com/watch?v=kMplmN2lD1Q
+     * https://www.youtube.com/watch?v=qNZCim1SxZc&t=47s
+     */
+    private void applyTextRestriction(TextField textField) {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches(RESTRICTION) && newText.length() <= MAX_CHARS) {
+                return change;
+            } else {
+                return null;
+            }
+        };
+        textField.setTextFormatter(new TextFormatter<>(filter));
+    }
 
 }

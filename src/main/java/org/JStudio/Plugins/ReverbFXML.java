@@ -44,7 +44,7 @@ public class ReverbFXML {
         
         // Set the visual components/max and min values of the sliders
         preDelaySlider.setMin(1);
-        preDelaySlider.setMax(10);
+        preDelaySlider.setMax(9.9);
         preDelaySlider.setShowTickMarks(true);
         preDelaySlider.setMajorTickUnit(1);
         preDelaySlider.setMinorTickCount(0);
@@ -57,6 +57,7 @@ public class ReverbFXML {
         decayTimeSlider.setMajorTickUnit(1);
         decayTimeSlider.setMinorTickCount(0);
         decayTimeSlider.setShowTickLabels(true);
+        decayTimeSlider.setSnapToTicks(true);
         
         wetDrySlider.setMin(1);
         wetDrySlider.setMax(10);
@@ -71,14 +72,15 @@ public class ReverbFXML {
         diffusionSlider.setMajorTickUnit(1);
         diffusionSlider.setMinorTickCount(0);
         diffusionSlider.setShowTickLabels(true);
+        diffusionSlider.setSnapToTicks(true);
         
         // Set listeners and actions for sliders and buttons
         preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
-            reverb.setPreDelay(newPreDelay.intValue()*100);
+            reverb.setPreDelay(newPreDelay.intValue()*1000);
         });
         
         decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
-            reverb.setDecay(newDecayTime.doubleValue()*150);
+            reverb.setDecay(newDecayTime.doubleValue()*10000);
             
         });
         
@@ -87,12 +89,11 @@ public class ReverbFXML {
         });
         
         diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
-            reverb.setDecay(newDiffusion.doubleValue()*100);
-            
+            reverb.setDiffusion(newDiffusion.intValue()*1000);
         });
         
         resetButton.setOnAction(e -> {
-                reverb.setReverbEffect();
+            reverb.setReverbEffect();
         });
     }
 }

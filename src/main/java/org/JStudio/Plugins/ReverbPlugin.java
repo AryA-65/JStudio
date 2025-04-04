@@ -1,16 +1,19 @@
 package org.JStudio.Plugins;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
@@ -19,18 +22,18 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class ReverbPlugin {
     private String fileName;
+    private String filePathName;
     private double decay;
     private double wetDryFactor;
     private int preDelay;
-    private double diffusion;
+    private int diffusion;
     private byte[] originalAudio;
-    private byte[] firstDelayLine;
-    private byte[] secondDelayLine;
-    private byte[] thirdDelayLine;
-    private byte[] fourthDelayLine;
+    private ArrayList<short[]> delayLines = new ArrayList<>();
 
     // Creates a reverb
     public ReverbPlugin() {
+        convertAudioFileToByteArray();
+        delayLines = new ArrayList<>();
         fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
     }
 
@@ -39,12 +42,11 @@ public class ReverbPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-            fileName = "\\lowlife.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            String filePath = "C:\\Users\\The Workstation\\Downloads\\beep-10.wav";
+            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+            fileName = "\\laser13.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
             Path path = Paths.get(filePath);
-//            originalAudio = Files.readAllBytes(path);
-            originalAudio = Files.readAllBytes(Paths.get("C:\\Users\\The Workstation\\Downloads\\beep-10.wav"));
+            originalAudio = Files.readAllBytes(path);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -55,10 +57,13 @@ public class ReverbPlugin {
      */
     private void applyReverbEffect() {
         convertAudioFileToByteArray();
+        delayLines = new ArrayList<>();
         byte[] audioToReverb = new byte[originalAudio.length - 44];
 
-        // the audio to reverb has same audio data as the original audio for now (no header)
-        System.arraycopy(originalAudio, 44, audioToReverb, 0, audioToReverb.length);
+        // The audio to reverb has same audio data as the original audio for now (no header)
+        for (int i = 0; i < audioToReverb.length; i++) {
+            audioToReverb[i] = originalAudio[i + 44];
+        }
 
         // Convert audio data to short type to avoid audio warping
         short[] reverbNums = new short[audioToReverb.length / 2];
@@ -66,68 +71,79 @@ public class ReverbPlugin {
             reverbNums[i] = ByteBuffer.wrap(audioToReverb, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
 
-        double decayNumber = 0;
-        // Loop repeats 4 times for 4 delay lines
-        for (int delayLine = 0; delayLine < 4; delayLine++) {
-            switch (delayLine) {
-                case 0 -> decayNumber = decay/1000;
-                case 1 -> decayNumber = decay/1000 - 0.2;
-                case 2 ->  decayNumber = decay/1000 - 0.45;
-                case 3 -> decayNumber = decay/1000 - 0.6;
-            }
-            
+        int numOfDelayLines;
+        if (decay/10000 >= 5) {
+            numOfDelayLines = (int) (decay/20000);
+        } else {
+            numOfDelayLines = (int) (decay/10000);
+        }
+        
+        double decayNumber;
+        double initialDecay = decay/1000;
+        // Loop repeats for the number of delay lines
+        for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
+            decayNumber = initialDecay*Math.pow(Math.E, - (decay/1000));
             short[] decayedAudio = new short[reverbNums.length];
-            short[] dryAudio = new short[reverbNums.length];
-            short[] wetAudio = new short[reverbNums.length];
-            short[] dryWetMixedAudio = new short[reverbNums.length];
             
             // Decay the audio
             decayedAudio = decayAudio(reverbNums, decayNumber);
 
-            for (int i = 0; i < decayedAudio.length; i++) {
-                dryAudio[i] = (short) (reverbNums[i] * wetDryFactor);
-                wetAudio[i] = (short) (decayedAudio[i] * (1-wetDryFactor));
+            delayLines.add(decayedAudio);
+        }
+        
+        // Add delay lines with diffusion spacing
+        short[] delayLineAudio = new short[reverbNums.length+numOfDelayLines*diffusion];
+        int delayLineCounter = 0;
+        for (int i = 0; i < delayLines.size(); i++) {
+            for (int j = 0; j < delayLines.get(i).length; j++) {
+                delayLineAudio[j+(delayLineCounter*diffusion)] += delayLines.get(i)[j];
             }
-
-            // Mix dry and wet audio
-            for (int i = 0; i < dryWetMixedAudio.length; i++) {
-                dryWetMixedAudio[i] = (short) (dryAudio[i] + wetAudio[i]);
-            }
-
-            // Adding previous reverbed points to current data point
-            for (int i = 1; i < dryWetMixedAudio.length; i++) {
-                dryWetMixedAudio[i] += (short) (dryWetMixedAudio[i-1] * decayNumber);
-            }
-
-            // Revert back to byte array to have playback functionality
-            byte[] finalAudio = new byte[dryWetMixedAudio.length * 2];
-            for (int i = 0; i < dryWetMixedAudio.length; i++) {
-                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(dryWetMixedAudio[i]); // i*2 since each short is 2 bytes long
-            }
-            
-            switch (delayLine) {
-                case 0:
-                    firstDelayLine = new byte[originalAudio.length];
-                    System.arraycopy(finalAudio, 0, firstDelayLine, 44, reverbNums.length * 2); // Add the audio data
-                    System.arraycopy(originalAudio, 0, firstDelayLine, 0, 44); // Add the header
-                    break;
-                case 1:
-                    secondDelayLine = new byte[originalAudio.length];
-                    System.arraycopy(finalAudio, 0, secondDelayLine, 44, reverbNums.length * 2); // Add the audio data
-                    System.arraycopy(originalAudio, 0, secondDelayLine, 0, 44); // Add the header
-                    break;
-                case 2:
-                    thirdDelayLine = new byte[originalAudio.length];
-                    System.arraycopy(finalAudio, 0, thirdDelayLine, 44, reverbNums.length * 2); // Add the audio data
-                    System.arraycopy(originalAudio, 0, thirdDelayLine, 0, 44); // Add the header
-                    break;
-                case 3:
-                    fourthDelayLine = new byte[originalAudio.length];
-                    System.arraycopy(finalAudio, 0, fourthDelayLine, 44, reverbNums.length * 2); // Add the audio data
-                    System.arraycopy(originalAudio, 0, fourthDelayLine, 0, 44); // Add the header
-                    break;
+            delayLineCounter++;
+        }
+        
+//        System.out.println(delayLineAudio.length/2);
+        
+        // Dry Wet Mixing
+        short[] dryAudio = new short[reverbNums.length];
+        short[] wetAudio = new short[delayLineAudio.length];
+        
+        // Setup dry sound
+        for (int i = 0; i < dryAudio.length; i++) {
+            dryAudio[i] = (short) (reverbNums[i]*wetDryFactor);
+        }
+        
+        // Setup wet sound
+        for (int i = 0; i < wetAudio.length; i++) {
+            wetAudio[i] = (short) (delayLineAudio[i] * (1-wetDryFactor));
+        }
+        
+        // Mix dry and wet
+        short[] mixedAudio = new short[delayLineAudio.length+preDelay];
+        int wetPos = 0;
+        for (int i = 0; i < mixedAudio.length; i++) {
+            if (i<=preDelay) {
+                mixedAudio[i] = dryAudio[i];
+            } else if (i>preDelay && i<dryAudio.length) {
+                mixedAudio[i] = (short) (dryAudio[i] + wetAudio[wetPos]);
+                wetPos++;
+            } else if (i>dryAudio.length){
+                mixedAudio[i] = wetAudio[wetPos];
+                wetPos++;
             }
         }
+        
+        // Revert back to byte array to have playback functionality
+        byte[] finalAudio = new byte[(delayLineAudio.length+preDelay) * 2];
+        for (int i = 0; i < mixedAudio.length; i++) {
+                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(mixedAudio[i]); // i*2 since each short is 2 bytes long
+            }
+        
+        byte[] audioToPlay = new byte[((delayLineAudio.length+preDelay) * 2) + 44];
+        System.arraycopy(finalAudio, 0, audioToPlay, 44, (delayLineAudio.length+preDelay) * 2); // Add the audio data
+        System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
+//        System.out.println(originalAudio.length);
+//        System.out.println(audioToPlay.length);
+        playAudio(finalAudio);
     }
     
     /**
@@ -139,7 +155,9 @@ public class ReverbPlugin {
     private short[] decayAudio(short[] audioData, double amplitudeFactor) {
         // Copy array
         short[] volumeControlledAudio = new short[audioData.length];
-        System.arraycopy(audioData, 0, volumeControlledAudio, 0, volumeControlledAudio.length);
+        for (int i = 0; i < volumeControlledAudio.length; i++) {
+            volumeControlledAudio[i] = audioData[i];
+        }
 
         // Apply decay effect
         double initialAmplitude = amplitudeFactor;
@@ -148,63 +166,40 @@ public class ReverbPlugin {
             amplitudeFactor = initialAmplitude*Math.pow(Math.E, - (decay/50000) * i); // Based on exponential decay equation
             
             // To keep the audio audible
-            if (amplitudeFactor <= 0.01) {
-                amplitudeFactor = 0.01;
+            if (amplitudeFactor <= 0.05) {
+                amplitudeFactor = 0.05;
             }
         }
         return volumeControlledAudio;
     }
 
     /**
-     * Sets up the audio data to be played
+     * Plays audio data stored in a byte array
      * @param audioData the audio data to be played
-     * @return the clip that will be played
      */
-    private Clip setUpAudio(byte[] audioData) {
-        Clip clip = null;
+    private void playAudio(byte[] audioData) {
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioData);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(byteArrayInputStream);
+            File file = new File(filePathName);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+            AudioFormat audioFormat = audioInputStream.getFormat();
+            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+            line.open(audioFormat);
+            line.start();
 
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
+            line.write(audioData, 0, audioData.length);
 
-        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
+            line.drain();
+            line.close();
+            delayLines = null;
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
             System.out.println(e);
         }
-        return clip;
     }
 
-    /**
-     * Sets up the delay line effect and plays the audio
-     */
-    private void setDelayLines() {
-        applyReverbEffect();
-        
-        Clip originalAudioClip = setUpAudio(originalAudio);
-        Clip firstDelayLineClip = setUpAudio(firstDelayLine);
-        Clip secondDelayLineClip = setUpAudio(secondDelayLine);
-        Clip thirdDelayLineClip = setUpAudio(thirdDelayLine);
-        Clip fourthDelayLineClip = setUpAudio(fourthDelayLine);
-
-        long totalClipDuration = originalAudioClip.getMicrosecondLength();
-        long preDelayAmount = preDelay * 2L;
-        
-        firstDelayLineClip.setMicrosecondPosition(totalClipDuration/preDelayAmount);
-        secondDelayLineClip.setMicrosecondPosition((long) (totalClipDuration/(preDelayAmount+(totalClipDuration*0.0005 + diffusion))));
-        thirdDelayLineClip.setMicrosecondPosition((long) (totalClipDuration/(preDelayAmount+(preDelayAmount+(totalClipDuration*0.0008 + 2*diffusion)))));
-        fourthDelayLineClip.setMicrosecondPosition((long) (totalClipDuration/(preDelayAmount+(preDelayAmount+(totalClipDuration*0.001 + 3*diffusion)))));
-        
-        originalAudioClip.start();
-        firstDelayLineClip.start();
-        secondDelayLineClip.start();
-        thirdDelayLineClip.start();
-        fourthDelayLineClip.start();
-    }
-
-    // Wrapper class to set effect and play it
+    // Wrapper class to set reverb effect
     public void setReverbEffect() {
-        setDelayLines();
+        applyReverbEffect();
     }
     
     /**
@@ -235,7 +230,7 @@ public class ReverbPlugin {
      * Assigns a value for diffusion
      * @param diffusion the value of diffusion to be assigned
      */
-    public void setDiffusion(double diffusion) {
+    public void setDiffusion(int diffusion) {
         this.diffusion = diffusion;
     }
 }

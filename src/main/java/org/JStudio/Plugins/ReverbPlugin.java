@@ -31,7 +31,11 @@ public class ReverbPlugin {
     private ArrayList<short[]> delayLines = new ArrayList<>();
 
     // Creates a reverb
-    public ReverbPlugin() {
+    public ReverbPlugin(int preDelay, int decay, int diffusion, double wetDryFactor) {
+        this.preDelay = preDelay;
+        this.decay = decay;
+        this.diffusion = diffusion;
+        this.wetDryFactor = wetDryFactor;
         convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
         fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
@@ -101,8 +105,6 @@ public class ReverbPlugin {
             delayLineCounter++;
         }
         
-//        System.out.println(delayLineAudio.length/2);
-        
         // Dry Wet Mixing
         short[] dryAudio = new short[reverbNums.length];
         short[] wetAudio = new short[delayLineAudio.length];
@@ -141,8 +143,6 @@ public class ReverbPlugin {
         byte[] audioToPlay = new byte[((delayLineAudio.length+preDelay) * 2) + 44];
         System.arraycopy(finalAudio, 0, audioToPlay, 44, (delayLineAudio.length+preDelay) * 2); // Add the audio data
         System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-//        System.out.println(originalAudio.length);
-//        System.out.println(audioToPlay.length);
         playAudio(finalAudio);
     }
     
@@ -164,7 +164,7 @@ public class ReverbPlugin {
         for (int i = 0; i < volumeControlledAudio.length; i++) {
             volumeControlledAudio[i] = (short) (volumeControlledAudio[i] * amplitudeFactor);
             amplitudeFactor = initialAmplitude*Math.pow(Math.E, - (decay/50000) * i); // Based on exponential decay equation
-            
+
             // To keep the audio audible
             if (amplitudeFactor <= 0.05) {
                 amplitudeFactor = 0.05;

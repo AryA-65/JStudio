@@ -24,6 +24,8 @@ public class ReverbFXML {
     @FXML
     private Button resetButton;
     @FXML
+    private Button playButton;
+    @FXML
     private Slider preDelaySlider;
     @FXML
     private Slider decayTimeSlider;
@@ -33,6 +35,7 @@ public class ReverbFXML {
     private Slider dampingSlider;
     @FXML
     private Slider wetDrySlider;
+    private ReverbPlugin reverb;
     
     /**
      * Initializes the UI, showing the tick marks on the slider and setting
@@ -40,7 +43,7 @@ public class ReverbFXML {
      */
     @FXML
     public void initialize() {
-        ReverbPlugin reverb = new ReverbPlugin(); // Create a reverb
+        reverb = new ReverbPlugin(1000, 10000, 2000, 0.5); // Create a reverb
         
         // Set the visual components/max and min values of the sliders
         preDelaySlider.setMin(1);
@@ -50,6 +53,7 @@ public class ReverbFXML {
         preDelaySlider.setMinorTickCount(0);
         preDelaySlider.setShowTickLabels(true);
         preDelaySlider.setSnapToTicks(true);
+        preDelaySlider.setValue(1);
         
         decayTimeSlider.setMin(1);
         decayTimeSlider.setMax(10);
@@ -58,13 +62,7 @@ public class ReverbFXML {
         decayTimeSlider.setMinorTickCount(0);
         decayTimeSlider.setShowTickLabels(true);
         decayTimeSlider.setSnapToTicks(true);
-        
-        wetDrySlider.setMin(1);
-        wetDrySlider.setMax(10);
-        wetDrySlider.setShowTickMarks(true);
-        wetDrySlider.setMajorTickUnit(1);
-        wetDrySlider.setMinorTickCount(0);
-        wetDrySlider.setShowTickLabels(true);
+        decayTimeSlider.setValue(1);
         
         diffusionSlider.setMin(1);
         diffusionSlider.setMax(10);
@@ -73,6 +71,15 @@ public class ReverbFXML {
         diffusionSlider.setMinorTickCount(0);
         diffusionSlider.setShowTickLabels(true);
         diffusionSlider.setSnapToTicks(true);
+        diffusionSlider.setValue(2);
+        
+        wetDrySlider.setMin(1);
+        wetDrySlider.setMax(10);
+        wetDrySlider.setShowTickMarks(true);
+        wetDrySlider.setMajorTickUnit(1);
+        wetDrySlider.setMinorTickCount(0);
+        wetDrySlider.setShowTickLabels(true);
+        wetDrySlider.setValue(5);
         
         // Set listeners and actions for sliders and buttons
         preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
@@ -92,8 +99,18 @@ public class ReverbFXML {
             reverb.setDiffusion(newDiffusion.intValue()*1000);
         });
         
-        resetButton.setOnAction(e -> {
+        // Play the audio
+        playButton.setOnAction(e -> {
             reverb.setReverbEffect();
+        });
+        
+        // Reset to initial values
+        resetButton.setOnAction(e -> {
+            reverb = new ReverbPlugin(1000, 10000, 2000, 0.5);
+            preDelaySlider.setValue(1);
+            decayTimeSlider.setValue(1);
+            diffusionSlider.setValue(2);
+            wetDrySlider.setValue(5);
         });
     }
 }

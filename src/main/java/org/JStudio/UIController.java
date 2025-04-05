@@ -9,6 +9,10 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -30,6 +34,19 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
 public class UIController {
 
     @FXML
+    private TextField search_samples;
+    @FXML
+    private Canvas audio_vis_top;
+    @FXML
+    private Canvas amp_audio_top;
+    @FXML
+    private Canvas pc_stats;
+    @FXML
+    private ImageView settings_btn;
+    //place each node in its own group
+    @FXML
+    private ImageView metronome_control;
+    @FXML
     private SplitPane splitpane;
     @FXML
     private ImageView maxim_btn;
@@ -40,7 +57,7 @@ public class UIController {
     @FXML
     private HBox tracks_channels;
     @FXML
-    private ScrollPane beat_scrollpane;
+    private ScrollPane timeline_scrollpane;
     @FXML
     private Canvas timeline_canvas;
     @FXML
@@ -85,8 +102,9 @@ public class UIController {
 
     //testing params
     private double temporaryBPM = 120;
+    private long playbackPos = -1;
     private String curUser;
-    private fileChooserController fileLoaderController;
+    private FCController fileLoaderController;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     //part of test params, but this should its own thing
@@ -102,13 +120,59 @@ public class UIController {
 
     @FXML
     public void initialize() throws Exception {
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
+        dropShadow.setRadius(3);
+        dropShadow.setSpread(.1);
+        dropShadow.setOffsetX(2);
+        dropShadow.setOffsetY(2);
+
+        InnerShadow innerShadow = new InnerShadow();
+        innerShadow.setRadius(5);
+        innerShadow.setOffsetX(4);
+        innerShadow.setOffsetY(4);
+        innerShadow.setColor(Color.rgb(255, 255, 255, 1));
+
+        Blend blend = new Blend();
+        blend.setMode(BlendMode.MULTIPLY);
+        blend.setBottomInput(dropShadow);
+        blend.setTopInput(innerShadow);
+
         //initializing nodes (loading images and other stuff)
-        open_song_btn.setImage(new Image("/load.png"));
-        save_song_btn.setImage(new Image("/save.png"));
-        export_song_btn.setImage(new Image("/export.png"));
-        close_btn.setImage(new Image("/close.png"));
-        minim_btn.setImage(new Image("/inconify.png"));
-        maxim_btn.setImage(new Image("/minimize.png"));
+        open_song_btn.setImage(new Image("/icons/load.png"));
+        open_song_btn.setCursor(Cursor.HAND);
+        save_song_btn.setImage(new Image("/icons/save.png"));
+        save_song_btn.setCursor(Cursor.HAND);
+        export_song_btn.setImage(new Image("/icons/export.png"));
+        export_song_btn.setCursor(Cursor.HAND);
+        close_btn.setImage(new Image("/icons/close.png"));
+        close_btn.setCursor(Cursor.HAND);
+//        close_btn.setEffect(blend);
+        minim_btn.setImage(new Image("/icons/inconify.png"));
+        minim_btn.setCursor(Cursor.HAND);
+        maxim_btn.setImage(new Image("/icons/minimize.png"));
+        maxim_btn.setCursor(Cursor.HAND);
+        metronome_control.setImage(new Image("/icons/metronome.png"));
+        metronome_control.setCursor(Cursor.HAND);
+        settings_btn.setImage(new Image("/icons/settings.png"));
+        settings_btn.setCursor(Cursor.HAND);
+
+        playback_pos.setText(timeToString(0));
+
+        grid_root.setStyle("-fx-background-color: #D9D9D9");
+        song_name.getParent().setStyle("-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black; -fx-background-color: #D9D9D9; -fx-background-radius: 5px");
+//        song_name.getParent().setEffect(blend);
+        song_name.setStyle("-fx-background-color: transparent; -fx-border-width: 0px 1px 0px 1px; -fx-border-color: black; -fx-border-style: solid; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+//        song_name.setStyle("-fx-background-color: transparent;-fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+        export_song_btn.getParent().setStyle("-fx-border-style: solid; -fx-border-width: 0px 0px 0px 1px; -fx-border-color: black; -fx-background-color: transparent"); //doesnt work
+        bpm_control.setStyle("-fx-background-color: transparent; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-color: black; -fx-border-style: solid; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+        record_control.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 100%; -fx-border-width: 1px; -fx-border-style: solid"); //doesnt work
+        metronome_control.getParent().setStyle("-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black;");
+        playback_pos.setStyle("-fx-background-color: transparent; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-color: black; -fx-border-style: solid;");
+        audio_vis_top.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1px; -fx-border-style: solid");
+        amp_audio_top.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1px; -fx-border-style: solid");
+        pc_stats.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1px; -fx-border-style: solid");
+        tab_vbox.setStyle("-fx-background-color: transparent");
 
         initialHeight = Screen.getPrimary().getVisualBounds().getHeight();
         initialWidth = Screen.getPrimary().getVisualBounds().getWidth();
@@ -197,15 +261,15 @@ public class UIController {
             if (!rootStage.isMaximized()) {
 //                rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
 //                rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
-//                rootStage.setX(0);
-//                rootStage.setY(0);
+                rootStage.setX(0);
+                rootStage.setY(0);
                 rootStage.setMaximized(true);
-                maxim_btn.setImage(new Image("/minimize.png"));
+                maxim_btn.setImage(new Image("/icons/minimize.png"));
             } else {
                 rootStage.setMaximized(false);
                 rootStage.setWidth(initialWidth);
                 rootStage.setHeight(initialHeight);
-                maxim_btn.setImage(new Image("/maximize.png"));
+                maxim_btn.setImage(new Image("/icons/maximize.png"));
             }
 //            System.out.println(splitpane.getHeight());
             setSplitRatio();
@@ -231,9 +295,31 @@ public class UIController {
             }
         });
 
+//        track_id_vbox.setOnMousePressed(e -> {
+//            if (e.getButton() == MouseButton.PRIMARY) {
+//                if (e.getClickCount() == 2) {
+//
+//                }
+//                rootStage.getScene().setCursor(Cursor.DEFAULT);
+//                e.consume();
+//            }
+//        });
+
+        timeline_canvas.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (e.getClickCount() == 2) {
+                    playbackPos = (long) (e.getX() + timeline_scrollpane.getHvalue() * (timeline_canvas.getWidth() - timeline_scrollpane.getViewportBounds().getWidth())); //currentPos is in milliseconds, make a variable for the position
+                    drawTimeline();
+                }
+                rootStage.getScene().setCursor(Cursor.DEFAULT);
+                e.consume();
+            }
+
+        });
+
         tracks_scrollpane.vvalueProperty().bindBidirectional(track_id_scrollpane.vvalueProperty());
 
-        tracks_scrollpane.hvalueProperty().bindBidirectional(beat_scrollpane.hvalueProperty());
+        tracks_scrollpane.hvalueProperty().bindBidirectional(timeline_scrollpane.hvalueProperty());
 
         for (Track track : song.getTracks()) {
             track_vbox.getChildren().add(track.addTrack((int) (song.getBpm() * 32)));
@@ -251,7 +337,12 @@ public class UIController {
 
         song_name.setText(song.getSongName());
 
-//        fileLoader = new FileLoader(tab_vbox);
+        search_samples.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterAudioSections(newValue);
+        });
+
+
+        fileLoader = new FileLoader(tab_vbox);
 
 //        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
 
@@ -270,7 +361,7 @@ public class UIController {
 //        fileLoaderStage.setResizable(false);
 //        fileLoaderStage.show();
 
-        addTimeLine();
+        drawTimeline();
 
 //        ClipAndNoteLayoutManager cnlm = new ClipAndNoteLayoutManager();
 //        cnlm.init(new Stage());
@@ -306,7 +397,7 @@ public class UIController {
         });
 
         tracks_channels.setStyle("-fx-background-color: black;");
-        beat_scrollpane.setStyle("-fx-background-color: transparent;");
+        timeline_scrollpane.setStyle("-fx-background-color: transparent;");
         timeline_canvas.setStyle("-fx-background-color: transparent;");
         track_vbox.setStyle("-fx-background-color: black;");
         track_id_vbox.setStyle("-fx-background-color: black;");
@@ -470,10 +561,10 @@ public class UIController {
         }
 
         timeline_canvas.setWidth(newSize);
-        addTimeLine();
+        drawTimeline();
     }
 
-    private void addTimeLine() {
+    private void drawTimeline() {
         GraphicsContext gc = timeline_canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, timeline_canvas.getWidth(), timeline_canvas.getHeight());
@@ -493,6 +584,7 @@ public class UIController {
                 gc.fillText(String.valueOf(mult), i + 2, timeline_canvas.getHeight() - 4);
             }
         }
+
     }
 
     //idk if this works, but still its part of the testing functions and shit
@@ -519,5 +611,82 @@ public class UIController {
         }
         event.setDropCompleted(success);
         event.consume();
+    }
+
+    //use this in the playback watchdog
+    public String timeToString(long time) {
+        long minutes = (time / 60000);
+        long seconds = (time % 60000) / 1000;
+        long milliseconds = time % 1000;
+
+        return String.format("%d:%02d:%02d", minutes, seconds, milliseconds);
+    }
+
+    //temporary
+    public void filterAudioSections(String searchText) {
+
+        if (searchText == null || searchText.trim().isEmpty()) {
+            for (Node node : tab_vbox.getChildren()) {
+                if (node instanceof VBox section) {
+                    section.setVisible(true);
+                    section.setManaged(true);
+
+                    VBox fileSectionList = (VBox) section.getChildren().get(1);
+                    for (Node fileNode : fileSectionList.getChildren()) {
+                        fileNode.setVisible(true);
+                        fileNode.setManaged(true);
+                    }
+
+                    fileSectionList.setVisible(true);
+                    fileSectionList.setManaged(true);
+                }
+            }
+            return;
+        }
+
+        boolean specificSearch = searchText.startsWith("?");
+        boolean globalSearch = searchText.startsWith(":");
+
+        searchText = searchText.toLowerCase().replaceFirst("[:?]", ""); // Remove prefix for comparison
+
+        for (Node node : tab_vbox.getChildren()) {
+            if (node instanceof VBox section) {
+                String sectionName = section.getId().toLowerCase();
+                VBox fileSectionList = (VBox) section.getChildren().get(1);
+
+                boolean sectionMatches = sectionName.contains(searchText);
+                boolean fileMatches = false;
+
+                for (Node fileNode : fileSectionList.getChildren()) {
+                    if (fileNode instanceof VBox fileVBox) {
+                        String fileName = fileVBox.getId().toLowerCase();
+                        boolean match = fileName.contains(searchText);
+
+                        if (!specificSearch) {
+                            fileVBox.setVisible(match);
+                            fileVBox.setManaged(match);
+                        }
+
+                        if (match) fileMatches = true;
+                    }
+                }
+
+                boolean showSection;
+                if (specificSearch) {
+                    showSection = sectionMatches; // Only show sections
+                } else if (globalSearch) {
+                    showSection = sectionMatches || fileMatches; // Show both matches
+                } else {
+                    showSection = sectionMatches || fileMatches; // Default behavior
+                    if (!fileMatches) {
+                        fileSectionList.setVisible(false);
+                        fileSectionList.setManaged(false);
+                    }
+                }
+
+                section.setVisible(showSection);
+                section.setManaged(showSection);
+            }
+        }
     }
 }

@@ -31,7 +31,7 @@ public class HelloApplication extends Application {
     }
 
     public Node audioSection() {
-        Image image = new Image("/arrow.png");
+        Image image = new Image("/icons/arrow.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(16);
         imageView.setFitHeight(16);

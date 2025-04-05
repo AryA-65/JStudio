@@ -6,3 +6,109 @@
     -fx-border-width: 0px;
     -fx-border-color: transparent;
 }
+
+.text-field:selected {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-effect: null;
+}
+
+.tab {
+    -fx-background-color: #AFAFAF;
+}
+
+.tab:selected {
+    -fx-background-color: white;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab:selected:focused {
+    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+    /*-fx-focus-color: transparent;*/
+    /*-fx-faint-focus-color: transparent;*/
+}
+
+.tab-content {
+    -fx-background-color: transparent;
+}
+
+.search {
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-radius: 5px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.split-pane-divider {
+    -fx-background-color: #d9d9d9;
+}
+
+.split-pane > .split-pane-item {
+    -fx-background-color: transparent;
+}
+
+.HBox {
+    -fx-background-color: transparent;
+}
+
+.disabled {
+    -fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.active {
+    -fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+/*.slider {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
+
+/*.slider .track {*/
+/*    -fx-background-color: #d9e4a1;*/
+/*    -fx-background-insets: 0, 1;*/
+/*}*/
+
+/*.slider .thumb {*/
+/*    -fx-background-color: #ff9f5b;*/
+/*    !*-fx-background-radius: 50%;*!*/
+/*    !*-fx-border-color: #ffffff;*!*/
+/*}*/
+
+/*.slider .value {*/
+/*    -fx-background-color: #4285f4;*/
+/*    -fx-background-radius: 5px;*/
+/*}*/
+
+/*.jfx-slider {*/
+/*    -fx-background-color: transparent; !* Make the background transparent *!*/
+/*    -fx-base: red;*/
+/*    -fx-ripple: none;*/
+/*}*/
+
+/*!* Style the track (background) of the JFXSlider *!*/
+/*.jfx-slider .track {*/
+/*    -fx-background-color: #e0e0e0; !* Light gray color for the track *!*/
+/*    !*-fx-background-radius: 5px; !* Rounded corners for the track *!*!*/
+/*}*/
+
+/*!* Customize the filled portion (value) of the track *!*/
+/*.jfx-slider .value {*/
+/*    -fx-background-color: #4285f4; !* Blue color for the filled portion *!*/
+/*    !*-fx-background-radius: 5px; !* Rounded corners for the filled part *!*!*/
+/*}*/
+
+/*!* Style the Thumb (draggable part) of the JFXSlider *!*/
+/*.jfx-slider .thumb {*/
+/*    -fx-background-color: #ff9f5b; !* Orange color for the thumb *!*/
+/*    !*-fx-background-radius: 50%; !* Circular thumb *!*!*/
+/*    !*-fx-pref-width: 20px; !* Thumb width *!*!*/
+/*    !*-fx-pref-height: 20px; !* Thumb height *!*!*/
+/*}*/

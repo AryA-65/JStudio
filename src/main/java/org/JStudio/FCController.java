@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class fileChooserController {
+public class FCController {
 
     @FXML
     private ScrollPane cache_scroll;
@@ -53,8 +53,8 @@ public class fileChooserController {
         openCache();
 
         //init buttons/images
-        select_file.setImage(new Image("/load.png"));
-        close_btn.setImage(new Image("/close.png"));
+        select_file.setImage(new Image("/icons/load.png"));
+        close_btn.setImage(new Image("/icons/close.png"));
 
         //init element functions
         top_bar.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {

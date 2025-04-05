@@ -1,16 +1,17 @@
 package org.JStudio;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,12 +22,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.jfoenix.controls.JFXSlider;
+
 public class Track {
     private String name;
     private static short activeTracks = 0; //move this to song
     private short id;
     private double amplitude, pitch;
     private short numClips; //tempo param for now
+    private BooleanProperty activeTrack = new SimpleBooleanProperty(true);
 //    private List<>
 
     //test colors
@@ -108,7 +112,7 @@ public class Track {
         gc.setFill(Color.GREY);
         gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 10, 10);
 
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(Color.LIGHTGRAY);
         for (int i = 0; i < width; i++) {
             if (i % 32 == 0 && i != 0) {
                 gc.strokeLine(i, 0, i, canvas.getHeight());
@@ -170,40 +174,7 @@ public class Track {
         idLabel.setLayoutX(4);
         idLabel.setLayoutY(4);
 
-        Pane activeBtn = new Pane();
-        activeBtn.setPrefHeight(8);
-        activeBtn.setPrefWidth(8);
-        activeBtn.setLayoutX(114);
-        activeBtn.setLayoutY(52);
-        activeBtn.toFront();
-        activeBtn.getStyleClass().add("active");
-        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-
-        activeBtn.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                clicked.set(true);
-            }
-        });
-
-        activeBtn.setOnMouseReleased(e -> {
-            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
-                clicked.set(false);
-                if (activeBtn.getStyleClass().contains("active")) {
-                    activeBtn.getStyleClass().remove("active");
-                    activeBtn.getStyleClass().add("disabled");
-                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                } else {
-                    activeBtn.getStyleClass().remove("disabled");
-                    activeBtn.getStyleClass().add("active");
-                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                }
-//                        System.out.println("Registered");
-            } else clicked.set(false);
-
-//                    System.out.println("Released");
-        });
-
-        container.getChildren().addAll(idLabel, activeBtn);
+        container.getChildren().addAll(idLabel, createActiveBTN(114, 52));
 
         return container;
     }
@@ -242,39 +213,7 @@ public class Track {
         channelVis.setHeight(40);
         channelVis.setWidth(16);
 
-        Pane activeBtn = new Pane();
-        activeBtn.setPrefHeight(8);
-        activeBtn.setPrefWidth(8);
-        activeBtn.setLayoutX(12);
-        activeBtn.setLayoutY(224);
-        activeBtn.toFront();
-        activeBtn.getStyleClass().add("active");
-        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-
-        activeBtn.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                clicked.set(true);
-            }
-        });
-
-        activeBtn.setOnMouseReleased(e -> {
-            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY()) && clicked.get()) {
-                clicked.set(false);
-                if (activeBtn.getStyleClass().contains("active")) {
-                    activeBtn.getStyleClass().remove("active");
-                    activeBtn.getStyleClass().add("disabled");
-                    activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                } else {
-                    activeBtn.getStyleClass().remove("disabled");
-                    activeBtn.getStyleClass().add("active");
-                    activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
-                }
-//                        System.out.println("Registered");
-            } else clicked.set(false);
-
-//                    System.out.println("Released");
-        });
-
+//        JFXSlider channelAmp = new JFXSlider(0, 100, 100);
         Slider channelAmp = new Slider(0,100,100);
         channelAmp.setOrientation(Orientation.VERTICAL);
         channelAmp.setPrefHeight(96);
@@ -285,13 +224,50 @@ public class Track {
 
         channelVisContainer.getChildren().add(visContainer);
 
-        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, activeBtn);
+        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, createActiveBTN(12, 224));
 
         channelBox.getChildren().addAll(channelID, channelContainer);
 
 //        System.out.println(channelContainer.getHeight());
 
         return channelBox;
+    }
+
+    private Node createActiveBTN(double layoutX, double layoutY) {
+        Pane activeBtn = new Pane(); //maybe use a radio button instead
+        activeBtn.setPrefSize(8,8);
+        activeBtn.setLayoutX(layoutX);
+        activeBtn.setLayoutY(layoutY);
+        activeBtn.toFront();
+        activeBtn.getStyleClass().add("active");
+        activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+
+        activeTrack.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+            } else {
+                activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+            }
+        });
+
+        activeBtn.setOnMouseReleased(e -> {
+            if (e.getButton() == MouseButton.PRIMARY && activeBtn.contains(e.getX(), e.getY())) {
+                activeTrack.set(!activeTrack.get());
+            }
+        });
+
+//        if (activeBtn.getStyleClass().contains("active")) {
+//            activeBtn.getStyleClass().remove("active");
+//            activeBtn.getStyleClass().add("disabled");
+////                    System.out.println(activeBtn.getStyleClass());
+//            activeBtn.setStyle("-fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+//        } else {
+//            activeBtn.getStyleClass().remove("disabled");
+//            activeBtn.getStyleClass().add("active");
+//            activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
+//        }
+
+        return activeBtn;
     }
 }
 

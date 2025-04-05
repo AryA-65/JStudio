@@ -21,11 +21,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        FileLoader fileLoader = new FileLoader();
-
-//        Reverb reverb = new Reverb();
-//        reverb.play();
-
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
         Parent root = loader.load();
 
@@ -34,23 +29,15 @@ public class Main extends Application {
         controller.setScreenSize();
 
 
-//        LoadingScreen loadingScreen = new LoadingScreen();
-
-//        Scene scene = new Scene(loadingScreen, 1280, 720);
-
         Scene scene = new Scene(root);
         scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
 
         stage.setScene(scene);
-//        stage.setTitle("JStudio");
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(true);
         stage.show();
 
         controller.setSplitRatio();
-
-//        Reverb testreverb = new Reverb();
-//        testreverb.start(new Stage());
     }
 
     public static void main(String[] args) {

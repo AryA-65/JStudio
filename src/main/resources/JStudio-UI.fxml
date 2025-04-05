@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
@@ -26,23 +27,58 @@
     <RowConstraints maxHeight="1064.0" minHeight="300.0" prefHeight="683.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <HBox fx:id="info_panel" alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" minWidth="-Infinity" prefWidth="200.0" spacing="15.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER">
+      <HBox fx:id="info_panel" alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" minWidth="-Infinity" spacing="10.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER">
          <children>
             <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" spacing="1.0">
                <children>
-                  <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                  <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0">
+                     <children>
+                        <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
                   <TextField id="file_name" fx:id="song_name" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="128.0" />
-                  <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                  <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0">
+                     <children>
+                        <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">
+                     <children>
+                        <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
                </children>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
             </HBox>
             <TextField id="bpm_control" fx:id="bpm_control" alignment="CENTER" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="64.0" text="120.0" />
-            <Circle id="record_control_btn" fx:id="record_control" fill="RED" radius="12.0" smooth="false" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="6.0" />
-            <ImageView id="tempo_control_btn" fx:id="tempo_control" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-            <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="128.0" prefHeight="24.0" text="Playback Position" />
-            <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="128.0" />
-            <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="128.0" />
-            <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="128.0" />
+            <StackPane>
+               <children>
+                  <Circle id="record_control_btn" fx:id="record_control" fill="RED" radius="12.0" smooth="false" stroke="#d9d9d9" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="6.0" />
+               </children>
+            </StackPane>
+            <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">
+               <children>
+                  <ImageView id="tempo_control_btn" fx:id="metronome_control" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+            <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="64.0" prefHeight="24.0" prefWidth="64.0" text="Playback Position" />
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+               <children>
+                  <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="128.0" />
+               </children>
+            </StackPane>
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+               <children>
+                  <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="128.0" />
+               </children>
+            </StackPane>
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+               <children>
+                  <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="128.0" />
+               </children>
+            </StackPane>
             <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
             <HBox fx:id="app_options" alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" spacing="15.0" HBox.hgrow="ALWAYS">
                <children>
@@ -62,9 +98,9 @@
               <tabs>
                 <Tab fx:id="sample_tab" text="Samples">
                      <content>
-                        <VBox alignment="TOP_CENTER" minWidth="256.0" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
+                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField text="Search">
+                              <TextField fx:id="search_samples" styleClass="search" text="Search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -86,9 +122,9 @@
                   </Tab>
                   <Tab fx:id="instruments_tab" text="Instruments">
                      <content>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField>
+                              <TextField styleClass="search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -103,9 +139,9 @@
                   </Tab>
                   <Tab fx:id="synths_tab" text="Synths">
                      <content>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField>
+                              <TextField styleClass="search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -120,9 +156,9 @@
                   </Tab>
                   <Tab fx:id="plugins_tab" text="Plugins">
                      <content>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField>
+                              <TextField styleClass="search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -144,7 +180,7 @@
                         <VBox prefHeight="200.0" prefWidth="128.0">
                            <children>
                               <Pane minHeight="32.0" prefHeight="32.0" prefWidth="200.0" />
-                              <ScrollPane id="track_id_list" fx:id="track_id_scrollpane" hbarPolicy="NEVER" pannable="true" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                              <ScrollPane id="track_id_list" fx:id="track_id_scrollpane" hbarPolicy="NEVER" prefHeight="371.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
                                     <VBox fx:id="track_id_vbox" prefWidth="126.0" spacing="1.0" />
                                  </content></ScrollPane>
@@ -152,12 +188,12 @@
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ScrollPane fx:id="beat_scrollpane" hbarPolicy="NEVER" minHeight="32.0" pannable="true" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
+                              <ScrollPane fx:id="timeline_scrollpane" hbarPolicy="NEVER" minHeight="32.0" prefHeight="32.0" prefWidth="200.0" vbarPolicy="NEVER">
                                  <content>
                                     <Canvas fx:id="timeline_canvas" height="30.0" width="1920.0" />
                                  </content>
                               </ScrollPane>
-                              <ScrollPane fx:id="tracks_scrollpane" hbarPolicy="NEVER" maxWidth="1534.0" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                              <ScrollPane fx:id="tracks_scrollpane" hbarPolicy="NEVER" maxWidth="1534.0" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
                                     <VBox fx:id="track_vbox" alignment="CENTER_LEFT" prefHeight="364.0" spacing="1.0" />
                                  </content>

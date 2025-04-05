@@ -30,18 +30,26 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class FileLoader {
     private VBox tab_vbox;
     private String curUser;
     private int CANVAS_WIDTH = 234, CANVAS_HEIGHT = 64;
+    private long currentFilePointer = 0, fileCount = 0;
+    private double fileLength = 0;
+
+    private List<VBox> sections = new ArrayList<>();
 
     FileLoader(VBox tab_vbox) {
         this.tab_vbox = tab_vbox;
         curUser = System.getProperty("user.name");
-        System.out.println(curUser);
+//        System.out.println(curUser);
         try {
             loadFolders("C:\\Users\\" + curUser + "\\Music\\JStudio\\audio_Files");
         } catch (Exception e) {
@@ -52,14 +60,23 @@ public class FileLoader {
     public void loadFolders(String path) throws Exception {
 //        System.out.println(path);
 
+
         File file = new File(path);
         if (file.exists() && file.isDirectory() && file.listFiles() != null) {
-            int folderIntex = 0;
+
+            try {
+                fileCount = Files.walk(Paths.get(path)).filter(Files::isRegularFile).count();
+                System.out.println(fileCount);
+//                loadingScreen
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             for (File f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isDirectory()) {
-                    folderIntex++;
+
 //                    System.out.println("Num Folders: " + folderIntex);
                     Node section = audioSection(f);
+//                    sections.add((VBox) section);
                     tab_vbox.getChildren().add(section);
                 }
             }
@@ -67,8 +84,8 @@ public class FileLoader {
     }
 
     public Node audioSection(File f) {
-        Image image = new Image("/arrow.png");
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(new Image("/icons/arrow.png"));
+        imageView.setSmooth(true);
         imageView.setFitWidth(16);
         imageView.setFitHeight(16);
 
@@ -101,10 +118,14 @@ public class FileLoader {
             if (fileSectionList.isVisible()) {
                 rotateTransition.play();
                 shrinkTimeline.play();
-                shrinkTimeline.setOnFinished(event -> fileSectionList.setVisible(false));
+                shrinkTimeline.setOnFinished(event -> {
+                    fileSectionList.setVisible(false);
+                    fileSectionList.setManaged(false);
+                });
             } else {
                 rotateTransition.play();
                 fileSectionList.setVisible(true);
+                fileSectionList.setManaged(true);
                 expandTimeline.play();
             }
         });
@@ -112,9 +133,9 @@ public class FileLoader {
         System.out.println(f.getName());
         for (File file : Objects.requireNonNull(f.listFiles())) {
             if (file.exists() && file.isFile()) {
-//                System.out.println(file.getName());
                 fileSectionList.getChildren().add(addAudioFileUI(file));
-//                getWavData(file);
+                currentFilePointer++;
+//                loadingScreen.setLoading_label(String.format("Loading: ", file.getName()), ((double) currentFilePointer / fileCount) * 100);
             }
         }
         fileSectionList.setSpacing(10);
@@ -144,7 +165,7 @@ public class FileLoader {
         audioFileExt.setMaxWidth(32);
         audioFileExt.setTextOverrun(OverrunStyle.ELLIPSIS);
         Label audioFileLength = new Label("0:00");
-        audioFileLength.setMaxWidth(32);
+        audioFileLength.setMaxWidth(48);
         audioFileLength.setTextOverrun(OverrunStyle.ELLIPSIS);
 
         Canvas audioFileDataVis = new Canvas();
@@ -153,11 +174,12 @@ public class FileLoader {
         audioFileDataVis.setStyle("-fx-background-color: transparent;");
 
         GraphicsContext gc = audioFileDataVis.getGraphicsContext2D();
-        gc.setFill(Color.web("D9D9D9"));
+        gc.setFill(Color.web("A9A9A9"));
         gc.fillRoundRect(0, 0, audioFileDataVis.getWidth(), audioFileDataVis.getHeight(), 10, 10);
 
         try {
             float[][] audioData = readAudioFile(file);
+            audioFileLength.setText(String.format("%.2fs", fileLength));
             if (audioData != null) {
                 boolean isStereo = audioData[1] != null;
                 float[] leftChannel = downsample(audioData[0], CANVAS_WIDTH);
@@ -171,10 +193,10 @@ public class FileLoader {
 
         HBox audioFileInfo = new HBox();
         audioFileInfo.setSpacing(5);
-        audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
-        audioFileInfo.setLayoutX(2);
+        audioFileInfo.setLayoutY(container.getPrefHeight() - 17);
+        audioFileInfo.setLayoutX(3);
         container.prefHeightProperty().addListener((observable, oldValue, newValue) -> {
-            audioFileInfo.setLayoutY(container.getPrefHeight() - 18);
+            audioFileInfo.setLayoutY(container.getPrefHeight() - 17);
         });
 
         Timeline expandTimeline = new Timeline(
@@ -216,10 +238,21 @@ public class FileLoader {
     }
 
     //test
-    private static float[][] readAudioFile(File file) throws Exception {
+    private double getWavLength(File file) {
+        try (AudioInputStream ais = AudioSystem.getAudioInputStream(file)) {
+            AudioFormat format = ais.getFormat();
+            long frames = ais.getFrameLength();
+            return frames / format.getFrameRate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private float[][] readAudioFile(File file) throws Exception {
         if (file.getName().toLowerCase().endsWith(".mp3")) {
             return readMp3(file);
         } else if (file.getName().toLowerCase().endsWith(".wav")) {
+            fileLength = getWavLength(file);
             return readWavFile(file);
         } else {
             throw new IllegalArgumentException("Unsupported file format");
@@ -228,7 +261,7 @@ public class FileLoader {
     }
 
     //wav section
-    private static float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException { //Reading wav file (this method repeats a lot, move every other version to this one)
+    private float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException { //Reading wav file (this method repeats a lot, move every other version to this one)
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         AudioFormat format = audioInputStream.getFormat();
 
@@ -256,7 +289,7 @@ public class FileLoader {
         return new float[][]{leftChannel, rightChannel};
     }
 
-    private static float extractSample(byte[] data, int index, int bitDepth) { //Extracting audio (support for 8, 16 and 24 bit audio - 32 bit will also be supported soon)
+    private float extractSample(byte[] data, int index, int bitDepth) { //Extracting audio (support for 8, 16 and 24 bit audio - 32 bit will also be supported soon)
         int sample = 0;
 
         //combine this with the edian class that ahmet made (arya)
@@ -277,7 +310,7 @@ public class FileLoader {
     //end of wav section
 
     //mp3 section
-    private static float[][] readMp3(File file) throws Exception {
+    private float[][] readMp3(File file) throws Exception {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);
         Decoder decoder = new Decoder();
@@ -310,7 +343,7 @@ public class FileLoader {
         return new float[][]{trimArray(leftChannel, index), isStereo ? trimArray(rightChannel, index) : null};
     }
 
-    private static float[] trimArray(float[] array, int size) {
+    private float[] trimArray(float[] array, int size) {
         float[] trimmed = new float[size];
         System.arraycopy(array, 0, trimmed, 0, size);
         return trimmed;
@@ -318,7 +351,7 @@ public class FileLoader {
     //end of mp3 section
 
     //Downsampling to make waveforms fit in the canvas (saving gpu compute power)
-    private static float[] downsample(float[] samples, int targetSize) {
+    private float[] downsample(float[] samples, int targetSize) {
         float[] downsampled = new float[targetSize];
         int step = samples.length / targetSize;
 
@@ -332,7 +365,7 @@ public class FileLoader {
     //Draws both left and right channel for stereo audio, and only left for mono audio
     private void drawWaveform(GraphicsContext gc, float[] left, float[] right) {
         double midY = CANVAS_HEIGHT / 2.0;
-//        double offset = (right != null) ? CANVAS_HEIGHT * 0.025 : 0; //Offseting channels slightly for visibility (might remove later)
+//        double offset = (right != null) ? CANVAS_HEIGHT * 0.025 : 0; //Offsetting channels slightly for visibility (might remove later)
 
         gc.setStroke(Color.color(1,0,0,.25)); //Left Channel (Red)
         gc.setLineWidth(1);
@@ -346,10 +379,8 @@ public class FileLoader {
 
     private void drawPoint(GraphicsContext gc, float[] right, double midY) {
         for (int i = 0; i < right.length - 1; i++) {
-//            double y1 = midY - (right[i] * midY) + offset;
             double y1 = midY - (right[i] * midY);
             double x2 = i + 1;
-//                double y2 = midY - (right[i + 1] * midY) + offset;
             double y2 = midY - (right[i + 1] * midY);
             gc.strokeLine(i, y1, x2, y2);
         }

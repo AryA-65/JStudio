@@ -29,11 +29,11 @@ public class FlangerPlugin {
     private double wetDryFactor;
     private int deviation;
 
-    // creates a flanger
-    public FlangerPlugin(double frequency, double wetDryFactor, int deviation) {
+    // Creates a flanger
+    public FlangerPlugin(double frequency, int deviation, double wetDryFactor) {
         this.frequency = frequency;
-        this.wetDryFactor = wetDryFactor;
         this.deviation = deviation;
+        this.wetDryFactor = wetDryFactor;
         fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
     }
 
@@ -55,7 +55,7 @@ public class FlangerPlugin {
     /**
      * Applies flanger effect to audio data
      */
-    public void applyFlangerEffect() {
+    private void applyFlangerEffect() {
         convertAudioFileToByteArray();
         byte[] audioToFlang = new byte[originalAudio.length - 44];
 
@@ -131,5 +131,36 @@ public class FlangerPlugin {
         } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
             System.out.println(e);
         }
+    }
+    
+    /**
+     * Wrapper class to set flanger effect
+     */
+    public void setFlangerEffect() {
+        applyFlangerEffect();
+    }
+
+    /**
+     * Assigns a value for frequency
+     * @param frequency the value of frequency to be assigned
+     */
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
+    }
+
+    /**
+    * Assigns a value for frequency
+    * @param deviation the value of deviation to be assigned
+    */
+    public void setDeviation(int deviation) {
+        this.deviation = deviation;
+    }
+    
+    /**
+    * Assigns a value for frequency
+    * @param wetDryFactor the value of wet/dry ratio to be assigned
+    */
+    public void setWetDryFactor(double wetDryFactor) {
+        this.wetDryFactor = wetDryFactor;
     }
 }

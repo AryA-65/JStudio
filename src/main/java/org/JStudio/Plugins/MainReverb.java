@@ -16,7 +16,7 @@ public class MainReverb extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/reverb_layout.fxml"));
-        fxmlLoader.setController(new ReverbFXML());
+        fxmlLoader.setController(new ReverbFXMLController());
 
         Parent root = fxmlLoader.load();
         scene = new Scene(root, 640, 480);

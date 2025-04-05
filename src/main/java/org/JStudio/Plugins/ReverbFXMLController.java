@@ -10,7 +10,7 @@ import javafx.scene.control.Slider;
  * FXML controller class for the Reverb UI
  * @author Theodore Georgiou
  */
-public class ReverbFXML {
+public class ReverbFXMLController {
     @FXML
     private Label preDelayLabel;
     @FXML

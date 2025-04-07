@@ -1,5 +1,6 @@
 package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Controllers.ReverbFXMLController;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

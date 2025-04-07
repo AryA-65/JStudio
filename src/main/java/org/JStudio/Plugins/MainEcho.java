@@ -1,5 +1,6 @@
 package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Models.EchoPlugin;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

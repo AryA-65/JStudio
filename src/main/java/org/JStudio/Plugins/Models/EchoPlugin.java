@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Models;
 
 import java.io.File;
 import java.io.IOException;

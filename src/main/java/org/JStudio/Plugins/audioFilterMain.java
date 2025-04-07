@@ -1,10 +1,11 @@
 package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Models.audioFilters;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
-import static org.JStudio.Plugins.audioFilters.*;
+import static org.JStudio.Plugins.Models.audioFilters.*;
 
 public class audioFilterMain {
     public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException, IOException {

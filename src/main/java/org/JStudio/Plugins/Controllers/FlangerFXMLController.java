@@ -1,9 +1,10 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Controllers;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import org.JStudio.Plugins.Models.FlangerPlugin;
 
 /**
  * FXML controller class for the Flanger UI

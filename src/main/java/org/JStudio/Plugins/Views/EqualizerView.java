@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Equalizer;
+package org.JStudio.Plugins.Views;
 
+import org.JStudio.Plugins.Models.EqualizerBand;
+import org.JStudio.Plugins.Controllers.EqualizerController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;

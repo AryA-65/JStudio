@@ -1,7 +1,9 @@
-package Equalizer;
+package org.JStudio.Plugins.Controllers;
 
-import Equalizer.EqualizerBand;
-import Equalizer.EqualizerView;
+import org.JStudio.Plugins.Models.EqualizerBand;
+import org.JStudio.Plugins.Models.EqualizerBand;
+import org.JStudio.Plugins.Views.EqualizerView;
+import org.JStudio.Plugins.Views.EqualizerView;
 import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;

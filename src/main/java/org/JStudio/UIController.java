@@ -104,7 +104,7 @@ public class UIController {
     private double temporaryBPM = 120;
     private long playbackPos = -1;
     private String curUser;
-    private FCController fileLoaderController;
+    private FileChooserController fileLoaderController;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     //part of test params, but this should its own thing

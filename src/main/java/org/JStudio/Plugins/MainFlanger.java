@@ -1,5 +1,6 @@
 package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Controllers.FlangerFXMLController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

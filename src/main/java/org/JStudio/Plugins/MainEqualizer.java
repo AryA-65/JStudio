@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Equalizer;
+package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Views.EqualizerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
  *
  * @author alexa
  */
-public class Main extends Application{
+public class MainEqualizer extends Application{
     public static void main(String[] args) {
         launch(args);
     }

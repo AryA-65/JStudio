@@ -8,7 +8,7 @@ import static org.JStudio.Plugins.audioFilters.*;
 
 public class audioFilterMain {
     public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
-        String inputFile = "src/main/resources/test_inputs_music.wav";
+        String inputFile = "src/main/resources/test_wav_files/test_inputs_music.wav";
         String outputFile = "filtered_output.wav";
 
         // Read WAV file

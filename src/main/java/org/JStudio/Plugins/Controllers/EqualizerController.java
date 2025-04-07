@@ -1,8 +1,6 @@
 package org.JStudio.Plugins.Controllers;
 
 import org.JStudio.Plugins.Models.EqualizerBand;
-import org.JStudio.Plugins.Models.EqualizerBand;
-import org.JStudio.Plugins.Views.EqualizerView;
 import org.JStudio.Plugins.Views.EqualizerView;
 import java.io.File;
 import javax.sound.sampled.AudioInputStream;
@@ -22,7 +20,6 @@ public class EqualizerController extends Thread {
     private byte[] processedBytes;
     private short[] samples;
     private double[] fftData;
-    private boolean isReady = false;
     private EqualizerView eqView;
     private SourceDataLine line;
 
@@ -40,7 +37,7 @@ public class EqualizerController extends Thread {
             //turn file into audio input stream
             AudioInputStream ais = AudioSystem.getAudioInputStream(file);
             audioFormat = ais.getFormat(); //get format of audio to ensure proper conversion later
-            sampleRate = audioFormat.getSampleRate();
+            sampleRate = audioFormat.getSampleRate(); //get the sample rate
             audioBytes = ais.readAllBytes(); //get array of all bytes from the stream
             ais.close();
 
@@ -59,18 +56,13 @@ public class EqualizerController extends Thread {
                 fftData[2 * i + 1] = 0;       // Imaginary part (zero)
             }
 
-            // Apply FFT to get to frequency domain
+            // Apply FFT to transform into frequency domain
             fft = new DoubleFFT_1D(fftSize);
             fft.realForward(fftData);
-            isReady = true;
 
-            if (!isReady) {
-                return;
-            }
-
+            //get equalizer bands
             EqualizerBand[] eqBands = eqView.getEqBands();
-
-            isReady = false;
+            
             // Manipulate magnitude of frequencies
             for (int i = 0; i < fftSize; i++) {
                 double frequency = (i * sampleRate) / fftSize;
@@ -102,7 +94,6 @@ public class EqualizerController extends Thread {
             }
 
             processedBytes = buffer.array();
-            System.out.println("playing");
 
             //use source data line to play the byte array
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
@@ -121,11 +112,12 @@ public class EqualizerController extends Thread {
         }
     }
 
+    //close the line that is playing the audio
     public void stopPlaying() {
         if (line != null) {
             line.close();
         }
-        this.interrupt();
+        this.interrupt(); //interrupt the thread
     }
 
 }

@@ -14,7 +14,9 @@ public class Note {
         this.width = width;
         this.isPlaying = false;
     }
-
+    
+    
+    //getters and setters for all parameters
     public int getNoteNum() {
         return noteNum;
     }

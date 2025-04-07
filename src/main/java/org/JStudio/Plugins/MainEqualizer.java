@@ -13,6 +13,7 @@ import javafx.stage.Stage;
  *
  * @author alexa
  */
+// used temporarily to run the equalizer
 public class MainEqualizer extends Application{
     public static void main(String[] args) {
         launch(args);
@@ -20,6 +21,7 @@ public class MainEqualizer extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
+        //open new scene
         EqualizerView eqView = new EqualizerView();
         Scene scene = new Scene(eqView);
         stage.setScene(scene);

@@ -1,6 +1,5 @@
 package PianoSection.Controllers;
 
-
 import PianoSection.Models.Note;
 import PianoSection.Views.NotesView;
 import javafx.animation.AnimationTimer;
@@ -36,7 +35,7 @@ public class NotesController {
     private double newMousePos;
 
     private MidiChannel channel;
-    private int noteNumStart = 37;
+    private int noteNumStart = 47;
     
     private boolean overlaps;
     private boolean isResizingRight = false;
@@ -53,11 +52,14 @@ public class NotesController {
 
     @FXML
     public void initialize() {
+        //get the stariting position of the playback line
         playbackLineStartPos = playbackLine.getLayoutX();
 
         for (int i = 0; i < 36; i++) {
+            //get all the panes (tracks) from the fxml by their ID
             Pane pane = (Pane) noteTracks.lookup("#pane" + i);
             if (pane != null) {
+                //add note if left click on the pane and remove note if right click
                 pane.setOnMouseEntered(mouseEvent -> currentPane = pane);
                 pane.setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.PRIMARY) {
@@ -70,23 +72,27 @@ public class NotesController {
             }
         }
 
+        //load the synthesizer channel
         loadChannel();
-
+        
+        //play the notes when play button is clicked
         playButton.setOnAction(e -> playNotes());
     }
 
     private void addNote(MouseEvent e) {
 
+        //get notes in the selected pane
         currentNoteViews = getNotes();
         
-        //get array list of all currentNoteViews in the pane
+        //get array list of all notes in the pane
         double x = e.getX(); //get mouse position
-        int noteNum = noteNumStart + Integer.parseInt(currentPane.getId().replace("pane", ""));
+        int noteNum = noteNumStart + Integer.parseInt(currentPane.getId().replace("pane", "")); //using the pane ID number, get the corresponding note number for the synthesizer
         overlaps = false;
 
-        //if there are already currentNoteViews in the array list
+        //if there are already notes in the array list
         if (!currentNoteViews.isEmpty()) {
             for (int i = 0; i < currentNoteViews.size(); i++) {
+                //create temporary rectangle to test overlap
                 Rectangle rectangle = new Rectangle(NOTE_BASE_WIDTH, NOTE_HEIGHT);
                 rectangle.setLayoutX(x - NOTE_BASE_WIDTH / 2);
                 //make sure it does not intersect with other notes in the pane
@@ -95,7 +101,7 @@ public class NotesController {
                 }
             }
         }
-        //if the are not intersection issues then add a rectangle to the pane
+        //if there are no intersection issues then add a new note to the pane
         if (!overlaps) {
             Note newNote = new Note(noteNum, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2, NOTE_BASE_WIDTH);
             NotesView noteView = new NotesView(newNote, NOTE_HEIGHT);
@@ -114,13 +120,12 @@ public class NotesController {
     }
 
     private void removeNote(MouseEvent e) {
-        Rectangle rectangle = null;
         for (Node node : currentPane.getChildren()) {
-            rectangle = (Rectangle) node;
+            Rectangle rectangle = (Rectangle) node;
+            //if mouse is over the remove the note
             if (e.getX() > rectangle.getLayoutX() && e.getX() < (rectangle.getLayoutX() + rectangle.getWidth()) && e.getY() > rectangle.getLayoutY() && e.getY() < (rectangle.getLayoutY() + rectangle.getHeight())) {
                 int pos = currentPane.getChildren().indexOf(node);
                 allNoteViews.remove(pos);
-//                currentNoteViews.remove(pos);
                 currentPane.getChildren().remove(node);
 
             }
@@ -129,7 +134,7 @@ public class NotesController {
     }
     
     private void dragNote(NotesView noteView) {
-        //add Event Hnadler on mouse pressed that saves the starting position of the note
+        //add Event Handler on mouse pressed that saves the starting position of the mouse and determines if the user is moving or resizing the note
         noteView.setOnMousePressed(mouseEvent -> {
             oldMousePos = mouseEvent.getX();
             newMousePos = mouseEvent.getX();
@@ -150,12 +155,13 @@ public class NotesController {
                 double nextPosX = noteView.getLayoutX() + deltaMousePos; //get the next position that the note will be in once moved
                 double nextWidth = noteView.getWidth() - deltaMousePos; // get the next width that the note will have once resized
 
-                detectOverlap(noteView, nextPosX, nextWidth);
+                detectOverlap(noteView, nextPosX, nextWidth); //see if it will overlap with any other notes
 
                 if (!overlaps) {
                     noteView.setLayoutX(nextPosX);
                     noteView.setWidth(nextWidth);
 
+                    //if the width goes below the minimum width, then set it back to the minimum
                     if (noteView.getWidth() < NOTE_MIN_WIDTH) { //width is now below the minimum
                         double shrunkenWidth = noteView.getWidth(); //get the width it was reduced to
                         noteView.setWidth(NOTE_MIN_WIDTH); //set the width back to the minimum
@@ -163,23 +169,24 @@ public class NotesController {
                     }
 
                 }
-                //resize right
+            //resize right
             } else if (isResizingRight) {
                 double nextWidth = noteView.getWidth() + deltaMousePos; //get the next position that the note will be in once moved
                 overlaps = false;
 
-                detectOverlap(noteView, noteView.getLayoutX(), nextWidth);
+                detectOverlap(noteView, noteView.getLayoutX(), nextWidth);//see if it will overlap with any other notes
 
                 if (!overlaps) {
                     noteView.setWidth(nextWidth);
 
+                    //if the width goes below the minimum width, then set it back to the minimum
                     if (noteView.getWidth() < NOTE_MIN_WIDTH) {
                         noteView.setWidth(NOTE_MIN_WIDTH);
                     }
                     oldMousePos = newMousePos;
                 }
 
-                //move along pane
+            //drag note along the pane (track)
             } else {
                 double nextPosX = noteView.getLayoutX() + deltaMousePos; //get the next position that the note will be in once moved
                 overlaps = false;
@@ -194,6 +201,7 @@ public class NotesController {
         }
         );
 
+        //reset booleans when mouse release
         noteView.setOnMouseReleased(mouseEvent -> {
             isResizingRight = false;
             isResizingLeft = false;
@@ -201,6 +209,7 @@ public class NotesController {
 
     }
     
+    //determine whether a note will overlap with another note
     private void detectOverlap(NotesView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
@@ -223,6 +232,7 @@ public class NotesController {
         }
     }
 
+    //move the playback line along the tracks and play any notes it touches
     private void playNotes() {
         TranslateTransition movePlaybackLine = new TranslateTransition(Duration.seconds(7.5), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
@@ -230,15 +240,18 @@ public class NotesController {
         movePlaybackLine.setToX(1920);
         movePlaybackLine.setCycleCount(1);
 
+        //create a timer that is called every frame until stopped
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 for (NotesView noteView : allNoteViews) {
+                    //if the playback line is touching a note that it was not before, then play the note
                     if (playbackLine.getBoundsInParent().intersects(noteView.getBoundsInParent())) {
                         if (!noteView.getNote().isPlaying()) {
                             channel.noteOn(noteView.getNote().getNoteNum(), 90);
                             noteView.getNote().setPlaying(true);
                         }
+                    //if the playback line is not touching a note that it was before, then stop playing the note
                     } else {
                         if (noteView.getNote().isPlaying()) {
                             channel.noteOff(noteView.getNote().getNoteNum());
@@ -256,18 +269,18 @@ public class NotesController {
 
     private void loadChannel() {
         try {
+            //open the synthesizer
             Synthesizer synthesizer = MidiSystem.getSynthesizer();
             synthesizer.open();
-            synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
-            channel = synthesizer.getChannels()[0];
+            synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]); //get the piano
+            channel = synthesizer.getChannels()[0]; //get the channel
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
     }
     
-    //returns an array list of all notes in the pane
+    //returns an array list of all notes in the selected pane
     private ArrayList<NotesView> getNotes() {
-        //create 
         ArrayList<NotesView> currentNoteViews = new ArrayList<>();
         for (Node n : currentPane.getChildren()) {
             currentNoteViews.add((NotesView) n);

@@ -7,6 +7,7 @@ import PianoSection.Models.Note;
 public class NotesView extends Rectangle {
     private Note note;
 
+    //create a rectangle that will be added to the pane to display a note
     public NotesView(Note note, double height) {
         super(note.getWidth(), height);
         this.note = note;
@@ -17,6 +18,7 @@ public class NotesView extends Rectangle {
         setOnMouseExited(mouseEvent -> setFill(Color.BLACK));
     }
 
+    //getter for the note
     public Note getNote() {
         return note;
     }

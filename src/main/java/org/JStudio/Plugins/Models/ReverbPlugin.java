@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javafx.stage.FileChooser;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -47,13 +48,16 @@ public class ReverbPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-            filePathName = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
-//            fileName = "\\jumpland.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            String filePath = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
-            Path path = Paths.get(filePath);
-            originalAudio = Files.readAllBytes(path);
-//            System.out.println(Arrays.toString(Files.readAllBytes(path)));
+//            filePathName = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
+////            fileName = "\\jumpland.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+////            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+//            String filePath = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
+//            Path path = Paths.get(filePath);
+//            originalAudio = Files.readAllBytes(path);
+////            System.out.println(Arrays.toString(Files.readAllBytes(path)));
+            File file = new FileChooser().showOpenDialog(null);
+            filePathName = file.getAbsolutePath();
+            originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             System.out.println(e);
         }

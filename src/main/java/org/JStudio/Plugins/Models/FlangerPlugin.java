@@ -33,6 +33,7 @@ public class FlangerPlugin {
 
     // Creates a flanger
     public FlangerPlugin(double frequency, int deviation, double wetDryFactor) {
+        convertAudioFileToByteArray();
         this.frequency = frequency;
         this.deviation = deviation;
         this.wetDryFactor = wetDryFactor;
@@ -60,7 +61,7 @@ public class FlangerPlugin {
      * Applies flanger effect to audio data
      */
     private void applyFlangerEffect() {
-        convertAudioFileToByteArray();
+//        convertAudioFileToByteArray();
         byte[] audioToFlang = new byte[originalAudio.length - 44];
 
         // The audio to add flanging to has same audio data as the original audio for now (no header)

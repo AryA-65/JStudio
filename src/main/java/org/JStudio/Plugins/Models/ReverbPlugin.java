@@ -67,7 +67,7 @@ public class ReverbPlugin {
      * Applies the reverb effect to the audio data array
      */
     private void applyReverbEffect() {
-        convertAudioFileToByteArray();
+        //convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
         byte[] audioToReverb = new byte[originalAudio.length - 44];
 

@@ -1,5 +1,6 @@
 package org.JStudio.Plugins.Views;
 
+import java.io.File;
 import org.JStudio.Plugins.Models.EqualizerBand;
 import org.JStudio.Plugins.Controllers.EqualizerController;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 public class EqualizerView extends Pane {
 
@@ -19,6 +21,9 @@ public class EqualizerView extends Pane {
     }
 
     public EqualizerView() {
+        //get audio file
+        File file = new FileChooser().showOpenDialog(null);
+        
         //create equalizer UI
         VBox vb = new VBox();
 
@@ -28,7 +33,7 @@ public class EqualizerView extends Pane {
         playButton.setOnAction(e -> {
             //disable the play button, enable the stop button, and create a controller to modify and play the audio
             playButton.setDisable(true);
-            eqController = new EqualizerController();
+            eqController = new EqualizerController(file);
             eqController.setEqView(this);
             eqController.start(); //start a new thread that plays the audio
             stopButton.setDisable(false);

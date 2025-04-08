@@ -24,7 +24,12 @@ public class EqualizerController extends Thread {
     private double[] fftData;
     private EqualizerView eqView;
     private SourceDataLine line;
+    private File file;
 
+    public EqualizerController(File audioFile) {
+        this.file = audioFile;
+    }
+    
     public void setEqView(EqualizerView eqView) {
         this.eqView = eqView;
     }
@@ -33,9 +38,6 @@ public class EqualizerController extends Thread {
     public void run() {
 
         try {
-            // get wav file
-            File file = new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav");
-
             //turn file into audio input stream
             AudioInputStream ais = AudioSystem.getAudioInputStream(file);
             audioFormat = ais.getFormat(); //get format of audio to ensure proper conversion later

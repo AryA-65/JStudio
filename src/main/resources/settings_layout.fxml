@@ -7,13 +7,9 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="5.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -122,67 +118,5 @@
             <Insets left="5.0" right="5.0" />
          </VBox.margin>
       </VBox>
-      <VBox layoutX="15.0" layoutY="213.0" spacing="5.0">
-         <children>
-            <Label text="Computer Info:">
-               <font>
-                  <Font name="Inter 24pt Regular" size="18.0" />
-               </font>
-            </Label>
-         </children>
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </VBox>
-      <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="356.0" minWidth="10.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="330.0" minWidth="10.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-         <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="5.0">
-               <GridPane.margin>
-                  <Insets left="5.0" right="5.0" />
-               </GridPane.margin>
-               <children>
-                  <Label text="CPU: " />
-                  <Label layoutX="10.0" layoutY="10.0" text="Core Count (C/T):" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="5.0" GridPane.rowIndex="1">
-               <children>
-                  <Label text="RAM amount (GB): 31.7" />
-                  <Label layoutX="10.0" layoutY="10.0" text="Usage (GB): 12.9" />
-                  <Label text="Free (GB): 18.8" />
-               </children>
-               <GridPane.margin>
-                  <Insets left="5.0" right="5.0" />
-               </GridPane.margin>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1">
-               <children>
-                  <Label text="Project Size:" />
-               </children>
-               <GridPane.margin>
-                  <Insets left="5.0" right="5.0" />
-               </GridPane.margin>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <Label text="File Location:" />
-               </children>
-               <GridPane.margin>
-                  <Insets left="5.0" right="5.0" />
-               </GridPane.margin>
-            </HBox>
-         </children>
-      </GridPane>
    </children>
 </VBox>

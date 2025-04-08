@@ -16,7 +16,7 @@ public class MainFlanger extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("fxml/flanger_layout.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/flanger_layout.fxml"));
         fxmlLoader.setController(new FlangerFXMLController());
 
         Parent root = fxmlLoader.load();

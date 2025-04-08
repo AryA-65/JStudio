@@ -1,6 +1,6 @@
 package org.JStudio.Plugins;
 
-abstract class Distortion {
+public abstract class Distortion {
     protected float gain, mix;
 
     Distortion(float gain, float mix) {
@@ -10,7 +10,7 @@ abstract class Distortion {
 
     abstract float[] processMono(float[] inputData);
 
-    abstract float[][] processStereo(float[][] inputData);
+    public abstract float[][] processStereo(float[][] inputData);
 
     protected float[] applyGain(float[] monoInputData) {
         float[] outputData = new float[monoInputData.length];
@@ -86,7 +86,7 @@ class ClippingDistortion extends Distortion {
     }
 
     @Override
-    float[][] processStereo(float[][] inputData) {
+    public float[][] processStereo(float[][] inputData) {
         float[][] gainedData = applyGain(inputData);
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {
@@ -114,7 +114,7 @@ class AliasingDistortion extends Distortion {
     }
 
     @Override
-    float[][] processStereo(float[][] inputData) {
+    public float[][] processStereo(float[][] inputData) {
         float[][] gainedData = applyGain(inputData);
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {
@@ -143,7 +143,7 @@ class HarmonicDistortion extends Distortion {
     }
 
     @Override
-    float[][] processStereo(float[][] inputData) {
+    public float[][] processStereo(float[][] inputData) {
         float[][] gainedData = applyGain(inputData);
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {
@@ -159,7 +159,7 @@ class HarmonicDistortion extends Distortion {
 class BitcrushDistortion extends Distortion {
     private BitCrush bitCrusher;
 
-    BitcrushDistortion(float gain, float mix, int depth) {
+    public BitcrushDistortion(float gain, float mix, int depth) {
         super(gain, mix);
         this.bitCrusher = new BitCrush(depth);
     }
@@ -175,7 +175,7 @@ class BitcrushDistortion extends Distortion {
     }
 
     @Override
-    float[][] processStereo(float[][] inputData) {
+    public float[][] processStereo(float[][] inputData) {
         float[][] gainedData = applyGain(inputData);
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {

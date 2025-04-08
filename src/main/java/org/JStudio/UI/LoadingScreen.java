@@ -7,10 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.text.SimpleDateFormat;
-import java.util.Map;
-import java.util.Queue;
-
 public class LoadingScreen { //this needs fixing, immediately
 
     @FXML

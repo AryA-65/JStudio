@@ -1,5 +1,7 @@
 package org.JStudio.Plugins.Controllers;
 
+import javafx.stage.FileChooser;
+import org.JStudio.FileChooserController;
 import org.JStudio.Plugins.Models.EqualizerBand;
 import org.JStudio.Plugins.Views.EqualizerView;
 import java.io.File;
@@ -32,7 +34,7 @@ public class EqualizerController extends Thread {
 
         try {
             // get wav file
-            File file = new File("C:\\Users\\alexa\\Downloads\\Experiencetest.wav");
+            File file = new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav");
 
             //turn file into audio input stream
             AudioInputStream ais = AudioSystem.getAudioInputStream(file);

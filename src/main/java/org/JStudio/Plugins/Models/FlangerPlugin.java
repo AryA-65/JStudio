@@ -1,5 +1,7 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.stage.FileChooser;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -42,11 +44,13 @@ public class FlangerPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            fileName = "\\cowbell-74767.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            Path path = Paths.get(filePath);
-            originalAudio = Files.readAllBytes(path);
+//            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+//            fileName = "\\cowbell-74767.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+//            Path path = Paths.get(filePath);
+            File file = new FileChooser().showOpenDialog(null);
+            filePathName = file.getAbsolutePath();
+            originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             System.out.println(e);
         }

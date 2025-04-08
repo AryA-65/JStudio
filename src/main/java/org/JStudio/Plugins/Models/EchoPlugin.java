@@ -1,5 +1,7 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.stage.FileChooser;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -38,7 +40,7 @@ public class EchoPlugin {
         this.diffusion = diffusion;
         this.echoNum = echoNum;
         this.wetDryFactor = wetDryFactor;
-        fileName = "\\jumpland.wav";
+//        fileName = "\\jumpland.wav";
     }
 
     /**
@@ -46,11 +48,16 @@ public class EchoPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            fileName = "\\lp-cowbell-83904.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            Path path = Paths.get(filePath);
-            originalAudio = Files.readAllBytes(path);
+//            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+//            FileChooser fileChooser = new FileChooser();
+//
+////            fileName = "\\lp-cowbell-83904.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
+//            Path path = Paths.get(filePath);
+            FileChooser fl = new FileChooser();
+            File selectedFile = fl.showOpenDialog(null);
+            filePathName = selectedFile.getAbsolutePath();
+            originalAudio = Files.readAllBytes(selectedFile.toPath());
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -173,7 +180,9 @@ public class EchoPlugin {
             line.open(audioFormat);
             line.start();
 
-            line.write(audioData, 0, audioData.length);
+            int frameSize = line.getFormat().getFrameSize();
+            int trimmedLength = (audioData.length / frameSize) * frameSize;
+            line.write(audioData, 0, trimmedLength);
 
             line.drain();
             line.close();

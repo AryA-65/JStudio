@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class audioFilterController {
+public class audioFilterFXMLController {
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile = "src/main/resources/test_inputs_music.wav";
     public String outputFile = "filtered_output.wav"; //todo create a field for the user to enter the output file name

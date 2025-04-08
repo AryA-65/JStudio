@@ -19,9 +19,11 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.JStudio.Utils.SystemMonitor;
 
 import java.io.*;
 import java.util.*;
@@ -95,6 +97,8 @@ public class UIController {
     @FXML
     private Stage rootStage;
 
+    private SystemMonitor sm;
+
     private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
     private boolean resizing = false;
     private FileLoader fileLoader;
@@ -120,23 +124,23 @@ public class UIController {
 
     @FXML
     public void initialize() throws Exception {
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
-        dropShadow.setRadius(3);
-        dropShadow.setSpread(.1);
-        dropShadow.setOffsetX(2);
-        dropShadow.setOffsetY(2);
-
-        InnerShadow innerShadow = new InnerShadow();
-        innerShadow.setRadius(5);
-        innerShadow.setOffsetX(4);
-        innerShadow.setOffsetY(4);
-        innerShadow.setColor(Color.rgb(255, 255, 255, 1));
-
-        Blend blend = new Blend();
-        blend.setMode(BlendMode.MULTIPLY);
-        blend.setBottomInput(dropShadow);
-        blend.setTopInput(innerShadow);
+//        DropShadow dropShadow = new DropShadow();
+//        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
+//        dropShadow.setRadius(3);
+//        dropShadow.setSpread(.1);
+//        dropShadow.setOffsetX(2);
+//        dropShadow.setOffsetY(2);
+//
+//        InnerShadow innerShadow = new InnerShadow();
+//        innerShadow.setRadius(5);
+//        innerShadow.setOffsetX(4);
+//        innerShadow.setOffsetY(4);
+//        innerShadow.setColor(Color.rgb(255, 255, 255, 1));
+//
+//        Blend blend = new Blend();
+//        blend.setMode(BlendMode.MULTIPLY);
+//        blend.setBottomInput(dropShadow);
+//        blend.setTopInput(innerShadow);
 
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/icons/load.png"));
@@ -276,6 +280,7 @@ public class UIController {
         });
 
         close_btn.setOnMouseClicked(event -> {
+            sm.stop();
             rootStage.close();
         });
 
@@ -403,6 +408,14 @@ public class UIController {
         track_id_vbox.setStyle("-fx-background-color: black;");
         tracks_scrollpane.setStyle("-fx-background-color: transparent;");
         track_id_scrollpane.setStyle("-fx-background-color: transparent;");
+
+        Rectangle clip = new Rectangle(pc_stats.getWidth(), pc_stats.getHeight());
+        clip.setArcHeight(10);
+        clip.setArcWidth(10);
+
+        pc_stats.setClip(clip);
+        sm = new SystemMonitor(pc_stats);
+        sm.start();
     }
 
     protected void setSplitRatio() {
@@ -645,9 +658,8 @@ public class UIController {
         }
 
         boolean specificSearch = searchText.startsWith("?");
-        boolean globalSearch = searchText.startsWith(":");
 
-        searchText = searchText.toLowerCase().replaceFirst("[:?]", ""); // Remove prefix for comparison
+        searchText = searchText.toLowerCase().replaceFirst("[?]", ""); // Remove prefix for comparison
 
         for (Node node : tab_vbox.getChildren()) {
             if (node instanceof VBox section) {
@@ -673,11 +685,9 @@ public class UIController {
 
                 boolean showSection;
                 if (specificSearch) {
-                    showSection = sectionMatches; // Only show sections
-                } else if (globalSearch) {
-                    showSection = sectionMatches || fileMatches; // Show both matches
+                    showSection = sectionMatches;
                 } else {
-                    showSection = sectionMatches || fileMatches; // Default behavior
+                    showSection = sectionMatches || fileMatches;
                     if (!fileMatches) {
                         fileSectionList.setVisible(false);
                         fileSectionList.setManaged(false);

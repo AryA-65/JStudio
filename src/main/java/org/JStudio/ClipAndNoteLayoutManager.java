@@ -2,8 +2,7 @@ package org.JStudio;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Application;
-import static javafx.application.Application.launch;
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -121,6 +120,8 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
             } else {
                 double nextPosX = dynRect.getLayoutX() + deltaMousePos; //get the next position that the rectangle will be in once moved
                 overlaps = false;
+
+//                if ()
 
                 detectOverlap(dynRect, nextPosX, dynRect.getWidth());
 

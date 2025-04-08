@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Queue;
 
-public class LoadingScreen {
+public class LoadingScreen { //this needs fixing, immediately
 
     @FXML
     private Label loading_label;

@@ -76,11 +76,11 @@
             </StackPane>
             <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
                <children>
-                  <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="128.0" />
+                  <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="64" />
                </children>
             </StackPane>
             <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-            <HBox fx:id="app_options" alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" spacing="15.0" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" spacing="15.0" HBox.hgrow="ALWAYS">
                <children>
                   <ImageView id="minim_btn" fx:id="minim_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView id="minim_btn" fx:id="maxim_btn" fitHeight="18.0" fitWidth="18.0" layoutX="384.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />

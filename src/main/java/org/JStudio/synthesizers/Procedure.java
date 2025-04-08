@@ -1,4 +1,5 @@
 package org.JStudio.synthesizers;
 
-public class Procedure {
+public interface Procedure {
+    void invoke() throws Exception;
 }

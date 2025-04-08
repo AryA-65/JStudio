@@ -43,7 +43,7 @@ public class FlangerPlugin {
     private void convertAudioFileToByteArray() {
         try {
             filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            fileName = "\\Heroic Demise (New).wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+            fileName = "\\cowbell-74767.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
             String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
             Path path = Paths.get(filePath);
             originalAudio = Files.readAllBytes(path);

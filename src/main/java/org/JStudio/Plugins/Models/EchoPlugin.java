@@ -47,7 +47,7 @@ public class EchoPlugin {
     private void convertAudioFileToByteArray() {
         try {
             filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-            fileName = "\\laser13.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
+            fileName = "\\lp-cowbell-83904.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
             String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
             Path path = Paths.get(filePath);
             originalAudio = Files.readAllBytes(path);
@@ -90,12 +90,12 @@ public class EchoPlugin {
         
         // Add echos with diffusion spacing
         short[] echoAudio = new short[echoNums.length+numOfEchos*diffusion];
-        int delayLineCounter = 0;
+        int echoCounter = 0;
         for (int i = 0; i < echos.size(); i++) {
             for (int j = 0; j < echos.get(i).length; j++) {
-                echoAudio[j+(delayLineCounter*diffusion)] += echos.get(i)[j];
+                echoAudio[j+(echoCounter*diffusion)] += echos.get(i)[j];
             }
-            delayLineCounter++;
+            echoCounter++;
         }
         
         // Dry Wet Mixing

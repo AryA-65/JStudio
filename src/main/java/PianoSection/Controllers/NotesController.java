@@ -1,6 +1,5 @@
 package PianoSection.Controllers;
 
-
 import PianoSection.Models.Note;
 import PianoSection.Views.NotesView;
 import javafx.animation.AnimationTimer;
@@ -8,7 +7,6 @@ import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -18,8 +16,10 @@ import javax.sound.midi.*;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class NotesController {
 
@@ -31,17 +31,22 @@ public class NotesController {
     private Pane currentPane;
     private ArrayList<NotesView> allNoteViews = new ArrayList<>();
     private List<NotesView> currentNoteViews = new ArrayList<>();
-    
+
     private double oldMousePos;
     private double newMousePos;
 
+    private Synthesizer synth;
     private MidiChannel channel;
     private int noteNumStart = 37;
-    
+
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
 
+    @FXML
+    private Pane mainPane;
+    @FXML
+    private VBox labelVBox;
     @FXML
     private VBox noteTracks;
     @FXML
@@ -54,21 +59,26 @@ public class NotesController {
     @FXML
     public void initialize() {
         playbackLineStartPos = playbackLine.getLayoutX();
+        
+        int addedTrackWidth = 3500;
+        int newPaneWidth = 0;
 
         for (int i = 0; i < 36; i++) {
             Pane pane = (Pane) noteTracks.lookup("#pane" + i);
             if (pane != null) {
+                pane.setPrefWidth(pane.getPrefWidth()+addedTrackWidth);
+                newPaneWidth = (int) pane.getPrefWidth();
+                pane.setTranslateX(addedTrackWidth/2);
                 pane.setOnMouseEntered(mouseEvent -> currentPane = pane);
                 pane.setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.PRIMARY) {
                         addNote(e);
                     }
-                    if (e.getButton() == MouseButton.SECONDARY) {
-                        removeNote(e);
-                    }
                 });
             }
         }
+        
+        mainPane.setPrefWidth(labelVBox.getPrefWidth() + newPaneWidth);
 
         loadChannel();
 
@@ -76,26 +86,30 @@ public class NotesController {
     }
 
     private void addNote(MouseEvent e) {
-
         currentNoteViews = getNotes();
-        
+
         //get array list of all currentNoteViews in the pane
         double x = e.getX(); //get mouse position
         int noteNum = noteNumStart + Integer.parseInt(currentPane.getId().replace("pane", ""));
         overlaps = false;
 
-        //if there are already currentNoteViews in the array list
+        Rectangle rectangle = new Rectangle(NOTE_BASE_WIDTH, NOTE_HEIGHT);
+        rectangle.setLayoutX(x - NOTE_BASE_WIDTH / 2);
+
+        if (rectangle.getLayoutX() < 0 || rectangle.getLayoutX() + rectangle.getWidth() > currentPane.getLayoutX() + currentPane.getTranslateX() + currentPane.getPrefWidth()) {
+            overlaps = true;
+        }
+
+        //if there are already notes in the array list
         if (!currentNoteViews.isEmpty()) {
             for (int i = 0; i < currentNoteViews.size(); i++) {
-                Rectangle rectangle = new Rectangle(NOTE_BASE_WIDTH, NOTE_HEIGHT);
-                rectangle.setLayoutX(x - NOTE_BASE_WIDTH / 2);
                 //make sure it does not intersect with other notes in the pane
                 if (currentNoteViews.get(i).getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
                     overlaps = true;
                 }
             }
         }
-        //if the are not intersection issues then add a rectangle to the pane
+        //if the are not intersection issues then add a note to the pane
         if (!overlaps) {
             Note newNote = new Note(noteNum, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2, NOTE_BASE_WIDTH);
             NotesView noteView = new NotesView(newNote, NOTE_HEIGHT);
@@ -108,35 +122,28 @@ public class NotesController {
             noteView.setOnMouseExited(mouseEvent -> {
                 noteView.setFill(Color.BLACK);
             });
+            noteView.setOnMousePressed(event -> {
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    removeNote(event);
+                } else {
+                    oldMousePos = event.getX();
+                    newMousePos = event.getX();
+
+                    isResizingLeft = (newMousePos > 0) && (newMousePos < RESIZE_BORDER);
+                    isResizingRight = (newMousePos < noteView.getWidth()) && (newMousePos > noteView.getWidth() - RESIZE_BORDER);
+                }
+            });
             currentPane.getChildren().add(noteView);
             allNoteViews.add(noteView);
         }
     }
 
     private void removeNote(MouseEvent e) {
-        Rectangle rectangle = null;
-        for (Node node : currentPane.getChildren()) {
-            rectangle = (Rectangle) node;
-            if (e.getX() > rectangle.getLayoutX() && e.getX() < (rectangle.getLayoutX() + rectangle.getWidth()) && e.getY() > rectangle.getLayoutY() && e.getY() < (rectangle.getLayoutY() + rectangle.getHeight())) {
-                int pos = currentPane.getChildren().indexOf(node);
-                allNoteViews.remove(pos);
-//                currentNoteViews.remove(pos);
-                currentPane.getChildren().remove(node);
-
-            }
-
-        }
+        currentPane.getChildren().remove(e.getSource());
+        allNoteViews.remove(e.getSource());
     }
-    
-    private void dragNote(NotesView noteView) {
-        //add Event Hnadler on mouse pressed that saves the starting position of the note
-        noteView.setOnMousePressed(mouseEvent -> {
-            oldMousePos = mouseEvent.getX();
-            newMousePos = mouseEvent.getX();
 
-            isResizingLeft = (newMousePos > 0) && (newMousePos < RESIZE_BORDER);
-            isResizingRight = (newMousePos < noteView.getWidth()) && (newMousePos > noteView.getWidth() - RESIZE_BORDER);
-        });
+    private void dragNote(NotesView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
@@ -200,14 +207,14 @@ public class NotesController {
         });
 
     }
-    
+
     private void detectOverlap(NotesView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
         tempRect.setLayoutX(nextPosX);
 
         //Determine if intersection with the edge of the pane
-        if (tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > currentPane.getWidth()) {
+        if (tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > currentPane.getLayoutX() + currentPane.getTranslateX() + currentPane.getPrefWidth()) {
             overlaps = true;
             return;
         }
@@ -224,19 +231,21 @@ public class NotesController {
     }
 
     private void playNotes() {
-        TranslateTransition movePlaybackLine = new TranslateTransition(Duration.seconds(7.5), playbackLine);
+        TranslateTransition movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
         movePlaybackLine.setFromX(playbackLineStartPos);
-        movePlaybackLine.setToX(1920);
+        movePlaybackLine.setToX(currentPane.getWidth());
         movePlaybackLine.setCycleCount(1);
-
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 for (NotesView noteView : allNoteViews) {
-                    if (playbackLine.getBoundsInParent().intersects(noteView.getBoundsInParent())) {
+                    Shape intersection = Shape.intersect(playbackLine, noteView);
+                    
+                    if (intersection.getBoundsInLocal().getWidth() > 0 ||
+                    intersection.getBoundsInLocal().getHeight() > 0) {
                         if (!noteView.getNote().isPlaying()) {
-                            channel.noteOn(noteView.getNote().getNoteNum(), 90);
+                            channel.noteOn(noteView.getNote().getNoteNum(), noteView.getNote().getVelocity());
                             noteView.getNote().setPlaying(true);
                         }
                     } else {
@@ -248,23 +257,24 @@ public class NotesController {
                 }
             }
         };
-
-        movePlaybackLine.setOnFinished(e -> timer.stop());
+        movePlaybackLine.setOnFinished(e -> {
+            timer.stop();
+        });
         movePlaybackLine.play();
         timer.start();
     }
 
     private void loadChannel() {
         try {
-            Synthesizer synthesizer = MidiSystem.getSynthesizer();
-            synthesizer.open();
-            synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
-            channel = synthesizer.getChannels()[0];
+            synth = MidiSystem.getSynthesizer();
+            synth.open();
+            synth.loadInstrument(synth.getDefaultSoundbank().getInstruments()[0]);
+            channel = synth.getChannels()[0];
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
     }
-    
+
     //returns an array list of all notes in the pane
     private ArrayList<NotesView> getNotes() {
         //create 

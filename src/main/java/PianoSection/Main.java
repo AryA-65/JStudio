@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-// used temporarily to run the piano
 public class Main extends Application{
     
     public static void main(String[] args) {
@@ -16,9 +15,8 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        //open new scene from the fxml
         Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes.fxml"));
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,1500,900);
         stage.setScene(scene);
         stage.show();
     }

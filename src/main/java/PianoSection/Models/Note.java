@@ -2,8 +2,10 @@ package PianoSection.Models;
 
 public class Note {
     private int noteNum;
+    private int velocity = 90;
     private boolean isPlaying;
     private double length;
+    //private double startTime;
     private double positionX;
     private double width;
     
@@ -14,9 +16,7 @@ public class Note {
         this.width = width;
         this.isPlaying = false;
     }
-    
-    
-    //getters and setters for all parameters
+
     public int getNoteNum() {
         return noteNum;
     }
@@ -55,5 +55,9 @@ public class Note {
 
     public void setWidth(double width) {
         this.width = width;
+    }
+    
+    public int getVelocity(){
+        return velocity;
     }
 }

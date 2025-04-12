@@ -58,6 +58,13 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-openal -->
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-openal</artifactId>
+            <version>3.3.6</version>
+        </dependency>
     </dependencies>
 
 </project>

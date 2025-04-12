@@ -1,5 +1,10 @@
 package org.JStudio.Plugins;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.JStudio.Plugins.Models.audioFilters;
 import javax.sound.sampled.*;
 import java.io.File;
@@ -7,34 +12,20 @@ import java.io.IOException;
 
 import static org.JStudio.Plugins.Models.audioFilters.*;
 
-public class audioFilterMain {
-    public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
-        String inputFile = "src/main/resources/test_wav_files/test_inputs_music.wav";
-        String outputFile = "filtered_output.wav";
+public class audioFilterMain extends Application {
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/low_highCutOffFilter.fxml"));
+        fxmlLoader.setController(new audioFilterFXMLController());
 
-        // Read WAV file
-        File file = new File(inputFile);
-        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-        AudioFormat format = audioStream.getFormat();
-        byte[] audioBytes = audioStream.readAllBytes();
-        audioStream.close();
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root, 600, 200);
 
-        // Convert byte[] to short[]
-        short[] samples = audioFilters.bytesToShorts(audioBytes);
-
-        // Apply your own low-pass filter
-        float sampleRate = format.getSampleRate();
-        float cutoffFrequency = 1000f; // in Hz
-        applyHighPassFilter(samples, sampleRate, cutoffFrequency);
-
-        // Convert short[] back to byte[]
-        byte[] filteredBytes = shortsToBytes(samples);
-
-        // Save filtered audio to new WAV file
-        saveWavFile(outputFile, filteredBytes, format);
-        System.out.println("Filtered audio saved as: " + outputFile);
-
-        // Play filtered sound
-        playAudio(filteredBytes, format);
+        stage.setScene(scene);
+        stage.show();
     }
+    public static void main(String[] args) {
+        launch();
+    }
+
 }

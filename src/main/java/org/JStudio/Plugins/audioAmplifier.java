@@ -5,12 +5,10 @@ import java.io.File;
 
 public class audioAmplifier {
 
-    private double[] audioData;
-    private File audioFile;
-
-    private void playAudio(double amplitudeFactor) {
+    private void amplifyAudio(double amplitudeFactor, String source) {
         new Thread(() -> {
             try {
+                File audioFile = new File(source);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                 AudioFormat format = audioStream.getFormat();
                 SourceDataLine line = AudioSystem.getSourceDataLine(format);
@@ -20,10 +18,9 @@ public class audioAmplifier {
                 byte[] buffer = new byte[4096];
                 int bytesRead;
 
-                while ((bytesRead = audioStream.read(buffer)) != -1) {
-                    for (int i = 0; i < bytesRead - 1; i += 2) {
-                        // Convert bytes to sample
-                        short sample = (short) ((buffer[i + 1] << 8) | (buffer[i] & 0xFF));
+                while ((bytesRead = audioStream.read(buffer)) != -1) { // read raw audio data into the buffer
+                    for (int i = 0; i < bytesRead - 1; i += 2) { // loop through the buffer 2 bytes at a time
+                        short sample = (short) ((buffer[i + 1] << 8) | (buffer[i] & 0xFF)); // combines low and high byte(+1)
 
                         // Apply amplitude factor
                         sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, sample * amplitudeFactor));

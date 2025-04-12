@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.JStudio.Plugins.Views.ChorusStage;
 import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.Plugins.Views.ReverbStage;
 
@@ -35,7 +36,16 @@ public class MainUIPlugins extends Application {
         btnFlanger.setText("Flanger");
         btnFlanger.setTranslateX(50);
         
-        pane.getChildren().addAll(btnReverb, btnFlanger);
+        Button btnChorus = new Button();
+        btnChorus.setOnAction(e -> {
+            ChorusStage chorus = new ChorusStage();
+            chorus.show();
+        });
+        
+        btnChorus.setText("Chorus");
+        btnChorus.setTranslateX(100);
+        
+        pane.getChildren().addAll(btnReverb, btnFlanger, btnChorus);
         Scene scene = new Scene(pane, 800, 500);
         primaryStage.sizeToScene();
         primaryStage.setScene(scene);

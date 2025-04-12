@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Flanger plugin that takes in audio data and applies a flanging effect on it
  * @author Theodore Georgiou
  */
-public class FlangerPlugin {
+public class ModulationPlugin {
     private String fileName;
     private String filePathName;
     private byte[] originalAudio;
@@ -30,7 +30,7 @@ public class FlangerPlugin {
     private int deviation;
 
     // Creates a flanger
-    public FlangerPlugin(double frequency, int deviation, double wetDryFactor) {
+    public ModulationPlugin(double frequency, int deviation, double wetDryFactor) {
         convertAudioFileToByteArray();
         this.frequency = frequency;
         this.deviation = deviation;

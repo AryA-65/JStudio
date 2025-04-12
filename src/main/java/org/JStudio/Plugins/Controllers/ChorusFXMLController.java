@@ -1,16 +1,15 @@
 package org.JStudio.Plugins.Controllers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import org.JStudio.Plugins.Models.ModulationPlugin;
 
-/**
- * FXML controller class for the Flanger UI
- * @author Theodore Georgiou
- */
-public class FlangerFXMLController {
+public class ChorusFXMLController {
     @FXML
     private Slider frequencySlider;
     @FXML
@@ -21,7 +20,7 @@ public class FlangerFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
-    private ModulationPlugin flanger;
+    private ModulationPlugin chorus;
     
     /**
      * Initializes the UI, showing the tick marks on the slider and setting
@@ -29,7 +28,7 @@ public class FlangerFXMLController {
      */
     @FXML
     public void initialize() {
-        flanger = new ModulationPlugin(0.2, 2000, 0.5); // Create a flanger
+        chorus = new ModulationPlugin(10000, 100, 0.5); // Create a flanger
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -58,26 +57,26 @@ public class FlangerFXMLController {
         
         // Set listeners and actions for sliders and buttons
         frequencySlider.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
-            flanger.setFrequency(newFrequency.intValue()*50000);
+            chorus.setFrequency(newFrequency.intValue()*10000);
         });
         
         deviationSlider.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
-            flanger.setDeviation(newDeviation.intValue()*50);
+            chorus.setDeviation(newDeviation.intValue()*100);
             
         });
         
         wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
-            flanger.setWetDryFactor(newWetDryFactor.doubleValue()/10);
+            chorus.setWetDryFactor(newWetDryFactor.doubleValue()/10);
         });
         
         // Play the audio
         playButton.setOnAction(e -> {
-            flanger.setFlangerEffect();
+            chorus.setFlangerEffect();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
-            flanger = new ModulationPlugin(0.2, 2000, 0.5);
+            chorus = new ModulationPlugin(10000, 100, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);

@@ -108,7 +108,7 @@ public class FlangerPlugin {
      */
     private void calculateDelayTime(short[] audioData) {
         for (int i = 0; i < audioData.length; i++) {
-            int delay = (int) Math.abs(Math.sin(2*Math.PI * frequency * i/44100) * deviation); // Will be chnaged to match other sample rates
+            int delay = (int) Math.abs(Math.sin(2*Math.PI * frequency/500000 * i/44100) * deviation); // Will be chnaged to match other sample rates
             delays.add(delay);
         }
     }

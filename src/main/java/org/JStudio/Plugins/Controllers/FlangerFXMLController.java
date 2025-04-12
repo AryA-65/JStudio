@@ -58,11 +58,11 @@ public class FlangerFXMLController {
         
         // Set listeners and actions for sliders and buttons
         frequencySlider.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
-            flanger.setFrequency(newFrequency.intValue()*500);
+            flanger.setFrequency(newFrequency.intValue()*50000);
         });
         
         deviationSlider.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
-            flanger.setDeviation(newDeviation.intValue()*100);
+            flanger.setDeviation(newDeviation.intValue()*50);
             
         });
         
@@ -72,7 +72,7 @@ public class FlangerFXMLController {
         
         // Play the audio
         playButton.setOnAction(e -> {
-                flanger.setFlangerEffect();
+            flanger.setFlangerEffect();
         });
         
         // Reset to initial values

@@ -84,25 +84,25 @@ public class ReverbFXMLController {
         
         // Set listeners and actions for sliders and buttons
         preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
-            reverb.setPreDelay(newPreDelay.intValue()*1000);
+            reverb.setPreDelay(newPreDelay.intValue()*500);
         });
         
         decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
-            reverb.setDecay(newDecayTime.doubleValue()*10000);
-            
+            reverb.setDecay(newDecayTime.doubleValue()*3000);
         });
         
         wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
             reverb.setWetDryFactor(newWetDryFactor.doubleValue()/10);
+
         });
         
         diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
-            reverb.setDiffusion(newDiffusion.intValue()*1000);
+            reverb.setDiffusion(newDiffusion.intValue()*100);
         });
         
         // Play the audio
         playButton.setOnAction(e -> {
-            reverb.setReverbEffect();
+                reverb.setReverbEffect();
         });
         
         // Reset to initial values

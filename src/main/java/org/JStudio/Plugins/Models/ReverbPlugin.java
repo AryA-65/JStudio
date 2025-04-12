@@ -48,13 +48,6 @@ public class ReverbPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-//            filePathName = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
-////            fileName = "\\jumpland.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-////            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-//            String filePath = "C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\Cowbells\\cowbell-74767.wav";
-//            Path path = Paths.get(filePath);
-//            originalAudio = Files.readAllBytes(path);
-////            System.out.println(Arrays.toString(Files.readAllBytes(path)));
             File file = new FileChooser().showOpenDialog(null);
             filePathName = file.getAbsolutePath();
             originalAudio = Files.readAllBytes(file.toPath());
@@ -67,7 +60,6 @@ public class ReverbPlugin {
      * Applies the reverb effect to the audio data array
      */
     private void applyReverbEffect() {
-        //convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
         byte[] audioToReverb = new byte[originalAudio.length - 44];
 
@@ -82,18 +74,14 @@ public class ReverbPlugin {
             reverbNums[i] = ByteBuffer.wrap(audioToReverb, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
 
-        int numOfDelayLines;
-        if (decay/10000 >= 5) {
-            numOfDelayLines = (int) (decay/20000);
-        } else {
-            numOfDelayLines = (int) (decay/10000);
-        }
+        int numOfDelayLines = 5;
         
         double decayNumber;
-        double initialDecay = decay/1000;
+        double initialDecay = decay/40000;
         // Loop repeats for the number of delay lines
         for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
-            decayNumber = initialDecay*Math.pow(Math.E, - (decay/1000));
+            decayNumber = initialDecay*Math.pow(Math.E, - (decay/100000));
+            initialDecay = decayNumber;
             short[] decayedAudio = new short[reverbNums.length];
             
             // Decay the audio
@@ -108,6 +96,12 @@ public class ReverbPlugin {
         for (int i = 0; i < delayLines.size(); i++) {
             for (int j = 0; j < delayLines.get(i).length; j++) {
                 delayLineAudio[j+(delayLineCounter*diffusion)] += delayLines.get(i)[j];
+                
+                if (delayLineAudio[j+(delayLineCounter*diffusion)] > Short.MAX_VALUE) {
+                delayLineAudio[j+(delayLineCounter*diffusion)] = Short.MAX_VALUE;
+                } else if (delayLineAudio[j+(delayLineCounter*diffusion)] < Short.MIN_VALUE) {
+                    delayLineAudio[j+(delayLineCounter*diffusion)] = Short.MIN_VALUE;
+                }
             }
             delayLineCounter++;
         }
@@ -118,7 +112,7 @@ public class ReverbPlugin {
         
         // Setup dry sound
         for (int i = 0; i < dryAudio.length; i++) {
-            dryAudio[i] = (short) (reverbNums[i]*wetDryFactor);
+            dryAudio[i] = (short) ((short) (reverbNums[i]*wetDryFactor));
         }
         
         // Setup wet sound
@@ -134,11 +128,18 @@ public class ReverbPlugin {
                 mixedAudio[i] = dryAudio[i];
             } else if (i>preDelay && i<dryAudio.length) {
                 mixedAudio[i] = (short) (dryAudio[i] + wetAudio[wetPos]);
+                
+                if (mixedAudio[i] >= Short.MAX_VALUE) {
+                    mixedAudio[i] = Short.MAX_VALUE;
+                } else if (mixedAudio[i] < Short.MIN_VALUE) {
+                    mixedAudio[i] = Short.MIN_VALUE;
+                }
                 wetPos++;
             } else if (i>dryAudio.length){
                 mixedAudio[i] = wetAudio[wetPos];
                 wetPos++;
             }
+            
         }
         
         // Revert back to byte array to have playback functionality
@@ -150,7 +151,7 @@ public class ReverbPlugin {
         byte[] audioToPlay = new byte[((delayLineAudio.length+preDelay) * 2) + 44];
         System.arraycopy(finalAudio, 0, audioToPlay, 44, (delayLineAudio.length+preDelay) * 2); // Add the audio data
         System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(finalAudio);
+        playAudio(audioToPlay);
     }
     
     /**
@@ -167,10 +168,13 @@ public class ReverbPlugin {
         }
 
         // Apply decay effect
-        double initialAmplitude = amplitudeFactor;
         for (int i = 0; i < volumeControlledAudio.length; i++) {
             volumeControlledAudio[i] = (short) (volumeControlledAudio[i] * amplitudeFactor);
-            amplitudeFactor = initialAmplitude*Math.pow(Math.E, - (decay/50000) * i); // Based on exponential decay equation
+            if (volumeControlledAudio[i] > Short.MAX_VALUE) {
+                volumeControlledAudio[i] = Short.MAX_VALUE;
+            } else if (volumeControlledAudio[i] < Short.MIN_VALUE) {
+                volumeControlledAudio[i] = Short.MIN_VALUE;
+            }
 
             // To keep the audio audible
             if (amplitudeFactor <= 0.05) {

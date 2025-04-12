@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -45,10 +43,6 @@ public class FlangerPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-//            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-//            fileName = "\\cowbell-74767.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-//            Path path = Paths.get(filePath);
             File file = new FileChooser().showOpenDialog(null);
             filePathName = file.getAbsolutePath();
             originalAudio = Files.readAllBytes(file.toPath());
@@ -61,7 +55,6 @@ public class FlangerPlugin {
      * Applies flanger effect to audio data
      */
     private void applyFlangerEffect() {
-//        convertAudioFileToByteArray();
         byte[] audioToFlang = new byte[originalAudio.length - 44];
 
         // The audio to add flanging to has same audio data as the original audio for now (no header)
@@ -90,6 +83,11 @@ public class FlangerPlugin {
             if (i+delays.get(i) < flangerNums.length) {
                 flangedAudio[i] += flangerNums[i+delays.get(i)]*(1-wetDryFactor);
             }
+            if (flangedAudio[i] > Short.MAX_VALUE) {
+                flangedAudio[i] = Short.MAX_VALUE;
+            } else if (flangedAudio[i] < Short.MIN_VALUE) {
+                flangedAudio[i] = Short.MIN_VALUE;
+            }
         }
 
         // Revert back to byte array to have playback functionality
@@ -101,7 +99,7 @@ public class FlangerPlugin {
         byte[] audioToPlay = new byte[(flangedAudio.length * 2) + 44];
         System.arraycopy(finalAudio, 0, audioToPlay, 44, flangedAudio.length * 2); // Add the audio data
         System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(finalAudio);
+        playAudio(audioToPlay);
     }
     
     /**
@@ -110,7 +108,7 @@ public class FlangerPlugin {
      */
     private void calculateDelayTime(short[] audioData) {
         for (int i = 0; i < audioData.length; i++) {
-            int delay = (int) (deviation * Math.sin(2*Math.PI * frequency * i/44100)); // Will be chnaged to match other sample rates
+            int delay = (int) Math.abs(Math.sin(2*Math.PI * frequency * i/44100) * deviation); // Will be chnaged to match other sample rates
             delays.add(delay);
         }
     }

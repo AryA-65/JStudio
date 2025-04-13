@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -40,7 +38,7 @@ public class EchoPlugin {
         this.diffusion = diffusion;
         this.echoNum = echoNum;
         this.wetDryFactor = wetDryFactor;
-//        fileName = "\\jumpland.wav";
+        convertAudioFileToByteArray();
     }
 
     /**
@@ -48,12 +46,6 @@ public class EchoPlugin {
      */
     private void convertAudioFileToByteArray() {
         try {
-//            filePathName = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-//            FileChooser fileChooser = new FileChooser();
-//
-////            fileName = "\\lp-cowbell-83904.wav"; // Use your own .wav file (44.1 kHz sample rate) to run
-//            String filePath = Paths.get(System.getProperty("user.home"), "Downloads") + fileName;
-//            Path path = Paths.get(filePath);
             FileChooser fl = new FileChooser();
             File selectedFile = fl.showOpenDialog(null);
             filePathName = selectedFile.getAbsolutePath();
@@ -67,7 +59,6 @@ public class EchoPlugin {
      * Applies the echo effect to the audio
      */
     private void applyEchoEffect() {
-        convertAudioFileToByteArray();
         echos = new ArrayList<>();
         byte[] audioToEcho = new byte[originalAudio.length - 44];
 
@@ -83,16 +74,16 @@ public class EchoPlugin {
         }
 
         int numOfEchos = echoNum;
-        
+        double decayValue = decay;
         // Loop repeats for the number of echos
         for (int echo = 0; echo < numOfEchos; echo++) {
             short[] loweredAudio = new short[echoNums.length];
             
             // lower the audio
-            loweredAudio = lowerAudio(echoNums, decay);
+            loweredAudio = lowerAudio(echoNums, decayValue);
 
             echos.add(loweredAudio);
-            decay /= 2;
+            decayValue *= decay;
         }
         
         // Add echos with diffusion spacing
@@ -101,6 +92,12 @@ public class EchoPlugin {
         for (int i = 0; i < echos.size(); i++) {
             for (int j = 0; j < echos.get(i).length; j++) {
                 echoAudio[j+(echoCounter*diffusion)] += echos.get(i)[j];
+                
+                if (echoAudio[j+(echoCounter*diffusion)] > Short.MAX_VALUE) {
+                echoAudio[j+(echoCounter*diffusion)] = Short.MAX_VALUE;
+                } else if (echoAudio[j+(echoCounter*diffusion)] < Short.MIN_VALUE) {
+                    echoAudio[j+(echoCounter*diffusion)] = Short.MIN_VALUE;
+                }
             }
             echoCounter++;
         }
@@ -127,6 +124,12 @@ public class EchoPlugin {
                 mixedAudio[i] = dryAudio[i];
             } else if (i>preDelay && i<dryAudio.length) {
                 mixedAudio[i] = (short) (dryAudio[i] + wetAudio[wetPos]);
+                
+                if (mixedAudio[i] > Short.MAX_VALUE) {
+                mixedAudio[i] = Short.MAX_VALUE;
+                } else if (mixedAudio[i] < Short.MIN_VALUE) {
+                    mixedAudio[i] = Short.MIN_VALUE;
+                }
                 wetPos++;
             } else if (i>dryAudio.length){
                 mixedAudio[i] = wetAudio[wetPos];
@@ -162,6 +165,11 @@ public class EchoPlugin {
         // Apply decay effect
         for (int i = 0; i < loweredAudio.length; i++) {
             loweredAudio[i] = (short) (loweredAudio[i] * amplitudeFactor);
+            if (loweredAudio[i] > Short.MAX_VALUE) {
+                loweredAudio[i] = Short.MAX_VALUE;
+            } else if (loweredAudio[i] < Short.MIN_VALUE) {
+                loweredAudio[i] = Short.MIN_VALUE;
+            }
         }
         return loweredAudio;
     }
@@ -195,5 +203,25 @@ public class EchoPlugin {
     // Wrapper class to set echo effect
     public void setEchoEffect() {
         applyEchoEffect();
+    }
+    
+    public void setDecay(double decay) {
+        this.decay = decay;
+    }
+
+    public void setPreDelay(int preDelay) {
+        this.preDelay = preDelay;
+    }
+
+    public void setEchoNum(int echoNum) {
+        this.echoNum = echoNum;
+    }
+
+    public void setDiffusion(int diffusion) {
+        this.diffusion = diffusion;
+    }
+
+    public void setWetDryFactor(double wetDryFactor) {
+        this.wetDryFactor = wetDryFactor;
     }
 }

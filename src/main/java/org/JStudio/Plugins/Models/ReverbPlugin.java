@@ -74,7 +74,7 @@ public class ReverbPlugin {
             reverbNums[i] = ByteBuffer.wrap(audioToReverb, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
 
-        int numOfDelayLines = 5;
+        int numOfDelayLines = 20;
         
         double decayNumber;
         double initialDecay = decay/40000;

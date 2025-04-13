@@ -1,0 +1,111 @@
+package org.JStudio.Plugins.Controllers;
+
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import org.JStudio.Plugins.Models.EchoPlugin;
+
+public class EchoFXMLController {
+    @FXML
+    private Button resetButton;
+    @FXML
+    private Button playButton;
+    @FXML
+    private Slider echoNumSlider;
+    @FXML
+    private Slider decayTimeSlider;
+    @FXML
+    private Slider diffusionSlider;
+    @FXML
+    private Slider preDelaySlider;
+    @FXML
+    private Slider wetDrySlider;
+    private EchoPlugin echo;
+    
+    @FXML
+    public void initialize() {
+    echo = new EchoPlugin(10000, 0.5, 20000, 10, 0.5); // Create a reverb
+        
+        // Set the visual components/max and min values of the sliders
+        preDelaySlider.setMin(1);
+        preDelaySlider.setMax(9.9);
+        preDelaySlider.setShowTickMarks(true);
+        preDelaySlider.setMajorTickUnit(1);
+        preDelaySlider.setMinorTickCount(0);
+        preDelaySlider.setShowTickLabels(true);
+        preDelaySlider.setSnapToTicks(true);
+        preDelaySlider.setValue(1);
+        
+        decayTimeSlider.setMin(1);
+        decayTimeSlider.setMax(10);
+        decayTimeSlider.setShowTickMarks(true);
+        decayTimeSlider.setMajorTickUnit(1);
+        decayTimeSlider.setMinorTickCount(0);
+        decayTimeSlider.setShowTickLabels(true);
+        decayTimeSlider.setSnapToTicks(true);
+        decayTimeSlider.setValue(1);
+        
+        diffusionSlider.setMin(1);
+        diffusionSlider.setMax(10);
+        diffusionSlider.setShowTickMarks(true);
+        diffusionSlider.setMajorTickUnit(1);
+        diffusionSlider.setMinorTickCount(0);
+        diffusionSlider.setShowTickLabels(true);
+        diffusionSlider.setSnapToTicks(true);
+        diffusionSlider.setValue(2);
+        
+        echoNumSlider.setMin(1);
+        echoNumSlider.setMax(10);
+        echoNumSlider.setShowTickMarks(true);
+        echoNumSlider.setMajorTickUnit(1);
+        echoNumSlider.setMinorTickCount(0);
+        echoNumSlider.setShowTickLabels(true);
+        echoNumSlider.setSnapToTicks(true);
+        echoNumSlider.setValue(1);
+        
+        wetDrySlider.setMin(1);
+        wetDrySlider.setMax(10);
+        wetDrySlider.setShowTickMarks(true);
+        wetDrySlider.setMajorTickUnit(1);
+        wetDrySlider.setMinorTickCount(0);
+        wetDrySlider.setShowTickLabels(true);
+        wetDrySlider.setValue(5);
+        
+        // Set listeners and actions for sliders and buttons
+        preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
+            echo.setPreDelay(newPreDelay.intValue());
+        });
+        
+        decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
+            echo.setDecay(newDecayTime.doubleValue()/11);
+        });
+        
+        wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
+            echo.setWetDryFactor(newWetDryFactor.doubleValue()/10);
+
+        });
+        
+        diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
+            echo.setDiffusion(newDiffusion.intValue()*5000);
+        });
+        
+        echoNumSlider.valueProperty().addListener((ObservableValue<? extends Number> echoNum, Number oldEchoNum, Number newEchoNum) -> {
+            echo.setEchoNum(newEchoNum.intValue()*2);
+        });
+        
+        // Play the audio
+        playButton.setOnAction(e -> {
+            echo.setEchoEffect();
+        });
+        
+        // Reset to initial values
+        resetButton.setOnAction(e -> {
+            echo = new EchoPlugin(10000, 0.5, 20000, 10, 0.5);
+            preDelaySlider.setValue(1);
+            decayTimeSlider.setValue(1);
+            diffusionSlider.setValue(2);
+            wetDrySlider.setValue(5);
+        });
+    }
+}

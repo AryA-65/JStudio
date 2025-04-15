@@ -104,7 +104,7 @@ public class Controller {
             drawWaveform(s);
             return s;
         });
-        
+
         this.auTh = audioThread;
 
         for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {

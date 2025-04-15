@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Models;
 
 import javax.sound.sampled.*;
 import java.io.File;

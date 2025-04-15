@@ -12,7 +12,7 @@ import java.io.IOException;
 public class SynthMain extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("waveGenerator.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/waveGenerator.fxml"));
         Parent root = fxmlLoader.load();
 
         Controller myController = fxmlLoader.getController();

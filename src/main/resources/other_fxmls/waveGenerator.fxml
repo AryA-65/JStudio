@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -9,15 +11,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
-      <HBox prefHeight="350.0" prefWidth="650.0" spacing="20" style="-fx-padding: 15px; -fx-background-color: #f4f4f4;">
+      <HBox prefHeight="375.0" prefWidth="650.0" spacing="20" style="-fx-padding: 15px; -fx-background-color: #f4f4f4;">
          <children>
-            <VBox prefHeight="350.0" prefWidth="350.0" spacing="15">
+            <VBox fx:id="vbox" prefHeight="350.0" prefWidth="350.0" spacing="15">
                <children>
-                  <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
+                  <HBox fx:id="hbox_WAVE1" prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="97.0" text="Waveform 1:" />
+                        <Label fx:id="label1" prefHeight="17.0" prefWidth="97.0" text="Waveform 1:" />
                         <MenuButton fx:id="functionChooser1" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -27,12 +29,19 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider1" max="1" min="0" value="0.5" />
+                        <VBox fx:id="parameterChooser1" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="toneLabel1" text="Tone" />
+                              <Slider fx:id="tone1" max="1" min="0" value="0.5" />
+                              <Label fx:id="volumeLabel1" text="Volume" />
+                              <Slider fx:id="volume1" max="1" min="0" value="0.5" />
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
+                  <HBox fx:id="hbox_WAVE2" prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="96.0" text="Waveform 2:" />
+                        <Label fx:id="label2" prefHeight="17.0" prefWidth="97.0" text="Waveform 2:" />
                         <MenuButton fx:id="functionChooser2" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -42,12 +51,19 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider2" max="1" min="0" value="0.5" />
+                        <VBox fx:id="parameterChooser2" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="toneLabel2" text="Tone" />
+                              <Slider fx:id="tone2" max="1" min="0" value="0.5" />
+                              <Label fx:id="volumeLabel2" text="Volume" />
+                              <Slider fx:id="volume2" max="1" min="0" value="0.5" />
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="350.0" spacing="10">
+                  <HBox fx:id="hbox_WAVE3" prefHeight="100.0" prefWidth="350.0" spacing="10">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="102.0" text="Waveform 3:" />
+                        <Label fx:id="label3" prefHeight="17.0" prefWidth="97.0" text="Waveform 3:" />
                         <MenuButton fx:id="functionChooser3" text="Select Waveform">
                            <items>
                               <MenuItem text="Sine" />
@@ -57,12 +73,33 @@
                               <MenuItem text="Noise" />
                            </items>
                         </MenuButton>
-                        <Slider fx:id="slider3" max="1" min="0" value="0.5" />
+                        <VBox fx:id="parameterChooser3" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="toneLabel3" text="Tone" />
+                              <Slider fx:id="tone3" max="1" min="0" value="0.5" />
+                              <Label fx:id="volumeLabel3" text="Volume" />
+                              <Slider fx:id="volume3" max="1" min="0" value="0.5" />
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <Canvas fx:id="waveformCanvas" height="300.0" style="-fx-border-color: #000; -fx-background-color: white;" width="280.0" />
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox fx:id="recordExportBox" prefHeight="100.0" prefWidth="200.0" spacing="70.0">
+                     <children>
+                        <Button fx:id="recordButton" mnemonicParsing="false" text="Record" />
+                        <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
+                     </children>
+                     <padding>
+                        <Insets left="50.0" right="50.0" />
+                     </padding>
+                  </HBox>
+                  <Canvas fx:id="waveformCanvas" height="320.0" style="-fx-border-color: #000; -fx-background-color: white;" width="280.0" />
+                  <Slider fx:id="playSpeed" />
+               </children>
+            </VBox>
          </children>
       </HBox>
    </children>

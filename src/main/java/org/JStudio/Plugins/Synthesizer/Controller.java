@@ -104,38 +104,7 @@ public class Controller {
             drawWaveform(s);
             return s;
         });
-        /** interesting test idea
-         * final AudioThread audioThread = new AudioThread(() -> {
-         *     if (!shouldGenerate) {
-         *         return null;
-         *     }
-         *     short[] s = new short[AudioThread.BUFFER_SIZE];
-         *
-         *     // Independent phases
-         *     int wavePos1 = wavePos;
-         *     int wavePos2 = wavePos + 100; // offset phase
-         *     int wavePos3 = wavePos + 200;
-         *
-         *     for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
-         *         double mixedSample = 0;
-         *
-         *         mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos1) * volume1.getValue());
-         *         mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos2) * volume2.getValue());
-         *         mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos3) * volume3.getValue());
-         *
-         *         mixedSample = Math.tanh(mixedSample / NORMALIZER);
-         *
-         *         s[i] = (short) (Short.MAX_VALUE * mixedSample);
-         *
-         *         wavePos1 += (int) speedFactor;
-         *         wavePos2 += (int) speedFactor;
-         *         wavePos3 += (int) speedFactor;
-         *     }
-         *     wavePos += (int) speedFactor;
-         *     drawWaveform(s);
-         *     return s;
-         * });
-         */
+        
         this.auTh = audioThread;
 
         for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {

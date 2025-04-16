@@ -76,8 +76,29 @@ public class UserDataController {
         }
     }
 
+    /**
+     * Checks whether a username exists in the users HashMap
+     * @param username the username to search for
+     * @return true if the username exists, false otherwise
+     */
+    public boolean isUserInFile(String username) {
+        return users.containsKey(username);
+    }
+
+    /**
+     * Retrieves the password for a given username from the users HashMap
+     * @param username the username to search for
+     * @return the encrypted password as a String if the user is found, null otherwise
+     */
+    public String getPasswordForUser(String username) {
+        User user = users.get(username);
+        return (user != null) ? user.getPassword() : null;
+    }
+
     public HashMap<String, User> getUsers() {
         return users;
     }
+
+
 }
 

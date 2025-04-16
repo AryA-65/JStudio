@@ -99,5 +99,6 @@ public class EncryptionAndDecryption {
         asciiConverter();
         return encryptedText();
     }
+
 }
 

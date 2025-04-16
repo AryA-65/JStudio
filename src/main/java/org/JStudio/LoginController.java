@@ -30,11 +30,7 @@ public class LoginController {
 
     private int key1, key2;
 
-    private boolean entry = false;
-
     private User user;
-
-    private boolean isCorrect = false;
 
     public LoginController() {
     }
@@ -45,13 +41,13 @@ public class LoginController {
         csvSetUp();
         entryLimiters();
         createAccount.setOnAction(event -> {
-            if (isCorrect) {
+            if (userId == null || userPass == null || userId.length() < 6 || userPass.length() < 6) {
                 AlertBox.display("Credentials do not meet expectations","The username / password is too short ( minimum of 6 characters).");
+                return;
             }
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
             user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
             userDataController.writeToFile(user);
-            entry = true;
             lunchMainApp();
         });
 
@@ -61,8 +57,7 @@ public class LoginController {
                 User existingUser = userDataController.getUsers().get(userId);
                 encryptionAndDecryption = new EncryptionAndDecryption(existingUser.getPassword(), existingUser.getKey1(), existingUser.getKey2());
                 String decryptedPassword = encryptionAndDecryption.decryption();
-                if (decryptedPassword.equals(userPass)) {
-                    entry = true;
+                if (decryptedPassword.equalsIgnoreCase(userPass)) {
                     lunchMainApp();
                 } else {
                     AlertBox.display("Error", "The entered user password does not correspond to this user.");
@@ -114,8 +109,6 @@ public class LoginController {
             if (newText.contains(" ")) {
                 userIdField.setText(newText.replace(" ", ""));
                 System.out.println(userIdField);
-            } else if (newText.length() <= 6) {
-                isCorrect = true;
             }
             userId = newText;
         });
@@ -124,9 +117,6 @@ public class LoginController {
             if (newText.contains(" ")) {
                 userPasswordField.setText(newText.replace(" ", ""));
                 System.out.println(userPasswordField);
-            } else if (newText.length() <= 6) {
-//                AlertBox.display("Password not meet expectations","The password is too short. Please choose one that is 6 characters minimum.");
-                isCorrect = true;
             }
             userPass = newText;
         });
@@ -150,10 +140,6 @@ public class LoginController {
     public void setRootStage(Stage stage) {
         rootStage = stage;
     }
-
-    public Stage getRootStage() {return rootStage;}
-
-    public Scene getRootScene() {return rootScene;}
 
     public void setRootScene(Scene rootScene) {
         this.rootScene = rootScene;

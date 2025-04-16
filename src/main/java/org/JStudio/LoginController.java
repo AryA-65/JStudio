@@ -1,10 +1,13 @@
 package org.JStudio;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import login.EncryptionAndDecryption;
 import login.User;
 import login.UserDataController;
@@ -16,8 +19,6 @@ public class LoginController {
 
     private UserDataController userDataController;
     private EncryptionAndDecryption encryptionAndDecryption;
-
-    private AlertBox alertBox;
 
     @FXML
     private TextField userIdField, userPasswordField, key1Field, key2Field;
@@ -33,16 +34,20 @@ public class LoginController {
 
     private User user;
 
-    private String encryptedPassword;
+    private boolean isCorrect = false;
 
     public LoginController() {
     }
 
     @FXML
     public void initialize() {
+        userDataController = new UserDataController();
         csvSetUp();
         entryLimiters();
         createAccount.setOnAction(event -> {
+            if (isCorrect) {
+                AlertBox.display("Credentials do not meet expectations","The username / password is too short ( minimum of 6 characters).");
+            }
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
             user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
             userDataController.writeToFile(user);
@@ -60,18 +65,42 @@ public class LoginController {
                     entry = true;
                     lunchMainApp();
                 } else {
-                    alertBox.display("Error", "The entered user password does not correspond to this user.");
+                    AlertBox.display("Error", "The entered user password does not correspond to this user.");
                 }
             } else {
-                alertBox.display("Error", "The entered user does not have prior history.");
+                AlertBox.display("Error", "The entered user does not have prior history.");
             }
         });
     }
 
     private void lunchMainApp() {
-        rootStage.close();
-        //todo call the controller class of the main app
+        try {
+            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+            Parent root = loader.load();
+
+            UIController controller = loader.getController();
+
+            Stage mainStage = new Stage();
+            controller.setStage(mainStage);
+            controller.setScreenSize();
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+
+            mainStage.setScene(scene);
+            mainStage.initStyle(StageStyle.TRANSPARENT);
+            mainStage.setResizable(true);
+            mainStage.show();
+
+            controller.setSplitRatio();
+
+            rootStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
 
     private void csvSetUp() {
@@ -86,7 +115,7 @@ public class LoginController {
                 userIdField.setText(newText.replace(" ", ""));
                 System.out.println(userIdField);
             } else if (newText.length() <= 6) {
-                System.out.println("do longer id");
+                isCorrect = true;
             }
             userId = newText;
         });
@@ -96,7 +125,8 @@ public class LoginController {
                 userPasswordField.setText(newText.replace(" ", ""));
                 System.out.println(userPasswordField);
             } else if (newText.length() <= 6) {
-                System.out.println("do longer pass");
+//                AlertBox.display("Password not meet expectations","The password is too short. Please choose one that is 6 characters minimum.");
+                isCorrect = true;
             }
             userPass = newText;
         });

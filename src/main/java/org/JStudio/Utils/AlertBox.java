@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.*;
 
 public class AlertBox {
-    public void display(String title, String message) {
+    public static void display(String title, String message) {
         Stage window = new Stage();
 
         window.initModality(Modality.APPLICATION_MODAL);

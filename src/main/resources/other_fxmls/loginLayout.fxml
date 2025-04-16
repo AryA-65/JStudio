@@ -23,7 +23,7 @@
    <children>
       <HBox fx:id="box1" prefHeight="100.0" prefWidth="100.0" spacing="75.0">
          <children>
-            <Label fx:id="userId" text="User Name">
+            <Label fx:id="userLabel" text="User Name">
                <HBox.margin>
                   <Insets top="10.0" />
                </HBox.margin></Label>
@@ -38,7 +38,7 @@
       </HBox>
       <HBox fx:id="box2" prefHeight="100.0" prefWidth="100.0" spacing="75.0" GridPane.rowIndex="1">
          <children>
-            <Label fx:id="userPass" text="Password">
+            <Label fx:id="passLabel" text="Password">
                <padding>
                   <Insets top="10.0" />
                </padding></Label>
@@ -56,7 +56,7 @@
          <children>
             <VBox fx:id="box3_1" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
                <children>
-                  <Label fx:id="key1" text="Key One">
+                  <Label fx:id="key1Label" text="Key One">
                      <padding>
                         <Insets top="10.0" />
                      </padding></Label>
@@ -65,7 +65,7 @@
             </VBox>
             <VBox fx:id="box3_2" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
                <children>
-                  <Label fx:id="key2" text="Key Two">
+                  <Label fx:id="key2Label" text="Key Two">
                      <padding>
                         <Insets top="10.0" />
                      </padding></Label>

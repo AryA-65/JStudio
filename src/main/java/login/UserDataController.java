@@ -13,7 +13,7 @@ import java.util.HashMap;
  * Class used for storing and accessing user login data
  */
 public class UserDataController {
-    private HashMap<String, User> users = new HashMap<>();
+    public HashMap<String, User> users = new HashMap<>();
     private final String filePath = "src/main/resources/UserData/loginInfo.csv";
 
     /**

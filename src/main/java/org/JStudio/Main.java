@@ -14,23 +14,35 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+//        Parent root = loader.load();
+//
+//        controller = loader.getController();
+//        controller.setStage(stage);
+//        controller.setScreenSize();
+//
+//
+//        Scene scene = new Scene(root);
+//        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//
+//        stage.setScene(scene);
+//        stage.initStyle(StageStyle.TRANSPARENT);
+//        stage.setResizable(true);
+//        stage.show();
+//
+//        controller.setSplitRatio();
+
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
         Parent root = loader.load();
 
-        controller = loader.getController();
-        controller.setStage(stage);
-        controller.setScreenSize();
-
+        LoginController loginController = loader.getController();
+        loginController.setRootStage(stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-
         stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setResizable(true);
+        loginController.setRootScene(scene);
+        stage.setResizable(false);
         stage.show();
-
-        controller.setSplitRatio();
     }
 
     public static void main(String[] args) {

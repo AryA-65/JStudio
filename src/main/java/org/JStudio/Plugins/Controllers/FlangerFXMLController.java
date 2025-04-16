@@ -29,7 +29,7 @@ public class FlangerFXMLController {
      */
     @FXML
     public void initialize() {
-        flanger = new ModulationPlugin(0.2, 2000, 0.5); // Create a flanger
+        flanger = new ModulationPlugin(100000, 100, 0.5); // Create a flanger
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -72,12 +72,12 @@ public class FlangerFXMLController {
         
         // Play the audio
         playButton.setOnAction(e -> {
-            flanger.setFlangerEffect();
+            flanger.setModulationEffect();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
-            flanger = new ModulationPlugin(0.2, 2000, 0.5);
+            flanger = new ModulationPlugin(100000, 100, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);

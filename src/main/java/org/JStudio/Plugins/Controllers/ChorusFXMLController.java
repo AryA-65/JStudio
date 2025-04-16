@@ -1,12 +1,9 @@
 package org.JStudio.Plugins.Controllers;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import org.JStudio.Plugins.Models.ModulationPlugin;
 
 public class ChorusFXMLController {
@@ -28,7 +25,7 @@ public class ChorusFXMLController {
      */
     @FXML
     public void initialize() {
-        chorus = new ModulationPlugin(10000, 100, 0.5); // Create a flanger
+        chorus = new ModulationPlugin(20000, 200, 0.5); // Create a flanger
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -71,12 +68,12 @@ public class ChorusFXMLController {
         
         // Play the audio
         playButton.setOnAction(e -> {
-            chorus.setFlangerEffect();
+            chorus.setModulationEffect();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
-            chorus = new ModulationPlugin(10000, 100, 0.5);
+            chorus = new ModulationPlugin(20000, 200, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);

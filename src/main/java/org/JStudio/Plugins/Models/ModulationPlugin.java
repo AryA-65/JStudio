@@ -54,50 +54,50 @@ public class ModulationPlugin {
     /**
      * Applies flanger effect to audio data
      */
-    private void applyFlangerEffect() {
-        byte[] audioToFlang = new byte[originalAudio.length - 44];
+    private void applyModulationEffect() {
+        byte[] audioToModulate = new byte[originalAudio.length - 44];
 
         // The audio to add flanging to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < audioToFlang.length; i++) {
-            audioToFlang[i] = originalAudio[i + 44];
+        for (int i = 0; i < audioToModulate.length; i++) {
+            audioToModulate[i] = originalAudio[i + 44];
         }
 
         // Convert audio data to short type to avoid audio warping
-        short[] flangerNums = new short[audioToFlang.length / 2];
-        for (int i = 0; i < flangerNums.length; i++) {
-            flangerNums[i] = ByteBuffer.wrap(audioToFlang, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        short[] modulationNums = new short[audioToModulate.length / 2];
+        for (int i = 0; i < modulationNums.length; i++) {
+            modulationNums[i] = ByteBuffer.wrap(audioToModulate, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
         
         // Sets all the delays
-        calculateDelayTime(flangerNums);
+        calculateDelayTime(modulationNums);
         
-        short[] flangedAudio = new short[flangerNums.length];
+        short[] modulatedAudio = new short[modulationNums.length];
 
         // Original audio
-        for (int i = 0; i < flangedAudio.length; i++) {
-            flangedAudio[i] = (short) (flangerNums[i] * wetDryFactor);
+        for (int i = 0; i < modulatedAudio.length; i++) {
+            modulatedAudio[i] = (short) (modulationNums[i] * wetDryFactor);
         }
 
         // Add delayed audio to original audio
         for (int i = 0; i < delays.size(); i++) {
-            if (i+delays.get(i) < flangerNums.length) {
-                flangedAudio[i] += flangerNums[i+delays.get(i)]*(1-wetDryFactor);
+            if (i+delays.get(i) < modulationNums.length) {
+                modulatedAudio[i] += modulationNums[i+delays.get(i)]*(1-wetDryFactor);
             }
-            if (flangedAudio[i] > Short.MAX_VALUE) {
-                flangedAudio[i] = Short.MAX_VALUE;
-            } else if (flangedAudio[i] < Short.MIN_VALUE) {
-                flangedAudio[i] = Short.MIN_VALUE;
+            if (modulatedAudio[i] > Short.MAX_VALUE) {
+                modulatedAudio[i] = Short.MAX_VALUE;
+            } else if (modulatedAudio[i] < Short.MIN_VALUE) {
+                modulatedAudio[i] = Short.MIN_VALUE;
             }
         }
 
         // Revert back to byte array to have playback functionality
-        byte[] finalAudio = new byte[flangedAudio.length * 2];
-        for (int i = 0; i < flangedAudio.length; i++) {
-                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(flangedAudio[i]); // i*2 since each short is 2 bytes long
+        byte[] finalAudio = new byte[modulatedAudio.length * 2];
+        for (int i = 0; i < modulatedAudio.length; i++) {
+                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(modulatedAudio[i]); // i*2 since each short is 2 bytes long
             }
         
-        byte[] audioToPlay = new byte[(flangedAudio.length * 2) + 44];
-        System.arraycopy(finalAudio, 0, audioToPlay, 44, flangedAudio.length * 2); // Add the audio data
+        byte[] audioToPlay = new byte[(modulatedAudio.length * 2) + 44];
+        System.arraycopy(finalAudio, 0, audioToPlay, 44, modulatedAudio.length * 2); // Add the audio data
         System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
         playAudio(audioToPlay);
     }
@@ -108,7 +108,8 @@ public class ModulationPlugin {
      */
     private void calculateDelayTime(short[] audioData) {
         for (int i = 0; i < audioData.length; i++) {
-            int delay = (int) Math.abs(Math.sin(2*Math.PI * frequency/500000 * i/44100) * deviation); // Will be chnaged to match other sample rates
+            double delayTrig = Math.sin(2*Math.PI * frequency/500000 * i/44100) ; // Will be changed to match other sample rates
+            int delay = (int) (delayTrig  * deviation);
             delays.add(delay);
         }
     }
@@ -139,8 +140,8 @@ public class ModulationPlugin {
     /**
      * Wrapper class to set flanger effect
      */
-    public void setFlangerEffect() {
-        applyFlangerEffect();
+    public void setModulationEffect() {
+        applyModulationEffect();
     }
 
     /**

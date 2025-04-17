@@ -106,18 +106,14 @@ public class LoginController {
 
     private void entryLimiters() {
         userIdField.textProperty().addListener((obs, oldText, newText) -> {
-            if (newText.contains(" ")) {
-                userIdField.setText(newText.replace(" ", ""));
-                System.out.println(userIdField);
-            }
+            userIdField.setText(newText.replace(" ", ""));
             userId = newText;
         });
 
         userPasswordField.textProperty().addListener((obs, oldText, newText) -> {
-            if (newText.contains(" ")) {
-                userPasswordField.setText(newText.replace(" ", ""));
-                System.out.println(userPasswordField);
-            }
+            String cleanedText = newText.replaceAll("[^a-zA-Z]", "").replaceAll(" ", ""); // all text that is not a character
+
+            userPasswordField.setText(cleanedText);
             userPass = newText;
         });
 

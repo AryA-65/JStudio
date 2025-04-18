@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import org.JStudio.Plugins.Views.ChorusStage;
 import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.Plugins.Views.FlangerStage;
+import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.Plugins.Views.ReverbStage;
 
 /**
@@ -55,7 +56,16 @@ public class MainUIPlugins extends Application {
         btnEcho.setText("Echo");
         btnEcho.setTranslateX(150);
         
-        pane.getChildren().addAll(btnReverb, btnFlanger, btnChorus, btnEcho);
+        Button btnPhaser = new Button();
+        btnPhaser.setOnAction(e -> {
+            PhaserStage phaser = new PhaserStage();
+            phaser.show();
+        });
+        
+        btnPhaser.setText("Phaser");
+        btnPhaser.setTranslateX(200);
+        
+        pane.getChildren().addAll(btnReverb, btnFlanger, btnChorus, btnEcho, btnPhaser);
         Scene scene = new Scene(pane, 800, 500);
         primaryStage.sizeToScene();
         primaryStage.setScene(scene);

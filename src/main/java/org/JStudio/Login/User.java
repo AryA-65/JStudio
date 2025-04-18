@@ -1,4 +1,4 @@
-package login;
+package org.JStudio.Login;
 
 public class User {
     private String userName;

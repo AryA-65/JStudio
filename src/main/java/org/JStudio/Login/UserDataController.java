@@ -1,4 +1,4 @@
-package login;
+package org.JStudio.Login;
 
 import java.io.BufferedReader;
 import java.io.File;

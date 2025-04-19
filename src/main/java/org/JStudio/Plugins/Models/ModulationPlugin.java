@@ -24,6 +24,7 @@ public class ModulationPlugin {
     private String fileName;
     private String filePathName;
     private byte[] originalAudio;
+    private byte[] finalAudio;
     private ArrayList<Integer> delays = new ArrayList<>();
     private double frequency;
     private double wetDryFactor;
@@ -55,33 +56,21 @@ public class ModulationPlugin {
      * Applies flanger effect to audio data
      */
     private void applyModulationEffect() {
-        byte[] audioToModulate = new byte[originalAudio.length - 44];
-
-        // The audio to add flanging to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < audioToModulate.length; i++) {
-            audioToModulate[i] = originalAudio[i + 44];
-        }
-
-        // Convert audio data to short type to avoid audio warping
-        short[] modulationNums = new short[audioToModulate.length / 2];
-        for (int i = 0; i < modulationNums.length; i++) {
-            modulationNums[i] = ByteBuffer.wrap(audioToModulate, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-        
+        short[] audioToModulate = convertToShortArray();
         // Sets all the delays
-        calculateDelayTime(modulationNums);
+        calculateDelayTime(audioToModulate);
         
-        short[] modulatedAudio = new short[modulationNums.length];
+        short[] modulatedAudio = new short[audioToModulate.length];
 
         // Original audio
         for (int i = 0; i < modulatedAudio.length; i++) {
-            modulatedAudio[i] = (short) (modulationNums[i] * wetDryFactor);
+            modulatedAudio[i] = (short) (audioToModulate[i] * wetDryFactor);
         }
 
         // Add delayed audio to original audio
         for (int i = 0; i < delays.size(); i++) {
-            if (i+delays.get(i) < modulationNums.length) {
-                modulatedAudio[i] += modulationNums[i+delays.get(i)]*(1-wetDryFactor);
+            if (i+delays.get(i) < audioToModulate.length) {
+                modulatedAudio[i] += audioToModulate[i+delays.get(i)]*(1-wetDryFactor);
             }
             if (modulatedAudio[i] > Short.MAX_VALUE) {
                 modulatedAudio[i] = Short.MAX_VALUE;
@@ -90,16 +79,7 @@ public class ModulationPlugin {
             }
         }
 
-        // Revert back to byte array to have playback functionality
-        byte[] finalAudio = new byte[modulatedAudio.length * 2];
-        for (int i = 0; i < modulatedAudio.length; i++) {
-                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(modulatedAudio[i]); // i*2 since each short is 2 bytes long
-            }
-        
-        byte[] audioToPlay = new byte[(modulatedAudio.length * 2) + 44];
-        System.arraycopy(finalAudio, 0, audioToPlay, 44, modulatedAudio.length * 2); // Add the audio data
-        System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(audioToPlay);
+        convertToByteArray(modulatedAudio, modulatedAudio.length * 2);
     }
     
     /**
@@ -112,6 +92,44 @@ public class ModulationPlugin {
             int delay = (int) (delayTrig  * deviation);
             delays.add(delay);
         }
+    }
+    
+    /**
+     * Converts the original audio data to a short array to allow for modifications
+     * @return the short[] audio data array
+     */
+    private short[] convertToShortArray() {
+        byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
+
+        // The audio to add flanging to has same audio data as the original audio for now (no header)
+        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
+            noHeaderByteAudioData[i] = originalAudio[i + 44];
+        }
+
+        // Convert audio data to short type to avoid audio warping
+        short[] audioToModulate = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < audioToModulate.length; i++) {
+            audioToModulate[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+        
+        return audioToModulate;
+    }
+    
+    /**
+     * Revert short[] audio data back to byte array to have playback functionality
+     * @param audioData the audio data to be converted to a byte array
+     */
+    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
+        // Revert back to byte array to have playback functionality
+        byte[] modifiedAudio = new byte[sizeOfByteArray];
+        for (int i = 0; i < audioData.length; i++) {
+                ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+            }
+        
+        finalAudio = new byte[sizeOfByteArray + 44];
+        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
+        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
+        playAudio(finalAudio);
     }
     
     /**

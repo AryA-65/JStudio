@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javafx.stage.FileChooser;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -30,6 +27,7 @@ public class ReverbPlugin {
     private int preDelay;
     private int diffusion;
     private byte[] originalAudio;
+    private byte[] finalAudio;
     private ArrayList<short[]> delayLines = new ArrayList<>();
 
     // Creates a reverb
@@ -61,37 +59,27 @@ public class ReverbPlugin {
      */
     private void applyReverbEffect() {
         delayLines = new ArrayList<>();
-        byte[] audioToReverb = new byte[originalAudio.length - 44];
-
-        // The audio to reverb has same audio data as the original audio for now (no header)
-        for (int i = 0; i < audioToReverb.length; i++) {
-            audioToReverb[i] = originalAudio[i + 44];
-        }
-
-        // Convert audio data to short type to avoid audio warping
-        short[] reverbNums = new short[audioToReverb.length / 2];
-        for (int i = 0; i < reverbNums.length; i++) {
-            reverbNums[i] = ByteBuffer.wrap(audioToReverb, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-
-        int numOfDelayLines = 20;
+       
+        short[] audioToReverb = convertToShortArray();
+        
+        int numOfDelayLines =  20;
         
         double decayNumber;
-        double initialDecay = decay/40000;
+        double initialDecay = decay/35000;
         // Loop repeats for the number of delay lines
         for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
             decayNumber = initialDecay*Math.pow(Math.E, - (decay/100000));
             initialDecay = decayNumber;
-            short[] decayedAudio = new short[reverbNums.length];
+            short[] decayedAudio = new short[audioToReverb.length];
             
             // Decay the audio
-            decayedAudio = decayAudio(reverbNums, decayNumber);
+            decayedAudio = decayAudio(audioToReverb, decayNumber);
 
             delayLines.add(decayedAudio);
         }
         
         // Add delay lines with diffusion spacing
-        short[] delayLineAudio = new short[reverbNums.length+numOfDelayLines*diffusion];
+        short[] delayLineAudio = new short[audioToReverb.length+numOfDelayLines*diffusion];
         int delayLineCounter = 0;
         for (int i = 0; i < delayLines.size(); i++) {
             for (int j = 0; j < delayLines.get(i).length; j++) {
@@ -106,28 +94,42 @@ public class ReverbPlugin {
             delayLineCounter++;
         }
         
+        short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
+        
+        convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
+    }
+    
+    /**
+     * Mixes the dry and wet audio data
+     * @param dryAudio the original audio
+     * @param wetAudio the modified audio
+     * @param dryAudioSize the size of the original audio
+     * @param wetAudioSize the size of the modified audio
+     * @return the mix of original and modified audio
+     */
+    private short[] dryWetMixing(short[] dryAudio, short[] wetAudio, int dryAudioSize, int wetAudioSize) {
         // Dry Wet Mixing
-        short[] dryAudio = new short[reverbNums.length];
-        short[] wetAudio = new short[delayLineAudio.length];
+        short[] dryAudioToMix = new short[dryAudioSize];
+        short[] wetAudioToMix = new short[wetAudioSize];
         
         // Setup dry sound
-        for (int i = 0; i < dryAudio.length; i++) {
-            dryAudio[i] = (short) ((short) (reverbNums[i]*wetDryFactor));
+        for (int i = 0; i < dryAudioToMix.length; i++) {
+            dryAudioToMix[i] = (short) (dryAudio[i]*wetDryFactor);
         }
         
         // Setup wet sound
         for (int i = 0; i < wetAudio.length; i++) {
-            wetAudio[i] = (short) (delayLineAudio[i] * (1-wetDryFactor));
+            wetAudioToMix[i] = (short) (wetAudio[i] * (1-wetDryFactor));
         }
         
         // Mix dry and wet
-        short[] mixedAudio = new short[delayLineAudio.length+preDelay];
+        short[] mixedAudio = new short[wetAudioToMix.length+preDelay];
         int wetPos = 0;
         for (int i = 0; i < mixedAudio.length; i++) {
             if (i<=preDelay) {
-                mixedAudio[i] = dryAudio[i];
-            } else if (i>preDelay && i<dryAudio.length) {
-                mixedAudio[i] = (short) (dryAudio[i] + wetAudio[wetPos]);
+                mixedAudio[i] = dryAudioToMix[i];
+            } else if (i>preDelay && i<dryAudioToMix.length) {
+                mixedAudio[i] = (short) (dryAudioToMix[i] + wetAudioToMix[wetPos]);
                 
                 if (mixedAudio[i] >= Short.MAX_VALUE) {
                     mixedAudio[i] = Short.MAX_VALUE;
@@ -136,22 +138,12 @@ public class ReverbPlugin {
                 }
                 wetPos++;
             } else if (i>dryAudio.length){
-                mixedAudio[i] = wetAudio[wetPos];
+                mixedAudio[i] = wetAudioToMix[wetPos];
                 wetPos++;
             }
-            
         }
         
-        // Revert back to byte array to have playback functionality
-        byte[] finalAudio = new byte[(delayLineAudio.length+preDelay) * 2];
-        for (int i = 0; i < mixedAudio.length; i++) {
-                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(mixedAudio[i]); // i*2 since each short is 2 bytes long
-            }
-        
-        byte[] audioToPlay = new byte[((delayLineAudio.length+preDelay) * 2) + 44];
-        System.arraycopy(finalAudio, 0, audioToPlay, 44, (delayLineAudio.length+preDelay) * 2); // Add the audio data
-        System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(audioToPlay);
+        return mixedAudio;
     }
     
     /**
@@ -175,15 +167,46 @@ public class ReverbPlugin {
             } else if (volumeControlledAudio[i] < Short.MIN_VALUE) {
                 volumeControlledAudio[i] = Short.MIN_VALUE;
             }
-
-            // To keep the audio audible
-            if (amplitudeFactor <= 0.05) {
-                amplitudeFactor = 0.05;
-            }
         }
         return volumeControlledAudio;
     }
 
+    /**
+     * Converts the original audio data to a short array to allow for modifications
+     * @return the short[] audio data array
+     */
+    private short[] convertToShortArray() {
+         byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
+        // The audio to reverb has same audio data as the original audio for now (no header)
+        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
+            noHeaderByteAudioData[i] = originalAudio[i + 44];
+        }
+
+        // Convert audio data to short type to avoid audio warping
+        short[] audioToReverb = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < audioToReverb.length; i++) {
+            audioToReverb[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+        
+        return audioToReverb;
+    }
+    
+    /**
+     * Revert short[] audio data back to byte array to have playback functionality
+     * @param audioData the audio data to be converted to a byte array
+     */
+    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
+        byte[] modifiedAudio = new byte[sizeOfByteArray];
+        for (int i = 0; i < audioData.length; i++) {
+                ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+            }
+        
+        finalAudio = new byte[sizeOfByteArray + 44];
+        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
+        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
+        playAudio(finalAudio);
+    }
+    
     /**
      * Plays audio data stored in a byte array
      * @param audioData the audio data to be played

@@ -97,7 +97,7 @@ public class ReverbFXMLController {
         });
         
         diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
-            reverb.setDiffusion(newDiffusion.intValue()*100);
+            reverb.setDiffusion(newDiffusion.intValue()*300);
         });
         
         // Play the audio

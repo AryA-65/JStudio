@@ -22,6 +22,7 @@ public class PhaserPlugin {
     private String fileName;
     private String filePathName;
     private byte[] originalAudio;
+    private byte[] finalAudio;
     private double frequency;
     private double wetDryFactor;
     private int deviation;
@@ -52,67 +53,27 @@ public class PhaserPlugin {
      * Applies phaser effect to audio data
      */
     private void applyPhaserEffect() {
-        byte[] audioToPhase = new byte[originalAudio.length - 44];
-
-        // The audio to add phasing to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < audioToPhase.length; i++) {
-            audioToPhase[i] = originalAudio[i + 44];
-        }
-
-        // Convert audio data to short type to avoid audio warping
-        short[] phaserNums = new short[audioToPhase.length / 2];
-        for (int i = 0; i < phaserNums.length; i++) {
-            phaserNums[i] = ByteBuffer.wrap(audioToPhase, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-        
-        short[] phasedAudio = new short[phaserNums.length];
+        short[] audioToPhase = convertToShortArray();
+        short[] phasedAudio = new short[audioToPhase.length];
 
         // Original audio
         for (int i = 0; i < phasedAudio.length; i++) {
-            phasedAudio[i] = (short) (phaserNums[i] * wetDryFactor);
+            phasedAudio[i] = (short) (audioToPhase[i] * wetDryFactor);
         }
 
         short[] filteredAudio1 = allPassFilter(phasedAudio);
         short[] filteredAudio2 = allPassFilter(filteredAudio1);
         short[] filteredAudio3 = allPassFilter(filteredAudio2);
         short[] filteredAudio4 = allPassFilter(filteredAudio3);
-        short[] filteredAudio5 = allPassFilter(filteredAudio4);
-        short[] filteredAudio6 = allPassFilter(filteredAudio5);
-        short[] filteredAudio7 = allPassFilter(filteredAudio6);
-        short[] filteredAudio8 = allPassFilter(filteredAudio7);
-        short[] filteredAudio9 = allPassFilter(filteredAudio8);
-        short[] filteredAudio10 = allPassFilter(filteredAudio9);
         
-        short[] filteredAudio = new short[filteredAudio10.length];
-        
+        short[] filteredAudio = new short[filteredAudio4.length];
         // Mix all pass filters
         for (int i = 0; i < filteredAudio.length; i++) {
-            filteredAudio[i] = (short) ((filteredAudio1[i] + filteredAudio2[i] + filteredAudio3[i] + filteredAudio4[i] +
-                    filteredAudio5[i] + filteredAudio6[i] + filteredAudio7[i] + filteredAudio8[i] + filteredAudio9[i] +
-                    filteredAudio10[i]) * (1-wetDryFactor));
+            filteredAudio[i] = (short) ((filteredAudio1[i] + filteredAudio2[i] + filteredAudio3[i] + filteredAudio4[i]) * (1-wetDryFactor));
         }
-        
-        // Mix phase shifted audio and original audio
-        for (int i = 0; i < phasedAudio.length; i++) {
-            phasedAudio[i] += filteredAudio1[i]*(1-wetDryFactor);
-            if (phasedAudio[i] > Short.MAX_VALUE) {
-                phasedAudio[i] = Short.MAX_VALUE;
-            } else if (phasedAudio[i] < Short.MIN_VALUE) {
-                phasedAudio[i] = Short.MIN_VALUE;
-            }
-        }
-
-        // Revert back to byte array to have playback functionality
-        byte[] finalAudio = new byte[phasedAudio.length * 2];
-        for (int i = 0; i < phasedAudio.length; i++) {
-            ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(phasedAudio[i]); // i*2 since each short is 2 bytes long
-        }
-        
-        byte[] audioToPlay = new byte[(phasedAudio.length * 2) + 44];
-        System.arraycopy(finalAudio, 0, audioToPlay, 44, phasedAudio.length * 2); // Add the audio data
-        System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        
-        playAudio(audioToPlay);
+       
+        phasedAudio = dryWetMixing(phasedAudio, filteredAudio);
+        convertToByteArray(phasedAudio, phasedAudio.length * 2);
     }
     
     /**
@@ -129,6 +90,63 @@ public class PhaserPlugin {
             filteredArray[i] = (short) (phaseShift*audioData[i] + audioData[i-1] - phaseShift*filteredArray[i-1]);
         }
         return filteredArray;
+    }
+    
+    /**
+     * Converts the original audio data to a short array to allow for modifications
+     * @return the short[] audio data array
+     */
+    private short[] convertToShortArray() {
+         byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
+
+        // The audio to add phasing to has same audio data as the original audio for now (no header)
+        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
+            noHeaderByteAudioData[i] = originalAudio[i + 44];
+        }
+
+        // Convert audio data to short type to avoid audio warping
+        short[] audioToPhase = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < audioToPhase.length; i++) {
+            audioToPhase[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+        return audioToPhase;
+    }
+    
+    /**
+     * Revert short[] audio data back to byte array to have playback functionality
+     * @param audioData the audio data to be converted to a byte array
+     */
+    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
+        // Revert back to byte array to have playback functionality
+        byte[] modifiedAudio = new byte[sizeOfByteArray];
+        for (int i = 0; i < audioData.length; i++) {
+            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+        }
+        
+        finalAudio = new byte[sizeOfByteArray + 44];
+        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
+        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
+        
+        playAudio(finalAudio);
+    }
+    
+    /**
+     * Mixes the dry and wet audio data
+     * @param dryAudio the original audio
+     * @param wetAudio the modified audio
+     * @return the mix of original and modified audio
+     */
+    private short[] dryWetMixing(short[] dryAudio, short[] wetAudio) {
+        // Mix phase shifted audio and original audio
+        for (int i = 0; i < dryAudio.length; i++) {
+            dryAudio[i] += wetAudio[i]*(1-wetDryFactor);
+            if (dryAudio[i] > Short.MAX_VALUE) {
+                dryAudio[i] = Short.MAX_VALUE;
+            } else if (dryAudio[i] < Short.MIN_VALUE) {
+                dryAudio[i] = Short.MIN_VALUE;
+            }
+        }
+        return dryAudio;
     }
     
     /**

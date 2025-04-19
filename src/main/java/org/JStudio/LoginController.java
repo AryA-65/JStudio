@@ -106,7 +106,9 @@ public class LoginController {
 
     private void entryLimiters() {
         userIdField.textProperty().addListener((obs, oldText, newText) -> {
-            userIdField.setText(newText.replace(" ", ""));
+            if (newText.contains(" ")) {
+                userIdField.setText(newText.replace(" ", ""));
+            }
             userId = newText;
         });
 

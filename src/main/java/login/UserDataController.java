@@ -26,7 +26,7 @@ public class UserDataController {
             PrintWriter printwriter;
             try {
                 printwriter = new PrintWriter(new FileOutputStream(filePath, true), true);
-                printwriter.println("admin," + "password," + "1," + "1");
+//                printwriter.println("admin," + "password," + "1," + "1");
                 printwriter.close();
             } catch (FileNotFoundException e) {
                 System.out.println(e);

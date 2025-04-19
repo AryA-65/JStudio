@@ -8,9 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import login.EncryptionAndDecryption;
-import login.User;
-import login.UserDataController;
+import org.JStudio.Login.EncryptionAndDecryption;
+import org.JStudio.Login.User;
+import org.JStudio.Login.UserDataController;
 import org.JStudio.Utils.AlertBox;
 
 public class LoginController {

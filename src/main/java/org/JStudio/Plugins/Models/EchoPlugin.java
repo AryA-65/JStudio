@@ -21,7 +21,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author Theodore Georgiou
  */
 public class EchoPlugin {
-    private String fileName;
     private String filePathName;
     private double decay;
     private double wetDryFactor;
@@ -30,6 +29,7 @@ public class EchoPlugin {
     private int diffusion;
     private byte[] originalAudio;
     private ArrayList<short[]> echos = new ArrayList<>();
+    private SourceDataLine line;
 
     // Creates an echo
     public EchoPlugin(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
@@ -146,7 +146,7 @@ public class EchoPlugin {
         byte[] audioToPlay = new byte[((echoAudio.length+preDelay) * 2) + 44];
         System.arraycopy(finalAudio, 0, audioToPlay, 44, (echoAudio.length+preDelay) * 2); // Add the audio data
         System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(finalAudio);
+        playAudio(audioToPlay);
     }
     
     /**
@@ -179,25 +179,34 @@ public class EchoPlugin {
      * @param audioData the audio data to be played
      */
     private void playAudio(byte[] audioData) {
-        try {
-            File file = new File(filePathName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(audioFormat);
-            line.start();
+        new Thread(() -> {
+            try {
+                File file = new File(filePathName);
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                AudioFormat audioFormat = audioInputStream.getFormat();
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                line = (SourceDataLine) AudioSystem.getLine(info);
+                line.open(audioFormat);
+                line.start();
 
-            int frameSize = line.getFormat().getFrameSize();
-            int trimmedLength = (audioData.length / frameSize) * frameSize;
-            line.write(audioData, 0, trimmedLength);
+                int frameSize = line.getFormat().getFrameSize();
+                int trimmedLength = (audioData.length / frameSize) * frameSize;
+                line.write(audioData, 0, trimmedLength);
 
-            line.drain();
-            line.close();
-            echos = null;
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            System.out.println(e);
-        }
+                line.drain();
+                line.close();
+                echos = null;
+            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+                System.out.println(e);
+            }
+        }).start();
+    }
+    
+    /**
+     * Stops audio playback
+     */
+    public void stopAudio() {
+        line.close();
     }
 
     // Wrapper class to set echo effect

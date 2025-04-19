@@ -91,7 +91,7 @@ public class EchoFXMLController {
         });
         
         echoNumSlider.valueProperty().addListener((ObservableValue<? extends Number> echoNum, Number oldEchoNum, Number newEchoNum) -> {
-            echo.setEchoNum(newEchoNum.intValue()*2);
+            echo.setEchoNum(newEchoNum.intValue());
         });
         
         // Play the audio
@@ -101,6 +101,7 @@ public class EchoFXMLController {
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
+            echo.stopAudio();
             echo = new EchoPlugin(10000, 0.5, 20000, 10, 0.5);
             preDelaySlider.setValue(1);
             decayTimeSlider.setValue(1);

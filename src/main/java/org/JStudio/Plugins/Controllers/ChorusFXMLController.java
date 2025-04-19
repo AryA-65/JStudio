@@ -25,7 +25,7 @@ public class ChorusFXMLController {
      */
     @FXML
     public void initialize() {
-        chorus = new ModulationPlugin(20000, 200, 0.5); // Create a flanger
+        chorus = new ModulationPlugin(20000, 200, 0.5); // Create a chorus
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -73,6 +73,7 @@ public class ChorusFXMLController {
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
+            chorus.stopAudio();
             chorus = new ModulationPlugin(20000, 200, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);

@@ -19,13 +19,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author Theodore Georgiou
  */
 public class PhaserPlugin {
-    private String fileName;
     private String filePathName;
     private byte[] originalAudio;
     private byte[] finalAudio;
     private double frequency;
     private double wetDryFactor;
     private int deviation;
+    private SourceDataLine line;
 
     // Creates a phaser
     public PhaserPlugin(double frequency, int deviation, double wetDryFactor) {
@@ -33,7 +33,6 @@ public class PhaserPlugin {
         this.frequency = frequency;
         this.deviation = deviation;
         this.wetDryFactor = wetDryFactor;
-        fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
     }
 
     /**
@@ -160,7 +159,7 @@ public class PhaserPlugin {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
             AudioFormat audioFormat = audioInputStream.getFormat();
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+            line = (SourceDataLine) AudioSystem.getLine(info);
             line.open(audioFormat);
             line.start();
 
@@ -174,6 +173,12 @@ public class PhaserPlugin {
         }).start();
     }
     
+    /**
+     * Stops audio playback
+     */
+    public void stopAudio() {
+        line.close();
+    }
     
     /**
      * Wrapper class to set flanger effect

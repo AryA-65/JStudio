@@ -20,7 +20,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author Theodore Georgiou
  */
 public class ReverbPlugin {
-    private String fileName;
     private String filePathName;
     private double decay;
     private double wetDryFactor;
@@ -29,6 +28,7 @@ public class ReverbPlugin {
     private byte[] originalAudio;
     private byte[] finalAudio;
     private ArrayList<short[]> delayLines = new ArrayList<>();
+    private SourceDataLine line;
 
     // Creates a reverb
     public ReverbPlugin(int preDelay, int decay, int diffusion, double wetDryFactor) {
@@ -38,7 +38,6 @@ public class ReverbPlugin {
         this.wetDryFactor = wetDryFactor;
         convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
-        fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
     }
 
     /**
@@ -212,27 +211,36 @@ public class ReverbPlugin {
      * @param audioData the audio data to be played
      */
     private void playAudio(byte[] audioData) {
-        try {
-            File file = new File(filePathName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(audioFormat);
-            line.start();
+        new Thread(() -> {
+            try {
+                File file = new File(filePathName);
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                AudioFormat audioFormat = audioInputStream.getFormat();
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                line = (SourceDataLine) AudioSystem.getLine(info);
+                line.open(audioFormat);
+                line.start();
 
-            int frameSize = line.getFormat().getFrameSize();
-            int trimmedLength = (audioData.length / frameSize) * frameSize;
-            line.write(audioData, 0, trimmedLength);
+                int frameSize = line.getFormat().getFrameSize();
+                int trimmedLength = (audioData.length / frameSize) * frameSize;
+                line.write(audioData, 0, trimmedLength);
 
-            line.drain();
-            line.close();
-            delayLines = null;
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            System.out.println(e);
-        }
+                line.drain();
+                line.close();
+                delayLines = null;
+            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+                System.out.println(e);
+            }
+        }).start();
     }
 
+    /**
+     * Stops audio playback
+     */
+    public void stopAudio() {
+        line.close();
+    }
+    
     // Wrapper class to set reverb effect
     public void setReverbEffect() {
         applyReverbEffect();

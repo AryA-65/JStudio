@@ -107,6 +107,7 @@ public class ReverbFXMLController {
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
+            reverb.stopAudio();
             reverb = new ReverbPlugin(1000, 10000, 2000, 0.5);
             preDelaySlider.setValue(1);
             decayTimeSlider.setValue(1);

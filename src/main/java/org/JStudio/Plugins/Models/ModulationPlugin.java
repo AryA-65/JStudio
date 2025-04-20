@@ -70,8 +70,8 @@ public class ModulationPlugin {
         for (int i = 0; i < delays.size(); i++) {
             if (i+delays.get(i) < audioToModulate.length) {
                 modulatedAudio[i] += audioToModulate[i+delays.get(i)]*(1-wetDryFactor);
+                modulatedAudio[i] = capMaxAmplitude(modulatedAudio[i]);
             }
-            modulatedAudio[i] = capMaxAmplitude(modulatedAudio[i]);
         }
 
         convertToByteArray(modulatedAudio, modulatedAudio.length * 2);

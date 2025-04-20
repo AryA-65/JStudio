@@ -71,14 +71,24 @@ public class ModulationPlugin {
             if (i+delays.get(i) < audioToModulate.length) {
                 modulatedAudio[i] += audioToModulate[i+delays.get(i)]*(1-wetDryFactor);
             }
-            if (modulatedAudio[i] > Short.MAX_VALUE) {
-                modulatedAudio[i] = Short.MAX_VALUE;
-            } else if (modulatedAudio[i] < Short.MIN_VALUE) {
-                modulatedAudio[i] = Short.MIN_VALUE;
-            }
+            modulatedAudio[i] = capMaxAmplitude(modulatedAudio[i]);
         }
 
         convertToByteArray(modulatedAudio, modulatedAudio.length * 2);
+    }
+    
+    /**
+     * Caps the amplitude of a sample from exceeding the maximum value of a short
+     * @param sample the sample to be capped
+     * @return the capped sample
+     */
+    private short capMaxAmplitude(short sample) {
+        if (sample > Short.MAX_VALUE) {
+                sample = Short.MAX_VALUE;
+        } else if (sample < Short.MIN_VALUE) {
+            sample = Short.MIN_VALUE;
+        }
+        return sample;
     }
     
     /**
@@ -99,11 +109,8 @@ public class ModulationPlugin {
      */
     private short[] convertToShortArray() {
         byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
-
-        // The audio to add flanging to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
-            noHeaderByteAudioData[i] = originalAudio[i + 44];
-        }
+        // The audio to add modulation to has same audio data as the original audio for now (no header)
+        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
 
         // Convert audio data to short type to avoid audio warping
         short[] audioToModulate = new short[noHeaderByteAudioData.length / 2];
@@ -122,8 +129,8 @@ public class ModulationPlugin {
         // Revert back to byte array to have playback functionality
         byte[] modifiedAudio = new byte[sizeOfByteArray];
         for (int i = 0; i < audioData.length; i++) {
-                ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
-            }
+            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+        }
         
         finalAudio = new byte[sizeOfByteArray + 44];
         System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data

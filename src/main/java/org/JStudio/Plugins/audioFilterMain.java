@@ -5,17 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.JStudio.Plugins.Models.audioFilters;
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
 
-import static org.JStudio.Plugins.Models.audioFilters.*;
+import java.io.IOException;
 
 public class audioFilterMain extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/low_highCutOffFilter.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/low_highCutOffFilter.fxml"));
         fxmlLoader.setController(new audioFilterFXMLController());
 
         Parent root = fxmlLoader.load();

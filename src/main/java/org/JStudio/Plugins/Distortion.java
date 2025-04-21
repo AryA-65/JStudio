@@ -1,6 +1,6 @@
 package org.JStudio.Plugins;
 
-public abstract class Distortion {
+public abstract class Distortion implements Plugin {
     protected float gain, mix;
 
     Distortion(float gain, float mix) {
@@ -8,9 +8,9 @@ public abstract class Distortion {
         this.mix = mix;
     }
 
-    abstract float[] processMono(float[] inputData);
+//    public abstract float[] processMono(float[] inputData);
 
-    public abstract float[][] processStereo(float[][] inputData);
+//    public abstract float[][] processStereo(float[][] inputData);
 
     protected float[] applyGain(float[] monoInputData) {
         float[] outputData = new float[monoInputData.length];
@@ -76,7 +76,7 @@ class ClippingDistortion extends Distortion {
     }
 
     @Override
-    float[] processMono(float[] inputData) {
+    public float[] processMono(float[] inputData) {
         float[] gainedData = applyGain(inputData);
         float[] output = new float[gainedData.length];
         for (int i = 0; i < gainedData.length; i++) {
@@ -104,7 +104,7 @@ class AliasingDistortion extends Distortion {
     }
 
     @Override
-    float[] processMono(float[] inputData) {
+    public float[] processMono(float[] inputData) {
         float[] gainedData = applyGain(inputData);
         float[] output = new float[gainedData.length];
         for (int i = 0; i < gainedData.length; i++) {
@@ -132,7 +132,7 @@ class HarmonicDistortion extends Distortion {
     }
 
     @Override
-    float[] processMono(float[] inputData) {
+    public float[] processMono(float[] inputData) {
         float[] gainedData = applyGain(inputData);
         float[] output = new float[gainedData.length];
         for (int i = 0; i < gainedData.length; i++) {
@@ -165,11 +165,11 @@ class BitcrushDistortion extends Distortion {
     }
 
     @Override
-    float[] processMono(float[] inputData) {
+    public float[] processMono(float[] inputData) {
         float[] gainedData = applyGain(inputData);
         float[] output = new float[gainedData.length];
         for (int i = 0; i < gainedData.length; i++) {
-            output[i] = bitCrusher.applyBitcrush(gainedData[i]);
+            output[i] = bitCrusher.process(gainedData[i]);
         }
         return applyMixMono(inputData, output);
     }
@@ -180,7 +180,7 @@ class BitcrushDistortion extends Distortion {
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {
             for (int i = 0; i < inputData.length; i++) {
-                output[ch][i] = bitCrusher.applyBitcrush(gainedData[ch][i]);
+                output[ch][i] = bitCrusher.process(gainedData[ch][i]);
             }
         }
         return applyMixStereo(inputData, output);

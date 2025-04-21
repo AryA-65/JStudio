@@ -4,6 +4,7 @@ package org.JStudio.Plugins;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public class audioFilterFXMLController {
     private final Map<MenuButton, String> filterType = new HashMap<>();
-    public String inputFile = "src/main/resources/test_inputs_music.wav";
+    public String inputFile;
     public String outputFile = "filtered_output.wav"; //todo create a field for the user to enter the output file name
     @FXML
     private Label cutOffLabel;
@@ -102,6 +103,8 @@ public class audioFilterFXMLController {
 
         playBtn.setOnAction(event -> {
             try {
+                FileChooser fileChooser = new FileChooser();
+                inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
                 getText();
                 File file = new File(inputFile);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
@@ -120,14 +123,19 @@ public class audioFilterFXMLController {
 
                 byte[] filteredBytes = shortsToBytes(samples);
 
+                Thread testThread = null;
+
                 Task<Void> playTask = new Task<>() {
                     // https://stackoverflow.com/questions/24924414/javafx-task-ending-and-javafx-threading
                     @Override
                     protected Void call() throws Exception {
                         if (isPlaying) {
                             // If playing, stop audio playback
+                            System.out.println("Playing");
                             audioClip.stop();
                             isPlaying = false;
+//                            testThread.stop();
+                            System.out.println("Stopped");
                         } else {
                             // Start playing the filtered audio in background
                             playAudio(filteredBytes, format);
@@ -136,7 +144,9 @@ public class audioFilterFXMLController {
                         return null;
                     }
                 };
-                new Thread(playTask).start();
+                testThread = new Thread(playTask);
+                testThread.start();
+
 
 
                 saveBtn.setOnAction(event1 -> {

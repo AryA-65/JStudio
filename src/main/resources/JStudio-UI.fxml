@@ -66,12 +66,12 @@
             <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="64.0" prefHeight="24.0" prefWidth="64.0" text="Playback Position" />
             <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
                <children>
-                  <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="128.0" />
+                  <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="64.0" />
                </children>
             </StackPane>
             <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
                <children>
-                  <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="128.0" />
+                  <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="64.0" />
                </children>
             </StackPane>
             <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">

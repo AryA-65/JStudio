@@ -23,6 +23,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.JStudio.Utils.AudioVisualizer;
 import org.JStudio.Utils.SystemMonitor;
 
 import java.io.*;
@@ -98,6 +99,7 @@ public class UIController {
     private Stage rootStage;
 
     private SystemMonitor sm;
+    private AudioVisualizer vis;
 
     private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
     private boolean resizing = false;
@@ -281,6 +283,7 @@ public class UIController {
 
         close_btn.setOnMouseClicked(event -> {
             sm.stop();
+            vis.stop();
             rootStage.close();
         });
 
@@ -409,13 +412,27 @@ public class UIController {
         tracks_scrollpane.setStyle("-fx-background-color: transparent;");
         track_id_scrollpane.setStyle("-fx-background-color: transparent;");
 
-        Rectangle clip = new Rectangle(pc_stats.getWidth(), pc_stats.getHeight());
-        clip.setArcHeight(10);
-        clip.setArcWidth(10);
+        Rectangle clipSM = new Rectangle(pc_stats.getWidth(), pc_stats.getHeight());
+        clipSM.setArcHeight(10);
+        clipSM.setArcWidth(10);
 
-        pc_stats.setClip(clip);
+        pc_stats.setClip(clipSM);
         sm = new SystemMonitor(pc_stats);
         sm.start();
+
+        Rectangle clipAmp = new Rectangle(amp_audio_top.getWidth(), amp_audio_top.getHeight());
+        clipAmp.setArcHeight(10);
+        clipAmp.setArcWidth(10);
+
+        Rectangle clipWave = new Rectangle(audio_vis_top.getWidth(), audio_vis_top.getHeight());
+        clipWave.setArcHeight(10);
+        clipWave.setArcWidth(10);
+
+        amp_audio_top.setClip(clipAmp);
+        audio_vis_top.setClip(clipWave);
+
+        vis = new AudioVisualizer(audio_vis_top, amp_audio_top);
+        vis.start();
     }
 
     protected void setSplitRatio() {

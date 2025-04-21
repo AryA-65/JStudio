@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: #f4f4f4; -fx-padding: 15px;">
-    <children>
-        <HBox prefHeight="50.0" prefWidth="450.0" spacing="15.0" alignment="CENTER">
-            <children>
-                <Button fx:id="lowPassFilter" text="Low Pass Filter" style="-fx-font-size: 14px;" />
-                <Button fx:id="highPassFilter" text="High Pass Filter" style="-fx-font-size: 14px;" />
-                <Button fx:id="bandPassFilter" text="Band Pass Filter" style="-fx-font-size: 14px;" />
-                <Button fx:id="bandStopFilter" text="Band Stop Filter" style="-fx-font-size: 14px;" />
-            </children>
-        </HBox>
-        <VBox layoutX="20.0" layoutY="70.0" prefHeight="150.0" prefWidth="400.0" spacing="10" alignment="CENTER">
-            <children>
-                <TextField fx:id="frequency" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Frequency (Hz)" />
-                <TextField fx:id="orderFilter" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Order of Filter" />
-                <TextField fx:id="lowerCut-off" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Lower Cut-off Frequency (Hz)" />
-                <TextField fx:id="higherCut-off" alignment="CENTER" prefHeight="30.0" prefWidth="350.0" promptText="Higher Cut-off Frequency (Hz)" />
-            </children>
-        </VBox>
-    </children>
-</Pane>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button fx:id="applyButton" mnemonicParsing="false" text="Apply" />
+            <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
+        </items>
+      </ToolBar>
+   </top>
+   <center>
+      <HBox fx:id="hbox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="vbox1" alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+               <children>
+                  <RadioButton fx:id="lowPassRadio" mnemonicParsing="false" text="Low Pass" />
+                  <RadioButton fx:id="highPassRadio" mnemonicParsing="false" text="High Pass" />
+                  <RadioButton fx:id="bandPassRadio" mnemonicParsing="false" text="Band Pass" />
+                  <RadioButton fx:id="bandStopRadio" mnemonicParsing="false" text="Band Stop" />
+               </children>
+            </VBox>
+            <VBox fx:id="vbox2" alignment="CENTER_RIGHT" prefHeight="360.0" prefWidth="110.0" spacing="20.0">
+               <children>
+                  <TextField fx:id="frequencyField" promptText="Center frequency" />
+                  <TextField fx:id="qualityField" prefHeight="26.0" prefWidth="106.0" promptText="Quality factor" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>

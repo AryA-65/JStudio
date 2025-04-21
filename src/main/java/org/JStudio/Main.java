@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.JStudio.Plugins.ButterworthFxmlController;
 
 public class Main extends Application {
 //    public String currentUser;
@@ -14,23 +15,37 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
+
+        ButterworthFxmlController butterworthFxmlController = new ButterworthFxmlController();
+        loader.setController(butterworthFxmlController);
+
         Parent root = loader.load();
 
-        controller = loader.getController();
-        controller.setStage(stage);
-        controller.setScreenSize();
-
-
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-
         stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setResizable(true);
         stage.show();
+
+
+
+
+//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+//        Parent root = loader.load();
 //
-        controller.setSplitRatio();
+//        controller = loader.getController();
+//        controller.setStage(stage);
+//        controller.setScreenSize();
+//
+//
+//        Scene scene = new Scene(root);
+//        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//
+//        stage.setScene(scene);
+//        stage.initStyle(StageStyle.TRANSPARENT);
+//        stage.setResizable(true);
+//        stage.show();
+////
+//        controller.setSplitRatio();
 
         /**
          * to initialize the login page

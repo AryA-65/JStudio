@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.JStudio.Plugins.Models.audioFilters;
+
 public class audioFilterFXMLController {
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
@@ -30,72 +32,6 @@ public class audioFilterFXMLController {
     private Clip audioClip;
     private boolean isPlaying = false;
 
-
-    // Convert 16-bit PCM byte array to short array
-    private static short[] bytesToShorts(byte[] audioBytes) {
-        short[] samples = new short[audioBytes.length / 2];
-        for (int i = 0; i < samples.length; i++) {
-            samples[i] = (short) ((audioBytes[2 * i + 1] << 8) | (audioBytes[2 * i] & 0xFF));
-        }
-        return samples;
-    }
-
-    // Convert short array back to 16-bit PCM byte array
-    private static byte[] shortsToBytes(short[] samples) {
-        byte[] audioBytes = new byte[samples.length * 2];
-        for (int i = 0; i < samples.length; i++) {
-            audioBytes[2 * i] = (byte) (samples[i] & 0xFF);
-            audioBytes[2 * i + 1] = (byte) ((samples[i] >> 8) & 0xFF);
-        }
-        return audioBytes;
-    }
-
-    // Save byte[] to WAV file
-    private static void saveWavFile(String filename, byte[] audioBytes, AudioFormat format) throws IOException {
-        File file = new File(filename);
-        ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
-        AudioInputStream audioStream = new AudioInputStream(bais, format, audioBytes.length / format.getFrameSize());
-        AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, file);
-    }
-
-    // Play audio from byte[]
-    private static void playAudio(byte[] audioBytes, AudioFormat format) throws LineUnavailableException {
-        SourceDataLine line = AudioSystem.getSourceDataLine(format);
-        line.open(format);
-        line.start();
-        line.write(audioBytes, 0, audioBytes.length);
-        line.drain();
-        line.close();
-    }
-
-    // low-pass filter implementation: frequency higher than given frequency is cut off
-    private static void applyLowPassFilter(short[] samples, float sampleRate, float cutoffFreq) {
-        double RC = 1.0 / (2 * Math.PI * cutoffFreq);
-        double dt = 1.0 / sampleRate;
-        double alpha = dt / (RC + dt);
-        double prevSample = 0;
-        for (int i = 0; i < samples.length; i++) {
-            double filtered = alpha * samples[i] + (1 - alpha) * prevSample;
-            prevSample = filtered;
-            samples[i] = (short) filtered;
-        }
-    }
-
-    //  high-pass filter implementationL: frequency lower than given is cut off
-    private static void applyHighPassFilter(short[] samples, float sampleRate, float cutoffFreq) {
-        double RC = 1.0 / (2 * Math.PI * cutoffFreq);
-        double dt = 1.0 / sampleRate;
-        double alpha = RC / (RC + dt);
-        double prevSample = 0;
-        double prevFiltered = 0;
-        for (int i = 0; i < samples.length; i++) {
-            double newSample = alpha * (prevFiltered + samples[i] - prevSample);
-            prevSample = samples[i];
-            prevFiltered = newSample;
-            samples[i] = (short) newSample;
-        }
-    }
-
     @FXML
     public void initialize() {
         setupMenu(optionsCutOff);
@@ -112,16 +48,16 @@ public class audioFilterFXMLController {
                 byte[] audioBytes = audioStream.readAllBytes();
                 audioStream.close();
 
-                short[] samples = bytesToShorts(audioBytes);
+                short[] samples = audioFilters.bytesToShorts(audioBytes);
                 float sampleRate = format.getSampleRate();
 
                 if ("Low".equals(selectedFilter)) {
-                    applyLowPassFilter(samples, sampleRate, userFrequency);
+                    audioFilters.applyLowPassFilter(samples, sampleRate, userFrequency);
                 } else if ("High".equals(selectedFilter)) {
-                    applyHighPassFilter(samples, sampleRate, userFrequency);
+                    audioFilters.applyHighPassFilter(samples, sampleRate, userFrequency);
                 }
 
-                byte[] filteredBytes = shortsToBytes(samples);
+                byte[] filteredBytes = audioFilters.shortsToBytes(samples);
 
                 Thread testThread = null;
 
@@ -138,7 +74,7 @@ public class audioFilterFXMLController {
                             System.out.println("Stopped");
                         } else {
                             // Start playing the filtered audio in background
-                            playAudio(filteredBytes, format);
+                            audioFilters.playAudio(filteredBytes, format);
                             isPlaying = true;
                         }
                         return null;
@@ -151,7 +87,7 @@ public class audioFilterFXMLController {
 
                 saveBtn.setOnAction(event1 -> {
                     try {
-                        saveWavFile(outputFile, filteredBytes, format);
+                        audioFilters.saveWavFile(outputFile, filteredBytes, format);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

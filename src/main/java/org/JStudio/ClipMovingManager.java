@@ -1,5 +1,8 @@
 package org.JStudio;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -14,11 +17,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ClipMovingManager extends Application {
 
-    private final double canvasBaseWidth = 50;
+    private double canvasBaseWidth = 50;
     private final double canvasHeight = 100;
     private final double resizeBorder = 10;
     private final double canvasWidth = 50;
@@ -59,8 +63,8 @@ public class ClipMovingManager extends Application {
         //add Event Handler on mouse pressed that adds a rectangle to the pane
         pane.setOnMousePressed(this::addCanvas);
         pane2.setOnMousePressed(this::addCanvas);
-        pane.setBorder(Border.stroke(Color.GREY));
-        pane2.setBorder(Border.stroke(Color.GREY));
+//        pane.setBorder(Border.stroke(Color.GREY));
+//        pane2.setBorder(Border.stroke(Color.GREY));
 
         pane.setOnMouseEntered(mouseEvent -> {
             currentPane = pane;
@@ -178,6 +182,19 @@ public class ClipMovingManager extends Application {
         }
         //if the are not intersection issues then add a canvas to the pane
         if (!overlaps) {
+            // Change size of canvas based on clip length
+            byte[] originalAudio = null;
+            try {
+                File file = new FileChooser().showOpenDialog(null);
+                originalAudio = Files.readAllBytes(file.toPath());
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+            if (originalAudio.length > 100000) {
+                canvasBaseWidth = (int) (originalAudio.length/50000);
+            } else {
+                canvasBaseWidth = (int) (originalAudio.length/1000);
+            }
             Canvas canvas = new Canvas(canvasBaseWidth, canvasHeight);
             canvas.setLayoutX(x - canvasBaseWidth / 2);
             dragRectangle(canvas); //make the rectangle draggable

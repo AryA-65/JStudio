@@ -17,11 +17,10 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * Flanger plugin that takes in audio data and applies a flanging effect on it
+ * Modulation plugin that takes in audio data and applies a flanging or chorus effect on it
  * @author Theodore Georgiou
  */
 public class ModulationPlugin {
-    private String fileName;
     private String filePathName;
     private byte[] originalAudio;
     private byte[] finalAudio;
@@ -29,14 +28,14 @@ public class ModulationPlugin {
     private double frequency;
     private double wetDryFactor;
     private int deviation;
+    private SourceDataLine line;
 
-    // Creates a flanger
+    // Creates a modulator
     public ModulationPlugin(double frequency, int deviation, double wetDryFactor) {
         convertAudioFileToByteArray();
         this.frequency = frequency;
         this.deviation = deviation;
         this.wetDryFactor = wetDryFactor;
-        fileName = "\\jumpland.wav"; // Temporary value for now (will have file setting functionality later)
     }
 
     /**
@@ -53,7 +52,7 @@ public class ModulationPlugin {
     }
     
     /**
-     * Applies flanger effect to audio data
+     * Applies modulation effect to audio data
      */
     private void applyModulationEffect() {
         short[] audioToModulate = convertToShortArray();
@@ -71,15 +70,25 @@ public class ModulationPlugin {
         for (int i = 0; i < delays.size(); i++) {
             if (i+delays.get(i) < audioToModulate.length) {
                 modulatedAudio[i] += audioToModulate[i+delays.get(i)]*(1-wetDryFactor);
-            }
-            if (modulatedAudio[i] > Short.MAX_VALUE) {
-                modulatedAudio[i] = Short.MAX_VALUE;
-            } else if (modulatedAudio[i] < Short.MIN_VALUE) {
-                modulatedAudio[i] = Short.MIN_VALUE;
+                modulatedAudio[i] = capMaxAmplitude(modulatedAudio[i]);
             }
         }
 
         convertToByteArray(modulatedAudio, modulatedAudio.length * 2);
+    }
+    
+    /**
+     * Caps the amplitude of a sample from exceeding the maximum value of a short
+     * @param sample the sample to be capped
+     * @return the capped sample
+     */
+    private short capMaxAmplitude(short sample) {
+        if (sample > Short.MAX_VALUE) {
+                sample = Short.MAX_VALUE;
+        } else if (sample < Short.MIN_VALUE) {
+            sample = Short.MIN_VALUE;
+        }
+        return sample;
     }
     
     /**
@@ -100,11 +109,8 @@ public class ModulationPlugin {
      */
     private short[] convertToShortArray() {
         byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
-
-        // The audio to add flanging to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
-            noHeaderByteAudioData[i] = originalAudio[i + 44];
-        }
+        // The audio to add modulation to has same audio data as the original audio for now (no header)
+        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
 
         // Convert audio data to short type to avoid audio warping
         short[] audioToModulate = new short[noHeaderByteAudioData.length / 2];
@@ -123,8 +129,8 @@ public class ModulationPlugin {
         // Revert back to byte array to have playback functionality
         byte[] modifiedAudio = new byte[sizeOfByteArray];
         for (int i = 0; i < audioData.length; i++) {
-                ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
-            }
+            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+        }
         
         finalAudio = new byte[sizeOfByteArray + 44];
         System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
@@ -137,26 +143,35 @@ public class ModulationPlugin {
      * @param audioData the audio data to be played
      */
     private void playAudio(byte[] audioData) {
-        try {
-            File file = new File(filePathName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(audioFormat);
-            line.start();
+        new Thread(() -> {
+            try {
+                File file = new File(filePathName);
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                AudioFormat audioFormat = audioInputStream.getFormat();
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                line = (SourceDataLine) AudioSystem.getLine(info);
+                line.open(audioFormat);
+                line.start();
 
-            line.write(audioData, 0, audioData.length);
+                line.write(audioData, 0, audioData.length);
 
-            line.drain();
-            line.close();
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            System.out.println(e);
-        }
+                line.drain();
+                line.close();
+            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+                System.out.println(e);
+            }
+        }).start();
     }
     
     /**
-     * Wrapper class to set flanger effect
+     * Stops audio playback
+     */
+    public void stopAudio() {
+        line.close();
+    }
+    
+    /**
+     * Wrapper class to set modulation effect
      */
     public void setModulationEffect() {
         applyModulationEffect();

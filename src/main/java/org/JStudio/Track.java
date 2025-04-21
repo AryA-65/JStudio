@@ -18,11 +18,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.jfoenix.controls.JFXSlider;
+import org.JStudio.Plugins.Plugin;
 
 public class Track {
     private String name;
@@ -31,7 +33,9 @@ public class Track {
     private double amplitude, pitch;
     private short numClips; //tempo param for now
     private BooleanProperty activeTrack = new SimpleBooleanProperty(true);
-//    private List<>
+//    private List<> //for clips
+    private List<Plugin> plugins = new ArrayList<Plugin>();
+    private float[][] buffer;
 
     //test colors
     public final List<String> MATTE_COLORS = List.of(
@@ -56,6 +60,11 @@ public class Track {
 
     public void addClip() {
         //empty for now
+    }
+
+    public float[][] process() { //1024 chucks
+        float[][] output = null;
+        return output;
     }
 
     public String getName() {
@@ -160,8 +169,6 @@ public class Track {
     }
 
     public Pane addTrackID() {
-        AtomicBoolean clicked = new AtomicBoolean(false);
-
         String color = MATTE_COLORS.get(new Random().nextInt(MATTE_COLORS.size()));
 
         Pane container = new Pane();
@@ -174,15 +181,19 @@ public class Track {
         idLabel.setLayoutX(4);
         idLabel.setLayoutY(4);
 
+        container.setOnMouseClicked(e -> {
+            //to change the name of the track
+            if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
+
+            }
+        });
+
         container.getChildren().addAll(idLabel, createActiveBTN(114, 52));
 
         return container;
     }
 
     public Node createChannel(byte i) {
-        AtomicBoolean clicked = new AtomicBoolean(false);
-
-//        System.out.println("Added channel " + (i + 1));
         VBox channelBox = new VBox();
         channelBox.setPrefHeight(256);
         channelBox.setPrefWidth(32);

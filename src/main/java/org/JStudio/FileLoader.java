@@ -20,15 +20,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
+
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -43,6 +43,7 @@ public class FileLoader {
     private int CANVAS_WIDTH = 234, CANVAS_HEIGHT = 64;
     private long currentFilePointer = 0, fileCount = 0;
     private double fileLength = 0;
+    private MediaPlayer mediaPlayer;
 
     private List<VBox> sections = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class FileLoader {
 
             try {
                 fileCount = Files.walk(Paths.get(path)).filter(Files::isRegularFile).count();
-                System.out.println(fileCount);
+//                System.out.println(fileCount);
 //                loadingScreen
             } catch (Exception e) {
                 e.printStackTrace();
@@ -130,7 +131,7 @@ public class FileLoader {
             }
         });
 
-        System.out.println(f.getName());
+//        System.out.println(f.getName());
         for (File file : Objects.requireNonNull(f.listFiles())) {
             if (file.exists() && file.isFile()) {
                 fileSectionList.getChildren().add(addAudioFileUI(file));
@@ -210,11 +211,29 @@ public class FileLoader {
         );
 
         audioFileDataVis.setOnMouseEntered(e -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+            }
+
+            try {
+                Media media = new Media(file.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.play();
+            } catch (Exception err) {
+                err.printStackTrace();
+            }
+
             expandTimeline.play();
 //            System.out.println("entered" + container.getPrefHeight());
         });
 
         audioFileDataVis.setOnMouseExited(e -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                mediaPlayer = null;
+            }
             shrinkTimeline.play();
 //            System.out.println("exited" + container.getPrefHeight());
         });

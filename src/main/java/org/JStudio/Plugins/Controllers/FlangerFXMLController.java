@@ -77,6 +77,7 @@ public class FlangerFXMLController {
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
+            flanger.stopAudio();
             flanger = new ModulationPlugin(100000, 100, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);

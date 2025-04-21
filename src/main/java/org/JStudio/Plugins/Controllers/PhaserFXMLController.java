@@ -29,7 +29,7 @@ public class PhaserFXMLController {
      */
     @FXML
     public void initialize() {
-        phaser = new PhaserPlugin(0.2, 2000, 0.5); // Create a phaser
+        phaser = new PhaserPlugin(100000, 8, 0.5); // Create a phaser
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -39,7 +39,7 @@ public class PhaserFXMLController {
         frequencySlider.setShowTickLabels(true);
         frequencySlider.setValue(2);
         
-        deviationSlider.setMin(1);
+        deviationSlider.setMin(5);
         deviationSlider.setMax(10);
         deviationSlider.setShowTickMarks(true);
         deviationSlider.setMajorTickUnit(1);
@@ -78,9 +78,10 @@ public class PhaserFXMLController {
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
-            phaser = new PhaserPlugin(0.2, 2000, 0.5);
+            phaser.stopAudio();
+            phaser = new PhaserPlugin(100000, 8, 0.5);
             frequencySlider.setValue(2);
-            deviationSlider.setValue(2);
+            deviationSlider.setValue(8);
             wetDrySlider.setValue(5);
         });
     }

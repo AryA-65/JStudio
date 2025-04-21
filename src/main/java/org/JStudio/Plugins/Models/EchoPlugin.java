@@ -21,7 +21,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author Theodore Georgiou
  */
 public class EchoPlugin {
-    private String fileName;
     private String filePathName;
     private double decay;
     private double wetDryFactor;
@@ -29,7 +28,9 @@ public class EchoPlugin {
     private int echoNum;
     private int diffusion;
     private byte[] originalAudio;
+    private byte[] finalAudio;
     private ArrayList<short[]> echos = new ArrayList<>();
+    private SourceDataLine line;
 
     // Creates an echo
     public EchoPlugin(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
@@ -60,93 +61,35 @@ public class EchoPlugin {
      */
     private void applyEchoEffect() {
         echos = new ArrayList<>();
-        byte[] audioToEcho = new byte[originalAudio.length - 44];
-
-        // The audio to echo has same audio data as the original audio for now (no header)
-        for (int i = 0; i < audioToEcho.length; i++) {
-            audioToEcho[i] = originalAudio[i + 44];
-        }
-
-        // Convert audio data to short type to avoid audio warping
-        short[] echoNums = new short[audioToEcho.length / 2];
-        for (int i = 0; i < echoNums.length; i++) {
-            echoNums[i] = ByteBuffer.wrap(audioToEcho, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-
+        short[] audioToEcho = convertToShortArray();
+        
         int numOfEchos = echoNum;
         double decayValue = decay;
         // Loop repeats for the number of echos
         for (int echo = 0; echo < numOfEchos; echo++) {
-            short[] loweredAudio = new short[echoNums.length];
+            short[] loweredAudio = new short[audioToEcho.length];
             
             // lower the audio
-            loweredAudio = lowerAudio(echoNums, decayValue);
+            loweredAudio = lowerAudio(audioToEcho, decayValue);
 
             echos.add(loweredAudio);
-            decayValue *= decay;
+            decayValue *= decay/2;
         }
         
         // Add echos with diffusion spacing
-        short[] echoAudio = new short[echoNums.length+numOfEchos*diffusion];
+        short[] echoAudio = new short[audioToEcho.length+numOfEchos*diffusion];
         int echoCounter = 0;
         for (int i = 0; i < echos.size(); i++) {
             for (int j = 0; j < echos.get(i).length; j++) {
                 echoAudio[j+(echoCounter*diffusion)] += echos.get(i)[j];
-                
-                if (echoAudio[j+(echoCounter*diffusion)] > Short.MAX_VALUE) {
-                echoAudio[j+(echoCounter*diffusion)] = Short.MAX_VALUE;
-                } else if (echoAudio[j+(echoCounter*diffusion)] < Short.MIN_VALUE) {
-                    echoAudio[j+(echoCounter*diffusion)] = Short.MIN_VALUE;
-                }
+                echoAudio[j+(echoCounter*diffusion)] = capMaxAmplitude(echoAudio[j+(echoCounter*diffusion)]);
             }
             echoCounter++;
         }
         
-        // Dry Wet Mixing
-        short[] dryAudio = new short[echoNums.length];
-        short[] wetAudio = new short[echoAudio.length];
+        short[] mixedAudio = dryWetMixing(audioToEcho, echoAudio, audioToEcho.length, echoAudio.length);
         
-        // Setup dry sound
-        for (int i = 0; i < dryAudio.length; i++) {
-            dryAudio[i] = (short) (echoNums[i]*wetDryFactor);
-        }
-        
-        // Setup wet sound
-        for (int i = 0; i < wetAudio.length; i++) {
-            wetAudio[i] = (short) (echoAudio[i] * (1-wetDryFactor));
-        }
-        
-        // Mix dry and wet
-        short[] mixedAudio = new short[echoAudio.length+preDelay];
-        int wetPos = 0;
-        for (int i = 0; i < mixedAudio.length; i++) {
-            if (i<=preDelay) {
-                mixedAudio[i] = dryAudio[i];
-            } else if (i>preDelay && i<dryAudio.length) {
-                mixedAudio[i] = (short) (dryAudio[i] + wetAudio[wetPos]);
-                
-                if (mixedAudio[i] > Short.MAX_VALUE) {
-                mixedAudio[i] = Short.MAX_VALUE;
-                } else if (mixedAudio[i] < Short.MIN_VALUE) {
-                    mixedAudio[i] = Short.MIN_VALUE;
-                }
-                wetPos++;
-            } else if (i>dryAudio.length){
-                mixedAudio[i] = wetAudio[wetPos];
-                wetPos++;
-            }
-        }
-        
-        // Revert back to byte array to have playback functionality
-        byte[] finalAudio = new byte[(echoAudio.length+preDelay) * 2];
-        for (int i = 0; i < mixedAudio.length; i++) {
-                ByteBuffer.wrap(finalAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(mixedAudio[i]); // i*2 since each short is 2 bytes long
-            }
-        
-        byte[] audioToPlay = new byte[((echoAudio.length+preDelay) * 2) + 44];
-        System.arraycopy(finalAudio, 0, audioToPlay, 44, (echoAudio.length+preDelay) * 2); // Add the audio data
-        System.arraycopy(originalAudio, 0, audioToPlay, 0, 44); // Add the header
-        playAudio(finalAudio);
+        convertToByteArray(mixedAudio,((echoAudio.length+preDelay) * 2) + 44);
     }
     
     /**
@@ -156,22 +99,105 @@ public class EchoPlugin {
      * @return the lowered audio data
      */
     private short[] lowerAudio(short[] audioData, double amplitudeFactor) {
-        // Copy array
         short[] loweredAudio = new short[audioData.length];
-        for (int i = 0; i < loweredAudio.length; i++) {
-            loweredAudio[i] = audioData[i];
-        }
+        System.arraycopy(audioData, 0, loweredAudio, 0, audioData.length);
 
         // Apply decay effect
         for (int i = 0; i < loweredAudio.length; i++) {
             loweredAudio[i] = (short) (loweredAudio[i] * amplitudeFactor);
-            if (loweredAudio[i] > Short.MAX_VALUE) {
-                loweredAudio[i] = Short.MAX_VALUE;
-            } else if (loweredAudio[i] < Short.MIN_VALUE) {
-                loweredAudio[i] = Short.MIN_VALUE;
-            }
+            loweredAudio[i] = capMaxAmplitude(loweredAudio[i]);
         }
         return loweredAudio;
+    }
+    
+    /**
+     * Mixes the dry and wet audio data
+     * @param dryAudio the original audio
+     * @param wetAudio the modified audio
+     * @param dryAudioSize the size of the original audio
+     * @param wetAudioSize the size of the modified audio
+     * @return the mix of original and modified audio
+     */
+    private short[] dryWetMixing(short[] dryAudio, short[] wetAudio, int dryAudioSize, int wetAudioSize) {
+        // Dry Wet Mixing
+        short[] dryAudioToMix = new short[dryAudioSize];
+        short[] wetAudioToMix = new short[wetAudioSize];
+        
+        // Setup dry sound
+        for (int i = 0; i < dryAudioToMix.length; i++) {
+            dryAudioToMix[i] = (short) (dryAudio[i]*wetDryFactor);
+        }
+        
+        // Setup wet sound
+        for (int i = 0; i < wetAudio.length; i++) {
+            wetAudioToMix[i] = (short) (wetAudio[i] * (1-wetDryFactor));
+        }
+        
+        // Mix dry and wet
+        short[] mixedAudio = new short[wetAudioToMix.length+preDelay];
+        int wetPos = 0;
+        for (int i = 0; i < mixedAudio.length; i++) {
+            if (i<=preDelay) {
+                mixedAudio[i] = dryAudioToMix[i];
+            } else if (i>preDelay && i<dryAudioToMix.length) {
+                mixedAudio[i] = (short) (dryAudioToMix[i] + wetAudioToMix[wetPos]);
+                mixedAudio[i] = capMaxAmplitude(mixedAudio[i]);
+                wetPos++;
+            } else if (i>dryAudio.length){
+                mixedAudio[i] = wetAudioToMix[wetPos];
+                wetPos++;
+            }
+        }
+        
+        return mixedAudio;
+    }
+    
+    /**
+     * Caps the amplitude of a sample from exceeding the maximum value of a short
+     * @param sample the sample to be capped
+     * @return the capped sample
+     */
+    private short capMaxAmplitude(short sample) {
+        if (sample > Short.MAX_VALUE) {
+                sample = Short.MAX_VALUE;
+        } else if (sample < Short.MIN_VALUE) {
+            sample = Short.MIN_VALUE;
+        }
+        return sample;
+    }
+    
+    /**
+     * Converts the original audio data to a short array to allow for modifications
+     * @return the short[] audio data array
+     */
+    private short[] convertToShortArray() {
+        byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
+        // The audio to reverb has same audio data as the original audio for now (no header)
+        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
+        
+        // Convert audio data to short type to avoid audio warping
+        short[] audioToEcho = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < audioToEcho.length; i++) {
+            audioToEcho[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+        
+        return audioToEcho;
+    }
+    
+    /**
+     * Revert short[] audio data back to byte array to have playback functionality
+     * @param audioData the audio data to be converted to a byte array
+     */
+    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
+        byte[] modifiedAudio = new byte[sizeOfByteArray];
+        for (int i = 0; i < audioData.length; i++) {
+            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
+        }
+        
+        finalAudio = new byte[sizeOfByteArray + 44];
+        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
+        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
+        playAudio(finalAudio);
     }
     
     /**
@@ -179,25 +205,34 @@ public class EchoPlugin {
      * @param audioData the audio data to be played
      */
     private void playAudio(byte[] audioData) {
-        try {
-            File file = new File(filePathName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(audioFormat);
-            line.start();
+        new Thread(() -> {
+            try {
+                File file = new File(filePathName);
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                AudioFormat audioFormat = audioInputStream.getFormat();
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                line = (SourceDataLine) AudioSystem.getLine(info);
+                line.open(audioFormat);
+                line.start();
 
-            int frameSize = line.getFormat().getFrameSize();
-            int trimmedLength = (audioData.length / frameSize) * frameSize;
-            line.write(audioData, 0, trimmedLength);
+                int frameSize = line.getFormat().getFrameSize();
+                int trimmedLength = (audioData.length / frameSize) * frameSize;
+                line.write(audioData, 0, trimmedLength);
 
-            line.drain();
-            line.close();
-            echos = null;
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            System.out.println(e);
-        }
+                line.drain();
+                line.close();
+                echos = null;
+            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+                System.out.println(e);
+            }
+        }).start();
+    }
+    
+    /**
+     * Stops audio playback
+     */
+    public void stopAudio() {
+        line.close();
     }
 
     // Wrapper class to set echo effect

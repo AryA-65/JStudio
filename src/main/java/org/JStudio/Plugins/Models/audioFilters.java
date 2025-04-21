@@ -88,30 +88,43 @@ public class audioFilters {
      */
 
     /**
+     * BiquadFilter is a versatile second-order IIR filter implementation.
+     * It supports low-pass, high-pass, band-pass, and band-stop filtering.
+     *
      * Inspired from https://webaudio.github.io/Audio-EQ-Cookbook/audio-eq-cookbook.html
-         and https://webaudio.github.io/Audio-EQ-Cookbook/Audio-EQ-Cookbook.txt
+     *          and https://webaudio.github.io/Audio-EQ-Cookbook/Audio-EQ-Cookbook.txt
      */
     public class BiquadFilter {
 
-        // Filter coefficients
-        private double b0, b1, b2;
-        private double a0, a1, a2;
+        // These are calculated based on filter type and configuration
+        private double b0, b1, b2; // Feedforward coefficients
+        private double a0, a1, a2; // Feedback coefficients
 
-        // Delayed input and output samples
-        private double x1, x2; // Previous input samples
-        private double y1, y2; // Previous output samples
+        // Store the two most recent input (x) and output (y) samples
+        private double x1, x2; // Previous input samples (x[n-1], x[n-2])
+        private double y1, y2; // Previous output samples (y[n-1], y[n-2])
 
-        // Constructor
+        private double sampleRate = 44100;
+
+        /**
+         * Constructor initializes filter history (delay buffers) to zero.
+         */
         public BiquadFilter() {
-            // Initialize delay buffers to zero
             x1 = x2 = y1 = y2 = 0.0;
         }
 
-        // Apply the filter to a single sample
+        /**
+         * Apply the filter to a single audio sample.
+         *
+         * @param x0 The current input sample
+         * @return The filtered output sample
+         */
         public double apply(double x0) {
+            // Apply the biquad filter equation:
+            // y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]
             double y0 = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
 
-            // Shift the delay buffers
+            // Update the delay buffers for next sample
             x2 = x1;
             x1 = x0;
             y2 = y1;
@@ -120,8 +133,13 @@ public class audioFilters {
             return y0;
         }
 
-        // Low-pass filter (LPF)
-        public void lowPass(double freq, double Q, double sampleRate) {
+        /**
+         * Configure the filter as a low-pass filter (LPF).
+         *
+         * @param freq Cutoff frequency in Hz
+         * @param Q Quality factor (controls the resonance/steepness)
+         */
+        public void lowPass(double freq, double Q) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double cosW0 = Math.cos(w0);
             double alpha = Math.sin(w0) / (2 * Q);
@@ -136,8 +154,13 @@ public class audioFilters {
             normalize();
         }
 
-        // High-pass filter (HPF)
-        public void highPass(double freq, double Q, double sampleRate) {
+        /**
+         * Configure the filter as a high-pass filter (HPF).
+         *
+         * @param freq Cutoff frequency in Hz
+         * @param Q Quality factor (controls the resonance/steepness)
+         */
+        public void highPass(double freq, double Q) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double cosW0 = Math.cos(w0);
             double alpha = Math.sin(w0) / (2 * Q);
@@ -152,8 +175,13 @@ public class audioFilters {
             normalize();
         }
 
-        // Band-pass filter (BPF)
-        public void bandPass(double freq, double Q, double sampleRate) {
+        /**
+         * Configure the filter as a band-pass filter (BPF).
+         *
+         * @param freq Center frequency in Hz
+         * @param Q Quality factor (Q = center frequency / bandwidth)
+         */
+        public void bandPass(double freq, double Q) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double alpha = Math.sin(w0) / (2 * Q);
             double cosW0 = Math.cos(w0);
@@ -168,8 +196,13 @@ public class audioFilters {
             normalize();
         }
 
-        // Band-stop filter (Notch)
-        public void bandStop(double freq, double Q, double sampleRate) {
+        /**
+         * Configure the filter as a band-stop filter (Notch).
+         *
+         * @param freq Center frequency in Hz (the frequency to remove)
+         * @param Q Quality factor (Q = center frequency / bandwidth)
+         */
+        public void bandStop(double freq, double Q) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double alpha = Math.sin(w0) / (2 * Q);
             double cosW0 = Math.cos(w0);
@@ -184,21 +217,64 @@ public class audioFilters {
             normalize();
         }
 
-        // Normalize the coefficients (so that a0 = 1)
+        /**
+         * Normalize the filter coefficients so that a0 becomes 1.
+         * This ensures stability and proper gain scaling.
+         */
         private void normalize() {
             b0 /= a0;
             b1 /= a0;
             b2 /= a0;
             a1 /= a0;
             a2 /= a0;
-            a0 = 1.0;
+            a0 = 1.0; // a0 is now normalized
         }
 
-        // Optional: reset the filter history
+        /**
+         * Resets the filter history (delay buffers) to zero.
+         * Call this if you're starting a new stream or input.
+         */
         public void reset() {
             x1 = x2 = y1 = y2 = 0.0;
         }
+
+        public static void applyBiquadLowPassFilter(short[] samples, float cutoffFreq, float q) {
+            BiquadFilter filter = new audioFilters().new BiquadFilter(); // Create an instance
+            filter.lowPass(cutoffFreq, q);
+            applyBiquad(samples, filter);
+        }
+
+        public static void applyBiquadHighPassFilter(short[] samples, float cutoffFreq, float q) {
+            BiquadFilter filter = new audioFilters().new BiquadFilter();
+            filter.highPass(cutoffFreq, q);
+            applyBiquad(samples, filter);
+        }
+
+        public static void applyBiquadBandPassFilter(short[] samples, float centerFreq, float q) {
+            BiquadFilter filter = new audioFilters().new BiquadFilter();
+            filter.bandPass(centerFreq, q);
+            applyBiquad(samples, filter);
+        }
+
+        public static void applyBiquadBandStopFilter(short[] samples, float centerFreq, float q) {
+            BiquadFilter filter = new audioFilters().new BiquadFilter();
+            filter.bandStop(centerFreq, q);
+            applyBiquad(samples, filter);
+        }
+
+        // Shared utility method
+        private static void applyBiquad(short[] samples, BiquadFilter filter) {
+            filter.reset();
+            for (int i = 0; i < samples.length; i++) {
+                double input = samples[i];
+                double output = filter.apply(input);
+                output = Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, output)); // Clamp
+                samples[i] = (short) output;
+            }
+        }
+
     }
+
 }
 
 

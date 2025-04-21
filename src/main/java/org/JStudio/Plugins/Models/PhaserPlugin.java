@@ -69,6 +69,7 @@ public class PhaserPlugin {
         // Mix all pass filters
         for (int i = 0; i < filteredAudio.length; i++) {
             filteredAudio[i] = (short) ((filteredAudio1[i] + filteredAudio2[i] + filteredAudio3[i] + filteredAudio4[i]) * (1-wetDryFactor));
+            filteredAudio[i] = capMaxAmplitude(filteredAudio[i]);
         }
        
         phasedAudio = dryWetMixing(phasedAudio, filteredAudio);
@@ -87,8 +88,23 @@ public class PhaserPlugin {
             double phaseOscillation = Math.sin(2*Math.PI * frequency/200 * i/44100); // Will be changed to match other sample rates
             int phaseShift = (int) (phaseOscillation*deviation/5);
             filteredArray[i] = (short) (phaseShift*audioData[i] + audioData[i-1] - phaseShift*filteredArray[i-1]);
+            filteredArray[i] = capMaxAmplitude(filteredArray[i]);
         }
         return filteredArray;
+    }
+    
+    /**
+     * Caps the amplitude of a sample from exceeding the maximum value of a short
+     * @param sample the sample to be capped
+     * @return the capped sample
+     */
+    private short capMaxAmplitude(short sample) {
+        if (sample > Short.MAX_VALUE) {
+                sample = Short.MAX_VALUE;
+        } else if (sample < Short.MIN_VALUE) {
+            sample = Short.MIN_VALUE;
+        }
+        return sample;
     }
     
     /**
@@ -96,12 +112,9 @@ public class PhaserPlugin {
      * @return the short[] audio data array
      */
     private short[] convertToShortArray() {
-         byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
-
+        byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
         // The audio to add phasing to has same audio data as the original audio for now (no header)
-        for (int i = 0; i < noHeaderByteAudioData.length; i++) {
-            noHeaderByteAudioData[i] = originalAudio[i + 44];
-        }
+        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
 
         // Convert audio data to short type to avoid audio warping
         short[] audioToPhase = new short[noHeaderByteAudioData.length / 2];
@@ -139,11 +152,7 @@ public class PhaserPlugin {
         // Mix phase shifted audio and original audio
         for (int i = 0; i < dryAudio.length; i++) {
             dryAudio[i] += wetAudio[i]*(1-wetDryFactor);
-            if (dryAudio[i] > Short.MAX_VALUE) {
-                dryAudio[i] = Short.MAX_VALUE;
-            } else if (dryAudio[i] < Short.MIN_VALUE) {
-                dryAudio[i] = Short.MIN_VALUE;
-            }
+            dryAudio[i] = capMaxAmplitude(dryAudio[i]);
         }
         return dryAudio;
     }

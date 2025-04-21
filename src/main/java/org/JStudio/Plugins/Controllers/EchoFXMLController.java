@@ -25,7 +25,7 @@ public class EchoFXMLController {
     
     @FXML
     public void initialize() {
-    echo = new EchoPlugin(10000, 0.5, 20000, 10, 0.5); // Create a reverb
+        echo = new EchoPlugin(1000, 1/11, 10000, 5, 0.5); // Create a echo
         
         // Set the visual components/max and min values of the sliders
         preDelaySlider.setMin(1);
@@ -74,7 +74,7 @@ public class EchoFXMLController {
         
         // Set listeners and actions for sliders and buttons
         preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
-            echo.setPreDelay(newPreDelay.intValue());
+            echo.setPreDelay(newPreDelay.intValue()*1000);
         });
         
         decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
@@ -102,10 +102,11 @@ public class EchoFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             echo.stopAudio();
-            echo = new EchoPlugin(10000, 0.5, 20000, 10, 0.5);
+            echo = new EchoPlugin(1000, 1/11, 10000, 5, 0.5);
             preDelaySlider.setValue(1);
             decayTimeSlider.setValue(1);
             diffusionSlider.setValue(2);
+            echoNumSlider.setValue(5);
             wetDrySlider.setValue(5);
         });
     }

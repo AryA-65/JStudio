@@ -139,7 +139,7 @@ public class audioFilters {
          * @param freq Cutoff frequency in Hz
          * @param Q Quality factor (controls the resonance/steepness)
          */
-        public void lowPass(double freq, double Q) {
+        public void lowPass(double freq, double Q, double sampleRate) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double cosW0 = Math.cos(w0);
             double alpha = Math.sin(w0) / (2 * Q);
@@ -160,7 +160,7 @@ public class audioFilters {
          * @param freq Cutoff frequency in Hz
          * @param Q Quality factor (controls the resonance/steepness)
          */
-        public void highPass(double freq, double Q) {
+        public void highPass(double freq, double Q, double sampleRate) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double cosW0 = Math.cos(w0);
             double alpha = Math.sin(w0) / (2 * Q);
@@ -181,7 +181,7 @@ public class audioFilters {
          * @param freq Center frequency in Hz
          * @param Q Quality factor (Q = center frequency / bandwidth)
          */
-        public void bandPass(double freq, double Q) {
+        public void bandPass(double freq, double Q, double sampleRate) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double alpha = Math.sin(w0) / (2 * Q);
             double cosW0 = Math.cos(w0);
@@ -202,7 +202,7 @@ public class audioFilters {
          * @param freq Center frequency in Hz (the frequency to remove)
          * @param Q Quality factor (Q = center frequency / bandwidth)
          */
-        public void bandStop(double freq, double Q) {
+        public void bandStop(double freq, double Q, double sampleRate) {
             double w0 = 2 * Math.PI * freq / sampleRate;
             double alpha = Math.sin(w0) / (2 * Q);
             double cosW0 = Math.cos(w0);
@@ -238,27 +238,27 @@ public class audioFilters {
             x1 = x2 = y1 = y2 = 0.0;
         }
 
-        public static void applyBiquadLowPassFilter(short[] samples, float cutoffFreq, float q) {
+        public static void applyBiquadLowPassFilter(short[] samples, float cutoffFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter(); // Create an instance
-            filter.lowPass(cutoffFreq, q);
+            filter.lowPass(cutoffFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
-        public static void applyBiquadHighPassFilter(short[] samples, float cutoffFreq, float q) {
+        public static void applyBiquadHighPassFilter(short[] samples, float cutoffFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
-            filter.highPass(cutoffFreq, q);
+            filter.highPass(cutoffFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
-        public static void applyBiquadBandPassFilter(short[] samples, float centerFreq, float q) {
+        public static void applyBiquadBandPassFilter(short[] samples, float centerFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
-            filter.bandPass(centerFreq, q);
+            filter.bandPass(centerFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
-        public static void applyBiquadBandStopFilter(short[] samples, float centerFreq, float q) {
+        public static void applyBiquadBandStopFilter(short[] samples, float centerFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
-            filter.bandStop(centerFreq, q);
+            filter.bandStop(centerFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
@@ -272,7 +272,6 @@ public class audioFilters {
                 samples[i] = (short) output;
             }
         }
-
     }
 
 }

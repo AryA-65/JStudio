@@ -37,11 +37,17 @@ public class audioFilterFXMLController {
         setupMenu(optionsCutOff);
         setDefaultMenuSelection(optionsCutOff);
 
+        fieldFrequency.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                fieldFrequency.setText(oldValue);
+            }
+        });
+
         playBtn.setOnAction(event -> {
             try {
                 FileChooser fileChooser = new FileChooser();
                 inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
-                getText();
+//                getText();
                 File file = new File(inputFile);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
                 AudioFormat format = audioStream.getFormat();
@@ -120,11 +126,11 @@ public class audioFilterFXMLController {
         }
     }
 
-    public void getText() {
-        // https://www.squash.io/how-to-use-a-regex-to-only-accept-numbers-0-9/
-        if (fieldFrequency.getText().matches("^[0-9]+$")) {
-            userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
-        }
-    }
+//    public void getText() {
+//        // https://www.squash.io/how-to-use-a-regex-to-only-accept-numbers-0-9/
+//        if (fieldFrequency.getText().matches("^[0-9]+$")) {
+//            userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
+//        }
+//    }
 
 }

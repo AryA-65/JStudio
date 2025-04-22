@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Models;
 
 public abstract class Stereoizer { //add mix to the other classes
     protected float sampleRate, width = 1.0f;
@@ -12,6 +12,8 @@ public abstract class Stereoizer { //add mix to the other classes
     }
 
     public abstract void process(float[] mono);
+//    public abstract float[][] process(float[] mono);
+
 }
 
 class HAASStereo extends Stereoizer {

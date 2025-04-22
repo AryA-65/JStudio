@@ -72,6 +72,7 @@ public class ButterworthFxmlController {
                 samples = audioFilters.bytesToShorts(audioBytes);
                 sampleRate = format.getSampleRate();
 
+                System.out.println("succesfully imported");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -96,6 +97,7 @@ public class ButterworthFxmlController {
                 switch (selected.getId()) {
                     case "lowPassRadio":
                         audioFilters.BiquadFilter.applyBiquadLowPassFilter(samples, freq, q, sampleRate);
+                        System.out.println("effect applied");
                         break;
                     case "highPassRadio":
                         audioFilters.BiquadFilter.applyBiquadHighPassFilter(samples, freq, q, sampleRate);
@@ -110,7 +112,8 @@ public class ButterworthFxmlController {
                         System.out.println("Invalid filter type.");
                 }
 
-                byte[] filteredBytes = audioFilters.shortsToBytes(samples);
+                filteredBytes = audioFilters.shortsToBytes(samples);
+
             } catch (NumberFormatException e) {
                 System.out.println("Invalid frequency or Q value.");
             } catch (Exception e) {
@@ -119,7 +122,8 @@ public class ButterworthFxmlController {
 
             exportButton.setOnAction(event1 -> {
                 try {
-                    audioFilters.saveWavFile(String.valueOf(outputFileName), filteredBytes, format);
+                    audioFilters.saveWavFile(outputFileName.getText(), filteredBytes, format);
+                    System.out.println("succesfully exported");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

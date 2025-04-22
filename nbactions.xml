@@ -13,7 +13,7 @@
                 <exec.vmArgs>--module-path "C:\JavaFX\javafx-sdk-22.0.2\lib" --add-modules=javafx.controls,javafx.fxml,javafx.graphics</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>PianoManualSynth.Main</exec.mainClass>
+                <exec.mainClass>org.JStudio.Main</exec.mainClass>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -30,7 +30,7 @@
                 <exec.vmArgs>--module-path "C:\JavaFX\javafx-sdk-22.0.2\lib" --add-modules=javafx.controls,javafx.fxml,javafx.graphics -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>PianoManualSynth.Main</exec.mainClass>
+                <exec.mainClass>org.JStudio.Main</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -47,7 +47,7 @@
             <properties>
                 <exec.vmArgs>--module-path "C:\JavaFX\javafx-sdk-22.0.2\lib" --add-modules=javafx.controls,javafx.fxml,javafx.graphics</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.mainClass>PianoManualSynth.Main</exec.mainClass>
+                <exec.mainClass>org.JStudio.Main</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.appArgs></exec.appArgs>
             </properties>

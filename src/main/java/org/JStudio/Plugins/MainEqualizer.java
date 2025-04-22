@@ -20,11 +20,17 @@ public class MainEqualizer{
     public void openEQ() {
         
         Stage stage = new Stage();
+        
         stage.initModality(Modality.APPLICATION_MODAL);
         //open new scene
         EqualizerView eqView = new EqualizerView();
         Scene scene = new Scene(eqView);
         stage.setScene(scene);
+        
+        stage.setOnCloseRequest(e ->{
+            eqView.getEqualizerController().getLine().close();
+        });
+        
         stage.show();
     }
     

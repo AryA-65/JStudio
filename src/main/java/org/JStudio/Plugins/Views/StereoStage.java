@@ -9,6 +9,7 @@ import org.JStudio.Plugins.Controllers.FlangerFXMLController;
 import org.JStudio.Plugins.Controllers.StereoFXMLController;
 
 import java.io.IOException;
+import org.JStudio.SettingsController;
 
 public class StereoStage extends Stage {
     public static Scene scene;
@@ -32,6 +33,11 @@ public class StereoStage extends Stage {
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 100, 200);
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

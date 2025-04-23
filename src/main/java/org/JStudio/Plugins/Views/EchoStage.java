@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Controllers.EchoFXMLController;
+import org.JStudio.SettingsController;
 
 public class EchoStage extends Stage{
     public static Scene scene;
@@ -30,6 +31,11 @@ public class EchoStage extends Stage{
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

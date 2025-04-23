@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.JStudio.Plugins.ButterworthFXMLController;
+import org.JStudio.Plugins.Controllers.ButterworthFXMLController;
 
 public class Main extends Application {
 //    public String currentUser;

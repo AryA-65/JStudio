@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

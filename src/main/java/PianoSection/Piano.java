@@ -11,8 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class Piano{
-
+public class Piano {
     public void openPiano() {
         try {
             Stage stage = new Stage();
@@ -26,5 +25,4 @@ public class Piano{
             System.out.println(ex.getMessage());
         }
     }
-    
 }

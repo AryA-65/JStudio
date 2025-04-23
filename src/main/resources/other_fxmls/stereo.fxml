@@ -19,18 +19,19 @@
       </ToolBar>
    </top>
    <center>
-      <HBox fx:id="HAASStereoRadio" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" BorderPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER_LEFT" prefHeight="360.0" prefWidth="123.0" spacing="20.0">
                <children>
-                  <RadioButton mnemonicParsing="false" text="HAAS Stereo" />
+                  <RadioButton fx:id="HAASStereoRadio" mnemonicParsing="false" text="HAAS Stereo" />
                   <RadioButton fx:id="LFOStereoRadio" mnemonicParsing="false" text="LFO Stereo" />
                   <RadioButton fx:id="InvertedStereoRadio" mnemonicParsing="false" text="Inverted Stereo" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                <children>
-                  <TextField />
+                  <TextField fx:id="delaySample" promptText="Delay Sample" />
+                  <TextField fx:id="fileName" promptText="Output File" />
                </children>
             </VBox>
          </children>

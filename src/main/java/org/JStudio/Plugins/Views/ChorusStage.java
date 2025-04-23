@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Controllers.ChorusFXMLController;
+import org.JStudio.SettingsController;
 
 
 public class ChorusStage extends Stage {
@@ -31,8 +32,11 @@ public class ChorusStage extends Stage {
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

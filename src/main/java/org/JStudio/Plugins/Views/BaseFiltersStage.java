@@ -9,6 +9,7 @@ import org.JStudio.Plugins.Controllers.ChorusFXMLController;
 import org.JStudio.Plugins.Controllers.audioFilterFXMLController;
 
 import java.io.IOException;
+import org.JStudio.SettingsController;
 
 public class BaseFiltersStage extends Stage {
     public static Scene scene;
@@ -26,8 +27,11 @@ public class BaseFiltersStage extends Stage {
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

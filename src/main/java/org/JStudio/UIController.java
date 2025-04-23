@@ -188,6 +188,12 @@ public class UIController {
             piano.openPiano();
         });
         
+        
+        settings_btn.setOnMouseClicked(e -> {
+            SettingsWindow settings = new SettingsWindow();
+            settings.show();
+        });
+        
 //        DropShadow dropShadow = new DropShadow();
 //        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
 //        dropShadow.setRadius(3);

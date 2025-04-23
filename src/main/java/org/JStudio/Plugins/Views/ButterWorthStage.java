@@ -10,6 +10,7 @@ import org.JStudio.Plugins.Controllers.ReverbFXMLController;
 import org.JStudio.Plugins.Synthesizer.Controller;
 
 import java.io.IOException;
+import org.JStudio.SettingsController;
 
 public class ButterWorthStage extends Stage {
     public static Scene scene;
@@ -27,8 +28,11 @@ public class ButterWorthStage extends Stage {
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

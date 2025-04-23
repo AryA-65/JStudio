@@ -1,6 +1,5 @@
 package org.JStudio.Plugins;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
@@ -15,7 +14,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 import java.io.IOException;
 
-public class ButterworthFxmlController {
+public class ButterworthFXMLController {
     @FXML
     private Button importButton, applyButton, exportButton;
 

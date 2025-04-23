@@ -5,8 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.JStudio.Plugins.ButterworthFxmlController;
+import org.JStudio.Plugins.ButterworthFXMLController;
 
 public class Main extends Application {
 //    public String currentUser;
@@ -17,7 +16,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
 
-        ButterworthFxmlController butterworthFxmlController = new ButterworthFxmlController();
+        ButterworthFXMLController butterworthFxmlController = new ButterworthFXMLController();
         loader.setController(butterworthFxmlController);
 
         Parent root = loader.load();

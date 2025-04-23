@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import org.JStudio.Plugins.Controllers.ChorusFXMLController;
 
 
-public class ChorusStage extends Stage{
+public class ChorusStage extends Stage {
     public static Scene scene;
     
     /**

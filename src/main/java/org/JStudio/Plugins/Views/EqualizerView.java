@@ -19,6 +19,10 @@ public class EqualizerView extends Pane {
     public EqualizerBand[] getEqBands() {
         return eqBands;
     }
+    
+    public EqualizerController getEqualizerController(){
+        return eqController;
+    }
 
     public EqualizerView() {
         //get audio file

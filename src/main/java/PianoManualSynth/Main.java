@@ -1,5 +1,6 @@
-package PianoSection;
+package PianoManualSynth;
 
+import PianoSection.*;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes.fxml"));
+        Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes_1.fxml"));
         Scene scene = new Scene(root,1500,900);
         stage.setScene(scene);
         stage.show();

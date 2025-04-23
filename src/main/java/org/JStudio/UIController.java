@@ -1,5 +1,6 @@
 package org.JStudio;
 
+import PianoSection.Piano;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -29,13 +30,34 @@ import org.JStudio.Utils.SystemMonitor;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.JStudio.Plugins.MainEqualizer;
+import org.JStudio.Plugins.Views.ChorusStage;
+import org.JStudio.Plugins.Views.EchoStage;
+import org.JStudio.Plugins.Views.FlangerStage;
+import org.JStudio.Plugins.Views.PhaserStage;
+import org.JStudio.Plugins.Views.ReverbStage;
 
 /*
 MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
  */
 
 public class UIController {
-
+    @FXML
+    private Button reverbBtn;
+    @FXML
+    private Button flangerBtn;
+    @FXML
+    private Button chorusBtn;
+    @FXML
+    private Button echoBtn;
+    @FXML
+    private Button phaserBtn;
+    @FXML
+    private Button equalizerBtn;
+    @FXML
+    private Button pianoBtn;
+    
+    
     @FXML
     private TextField search_samples;
     @FXML
@@ -126,6 +148,46 @@ public class UIController {
 
     @FXML
     public void initialize() throws Exception {
+        reverbBtn.setOnAction(e -> {
+            ReverbStage reverb = new ReverbStage();
+            reverb.show();
+        });
+        
+        flangerBtn.setOnAction(e -> {
+            FlangerStage flanger = new FlangerStage();
+            flanger.show();
+        });
+        
+        chorusBtn.setOnAction(e -> {
+            ChorusStage chorus = new ChorusStage();
+            chorus.show();
+        });
+        
+        echoBtn.setOnAction(e -> {
+            EchoStage echo = new EchoStage();
+            echo.show();
+        });
+        
+        phaserBtn.setOnAction(e -> {
+            PhaserStage phaser = new PhaserStage();
+            phaser.show();
+        });
+        
+        equalizerBtn.setOnAction(e -> {
+            MainEqualizer mainEQ = new MainEqualizer();
+            mainEQ.openEQ();
+        });
+        
+        equalizerBtn.setOnAction(e -> {
+            MainEqualizer mainEQ = new MainEqualizer();
+            mainEQ.openEQ();
+        });
+        
+        pianoBtn.setOnAction(e -> {
+            Piano piano = new Piano();
+            piano.openPiano();
+        });
+        
 //        DropShadow dropShadow = new DropShadow();
 //        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
 //        dropShadow.setRadius(3);

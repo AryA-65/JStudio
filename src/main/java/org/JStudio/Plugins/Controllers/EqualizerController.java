@@ -34,6 +34,10 @@ public class EqualizerController extends Thread {
         this.eqView = eqView;
     }
 
+    public SourceDataLine getLine() {
+        return line;
+    }
+    
     @Override
     public void run() {
 

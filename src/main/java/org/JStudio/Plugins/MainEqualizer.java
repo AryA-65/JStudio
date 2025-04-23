@@ -7,6 +7,7 @@ package org.JStudio.Plugins;
 import org.JStudio.Plugins.Views.EqualizerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -14,17 +15,22 @@ import javafx.stage.Stage;
  * @author alexa
  */
 // used temporarily to run the equalizer
-public class MainEqualizer extends Application{
-    public static void main(String[] args) {
-        launch(args);
-    }
+public class MainEqualizer{
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    public void openEQ() {
+        
+        Stage stage = new Stage();
+        
+        stage.initModality(Modality.APPLICATION_MODAL);
         //open new scene
         EqualizerView eqView = new EqualizerView();
         Scene scene = new Scene(eqView);
         stage.setScene(scene);
+        
+        stage.setOnCloseRequest(e ->{
+            eqView.getEqualizerController().getLine().close();
+        });
+        
         stage.show();
     }
     

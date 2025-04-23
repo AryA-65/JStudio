@@ -25,6 +25,8 @@ public class MainEqualizer{
         //open new scene
         EqualizerView eqView = new EqualizerView();
         Scene scene = new Scene(eqView);
+        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
         stage.setScene(scene);
         
         stage.setOnCloseRequest(e ->{

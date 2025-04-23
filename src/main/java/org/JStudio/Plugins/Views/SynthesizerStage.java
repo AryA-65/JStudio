@@ -35,6 +35,8 @@ public class SynthesizerStage extends Stage {
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 650, 400);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

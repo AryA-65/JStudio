@@ -1,0 +1,94 @@
+.button {
+    -fx-background-color: #38414A;
+    -fx-text-fill: #B6C2CF;
+}
+
+.root {
+    -fx-background-color: #22272B !important;
+}
+
+.label {
+    -fx-text-fill: #B6C2CF !important;
+}
+
+.tab-content {
+    -fx-background-color: #22272B;
+}
+
+.tab-pane {
+    -fx-background-color: #22272B;
+    -fx-border-color: transparent;
+    -fx-effect: null;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #B6C2CF; /* Example: Tomato color */
+}
+
+.tab {
+    -fx-background-color: #2C333A;
+}
+
+.tab:selected {
+    -fx-background-color: #454F59;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-content {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-border-width: 0px;
+    -fx-border-color: transparent;
+}
+
+.text-field:selected {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.search {
+    -fx-background-color: #596773;
+    -fx-border-color: #38414A;
+    -fx-border-radius: 5px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.split-pane-divider {
+    -fx-background-color: #d9d9d9;
+}
+
+.split-pane > .split-pane-item {
+    -fx-background-color: transparent;
+}
+
+.HBox {
+    -fx-background-color: transparent;
+}
+
+.disabled {
+    -fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.active {
+    -fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #22272B !important;
+}
+
+.scroll-pane .track {
+    -fx-background-color: #22272B !important;
+}
+
+.vbox {
+    -fx-background-color: #22272B !important;
+}
+
+.hbox {
+    -fx-background-color: #22272B !important;
+}

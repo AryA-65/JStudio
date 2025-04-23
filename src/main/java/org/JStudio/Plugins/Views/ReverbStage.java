@@ -34,6 +34,8 @@ public class ReverbStage extends Stage{
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

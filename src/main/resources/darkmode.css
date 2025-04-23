@@ -1,6 +1,7 @@
 .button {
     -fx-background-color: #38414A;
     -fx-text-fill: #B6C2CF;
+    -fx-border-color: #738496;
 }
 
 .root {
@@ -22,7 +23,7 @@
 }
 
 .tab .tab-label {
-    -fx-text-fill: #B6C2CF; /* Example: Tomato color */
+    -fx-text-fill: #B6C2CF;
 }
 
 .tab {
@@ -82,13 +83,5 @@
 }
 
 .scroll-pane .track {
-    -fx-background-color: #22272B !important;
-}
-
-.vbox {
-    -fx-background-color: #22272B !important;
-}
-
-.hbox {
     -fx-background-color: #22272B !important;
 }

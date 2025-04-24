@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 import org.JStudio.Plugins.Models.audioFilters;
 
-public class audioFilterFXMLController {
+public class AudioFilterFXMLController {
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
     public String outputFile = "filtered_output.wav"; //todo create a field for the user to enter the output file name

@@ -56,14 +56,16 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-
+        controller.setScene(scene);
         stage.setScene(scene);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(true);
         stage.show();
 
+        // For alternating styles
         controller.setSplitRatio();
-
+        SettingsController sc = new SettingsController();
+        sc.setController(controller);
         /**
          * to initialize the login page
          */

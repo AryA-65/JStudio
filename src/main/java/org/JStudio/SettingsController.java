@@ -2,6 +2,7 @@ package org.JStudio;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -10,6 +11,7 @@ public class SettingsController {
     private static boolean style; // false means light, true means dark
     private ToggleGroup group;
     private static RadioButton selected;
+    private static UIController controller;
 
     @FXML
     RadioButton lightRadio, darkRadio;
@@ -42,6 +44,7 @@ public class SettingsController {
                 style = false;
                 break;
             }
+            updateMainUIStyle();
         });
         
         //todo implement the other funcitons
@@ -53,5 +56,13 @@ public class SettingsController {
 
     public static void setStyle(boolean style) {
         SettingsController.style = style;
+    }
+
+    public static void setController(UIController controller) {
+        SettingsController.controller = controller;
+    }
+    
+    public void updateMainUIStyle() {
+        SettingsController.controller.updateStyle();
     }
 }

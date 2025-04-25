@@ -27,18 +27,21 @@ import org.JStudio.Utils.SystemMonitor;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
 import org.JStudio.Plugins.Views.ChorusStage;
 import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.Plugins.Views.ReverbStage;
+import static org.JStudio.Plugins.Views.ReverbStage.scene;
 
 /*
 MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
  */
 
 public class UIController {
+    private Scene scene;
     @FXML
     private ImageView snap_btn;
     @FXML
@@ -145,6 +148,34 @@ public class UIController {
 
     public Stage getStage() {return rootStage;}
 
+    /**
+     * Sets the main scene
+     * @param scene 
+     */
+    public void setScene(Scene scene)  {
+        this.scene = scene;
+    }
+    
+    /**
+     * Gets the main scene
+     * @return the main scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
+    
+    /**
+     * Updates style of main scene (light or dark)
+     */
+    public void updateStyle() {
+        scene.getStylesheets().clear();
+        if (SettingsController.getStyle()) {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else if (!SettingsController.getStyle()) {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        }
+    }
+    
     @FXML
     public void initialize() throws Exception {
         reverbBtn.setOnAction(e -> {

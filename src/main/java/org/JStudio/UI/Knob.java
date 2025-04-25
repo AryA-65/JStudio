@@ -56,7 +56,6 @@ public class Knob extends Canvas {
     private static final double DEFAULT_SIZE = 100;
     private static final double MIN_ANGLE = -135;
     private static final double MAX_ANGLE = 135;
-    private static final double MID_ANGLE = 0;
 
     private final DoubleProperty value = new SimpleDoubleProperty(0.0);
     private final DoubleProperty min = new SimpleDoubleProperty(0.0);
@@ -79,6 +78,7 @@ public class Knob extends Canvas {
         super(size, size);
         setSnapEnabled(se);
         setSnapStep(ss);
+        this.type.set(type);
         init(type);
     }
 
@@ -184,6 +184,7 @@ public class Knob extends Canvas {
         gc.setFill(Color.ORANGE);
         gc.fillOval(dimpleCenterX - dimpleRadius, dimpleCenterY - dimpleRadius, dimpleRadius * 2, dimpleRadius * 2);
 
+        //line visual
 //        gc.setStroke(Color.WHITE);
 //        gc.setLineWidth(2);
 //        gc.strokeLine(centerX, centerY, endX, endY);

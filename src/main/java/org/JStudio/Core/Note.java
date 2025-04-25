@@ -1,14 +1,12 @@
 package org.JStudio.Core;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Note {
     private double default_l = 0.25, length;
-    private int note, position;
+    private long position;
+    private short note;
     private float volume;
 
-    Note(short sample_rate, int note, int position) {
+    Note(short sample_rate, short note, long position) {
         this.length = sample_rate * default_l;
         this.note = note;
         this.position = position;
@@ -19,7 +17,7 @@ public class Note {
         this.volume = volume;
     }
 
-    public void setNote(int note) {
+    public void setNote(short note) {
         this.note = note;
     }
 
@@ -32,15 +30,15 @@ public class Note {
         this.default_l = length;
     }
 
-    public int getNote() {
+    public short getNote() {
         return note;
     }
 
-    public int getPosition() {
+    public long getPosition() {
         return position;
     }
 
-    public Map<Integer, Float> getNote_Volume() {
-        return new HashMap<Integer, Float>() {{this.put(note, volume);}};
+    public String getNote_Volume() {
+        return note + "n " + volume + "v";
     }
 }

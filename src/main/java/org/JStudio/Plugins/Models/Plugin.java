@@ -95,9 +95,8 @@ public abstract class Plugin {
             ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
         }
         
-        finalAudio = new byte[sizeOfByteArray + 44];
-        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
-        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
+        finalAudio = new byte[sizeOfByteArray];
+        System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
         playAudio(finalAudio);
     }
     

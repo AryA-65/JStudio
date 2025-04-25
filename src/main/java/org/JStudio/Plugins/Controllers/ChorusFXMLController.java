@@ -59,7 +59,6 @@ public class ChorusFXMLController {
         
         deviationSlider.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
             chorus.setDeviation(newDeviation.intValue()*100);
-            
         });
         
         wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {

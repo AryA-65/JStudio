@@ -32,7 +32,7 @@ public class StereoStage extends Stage {
             fxmlLoader.setController(new StereoFXMLController());
 
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 100, 200);
+            scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

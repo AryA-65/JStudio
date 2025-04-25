@@ -6,41 +6,42 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Synthesizer.Controller;
-
-import java.io.IOException;
 import org.JStudio.SettingsController;
 
-public class SynthesizerStage extends Stage {
-    public static Scene scene;
+import java.io.IOException;
+import java.net.URL;
 
-    public SynthesizerStage() {
-        setTitle("Synthesizer");
-        initModality(Modality.APPLICATION_MODAL);
-        initPlugin();
-    }
+public class SynthesizerStage {
+    public static Scene mainScene;
+    public static Stage stage;
 
-    private void initPlugin() {
+    public void synth() {
+        stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("other_fxmls/waveGenerator.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/waveGenerator.fxml"));
+            Parent root = fxmlLoader.load();
+
             Controller myController = fxmlLoader.getController();
+            Scene mainScene = new Scene(root, 650, 400);
+
+            stage.setScene(mainScene);
 
             if (myController != null) {
                 System.out.println("Is not null");
-                myController.setScene(scene);
-                myController.setStage(this);
+                myController.setScene(mainScene);
+                myController.setStage(stage);
             } else {
                 System.err.println("Error!");
             }
 
-            Parent root = fxmlLoader.load();
-            scene = new Scene(root, 650, 400);
             if (SettingsController.getStyle()) {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+                mainScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+                mainScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
             }
-            sizeToScene();
-            setScene(scene);
+            stage.show();
         } catch (IOException e) {
             System.out.println(e);
         }

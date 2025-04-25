@@ -36,6 +36,7 @@ public class StereoFXMLController {
         exportButton.setOnAction(event -> exportAudio());
     }
 
+
     private void importAudio() {
         try {
             FileChooser fileChooser = new FileChooser();

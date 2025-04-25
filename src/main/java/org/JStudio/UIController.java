@@ -21,6 +21,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Track;
+import org.JStudio.Plugins.Synthesizer.Controller;
+import org.JStudio.Plugins.Views.*;
 import org.JStudio.Utils.AudioVisualizer;
 import org.JStudio.Utils.SystemMonitor;
 
@@ -29,11 +31,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
-import org.JStudio.Plugins.Views.ChorusStage;
-import org.JStudio.Plugins.Views.EchoStage;
-import org.JStudio.Plugins.Views.FlangerStage;
-import org.JStudio.Plugins.Views.PhaserStage;
-import org.JStudio.Plugins.Views.ReverbStage;
+
 import static org.JStudio.Plugins.Views.ReverbStage.scene;
 
 /*
@@ -58,7 +56,9 @@ public class UIController {
     private Button equalizerBtn;
     @FXML
     private Button pianoBtn;
-    
+
+    @FXML
+    private Button stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
     
     @FXML
     private TextField search_samples;
@@ -223,7 +223,32 @@ public class UIController {
             SettingsWindow settings = new SettingsWindow();
             settings.show();
         });
-        
+
+        stereoBtn.setOnMouseClicked(e -> {
+            StereoStage stereo = new StereoStage();
+            stereo.show();
+        });
+
+        butterworthBtn.setOnMouseClicked(e -> {
+            ButterWorthStage butterWorth = new ButterWorthStage();
+            butterWorth.show();
+        });
+
+        basicFilterBtn.setOnMouseClicked(e -> {
+            BaseFiltersStage baseFilters = new BaseFiltersStage();
+            baseFilters.show();
+        });
+
+        amplitudeBtn.setOnMouseClicked(e -> {
+            AudioAmplitudeStage audioAmplitude = new AudioAmplitudeStage();
+            audioAmplitude.show();
+        });
+
+        synthesizerBtn.setOnMouseClicked(e -> {
+            SynthesizerStage synthesizerStage = new SynthesizerStage();
+            synthesizerStage.synth();
+        });
+
 //        DropShadow dropShadow = new DropShadow();
 //        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
 //        dropShadow.setRadius(3);

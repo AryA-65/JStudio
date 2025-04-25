@@ -10,16 +10,26 @@ public class SettingsController {
 
     @FXML
     RadioButton lightRadio, darkRadio;
-
-
-    // For now opening settings turns plugin to dark mode
     @FXML
     public void initialize() {
-//        group = new ToggleGroup(); //todo creates an error
-//        lightRadio.setToggleGroup(group);
-//        darkRadio.setToggleGroup(group);
+        group = new ToggleGroup();
+        lightRadio.setToggleGroup(group);
+        darkRadio.setToggleGroup(group);
 
-        style = true;
+        RadioButton selected = (RadioButton) group.getSelectedToggle();
+
+        switch (selected.getId()) {
+            case "lightRadio":
+                style = false;
+                return;
+            case "darkRadio":
+                style = true;
+            default:
+                style = false;
+        }
+
+
+        //todo implement the other funcitons
     }
 
     public static boolean getStyle() {

@@ -1,31 +1,13 @@
 package org.JStudio.Plugins.Models;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.file.Files;
-import javafx.stage.FileChooser;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 /**
  * Phaser plugin that takes in audio data and applies a phasing effect on it
  * @author Theodore Georgiou
  */
-public class PhaserPlugin {
-    private String filePathName;
-    private byte[] originalAudio;
-    private byte[] finalAudio;
+public class PhaserPlugin extends Plugin {
     private double frequency;
     private double wetDryFactor;
     private int deviation;
-    private SourceDataLine line;
 
     // Creates a phaser
     public PhaserPlugin(double frequency, int deviation, double wetDryFactor) {
@@ -33,19 +15,6 @@ public class PhaserPlugin {
         this.frequency = frequency;
         this.deviation = deviation;
         this.wetDryFactor = wetDryFactor;
-    }
-
-    /**
-     * Converts audio data from a wav file to a byte array
-     */
-    private void convertAudioFileToByteArray() {
-        try {
-            File file = new FileChooser().showOpenDialog(null);
-            filePathName = file.getAbsolutePath();
-            originalAudio = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            System.out.println(e);
-        }
     }
     
     /**
@@ -94,55 +63,6 @@ public class PhaserPlugin {
     }
     
     /**
-     * Caps the amplitude of a sample from exceeding the maximum value of a short
-     * @param sample the sample to be capped
-     * @return the capped sample
-     */
-    private short capMaxAmplitude(short sample) {
-        if (sample > Short.MAX_VALUE) {
-                sample = Short.MAX_VALUE;
-        } else if (sample < Short.MIN_VALUE) {
-            sample = Short.MIN_VALUE;
-        }
-        return sample;
-    }
-    
-    /**
-     * Converts the original audio data to a short array to allow for modifications
-     * @return the short[] audio data array
-     */
-    private short[] convertToShortArray() {
-        byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
-        // The audio to add phasing to has same audio data as the original audio for now (no header)
-        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
-
-        // Convert audio data to short type to avoid audio warping
-        short[] audioToPhase = new short[noHeaderByteAudioData.length / 2];
-        for (int i = 0; i < audioToPhase.length; i++) {
-            audioToPhase[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-        return audioToPhase;
-    }
-    
-    /**
-     * Revert short[] audio data back to byte array to have playback functionality
-     * @param audioData the audio data to be converted to a byte array
-     */
-    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
-        // Revert back to byte array to have playback functionality
-        byte[] modifiedAudio = new byte[sizeOfByteArray];
-        for (int i = 0; i < audioData.length; i++) {
-            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
-        }
-        
-        finalAudio = new byte[sizeOfByteArray + 44];
-        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
-        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
-        
-        playAudio(finalAudio);
-    }
-    
-    /**
      * Mixes the dry and wet audio data
      * @param dryAudio the original audio
      * @param wetAudio the modified audio
@@ -155,38 +75,6 @@ public class PhaserPlugin {
             dryAudio[i] = capMaxAmplitude(dryAudio[i]);
         }
         return dryAudio;
-    }
-    
-    /**
-     * Plays audio data stored in a byte array
-     * @param audioData the audio data to be played
-     */
-    private void playAudio(byte[] audioData) {
-        new Thread(() -> {
-        try {
-            File file = new File(filePathName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(audioFormat);
-            line.start();
-
-            line.write(audioData, 0, audioData.length);
-
-            line.drain();
-            line.close();
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            System.out.println(e);
-        }
-        }).start();
-    }
-    
-    /**
-     * Stops audio playback
-     */
-    public void stopAudio() {
-        line.close();
     }
     
     /**

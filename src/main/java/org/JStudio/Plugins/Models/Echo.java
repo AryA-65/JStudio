@@ -1,36 +1,18 @@
 package org.JStudio.Plugins.Models;
 
-import javafx.stage.FileChooser;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * Echo plugin that takes in audio data and applies an echo effect to it
  * @author Theodore Georgiou
  */
-public class Echo {
-    private String filePathName;
+public class Echo extends Plugin {
     private double decay;
     private double wetDryFactor;
     private int preDelay;
     private int echoNum;
     private int diffusion;
-    private byte[] originalAudio;
-    private byte[] finalAudio;
     private ArrayList<short[]> echos = new ArrayList<>();
-    private SourceDataLine line;
 
     // Creates an echo
     public Echo(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
@@ -40,20 +22,6 @@ public class Echo {
         this.echoNum = echoNum;
         this.wetDryFactor = wetDryFactor;
         convertAudioFileToByteArray();
-    }
-
-    /**
-     * Converts audio data from a wav file to a byte array
-     */
-    private void convertAudioFileToByteArray() {
-        try {
-            FileChooser fl = new FileChooser();
-            File selectedFile = fl.showOpenDialog(null);
-            filePathName = selectedFile.getAbsolutePath();
-            originalAudio = Files.readAllBytes(selectedFile.toPath());
-        } catch (IOException e) {
-            System.out.println(e);
-        }
     }
     
     /**
@@ -150,89 +118,6 @@ public class Echo {
         }
         
         return mixedAudio;
-    }
-    
-    /**
-     * Caps the amplitude of a sample from exceeding the maximum value of a short
-     * @param sample the sample to be capped
-     * @return the capped sample
-     */
-    private short capMaxAmplitude(short sample) {
-        if (sample > Short.MAX_VALUE) {
-                sample = Short.MAX_VALUE;
-        } else if (sample < Short.MIN_VALUE) {
-            sample = Short.MIN_VALUE;
-        }
-        return sample;
-    }
-    
-    /**
-     * Converts the original audio data to a short array to allow for modifications
-     * @return the short[] audio data array
-     */
-    private short[] convertToShortArray() {
-        byte[] noHeaderByteAudioData = new byte[originalAudio.length - 44];
-        // The audio to reverb has same audio data as the original audio for now (no header)
-        System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
-        
-        // Convert audio data to short type to avoid audio warping
-        short[] audioToEcho = new short[noHeaderByteAudioData.length / 2];
-        for (int i = 0; i < audioToEcho.length; i++) {
-            audioToEcho[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-        
-        return audioToEcho;
-    }
-    
-    /**
-     * Revert short[] audio data back to byte array to have playback functionality
-     * @param audioData the audio data to be converted to a byte array
-     */
-    private void convertToByteArray(short[] audioData, int sizeOfByteArray) {
-        byte[] modifiedAudio = new byte[sizeOfByteArray];
-        for (int i = 0; i < audioData.length; i++) {
-            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
-        }
-        
-        finalAudio = new byte[sizeOfByteArray + 44];
-        System.arraycopy(modifiedAudio, 0, finalAudio, 44, sizeOfByteArray); // Add the audio data
-        System.arraycopy(originalAudio, 0, finalAudio, 0, 44); // Add the header
-        playAudio(finalAudio);
-    }
-    
-    /**
-     * Plays audio data stored in a byte array
-     * @param audioData the audio data to be played
-     */
-    private void playAudio(byte[] audioData) {
-        new Thread(() -> {
-            try {
-                File file = new File(filePathName);
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-                AudioFormat audioFormat = audioInputStream.getFormat();
-                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-                line = (SourceDataLine) AudioSystem.getLine(info);
-                line.open(audioFormat);
-                line.start();
-
-                int frameSize = line.getFormat().getFrameSize();
-                int trimmedLength = (audioData.length / frameSize) * frameSize;
-                line.write(audioData, 0, trimmedLength);
-
-                line.drain();
-                line.close();
-                echos = null;
-            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-                System.out.println(e);
-            }
-        }).start();
-    }
-    
-    /**
-     * Stops audio playback
-     */
-    public void stopAudio() {
-        line.close();
     }
 
     // Wrapper class to set echo effect

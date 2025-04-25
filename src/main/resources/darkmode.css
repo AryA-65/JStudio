@@ -5,7 +5,7 @@
 }
 
 .root {
-    -fx-background-color: #22272B !important;
+    -fx-background-color: #282E33 !important;
 }
 
 .label {
@@ -13,11 +13,11 @@
 }
 
 .tab-content {
-    -fx-background-color: #22272B;
+    -fx-background-color: #282E33;
 }
 
 .tab-pane {
-    -fx-background-color: #22272B;
+    -fx-background-color: #282E33;
     -fx-border-color: transparent;
     -fx-effect: null;
 }
@@ -79,9 +79,30 @@
 }
 
 .scroll-pane .viewport {
-    -fx-background-color: #22272B !important;
+    -fx-background-color: #282E33 !important;
 }
 
 .scroll-pane .track {
-    -fx-background-color: #22272B !important;
+    -fx-background-color: #282E33 !important;
+}
+
+.HBox {
+    -fx-background-color: #282E33 !important;
+}
+
+.VBox {
+    -fx-background-color: #282E33 !important;
+}
+
+.tool-bar {
+    -fx-background-color: #1D2125 !important;
+    -fx-border-color: #454F59;
+}
+
+.text-field {
+    -fx-background-color: #596773;
+}
+
+.radio-button {
+    -fx-text-fill: #B6C2CF;
 }

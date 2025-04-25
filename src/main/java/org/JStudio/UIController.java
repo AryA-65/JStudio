@@ -221,6 +221,7 @@ public class UIController {
         
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
+            SettingsController.setWindow(settings);
             settings.show();
         });
 

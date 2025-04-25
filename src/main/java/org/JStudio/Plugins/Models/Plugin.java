@@ -26,7 +26,11 @@ public abstract class Plugin {
      */
     protected void convertAudioFileToByteArray() {
         try {
-            File file = new FileChooser().showOpenDialog(null);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
+                new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
+                new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
+            File file = fileChooser.showOpenDialog(null);
             filePathName = file.getAbsolutePath();
             originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
@@ -87,6 +91,7 @@ public abstract class Plugin {
     /**
      * Revert short[] audio data back to byte array to have playback functionality
      * @param audioData the audio data to be converted to a byte array
+     * @param sizeOfByteArray the size of the array to save
      */
     protected void convertToByteArray(short[] audioData, int sizeOfByteArray) {
         // Revert back to byte array to have playback functionality

@@ -37,8 +37,8 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <RadioButton mnemonicParsing="false" text="Light Mode" />
-                  <RadioButton mnemonicParsing="false" text="Dark Mode" />
+                  <RadioButton fx:id="lightRadio" mnemonicParsing="false" text="Light Mode" />
+                  <RadioButton fx:id="darkRadio" mnemonicParsing="false" text="Dark Mode" />
                   <MenuButton mnemonicParsing="false" text="Font">
                      <items>
                         <MenuItem mnemonicParsing="false" text="Action 1" />

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.JStudio.Plugins.Models.audioFilters;
+import org.JStudio.Utils.AlertBox;
 
 public class AudioFilterFXMLController {
     private final Map<MenuButton, String> filterType = new HashMap<>();
@@ -33,6 +34,7 @@ public class AudioFilterFXMLController {
 
     @FXML
     public void initialize() {
+
         setupMenu(optionsCutOff);
         setDefaultMenuSelection(optionsCutOff);
 
@@ -45,8 +47,32 @@ public class AudioFilterFXMLController {
         playBtn.setOnAction(event -> {
             try {
                 FileChooser fileChooser = new FileChooser();
-                inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
-//                getText();
+                File selectedFile = fileChooser.showOpenDialog(null);
+
+                if (selectedFile == null) {
+                    AlertBox.display("Input Error", "No audio file selected.");
+                    return;
+                }
+
+                inputFile = selectedFile.getAbsolutePath();
+
+                if (fieldFrequency.getText().isEmpty()) {
+                    AlertBox.display("Input Error", "Please enter a frequency value.");
+                    return;
+                }
+
+                try {
+                    userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
+                } catch (NumberFormatException e) {
+                    AlertBox.display("Input Error", "Invalid frequency format. Please enter a number.");
+                    return;
+                }
+
+                if (selectedFilter == null || selectedFilter.isEmpty()) {
+                    AlertBox.display("Selection Error", "Please select a filter type.");
+                    return;
+                }
+
                 File file = new File(inputFile);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
                 AudioFormat format = audioStream.getFormat();
@@ -60,48 +86,43 @@ public class AudioFilterFXMLController {
                     audioFilters.applyLowPassFilter(samples, sampleRate, userFrequency);
                 } else if ("High".equals(selectedFilter)) {
                     audioFilters.applyHighPassFilter(samples, sampleRate, userFrequency);
+                } else {
+                    AlertBox.display("Filter Error", "Unsupported filter type selected.");
+                    return;
                 }
 
                 byte[] filteredBytes = audioFilters.shortsToBytes(samples);
 
-                Thread testThread = null;
-
                 Task<Void> playTask = new Task<>() {
-                    // https://stackoverflow.com/questions/24924414/javafx-task-ending-and-javafx-threading
                     @Override
-                    protected Void call() throws Exception {
+                    protected Void call() throws LineUnavailableException {
                         if (isPlaying) {
-                            // If playing, stop audio playback
-                            System.out.println("Playing");
                             audioClip.stop();
                             isPlaying = false;
-//                            testThread.stop();
-                            System.out.println("Stopped");
                         } else {
-                            // Start playing the filtered audio in background
                             audioFilters.playAudio(filteredBytes, format);
                             isPlaying = true;
                         }
                         return null;
                     }
                 };
-                testThread = new Thread(playTask);
+                Thread testThread = new Thread(playTask);
                 testThread.start();
-
-
 
                 saveBtn.setOnAction(event1 -> {
                     try {
                         audioFilters.saveWavFile(outputFile, filteredBytes, format);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        AlertBox.display("Save Error", "Failed to save audio file: " + e.getMessage());
                     }
                 });
 
-            } catch (Exception e) {
+            } catch (UnsupportedAudioFileException | IOException e) {
                 e.printStackTrace();
+                AlertBox.display("Error", "An error occurred while processing the audio: " + e.getMessage());
             }
         });
+
 
     }
 
@@ -125,11 +146,11 @@ public class AudioFilterFXMLController {
         }
     }
 
-//    public void getText() {
-//        // https://www.squash.io/how-to-use-a-regex-to-only-accept-numbers-0-9/
-//        if (fieldFrequency.getText().matches("^[0-9]+$")) {
-//            userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
-//        }
-//    }
+    public void getText() {
+        // https://www.squash.io/how-to-use-a-regex-to-only-accept-numbers-0-9/
+        if (fieldFrequency.getText().matches("^[0-9]+$")) {
+            userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -59,12 +60,23 @@ public class AudioAmplitudeFXMLController {
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             audioFile = selectedFile;
-            loadAudioData(audioFile);
-            drawWaveform(waveformCanvas, amplitudeSlider.getValue());
+            try {
+                loadAudioData(audioFile);
+                drawWaveform(waveformCanvas, amplitudeSlider.getValue());
+            } catch (Exception e) {
+                AlertBox.display("Import Error", "Failed to load audio: " + e.getMessage());
+            }
+        } else {
+            AlertBox.display("Input Error", "No audio file selected.");
         }
     }
 
     private void handleExportAudio() {
+        if (audioData == null || audioData.length == 0) {
+            AlertBox.display("Export Error", "No audio loaded to export.");
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export Audio File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("WAV File", "*.wav"));
@@ -76,12 +88,10 @@ public class AudioAmplitudeFXMLController {
                 AudioFormat format = originalStream.getFormat();
                 originalStream.close();
 
-                byte[] outputBytes = new byte[audioData.length * 2]; // 16-bit audio = 2 bytes per sample
-
+                byte[] outputBytes = new byte[audioData.length * 2];
                 for (int i = 0; i < audioData.length; i++) {
                     short sample = (short) Math.max(Short.MIN_VALUE,
                             Math.min(Short.MAX_VALUE, (int) (audioData[i] * 32767.0)));
-
                     outputBytes[i * 2] = (byte) (sample & 0xFF);
                     outputBytes[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
                 }
@@ -94,12 +104,12 @@ public class AudioAmplitudeFXMLController {
 
                 AudioSystem.write(exportStream, javax.sound.sampled.AudioFileFormat.Type.WAVE, outFile);
                 exportStream.close();
+
             } catch (Exception e) {
-                e.printStackTrace();
+                AlertBox.display("Export Error", "Failed to export audio: " + e.getMessage());
             }
         }
     }
-
 
     private void loadAudioData(File file) {
         try {
@@ -127,6 +137,11 @@ public class AudioAmplitudeFXMLController {
             }
 
             byte[] audioBytes = out.toByteArray();
+            if (audioBytes.length == 0) {
+                AlertBox.display("Load Error", "The selected file contains no audio data.");
+                return;
+            }
+
             int sampleCount = audioBytes.length / 2;
             audioData = new double[sampleCount];
 
@@ -138,7 +153,7 @@ public class AudioAmplitudeFXMLController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            AlertBox.display("Audio Load Error", "Failed to load audio file: " + e.getMessage());
         }
     }
 
@@ -162,6 +177,11 @@ public class AudioAmplitudeFXMLController {
     }
 
     private void playAudio(double amplitudeFactor) {
+        if (audioFile == null || audioData == null) {
+            AlertBox.display("Playback Error", "No audio file loaded.");
+            return;
+        }
+
         new Thread(() -> {
             try {
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
@@ -175,13 +195,8 @@ public class AudioAmplitudeFXMLController {
 
                 while ((bytesRead = audioStream.read(buffer)) != -1) {
                     for (int i = 0; i < bytesRead - 1; i += 2) {
-                        // Convert bytes to sample
                         short sample = (short) ((buffer[i + 1] << 8) | (buffer[i] & 0xFF));
-
-                        // Apply amplitude factor
                         sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, sample * amplitudeFactor));
-
-                        // Convert back to bytes
                         buffer[i] = (byte) (sample & 0xFF);
                         buffer[i + 1] = (byte) ((sample >> 8) & 0xFF);
                     }
@@ -193,7 +208,7 @@ public class AudioAmplitudeFXMLController {
                 line.close();
                 audioStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                AlertBox.display("Playback Error", "An error occurred while playing the audio.");
             }
         }).start();
     }

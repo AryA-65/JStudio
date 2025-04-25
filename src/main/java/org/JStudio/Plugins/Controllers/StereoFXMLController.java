@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import org.JStudio.Plugins.Models.*;
+import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
 import java.io.*;
@@ -48,7 +49,7 @@ public class StereoFXMLController {
             format = audioStream.getFormat();
 
             if (format.getChannels() != 1) {
-                System.err.println("Only mono audio files are supported.");
+                AlertBox.display("Import Error", "Only mono audio files are supported.");
                 return;
             }
 
@@ -57,15 +58,16 @@ public class StereoFXMLController {
             samples = bytesToShorts(audioBytes);
             audioStream.close();
 
-            System.out.println("Successfully imported: " + inputFile);
+            AlertBox.display("Import Successful", "Successfully imported: " + file.getName());
         } catch (Exception e) {
-            e.printStackTrace();
+            AlertBox.display("Import Error", "Failed to import audio:\n" + e.getMessage());
         }
     }
 
+
     private void applyStereoEffect() {
         if (samples == null || format == null) {
-            System.err.println("No audio loaded.");
+            AlertBox.display("Apply Error", "No audio loaded. Please import a mono WAV file first.");
             return;
         }
 
@@ -80,20 +82,30 @@ public class StereoFXMLController {
         } else if (InvertedStereoRadio.isSelected()) {
             stereoizer = new InvertedStereo(sampleRate);
         } else {
-            System.err.println("No effect selected.");
+            AlertBox.display("Effect Selection", "Please select a stereo effect.");
             return;
         }
 
-        float[][] stereoOutput = stereoizer.process(mono);
-        short[] interleaved = interleaveStereo(stereoOutput);
-        filteredBytes = shortsToBytes(interleaved);
-
-        System.out.println("Effect applied successfully.");
+        try {
+            float[][] stereoOutput = stereoizer.process(mono);
+            short[] interleaved = interleaveStereo(stereoOutput);
+            filteredBytes = shortsToBytes(interleaved);
+            AlertBox.display("Effect Applied", "Stereo effect applied successfully.");
+        } catch (Exception e) {
+            AlertBox.display("Processing Error", "Failed to apply stereo effect:\n" + e.getMessage());
+        }
     }
+
 
     private void exportAudio() {
         if (filteredBytes == null || format == null) {
-            System.err.println("No processed audio to export.");
+            AlertBox.display("Export Error", "No processed audio to export.");
+            return;
+        }
+
+        String name = fileName.getText();
+        if (name == null || name.trim().isEmpty()) {
+            AlertBox.display("Missing File Name", "Please enter a file name before exporting.");
             return;
         }
 
@@ -108,25 +120,27 @@ public class StereoFXMLController {
                     format.isBigEndian()
             );
 
-            File outFile = new File(fileName.getText() + ".wav");
+            File outFile = new File(name + ".wav");
             ByteArrayInputStream bais = new ByteArrayInputStream(filteredBytes);
             AudioInputStream stereoStream = new AudioInputStream(bais, stereoFormat, filteredBytes.length / stereoFormat.getFrameSize());
             AudioSystem.write(stereoStream, AudioFileFormat.Type.WAVE, outFile);
 
-            System.out.println("Successfully exported to: " + outFile.getName());
+//            AlertBox.display("Export Successful", "Audio exported to: " + outFile.getName());
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertBox.display("Export Error", "Failed to export audio:\n" + e.getMessage());
         }
     }
+
 
     private int parseDelaySample() {
         try {
             return Integer.parseInt(delaySample.getText());
         } catch (NumberFormatException e) {
-            System.err.println("Invalid delay. Defaulting to 20 samples.");
+            AlertBox.display("Invalid Delay", "Invalid delay value. Defaulting to 20 samples.");
             return 20;
         }
     }
+
 
     private short[] bytesToShorts(byte[] bytes) {
         short[] shorts = new short[bytes.length / 2];

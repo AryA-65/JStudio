@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import org.JStudio.Plugins.Models.audioFilters;
+import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -71,7 +72,7 @@ public class ButterworthFXMLController {
                 samples = audioFilters.bytesToShorts(audioBytes);
                 sampleRate = format.getSampleRate();
 
-                System.out.println("succesfully imported");
+                AlertBox.display("Success", "Audio file successfully imported.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,7 +81,12 @@ public class ButterworthFXMLController {
         applyButton.setOnAction(event -> {
             try {
                 if (samples == null || samples.length == 0) {
-                    System.out.println("No audio loaded.");
+                    AlertBox.display("Error", "No audio file loaded. Please import an audio file first.");
+                    return;
+                }
+
+                if (frequencyField.getText().isEmpty() || qualityField.getText().isEmpty()) {
+                    AlertBox.display("Input Error", "Please enter both Frequency and Q values.");
                     return;
                 }
 
@@ -89,14 +95,13 @@ public class ButterworthFXMLController {
 
                 RadioButton selected = (RadioButton) group.getSelectedToggle();
                 if (selected == null) {
-                    System.out.println("No filter type selected.");
+                    AlertBox.display("Selection Error", "Please select a filter type.");
                     return;
                 }
 
                 switch (selected.getId()) {
                     case "lowPassRadio":
                         audioFilters.BiquadFilter.applyBiquadLowPassFilter(samples, freq, q, sampleRate);
-                        System.out.println("effect applied");
                         break;
                     case "highPassRadio":
                         audioFilters.BiquadFilter.applyBiquadHighPassFilter(samples, freq, q, sampleRate);
@@ -108,25 +113,20 @@ public class ButterworthFXMLController {
                         audioFilters.BiquadFilter.applyBiquadBandStopFilter(samples, freq, q, sampleRate);
                         break;
                     default:
-                        System.out.println("Invalid filter type.");
+                        AlertBox.display("Error", "Invalid filter selection.");
+                        return;
                 }
 
                 filteredBytes = audioFilters.shortsToBytes(samples);
+                System.out.println("Effect applied.");
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid frequency or Q value.");
+                AlertBox.display("Input Error", "Invalid number format in Frequency or Q field.");
             } catch (Exception e) {
                 e.printStackTrace();
+                AlertBox.display("Error", "An unexpected error occurred: " + e.getMessage());
             }
-
-            exportButton.setOnAction(event1 -> {
-                try {
-                    audioFilters.saveWavFile(outputFileName.getText(), filteredBytes, format);
-                    System.out.println("succesfully exported");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
         });
+
     }
 }

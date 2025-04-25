@@ -10,10 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -24,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.JStudio.Core.Track;
 import org.JStudio.Utils.AudioVisualizer;
 import org.JStudio.Utils.SystemMonitor;
 
@@ -42,6 +39,8 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
  */
 
 public class UIController {
+    @FXML
+    private ImageView snap_btn;
     @FXML
     private Button reverbBtn;
     @FXML
@@ -224,6 +223,10 @@ public class UIController {
         metronome_control.setCursor(Cursor.HAND);
         settings_btn.setImage(new Image("/icons/settings.png"));
         settings_btn.setCursor(Cursor.HAND);
+        snap_btn.setImage(new Image("/icons/snap.png"));
+        snap_btn.setCursor(Cursor.HAND);
+
+        snap_btn.getParent().setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid; -fx-border-radius: 5px");
 
         playback_pos.setText(timeToString(0));
 
@@ -345,7 +348,7 @@ public class UIController {
 
         close_btn.setOnMouseClicked(event -> {
             sm.stop();
-            vis.stop();
+//            vis.stop();
             rootStage.close();
         });
 
@@ -493,8 +496,8 @@ public class UIController {
         amp_audio_top.setClip(clipAmp);
         audio_vis_top.setClip(clipWave);
 
-        vis = new AudioVisualizer(audio_vis_top, amp_audio_top);
-        vis.start();
+//        vis = new AudioVisualizer(audio_vis_top, amp_audio_top);
+//        vis.start();
     }
 
     protected void setSplitRatio() {
@@ -609,7 +612,7 @@ public class UIController {
         Slider channelAmp = new Slider(0,100,100);
         channelAmp.setOrientation(Orientation.VERTICAL);
         channelAmp.setPrefHeight(96);
-        channelAmp.setLayoutY(96);
+        channelAmp.setLayoutY(90);
         channelAmp.setLayoutX(9);
 
         visContainer.getChildren().add(channelVis);
@@ -673,7 +676,10 @@ public class UIController {
         for (int i = 0; i < timeline_canvas.getWidth(); i++) {
             if (i % 32 == 0) {
                 short mult = (short) ((i / 32) + 1);
-                gc.fillText(String.valueOf(mult), i + 2, timeline_canvas.getHeight() - 4);
+                gc.fillText(String.valueOf(mult), i, timeline_canvas.getHeight() - 12);
+            }
+            if (i % 8 == 0) {
+                gc.fillRect(i, timeline_canvas.getHeight() - 10, (i % 32 != 0) ? 1 : 2, 8);
             }
         }
 

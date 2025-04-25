@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -30,18 +31,13 @@ import javazoom.jl.decoder.SampleBuffer;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class FileLoader {
     private VBox tab_vbox;
     private String curUser;
     private int CANVAS_WIDTH = 234, CANVAS_HEIGHT = 64;
-    private long currentFilePointer = 0, fileCount = 0;
+    private long fileCount = 0;
     private double fileLength = 0;
     private MediaPlayer mediaPlayer;
 
@@ -64,14 +60,6 @@ public class FileLoader {
 
         File file = new File(path);
         if (file.exists() && file.isDirectory() && file.listFiles() != null) {
-
-            try {
-                fileCount = Files.walk(Paths.get(path)).filter(Files::isRegularFile).count();
-//                System.out.println(fileCount);
-//                loadingScreen
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             for (File f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isDirectory()) {
 
@@ -135,7 +123,6 @@ public class FileLoader {
         for (File file : Objects.requireNonNull(f.listFiles())) {
             if (file.exists() && file.isFile()) {
                 fileSectionList.getChildren().add(addAudioFileUI(file));
-                currentFilePointer++;
 //                loadingScreen.setLoading_label(String.format("Loading: ", file.getName()), ((double) currentFilePointer / fileCount) * 100);
             }
         }
@@ -178,8 +165,10 @@ public class FileLoader {
         gc.setFill(Color.web("A9A9A9"));
         gc.fillRoundRect(0, 0, audioFileDataVis.getWidth(), audioFileDataVis.getHeight(), 10, 10);
 
+        float[][] audioData = null;
+
         try {
-            float[][] audioData = readAudioFile(file);
+            audioData = readAudioFile(file);
             audioFileLength.setText(String.format("%.2fs", fileLength));
             if (audioData != null) {
                 boolean isStereo = audioData[1] != null;
@@ -211,31 +200,35 @@ public class FileLoader {
         );
 
         audioFileDataVis.setOnMouseEntered(e -> {
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.dispose();
-            }
-
-            try {
-                Media media = new Media(file.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.play();
-            } catch (Exception err) {
-                err.printStackTrace();
-            }
-
             expandTimeline.play();
 //            System.out.println("entered" + container.getPrefHeight());
         });
 
         audioFileDataVis.setOnMouseExited(e -> {
+            shrinkTimeline.play();
+//            System.out.println("exited" + container.getPrefHeight());
+        });
+
+        audioFileDataVis.setOnMouseClicked(e -> {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
-                mediaPlayer = null;
             }
-            shrinkTimeline.play();
-//            System.out.println("exited" + container.getPrefHeight());
+
+            if (e.getButton() == MouseButton.PRIMARY) {
+                try {
+                    Media media = new Media(file.toURI().toString());
+                    mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.play();
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            } else if (e.getButton() == MouseButton.SECONDARY) {
+                if (mediaPlayer != null) {
+                    mediaPlayer = null;
+                }
+            }
+
         });
 
         audioFileInfo.getChildren().addAll(audioFileName, audioFileExt, audioFileLength);
@@ -248,10 +241,15 @@ public class FileLoader {
         rootVBox.setOnDragDetected(event -> {
             Dragboard db = rootVBox.startDragAndDrop(TransferMode.COPY);
             ClipboardContent content = new ClipboardContent();
-            content.putFiles(Collections.singletonList(file));
+//            content.putFiles(Collections.singletonList(file));
+            content.putString(audioFileLength.getText().substring(0, audioFileLength.getText().lastIndexOf('s')));
             db.setContent(content);
             event.consume();
+
+//            System.out.println("drag detected");
         });
+
+
 
         return rootVBox;
     }
@@ -386,22 +384,50 @@ public class FileLoader {
         double midY = CANVAS_HEIGHT / 2.0;
 //        double offset = (right != null) ? CANVAS_HEIGHT * 0.025 : 0; //Offsetting channels slightly for visibility (might remove later)
 
-        gc.setStroke(Color.color(1,0,0,.25)); //Left Channel (Red)
-        gc.setLineWidth(1);
-        drawPoint(gc, left, midY);
+        double step = CANVAS_WIDTH / (double) left.length;
 
-        if (right != null) { //Right channel (BLUE)
-            gc.setStroke(Color.color(0,0,1,.25));
-            drawPoint(gc, right, midY);
+        // Fill under left channel
+        gc.setFill(Color.web("#8B2E2E", 0.25));
+        gc.beginPath();
+        gc.moveTo(0, midY);
+        for (int i = 0; i < left.length; i++) {
+            double x = i * step;
+            double y = midY - left[i] * midY;
+            gc.lineTo(x, y);
         }
+        gc.lineTo(CANVAS_WIDTH, midY);
+        gc.closePath();
+        gc.fill();
+
+        gc.setStroke(Color.web("#8B2E2E"));
+        drawPoint(gc, left, midY, step);
+
+        if (right == null) {return;}
+        gc.setFill(Color.web("#2C3E50"));
+        gc.beginPath();
+        gc.moveTo(0, midY);
+        for (int i = 0; i < right.length; i++) {
+            double x = i * step;
+            double y = midY - right[i] * midY;
+            gc.lineTo(x, y);
+        }
+        gc.lineTo(CANVAS_WIDTH, midY);
+        gc.closePath();
+        gc.fill();
+
+        gc.setStroke(Color.web("#2C3E50", 0.25));
+        drawPoint(gc, right, midY, step);
     }
 
-    private void drawPoint(GraphicsContext gc, float[] right, double midY) {
-        for (int i = 0; i < right.length - 1; i++) {
-            double y1 = midY - (right[i] * midY);
-            double x2 = i + 1;
-            double y2 = midY - (right[i + 1] * midY);
-            gc.strokeLine(i, y1, x2, y2);
+    private void drawPoint(GraphicsContext gc, float[] buff, double midY, double step) {
+        gc.setLineWidth(1.2);
+        gc.beginPath();
+        for (int i = 0; i < buff.length; i++) {
+            double x = i * step;
+            double y = midY - buff[i] * midY;
+            if (i == 0) gc.moveTo(x, y);
+            else gc.lineTo(x, y);
         }
+        gc.stroke();
     }
 }

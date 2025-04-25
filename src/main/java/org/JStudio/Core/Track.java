@@ -1,14 +1,15 @@
-package org.JStudio;
+package org.JStudio.Core;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.*;
@@ -21,21 +22,17 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.jfoenix.controls.JFXSlider;
 import org.JStudio.Plugins.Plugin;
+import org.JStudio.UI.Knob;
 
 public class Track {
     private String name;
-    private static short activeTracks = 0; //move this to song
     private short id;
-    private double amplitude, pitch;
-    private short numClips; //tempo param for now
-    private BooleanProperty activeTrack = new SimpleBooleanProperty(true);
-//    private List<> //for clips
-    private List<Plugin> plugins = new ArrayList<Plugin>();
-    private float[][] buffer;
+    private final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0);
+    private final BooleanProperty activeTrack = new SimpleBooleanProperty(true);
+    private List<Clip> clips = new ArrayList<>();
+    private List<Plugin> plugins = new ArrayList<>();
 
     //test colors
     public final List<String> MATTE_COLORS = List.of(
@@ -51,19 +48,28 @@ public class Track {
             "#FF5F7E"  // Matte Coral
     );
 
-    private byte xfx_channels = 16; //max num of xfx channels for a single audio channel
-
-    Track(String name) {
+    public Track(String name) {
         this.name = name;
-        this.id = ++activeTracks;
+//        this.id = ;
     }
 
     public void addClip() {
         //empty for now
     }
 
+    public void removeClip(int position) {
+        for (Clip clip : clips) {
+            if (position >= clip.getPosition() && position < clip.getPosition() + clip.getLength()) {
+                clips.remove(clip);
+                break;
+            }
+        }
+    }
+
     public float[][] process() { //1024 chucks
         float[][] output = null;
+
+
         return output;
     }
 
@@ -83,24 +89,20 @@ public class Track {
         this.id = id;
     }
 
-    public double getAmplitude() {
+    public DoubleProperty getAmplitude() {
         return amplitude;
     }
 
     public void setAmplitude(double amplitude) {
-        this.amplitude = amplitude;
+        this.amplitude.set(amplitude);
     }
 
-    public double getPitch() {
+    public DoubleProperty getPitch() {
         return pitch;
     }
 
     public void setPitch(double pitch) {
-        this.pitch = pitch;
-    }
-
-    public void removeActiveTrack() {
-        activeTracks--;
+        this.pitch.set(pitch);
     }
 
     public Canvas addTrack(int width) {
@@ -129,6 +131,9 @@ public class Track {
         }
 
         canvas.setOnDragOver(e -> {
+//            if (e.getGestureSource() != canvas && e.getDragboard().hasFiles()) {
+//                e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
+//            }
             if (e.getGestureSource() != canvas && e.getDragboard().hasString()) {
                 e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
             }
@@ -140,29 +145,25 @@ public class Track {
             boolean success = false;
 
             if (db.hasString()) {
+//                System.out.println("True");
 
                 double dropX = e.getX();
 
+                String string = db.getString();
+
+//                System.out.println(string);
+                double size = Double.parseDouble(string) * ((double) 120 / 60) * 32;
+
+//                System.out.println(string);
+
                 gc.setFill(Color.BLACK);
-                gc.fillRoundRect(dropX, 0, 128, canvas.getHeight(), 10, 10);
+                gc.fillRoundRect(dropX, 0, size, canvas.getHeight(), 10, 10);
 
                 success = true;
             }
 
             e.setDropCompleted(success);
             e.consume();
-        });
-
-        canvas.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-
-                if (e.getClickCount() == 2) {
-                    gc.setFill(Color.BLACK);
-                    gc.fillRoundRect(e.getX(), 0, 128, canvas.getHeight(), 10, 10);
-                }
-
-                e.consume();
-            }
         });
 
         return canvas;
@@ -184,7 +185,7 @@ public class Track {
         container.setOnMouseClicked(e -> {
             //to change the name of the track
             if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
-
+                //to open synth if available, if not it'll open plugin rack
             }
         });
 
@@ -199,6 +200,10 @@ public class Track {
         channelBox.setPrefWidth(32);
         channelBox.setStyle("-fx-background-color:  #D9D9D9; -fx-background-radius: 5px");
         channelBox.setAlignment(Pos.TOP_CENTER);
+
+        Knob pan = new Knob(32, false, 0, Knob.Type.BIP);
+        pan.setLayoutX(0);
+        pan.setLayoutY(48);
 
         Label channelID = new Label(String.valueOf(i + 1));
         channelID.setFont(new Font("Inter Regular", 8));
@@ -228,14 +233,21 @@ public class Track {
         Slider channelAmp = new Slider(0,100,100);
         channelAmp.setOrientation(Orientation.VERTICAL);
         channelAmp.setPrefHeight(96);
-        channelAmp.setLayoutY(96);
+        channelAmp.setLayoutY(90);
         channelAmp.setLayoutX(9);
+
+        channelAmp.valueProperty().bindBidirectional(amplitude);
+
+        Knob pitch_knob = new Knob(24, false, 0, Knob.Type.BIP);
+        pitch_knob.setLayoutX(4);
+        pitch_knob.setLayoutY(192);
+        pitch_knob.valueProperty().bindBidirectional(pitch);
 
         visContainer.getChildren().add(channelVis);
 
         channelVisContainer.getChildren().add(visContainer);
 
-        channelContainer.getChildren().addAll(channelVisContainer, channelAmp, createActiveBTN(12, 224));
+        channelContainer.getChildren().addAll(channelVisContainer, pan, channelAmp, createActiveBTN(12, 224), pitch_knob);
 
         channelBox.getChildren().addAll(channelID, channelContainer);
 

@@ -1,10 +1,12 @@
 package org.JStudio;
 
+import org.JStudio.Core.Track;
+
 import java.util.ArrayList;
 
 public class Song {
     private String songName;
-    private float bpm;
+    private float bpm, sampleRate = 44100f;
     private long duration;
     private final byte MIN_TRACKS = 16, MAX_TRACKS = 64; //might reduce max tracks to something like 48 or 32
     private byte numTracks = MIN_TRACKS;
@@ -36,7 +38,7 @@ public class Song {
 
     public void removeTrack() {
         if (tracks.size() > MIN_TRACKS) {
-            tracks.get(tracks.size() - 1).removeActiveTrack();
+
             tracks.remove(tracks.size() - 1);
             numTracks--;
         }

@@ -101,6 +101,7 @@
             <classifier>${lwjgl.natives}</classifier>
             <version>3.3.6</version>
         </dependency>
+
     </dependencies>
 
 </project>

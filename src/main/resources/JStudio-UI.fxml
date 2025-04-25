@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
+<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
   <columnConstraints>
     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -65,19 +65,24 @@
                </children>
             </StackPane>
             <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="64.0" prefHeight="24.0" prefWidth="64.0" text="Playback Position" />
-            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" HBox.hgrow="NEVER">
                <children>
                   <Canvas id="audio_vis_top" fx:id="audio_vis_top" height="24.0" width="64.0" />
                </children>
             </StackPane>
-            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" HBox.hgrow="NEVER">
                <children>
                   <Canvas id="audio_amp_top" fx:id="amp_audio_top" height="24.0" width="64.0" />
                </children>
             </StackPane>
-            <StackPane maxHeight="-Infinity" minHeight="-Infinity" HBox.hgrow="NEVER">
+            <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" HBox.hgrow="NEVER">
                <children>
                   <Canvas id="computer_stats" fx:id="pc_stats" height="24.0" width="64" />
+               </children>
+            </StackPane>
+            <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0">
+               <children>
+                  <ImageView fx:id="snap_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </StackPane>
             <ImageView id="settings_btn" fx:id="settings_btn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
@@ -101,7 +106,7 @@
                      <content>
                         <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField fx:id="search_samples" styleClass="search" text="Search">
+                              <TextField fx:id="search_samples" promptText="Search" styleClass="search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -125,7 +130,7 @@
                      <content>
                         <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField styleClass="search">
+                              <TextField promptText="Search" styleClass="search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>

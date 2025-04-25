@@ -4,7 +4,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import org.JStudio.Plugins.Models.ModulationPlugin;
+import org.JStudio.Plugins.Models.Modulation;
 
 /**
  * FXML controller class for the Flanger UI
@@ -21,7 +21,7 @@ public class FlangerFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
-    private ModulationPlugin flanger;
+    private Modulation flanger;
     
     /**
      * Initializes the UI, showing the tick marks on the slider and setting
@@ -29,7 +29,7 @@ public class FlangerFXMLController {
      */
     @FXML
     public void initialize() {
-        flanger = new ModulationPlugin(100000, 100, 0.5); // Create a flanger
+        flanger = new Modulation(100000, 100, 0.5); // Create a flanger
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -78,7 +78,7 @@ public class FlangerFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             flanger.stopAudio();
-            flanger = new ModulationPlugin(100000, 100, 0.5);
+            flanger = new Modulation(100000, 100, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);

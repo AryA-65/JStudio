@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import org.JStudio.Plugins.Models.ReverbPlugin;
+import org.JStudio.Plugins.Models.Reverb;
 
 /**
  * FXML controller class for the Reverb UI
@@ -19,8 +19,6 @@ public class ReverbFXMLController {
     @FXML
     private Label diffusionLabel;
     @FXML
-    private Label dampingLabel;
-    @FXML
     private Label wetDryLabel;
     @FXML
     private Button resetButton;
@@ -33,10 +31,8 @@ public class ReverbFXMLController {
     @FXML
     private Slider diffusionSlider;
     @FXML
-    private Slider dampingSlider;
-    @FXML
     private Slider wetDrySlider;
-    private ReverbPlugin reverb;
+    private Reverb reverb;
     
     /**
      * Initializes the UI, showing the tick marks on the slider and setting
@@ -44,7 +40,7 @@ public class ReverbFXMLController {
      */
     @FXML
     public void initialize() {
-        reverb = new ReverbPlugin(1000, 10000, 2000, 0.5); // Create a reverb
+        reverb = new Reverb(1000, 10000, 2000, 0.5); // Create a reverb
         
         // Set the visual components/max and min values of the sliders
         preDelaySlider.setMin(1);
@@ -108,7 +104,7 @@ public class ReverbFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             reverb.stopAudio();
-            reverb = new ReverbPlugin(1000, 10000, 2000, 0.5);
+            reverb = new Reverb(1000, 10000, 2000, 0.5);
             preDelaySlider.setValue(1);
             decayTimeSlider.setValue(1);
             diffusionSlider.setValue(2);

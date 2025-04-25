@@ -4,7 +4,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import org.JStudio.Plugins.Models.ModulationPlugin;
+import org.JStudio.Plugins.Models.Modulation;
 
 public class ChorusFXMLController {
     @FXML
@@ -17,7 +17,7 @@ public class ChorusFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
-    private ModulationPlugin chorus;
+    private Modulation chorus;
     
     /**
      * Initializes the UI, showing the tick marks on the slider and setting
@@ -25,7 +25,7 @@ public class ChorusFXMLController {
      */
     @FXML
     public void initialize() {
-        chorus = new ModulationPlugin(20000, 200, 0.5); // Create a chorus
+        chorus = new Modulation(20000, 200, 0.5); // Create a chorus
         
         frequencySlider.setMin(1);
         frequencySlider.setMax(10);
@@ -74,7 +74,7 @@ public class ChorusFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             chorus.stopAudio();
-            chorus = new ModulationPlugin(20000, 200, 0.5);
+            chorus = new Modulation(20000, 200, 0.5);
             frequencySlider.setValue(2);
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);

@@ -4,7 +4,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import org.JStudio.Plugins.Models.EchoPlugin;
+import org.JStudio.Plugins.Models.Echo;
 
 public class EchoFXMLController {
     @FXML
@@ -21,11 +21,11 @@ public class EchoFXMLController {
     private Slider preDelaySlider;
     @FXML
     private Slider wetDrySlider;
-    private EchoPlugin echo;
+    private Echo echo;
     
     @FXML
     public void initialize() {
-        echo = new EchoPlugin(1000, 1/11, 10000, 5, 0.5); // Create a echo
+        echo = new Echo(1000, 1/11, 10000, 5, 0.5); // Create a echo
         
         // Set the visual components/max and min values of the sliders
         preDelaySlider.setMin(1);
@@ -102,7 +102,7 @@ public class EchoFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             echo.stopAudio();
-            echo = new EchoPlugin(1000, 1/11, 10000, 5, 0.5);
+            echo = new Echo(1000, 1/11, 10000, 5, 0.5);
             preDelaySlider.setValue(1);
             decayTimeSlider.setValue(1);
             diffusionSlider.setValue(2);

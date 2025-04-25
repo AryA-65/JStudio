@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Modulation plugin that takes in audio data and applies a flanging or chorus effect on it
  * @author Theodore Georgiou
  */
-public class ModulationPlugin {
+public class Modulation {
     private String filePathName;
     private byte[] originalAudio;
     private byte[] finalAudio;
@@ -31,7 +31,7 @@ public class ModulationPlugin {
     private SourceDataLine line;
 
     // Creates a modulator
-    public ModulationPlugin(double frequency, int deviation, double wetDryFactor) {
+    public Modulation(double frequency, int deviation, double wetDryFactor) {
         convertAudioFileToByteArray();
         this.frequency = frequency;
         this.deviation = deviation;

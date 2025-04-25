@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Echo plugin that takes in audio data and applies an echo effect to it
  * @author Theodore Georgiou
  */
-public class EchoPlugin {
+public class Echo {
     private String filePathName;
     private double decay;
     private double wetDryFactor;
@@ -33,7 +33,7 @@ public class EchoPlugin {
     private SourceDataLine line;
 
     // Creates an echo
-    public EchoPlugin(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
+    public Echo(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
         this.preDelay = preDelay;
         this.decay = decay;
         this.diffusion = diffusion;

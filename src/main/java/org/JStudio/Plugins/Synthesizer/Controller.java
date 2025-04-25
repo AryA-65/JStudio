@@ -11,6 +11,13 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -33,10 +40,13 @@ public class Controller {
     @FXML
     private Canvas waveformCanvas;
     @FXML
-    private Button recordButton, exportButton;
+    private Button recordButton;
     private boolean shouldGenerate;
     private int wavePos;
     private double speedFactor = 1;
+
+    private boolean isRecording = false;
+    private ByteArrayOutputStream recordingBuffer;
 
 
     @FXML
@@ -66,7 +76,17 @@ public class Controller {
         updateSlider(volume2, 1, false);
         updateSlider(volume3, 2, false);
 
-        recordButton.setOnAction(event -> System.out.println("recoding"));
+        recordButton.setOnAction(event -> {
+            if (!isRecording) {
+                recordingBuffer = new ByteArrayOutputStream();
+                isRecording = true;
+                recordButton.setText("Stop Recording");
+            } else {
+                isRecording = false;
+                recordButton.setText("Record");
+                saveRecordingAsWav();
+            }
+        });
 
         final AudioThread audioThread = new AudioThread(() -> {
             if (!shouldGenerate) {
@@ -114,6 +134,31 @@ public class Controller {
         this.auTh = audioThread;
 
     }
+
+    private void saveRecordingAsWav() {
+        try {
+            byte[] audioBytes = recordingBuffer.toByteArray();
+
+            AudioFormat format = new AudioFormat(
+                    AudioThread.SAMPLE_RATE,
+                    16,
+                    1,
+                    true,
+                    false
+            );
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
+            AudioInputStream audioInputStream = new AudioInputStream(bais, format, audioBytes.length / 2);
+
+            File wavFile = new File("recorded_output.wav");
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
+
+            System.out.println("Saved WAV file: " + wavFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     private double generateWaveSample(String waveformType, double frequency, int wavePosition) {

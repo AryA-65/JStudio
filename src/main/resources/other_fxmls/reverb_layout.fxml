@@ -103,12 +103,12 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
-            <Button fx:id="playButton" mnemonicParsing="false" style="-fx-background-color: #000000; -fx-border-image-width: 5; -fx-border-color: #ffffff;" text="Play" textFill="WHITE" translateY="54.0">
+            <Button fx:id="playButton" mnemonicParsing="false" text="Play" textFill="WHITE" translateY="54.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="resetButton" mnemonicParsing="false" style="-fx-background-color: #000000; -fx-border-image-width: 5; -fx-border-color: #ffffff;" text="Reset" textFill="WHITE" translateX="37.2" translateY="54.0">
+            <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" textFill="WHITE" translateX="37.2" translateY="54.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>

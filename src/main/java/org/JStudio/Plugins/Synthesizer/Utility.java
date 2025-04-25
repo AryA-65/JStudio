@@ -1,6 +1,9 @@
 package org.JStudio.Plugins.Synthesizer;
 
 
+import javax.sound.sampled.AudioFormat;
+import java.io.ByteArrayOutputStream;
+
 import static java.lang.Math.*;
 import static java.lang.Math.log;
 

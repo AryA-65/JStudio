@@ -80,7 +80,8 @@ public class LoginController {
             controller.setScreenSize();
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
 
             mainStage.setScene(scene);
             mainStage.initStyle(StageStyle.TRANSPARENT);
@@ -141,5 +142,7 @@ public class LoginController {
 
     public void setRootScene(Scene rootScene) {
         this.rootScene = rootScene;
+        //        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        rootScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
     }
 }

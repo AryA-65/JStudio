@@ -90,7 +90,6 @@
                   <HBox fx:id="recordExportBox" prefHeight="100.0" prefWidth="200.0" spacing="70.0">
                      <children>
                         <Button fx:id="recordButton" mnemonicParsing="false" text="Record" />
-                        <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
                      </children>
                      <padding>
                         <Insets left="50.0" right="50.0" />

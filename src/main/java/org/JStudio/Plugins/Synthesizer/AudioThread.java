@@ -10,6 +10,7 @@ import static org.lwjgl.openal.ALC10.*;
 
 
 class AudioThread extends Thread {
+    public static final int SAMPLE_RATE = 44100; // or whatever sample rate you use
     static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
     static final int BUFFER_COUNT = 8; // how many buffers will be in queue
     private final int[] buffers = new int[BUFFER_COUNT];

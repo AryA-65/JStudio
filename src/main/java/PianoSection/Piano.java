@@ -10,9 +10,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.JStudio.SettingsController;
 
-public class Piano{
-
+public class Piano {
     public void openPiano() {
         try {
             Stage stage = new Stage();
@@ -20,11 +20,15 @@ public class Piano{
             
             Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes.fxml"));
             Scene scene = new Scene(root,1500,900);
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
-    
 }

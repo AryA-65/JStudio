@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.JStudio.SettingsController;
 
 /**
  *
@@ -25,6 +26,11 @@ public class MainEqualizer{
         //open new scene
         EqualizerView eqView = new EqualizerView();
         Scene scene = new Scene(eqView);
+        if (SettingsController.getStyle()) {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        }
         stage.setScene(scene);
         
         stage.setOnCloseRequest(e ->{

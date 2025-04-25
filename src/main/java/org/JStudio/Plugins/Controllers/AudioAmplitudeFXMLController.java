@@ -17,7 +17,7 @@ import javax.sound.sampled.SourceDataLine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-public class AudioAmplitudeFXMLController {
+public class AudioAmplitudeFXMLController { //todo
     private Stage stage;
     @FXML
     Button importButton, exportButton, playButton;
@@ -31,10 +31,8 @@ public class AudioAmplitudeFXMLController {
     private File audioFile;
 
 
-
     public void initialize() {
-        importButton.setOnAction(e -> handleImportAudio());
-
+        handleImportAudio();
         amplitudeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             drawWaveform(waveformCanvas, newVal.doubleValue());
         });
@@ -54,8 +52,9 @@ public class AudioAmplitudeFXMLController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Audio File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("WAV Files", "*.wav")
-        );
+                new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
+                new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
+                new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
 
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {

@@ -18,6 +18,7 @@ public abstract class Plugin {
     protected byte[] finalAudio;
     protected SourceDataLine line;
     private Stage stage;
+    private Thread playingThread;
 
     /**
      * Converts audio data from a wav file to a byte array
@@ -42,11 +43,12 @@ public abstract class Plugin {
      */
     protected void playAudio(byte[] audioData) {
         // Stops any previous audio playing
-        if (line!=null) {
+        if (line!=null && playingThread!=null) {
+            playingThread.interrupt();
             line.close();
         }
         
-        new Thread(() -> {
+        playingThread = new Thread(() -> {
             try {
                 File file = new File(filePathName);
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
@@ -63,7 +65,9 @@ public abstract class Plugin {
             } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
                 System.out.println(e);
             }
-        }).start();
+        });
+        
+        playingThread.start();
     }
     
     /**
@@ -73,6 +77,7 @@ public abstract class Plugin {
         line.flush(); // discard non called data
         line.stop(); // stop
         line.close(); // close resources
+        playingThread.interrupt();
     }
     
     /**

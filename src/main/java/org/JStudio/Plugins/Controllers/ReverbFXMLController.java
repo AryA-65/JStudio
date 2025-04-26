@@ -138,7 +138,7 @@ public class ReverbFXMLController {
         
         // Play the audio
         playButton.setOnAction(e -> {
-                reverb.setReverbEffect();
+            reverb.setReverbEffect();
         });
         
         // Reset to initial values

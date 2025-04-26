@@ -123,6 +123,44 @@ public abstract class Plugin {
         return sample;
     }
 
+    /**
+     * Method to transform a double array into a byte array
+     * @param doubleArray the array to be transformed
+     * @return the byte array
+     */
+    public static byte[] doubleArrayToByteArray(double[] doubleArray) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(doubleArray.length * Double.BYTES);
+        for (double d : doubleArray) {
+            byteBuffer.putDouble(d);
+        }
+        return byteBuffer.array();
+    }
+
+    public byte[] shortToByte(short [] input)
+    {
+        int index;
+        int iterations = input.length;
+
+        ByteBuffer bb = ByteBuffer.allocate(input.length * 2);
+
+        for(index = 0; index != iterations; ++index)
+        {
+            bb.putShort(input[index]);
+        }
+
+        return bb.array();
+    }
+
+    public static double[] shortToDouble(short[] shortArray) {
+        if (shortArray == null) {
+            return null;
+        }
+        double[] doubleArray = new double[shortArray.length];
+        for (int i = 0; i < shortArray.length; i++) {
+            doubleArray[i] = (double) shortArray[i];
+        }
+        return doubleArray;
+    }
     public byte[] getFinalAudio() {
         return finalAudio;
     }

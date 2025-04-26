@@ -1,26 +1,24 @@
 package org.JStudio.Plugins.Controllers;
 
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
+import org.JStudio.Plugins.Models.Plugin;
+import org.JStudio.Plugins.Models.audioFilters;
+import org.JStudio.Utils.AlertBox;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.JStudio.Plugins.Models.audioFilters;
-import org.JStudio.Utils.AlertBox;
-
-public class AudioFilterFXMLController {
+public class AudioFilterFXMLController extends Plugin {
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
-    public String outputFile = "filtered_output.wav"; //todo create a field for the user to enter the output file name
-    @FXML
-    private Label cutOffLabel;
     @FXML
     private TextField fieldFrequency;
     @FXML
@@ -29,12 +27,11 @@ public class AudioFilterFXMLController {
     private Button saveBtn, playBtn;
     private float userFrequency;
     private String selectedFilter;
-    private Clip audioClip;
-    private boolean isPlaying = false;
 
+    public byte[] readSamples;
+    public short[] appliedSamples;
     @FXML
     public void initialize() {
-
         setupMenu(optionsCutOff);
         setDefaultMenuSelection(optionsCutOff);
 
@@ -44,18 +41,12 @@ public class AudioFilterFXMLController {
             }
         });
 
+        convertAudioFileToByteArray();
+
         playBtn.setOnAction(event -> {
+            getText();
+            stopAudio();
             try {
-                FileChooser fileChooser = new FileChooser();
-                File selectedFile = fileChooser.showOpenDialog(null);
-
-                if (selectedFile == null) {
-                    AlertBox.display("Input Error", "No audio file selected.");
-                    return;
-                }
-
-                inputFile = selectedFile.getAbsolutePath();
-
                 if (fieldFrequency.getText().isEmpty()) {
                     AlertBox.display("Input Error", "Please enter a frequency value.");
                     return;
@@ -76,54 +67,31 @@ public class AudioFilterFXMLController {
                 File file = new File(inputFile);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
                 AudioFormat format = audioStream.getFormat();
-                byte[] audioBytes = audioStream.readAllBytes();
+                readSamples = audioStream.readAllBytes();
                 audioStream.close();
 
-                short[] samples = audioFilters.bytesToShorts(audioBytes);
+                appliedSamples = audioFilters.bytesToShorts(readSamples);
                 float sampleRate = format.getSampleRate();
 
                 if ("Low".equals(selectedFilter)) {
-                    audioFilters.applyLowPassFilter(samples, sampleRate, userFrequency);
+                    audioFilters.applyLowPassFilter(appliedSamples, sampleRate, userFrequency);
                 } else if ("High".equals(selectedFilter)) {
-                    audioFilters.applyHighPassFilter(samples, sampleRate, userFrequency);
+                    audioFilters.applyHighPassFilter(appliedSamples, sampleRate, userFrequency);
                 } else {
                     AlertBox.display("Filter Error", "Unsupported filter type selected.");
                     return;
                 }
 
-                byte[] filteredBytes = audioFilters.shortsToBytes(samples);
-
-                Task<Void> playTask = new Task<>() {
-                    @Override
-                    protected Void call() throws LineUnavailableException {
-                        if (isPlaying) {
-                            audioClip.stop();
-                            isPlaying = false;
-                        } else {
-                            audioFilters.playAudio(filteredBytes, format);
-                            isPlaying = true;
-                        }
-                        return null;
-                    }
-                };
-                Thread testThread = new Thread(playTask);
-                testThread.start();
-
-                saveBtn.setOnAction(event1 -> {
-                    try {
-                        audioFilters.saveWavFile(outputFile, filteredBytes, format);
-                    } catch (IOException e) {
-                        AlertBox.display("Save Error", "Failed to save audio file: " + e.getMessage());
-                    }
-                });
-
+                playAudio(shortToByte(appliedSamples));
             } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
                 AlertBox.display("Error", "An error occurred while processing the audio: " + e.getMessage());
             }
         });
 
-
+        saveBtn.setOnAction(event1 -> {
+            stopAudio();
+            getProcessedAudio();
+        });
     }
 
     private void setupMenu(MenuButton menuButton) {
@@ -151,6 +119,14 @@ public class AudioFilterFXMLController {
         if (fieldFrequency.getText().matches("^[0-9]+$")) {
             userFrequency = (float) Double.parseDouble(fieldFrequency.getText());
         }
+    }
+
+    public double[] getProcessedAudio() {
+        if (appliedSamples == null || appliedSamples.length == 0) {
+            AlertBox.display("Export Error", "No processed audio to export.");
+            return null;
+        }
+        return shortToDouble(appliedSamples);
     }
 
 }

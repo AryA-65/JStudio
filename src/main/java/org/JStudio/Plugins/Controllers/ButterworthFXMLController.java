@@ -45,10 +45,6 @@ public class ButterworthFXMLController {
 
         frequencyField.textProperty().addListener((obs, oldValue, newValue) -> {
             if (!newValue.matches("\\d*(\\.\\d*)?")) {
-                /*
-                \\d* all entries before . numbers
-                (\\.\\d*)? all entries after . numbers
-                 */
                 frequencyField.setText(oldValue);
             }
         });

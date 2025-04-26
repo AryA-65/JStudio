@@ -161,6 +161,7 @@ public abstract class Plugin {
         }
         return doubleArray;
     }
+
     public byte[] getFinalAudio() {
         return finalAudio;
     }

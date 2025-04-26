@@ -66,7 +66,6 @@ public class AudioAmplitudeFXMLController {
 
         exportButton.setOnAction(event -> {
             stopAudio();
-            System.out.println("returned");
             getProcessedAudio();
         });
 
@@ -170,8 +169,8 @@ public class AudioAmplitudeFXMLController {
     }
 
     private void playAudio(double amplitudeFactor) {
-        if (audioFile == null || audioData == null) {
-            AlertBox.display("Playback Error", "No audio file loaded.");
+        if (processedAudioData == null || processedAudioData.length == 0) {
+            AlertBox.display("Playback Error", "No processed audio data available.");
             return;
         }
 
@@ -179,29 +178,25 @@ public class AudioAmplitudeFXMLController {
 
         new Thread(() -> {
             try {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                AudioFormat format = audioStream.getFormat();
-                line = AudioSystem.getSourceDataLine(format); 
+                AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
+                AudioFormat format = stream.getFormat();
+
+                line = AudioSystem.getSourceDataLine(format);
                 line.open(format);
                 line.start();
 
-                byte[] buffer = new byte[2048];
-                int bytesRead;
+                byte[] buffer = new byte[processedAudioData.length * 2];
 
-                while ((bytesRead = audioStream.read(buffer)) != -1) {
-                    for (int i = 0; i < bytesRead - 1; i += 2) {
-                        short sample = (short) ((buffer[i + 1] << 8) | (buffer[i] & 0xFF));
-                        sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, sample * amplitudeFactor));
-                        buffer[i] = (byte) (sample & 0xFF);
-                        buffer[i + 1] = (byte) ((sample >> 8) & 0xFF);
-                    }
-
-                    line.write(buffer, 0, bytesRead);
+                for (int i = 0; i < processedAudioData.length; i++) {
+                    short sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, processedAudioData[i] * 32768));
+                    buffer[i * 2] = (byte) (sample & 0xFF);
+                    buffer[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
                 }
 
+                line.write(buffer, 0, buffer.length);
                 line.drain();
                 line.close();
-                audioStream.close();
+                stream.close();
             } catch (Exception e) {
                 AlertBox.display("Playback Error", "An error occurred while playing the audio.");
             }

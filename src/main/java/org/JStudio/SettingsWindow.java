@@ -29,6 +29,7 @@ public class SettingsWindow extends Stage{
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("settings_layout.fxml"));
             fxmlLoader.setController(new SettingsController());
+            SettingsController.setMainStage(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

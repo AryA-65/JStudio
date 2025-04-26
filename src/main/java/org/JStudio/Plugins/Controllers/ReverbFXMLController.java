@@ -152,7 +152,9 @@ public class ReverbFXMLController {
         });
         
         ReverbFXMLController.window.setOnCloseRequest(e ->{
-            reverb.getAudioLine().close();
+            if (reverb.getAudioLine() != null) {
+                reverb.getAudioLine().close();
+            }
         });
     }
 

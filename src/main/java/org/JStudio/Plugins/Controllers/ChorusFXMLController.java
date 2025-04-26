@@ -116,7 +116,9 @@ public class ChorusFXMLController {
         });
         
         ChorusFXMLController.window.setOnCloseRequest(e ->{
-            chorus.getAudioLine().close();
+            if (chorus.getAudioLine() != null) {
+                chorus.getAudioLine().close();
+            }
         });
     }
     

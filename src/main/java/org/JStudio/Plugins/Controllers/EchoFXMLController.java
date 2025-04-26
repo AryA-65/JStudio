@@ -161,7 +161,9 @@ public class EchoFXMLController {
         });
         
         EchoFXMLController.window.setOnCloseRequest(e ->{
-            echo.getAudioLine().close();
+            if (echo.getAudioLine() != null) {
+                echo.getAudioLine().close();
+            }
         });
     }
     

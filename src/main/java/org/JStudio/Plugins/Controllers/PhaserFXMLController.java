@@ -122,7 +122,9 @@ public class PhaserFXMLController {
         });
         
         PhaserFXMLController.window.setOnCloseRequest(e ->{
-            phaser.getAudioLine().close();
+            if (phaser.getAudioLine() != null) {
+                phaser.getAudioLine().close();
+            }
         });
     }
     

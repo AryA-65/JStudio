@@ -121,7 +121,9 @@ public class FlangerFXMLController {
         });
         
         FlangerFXMLController.window.setOnCloseRequest(e ->{
-            flanger.getAudioLine().close();
+            if (flanger.getAudioLine() != null) {
+                flanger.getAudioLine().close();
+            }
         });
     }
     

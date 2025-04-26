@@ -204,4 +204,10 @@ public abstract class Plugin {
             stopAudio();
         });
     }
+
+    public SourceDataLine getAudioLine() {
+        return line;
+    }
+    
+    
 }

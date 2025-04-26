@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.PhaserPlugin;
+import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -29,6 +30,7 @@ public class PhaserFXMLController {
     Knob frequencyKnob = new Knob(100, false, 0, REG);
     Knob deviationKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private static PhaserStage window;
     private PhaserPlugin phaser;
     
     /**
@@ -118,5 +120,15 @@ public class PhaserFXMLController {
             deviationSlider.setValue(8);
             wetDrySlider.setValue(5);
         });
+        
+        PhaserFXMLController.window.setOnCloseRequest(e ->{
+            if (phaser.getAudioLine() != null) {
+                phaser.getAudioLine().close();
+            }
+        });
+    }
+    
+    public static void setWindow(PhaserStage window) {
+        PhaserFXMLController.window = window;
     }
 }

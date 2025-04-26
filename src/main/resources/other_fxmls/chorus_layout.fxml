@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -35,19 +34,16 @@
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
          <children>
             <Label text="Frequency" translateX="77.6" />
-            <Slider fx:id="frequencySlider" orientation="VERTICAL" translateX="97.6" />
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
             <Label text="Deviation" translateX="75.2" />
-            <Slider fx:id="deviationSlider" orientation="VERTICAL" translateX="95.2" />
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <children>
             <Label text="Wet/Dry" translateX="77.6" />
-            <Slider fx:id="wetDrySlider" orientation="VERTICAL" translateX="92.6" />
          </children>
       </VBox>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">

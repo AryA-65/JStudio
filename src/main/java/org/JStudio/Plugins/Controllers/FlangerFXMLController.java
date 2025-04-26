@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
+import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -29,6 +30,7 @@ public class FlangerFXMLController {
     Knob frequencyKnob = new Knob(100, false, 0, REG);
     Knob deviationKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private static FlangerStage window;
     private Modulation flanger;
     
     /**
@@ -117,5 +119,15 @@ public class FlangerFXMLController {
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);
         });
+        
+        FlangerFXMLController.window.setOnCloseRequest(e ->{
+            if (flanger.getAudioLine() != null) {
+                flanger.getAudioLine().close();
+            }
+        });
+    }
+    
+    public static void setWindow(FlangerStage window) {
+        FlangerFXMLController.window = window;
     }
 }

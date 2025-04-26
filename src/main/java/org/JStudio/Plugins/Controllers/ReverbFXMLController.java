@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Reverb;
+import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -41,6 +42,7 @@ public class ReverbFXMLController {
     Knob decayTimeKnob = new Knob(100, false, 0, REG);
     Knob diffusionKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private static ReverbStage window;
     private Reverb reverb;
     
     /**
@@ -136,7 +138,7 @@ public class ReverbFXMLController {
         
         // Play the audio
         playButton.setOnAction(e -> {
-                reverb.setReverbEffect();
+            reverb.setReverbEffect();
         });
         
         // Reset to initial values
@@ -148,5 +150,15 @@ public class ReverbFXMLController {
             diffusionSlider.setValue(2);
             wetDrySlider.setValue(5);
         });
+        
+        ReverbFXMLController.window.setOnCloseRequest(e ->{
+            if (reverb.getAudioLine() != null) {
+                reverb.getAudioLine().close();
+            }
+        });
+    }
+
+    public static void setWindow(ReverbStage window) {
+        ReverbFXMLController.window = window;
     }
 }

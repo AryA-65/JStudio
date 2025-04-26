@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.PhaserFXMLController;
 import org.JStudio.SettingsController;
 
@@ -15,6 +16,7 @@ import org.JStudio.SettingsController;
  */
 public class PhaserStage extends Stage{
     public static Scene scene;
+    public static PhaserFXMLController controller;
     
     /**
      * Creates the stage
@@ -22,6 +24,7 @@ public class PhaserStage extends Stage{
     public PhaserStage() {
         setTitle("Phaser");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
     
@@ -31,7 +34,9 @@ public class PhaserStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/phaser_layout.fxml"));
-            fxmlLoader.setController(new PhaserFXMLController());
+            controller = new PhaserFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

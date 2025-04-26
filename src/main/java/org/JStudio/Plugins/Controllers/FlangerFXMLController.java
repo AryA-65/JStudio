@@ -50,7 +50,7 @@ public class FlangerFXMLController {
         frequencyKnob.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
             newFrequency = frequencyKnob.getValue() * 10 * 50000;
             System.out.println(newFrequency);
-            flanger.setFrequency(newFrequency.doubleValue());
+            flanger.setFrequency(newFrequency.intValue());
         });
         
         deviationKnob.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {

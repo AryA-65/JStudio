@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.EchoFXMLController;
 import org.JStudio.SettingsController;
 
@@ -19,6 +20,7 @@ public class EchoStage extends Stage{
     public EchoStage() {
         setTitle("Echo");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
     

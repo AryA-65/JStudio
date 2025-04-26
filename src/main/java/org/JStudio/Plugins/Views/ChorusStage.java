@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.ChorusFXMLController;
 import org.JStudio.SettingsController;
 
@@ -20,6 +21,7 @@ public class ChorusStage extends Stage {
     public ChorusStage() {
         setTitle("Chorus");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
     

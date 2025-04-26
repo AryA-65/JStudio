@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.PhaserFXMLController;
 import org.JStudio.SettingsController;
 
@@ -23,6 +24,7 @@ public class PhaserStage extends Stage{
     public PhaserStage() {
         setTitle("Phaser");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
     

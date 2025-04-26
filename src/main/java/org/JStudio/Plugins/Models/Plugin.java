@@ -36,7 +36,15 @@ public abstract class Plugin {
             System.out.println(e);
         }
     }
-    
+
+    public String getFilePathName() {
+        return filePathName;
+    }
+
+    public void setFilePathName(String filePathName) {
+        this.filePathName = filePathName;
+    }
+
     /**
      * Plays audio data stored in a byte array
      * @param audioData the audio data to be played

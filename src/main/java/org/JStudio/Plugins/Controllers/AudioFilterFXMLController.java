@@ -29,8 +29,6 @@ public class AudioFilterFXMLController extends Plugin {
     private Button saveBtn, playBtn;
     private float userFrequency;
     private String selectedFilter;
-    private Clip audioClip;
-    private boolean isPlaying = false;
 
     private float sampleRate;
     private short[] samples;
@@ -95,6 +93,7 @@ public class AudioFilterFXMLController extends Plugin {
         }
 
         inputFile = selectedFile.getAbsolutePath();
+        setFilePathName(inputFile);
         try {
             File file = new File(inputFile);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);

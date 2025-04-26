@@ -84,8 +84,8 @@ class AudioThread extends Thread {
     }
 
     void close() {
-        closed = true; // break out of the loop
-        triggerPlayback();
+        closed = true;
+        this.interrupt();
     }
 
     private void bufferSamples(short[] samples) {

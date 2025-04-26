@@ -8,6 +8,7 @@ public class NotesView extends Rectangle {
 
     public NotesView(Note note, double width, double height, double positionX) {
         super(width, height);
+        note.setNoteView(this);
         this.note = note;
         setLayoutX(positionX);
         setFill(Color.BLACK);

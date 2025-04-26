@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import javafx.scene.control.TextField;
 
 public class Controller {
 
@@ -28,16 +29,20 @@ public class Controller {
     @FXML
     private MenuButton functionChooser1, functionChooser2, functionChooser3;
     @FXML
-    private Slider tone1, tone2, tone3, volume1, volume2, volume3, playSpeed;
+    private Slider tone1, tone2, tone3, volume1, volume2, volume3;//, playSpeed;
     @FXML
     private Canvas waveformCanvas;
     @FXML
     private Button addTrackButton;
+    @FXML
+    private Button playSynthButton;
+    @FXML
+    private TextField frequencyTextField;
     private boolean shouldGenerate;
     private int wavePos;
-    private double speedFactor = 1;
+//    private double speedFactor = 1;
     private NotesController notesController;
-    private double lastFrequency = 0;
+    private double frequency = 0;
 
     public void setNotesController(NotesController nc) {
         notesController = nc;
@@ -60,45 +65,33 @@ public class Controller {
         sliderSetUp(volume2, 1);
         sliderSetUp(volume3, 1);
 
-        sliderSetUp(playSpeed, 10);
+//        sliderSetUp(playSpeed, 10);
 
-        updateSlider(tone1, 0, true);
-        updateSlider(tone2, 1, true);
-        updateSlider(tone3, 2, true);
+//        updateSlider(tone1, 0, true);
+//        updateSlider(tone2, 1, true);
+//        updateSlider(tone3, 2, true);
+//
+//        updateSlider(volume1, 0, false);
+//        updateSlider(volume2, 1, false);
+//        updateSlider(volume3, 2, false);
 
-        updateSlider(volume1, 0, false);
-        updateSlider(volume2, 1, false);
-        updateSlider(volume3, 2, false);
+        playSynthButton.setOnMousePressed(e -> {
+            frequency = Double.parseDouble(frequencyTextField.getText());
+            oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
+            oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
+            oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
+            
+            playAudio(auTh, frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+        });
+        
+        playSynthButton.setOnMouseReleased(e -> {
+            stopAudio(auTh);
+        });
 
         addTrackButton.setOnAction(event -> {
-//            if(lastFrequency == 0){
-//                System.err.println("Plase use the keys on the keyboard to select a frequency");
-//                return;
-//            }
-            lastFrequency = 207;
+            frequency = Double.parseDouble(frequencyTextField.getText());
 
-            AudioThread auTh = new AudioThread(() -> {
-
-            oscillatorFrequencies[0] = Utility.Math.offsetTone(lastFrequency, tone1.getValue());
-            oscillatorFrequencies[1] = Utility.Math.offsetTone(lastFrequency, tone2.getValue());
-            oscillatorFrequencies[2] = Utility.Math.offsetTone(lastFrequency, tone3.getValue());
-
-            short[] s = new short[AudioThread.BUFFER_SIZE];
-
-            for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
-                double mixedSample = 0;
-
-                mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
-                mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
-                mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
-
-                s[i] = (short) (Short.MAX_VALUE * mixedSample);
-                wavePos += (int) (speedFactor);
-            }
-            return s;
-        });
-            
-            notesController.addTrack(auTh, lastFrequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+            notesController.addTrack(frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
             tempStage.close();
         });
 
@@ -111,25 +104,31 @@ public class Controller {
             for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
                 double mixedSample = 0;
 
-                mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
-                mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
-                mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
+                if(tone1.getValue()!= 0){
+                        mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
+                }
+                if(tone2.getValue()!= 0){
+                        mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
+                }
+                if(tone3.getValue()!= 0){
+                        mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
+                }
 
                 s[i] = (short) (Short.MAX_VALUE * mixedSample);
-                wavePos += (int) (speedFactor);
+                wavePos += 1;//(int) (speedFactor);
             }
             drawWaveform(s);
             return s;
         });
 
-        for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {
-            KEY_FREQUENCIES.put(Utility.AudioInfo.KEYS[key], Utility.Math.getKeyFrequency(i));
-        }
-        playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
+//        for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {
+//            KEY_FREQUENCIES.put(Utility.AudioInfo.KEYS[key], Utility.Math.getKeyFrequency(i));
+//        }
+        //playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
 
     }
 
-    private double generateWaveSample(String waveformType, double frequency, int wavePosition) {
+    public double generateWaveSample(String waveformType, double frequency, int wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
 
         final double a = 2d * (tDivP - Math.floor(0.5 + tDivP));
@@ -149,41 +148,41 @@ public class Controller {
         };
     }
 
-    private void setupKeyboardListeners() {
-        if (tempScene == null) {
-            System.err.println("tempScene is not set, cannot set up keyboard listeners");
-            return;
-        }
-
-        tempScene.setOnKeyPressed(event -> {
-            if (!auTh.isRunning()) {
-                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-                if (KEY_FREQUENCIES.containsKey(key)) {
-                    
-                    double frequency = KEY_FREQUENCIES.get(key);
-
-                    oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
-                    oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
-                    oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
-
-                    if (tone1.getValue() == 0 && tone2.getValue() == 0 && tone3.getValue() == 0) {
-                        return;
-                    }
-                    if (volume1.getValue() == 0 && volume2.getValue() == 0 && volume3.getValue() == 0) {
-                        return;
-                    }
-                    shouldGenerate = true;
-                    auTh.triggerPlayback();
-                }
-            }
-        });
-
-        tempScene.setOnKeyReleased(event -> {
-            if (tempScene.getOnKeyPressed() != null) {
-                shouldGenerate = false;
-            }
-        });
-    }
+//    private void setupKeyboardListeners() {
+//        if (tempScene == null) {
+//            System.err.println("tempScene is not set, cannot set up keyboard listeners");
+//            return;
+//        }
+//
+//        tempScene.setOnKeyPressed(event -> {
+//            if (!auTh.isRunning()) {
+//                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
+//                if (KEY_FREQUENCIES.containsKey(key)) {
+//
+//                    double frequency = KEY_FREQUENCIES.get(key);
+//
+//                    oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
+//                    oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
+//                    oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
+//
+//                    if (tone1.getValue() == 0 && tone2.getValue() == 0 && tone3.getValue() == 0) {
+//                        return;
+//                    }
+//                    if (volume1.getValue() == 0 && volume2.getValue() == 0 && volume3.getValue() == 0) {
+//                        return;
+//                    }
+//                    shouldGenerate = true;
+//                    auTh.triggerPlayback();
+//                }
+//            }
+//        });
+//
+//        tempScene.setOnKeyReleased(event -> {
+//            if (tempScene.getOnKeyPressed() != null) {
+//                shouldGenerate = false;
+//            }
+//        });
+//    }
 
     public void playAudio(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         shouldGenerate = true;
@@ -194,25 +193,25 @@ public class Controller {
         auTh.pause();
     }
 
-    private void updateSlider(Slider slider, int index, boolean isToneSlider) {
-        slider.valueProperty().addListener((obs, oldValue, newValue) -> {
-
-            if (isToneSlider && tempScene != null) {
-                tempScene.setOnKeyPressed(event -> {
-                    char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-                    if (KEY_FREQUENCIES.containsKey(key)) {
-                        double frequency = KEY_FREQUENCIES.get(key);
-                        oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency, newValue.doubleValue());
-                    }
-
-                    if (!auTh.isRunning() && (volume1.getValue() > 0 || volume2.getValue() > 0 || volume3.getValue() > 0)) {
-                        shouldGenerate = true;
-                        auTh.triggerPlayback();
-                    }
-                });
-            }
-        });
-    }
+//    private void updateSlider(Slider slider, int index, boolean isToneSlider) {
+//        slider.valueProperty().addListener((obs, oldValue, newValue) -> {
+//
+//            if (isToneSlider && tempScene != null) {
+//                tempScene.setOnKeyPressed(event -> {
+//                    char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
+//                    if (KEY_FREQUENCIES.containsKey(key)) {
+//                        double frequency = KEY_FREQUENCIES.get(key);
+//                        oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency, newValue.doubleValue());
+//                    }
+//
+//                    if (!auTh.isRunning() && (volume1.getValue() > 0 || volume2.getValue() > 0 || volume3.getValue() > 0)) {
+//                        shouldGenerate = true;
+//                        auTh.triggerPlayback();
+//                    }
+//                });
+//            }
+//        });
+//    }
 
     private void closeApplication() {
         if (tempStage == null) {
@@ -273,7 +272,7 @@ public class Controller {
 
     public void setScene(Scene scene) {
         this.tempScene = scene;
-        setupKeyboardListeners();
+        //setupKeyboardListeners();
     }
 
     public void setStage(Stage stage) {
@@ -307,7 +306,7 @@ public class Controller {
         }
     }
 
-    public void setSpeedFactor(double speedFactor) {
-        this.speedFactor = speedFactor;
-    }
+//    public void setSpeedFactor(double speedFactor) {
+//        this.speedFactor = speedFactor;
+//    }
 }

@@ -59,8 +59,8 @@ public class NotesTrack extends Pane{
         return auTh;
     }
 
-    public NotesTrack(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
-        this.auTh = auTh;
+    public NotesTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+        //this.auTh = auTh;
         this.frequency = frequency;
         this.txt1 = txt1;
         this.txt2 = txt2;

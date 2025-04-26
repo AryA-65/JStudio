@@ -1,16 +1,14 @@
 package PianoManualSynth;
 
 import java.io.IOException;
-import javafx.animation.AnimationTimer;
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
-import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Pos;
@@ -19,9 +17,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import org.JStudio.Plugins.Controllers.PopUpController;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
+import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.ALC10.*;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.AL;
 
 public class NotesController {
 
@@ -45,6 +52,11 @@ public class NotesController {
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
+    
+    private TranslateTransition movePlaybackLine;
+    
+    
+    Random random = new Random();
 
     @FXML
     private Pane mainPane;
@@ -236,7 +248,7 @@ public class NotesController {
         }
     }
 
-    public void addTrack(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+    public void addTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         PopUpController popUp = new PopUpController();
         String trackName = popUp.showTextInputPopup();
 
@@ -248,7 +260,7 @@ public class NotesController {
         label.setStyle("-fx-border-color: #000000");
         labelVBox.getChildren().add(label);
 
-        NotesTrack track = new NotesTrack(auTh, frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
+        NotesTrack track = new NotesTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
         track.setId("pane" + noteTracks.getChildren().size());
         track.setPrefSize(1820.0, 27.0);
         track.setMaxWidth(notesTrackWidth);
@@ -278,40 +290,82 @@ public class NotesController {
     }
 
     private void playNotes() {
-        TranslateTransition movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
+        Thread thread = new Thread(()->{
+            
+        long device = alcOpenDevice((ByteBuffer) null);
+        long context = alcCreateContext(device, (IntBuffer) null);
+        alcMakeContextCurrent(context);
+        AL.createCapabilities(ALC.createCapabilities(device));
+        
+        int trackLengthSeconds = 30;
+        double sampleRate = 44100;
+
+        int totalSamples = (int) (trackLengthSeconds * sampleRate);
+        short[] finalTrackSamples = new short[totalSamples];
+
+        int wavePos = 1;
+        for (int i = 0; i < totalSamples; i++) {
+            double currentTime = (double) i / sampleRate; // current time in seconds
+            double mixedSample = 0;
+
+            for (NotesView noteView : allNoteViews) {
+                Note note = noteView.getNote();
+                if (note.isActive(currentTime)) { // Check if this note is playing now
+                    //mixedSample += note.generateSample(currentTime);
+                    int NORMALIZER = 6;
+                    NotesTrack track = note.getTrack();
+                    if(track.getTone1Value() != 0){
+                        mixedSample += (generateWaveSample(track.getText1(), Utility.Math.offsetTone(207, track.getTone1Value()), wavePos) * track.getVolume1Value())/NORMALIZER;
+                    }
+                    if(track.getTone2Value() != 0){
+                        mixedSample += (generateWaveSample(track.getText2(), Utility.Math.offsetTone(207, track.getTone2Value()), wavePos) * track.getVolume2Value())/NORMALIZER;
+                    }
+                    if(track.getTone3Value() != 0){
+                        mixedSample += (generateWaveSample(track.getText3(), Utility.Math.offsetTone(207, track.getTone3Value()), wavePos) * track.getVolume3Value())/NORMALIZER;
+                    }
+                }
+            }
+            finalTrackSamples[i] = (short) (mixedSample * Short.MAX_VALUE);
+            wavePos +=1;
+            
+//            if(finalTrackSamples[i] != 0){
+//                System.out.println(finalTrackSamples[i]);
+//            }
+        }
+        
+        
+        int buffer = alGenBuffers();
+        int source = alGenSources();
+
+        alBufferData(buffer, AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
+        alSourcei(source, AL_BUFFER, buffer);
+        alSourcePlay(source);
+        
+        movePlaybackLine.play();
+
+        while (alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                System.out.println("Error: "+ex.getMessage());
+            }
+        }
+
+        alDeleteSources(source);
+        alDeleteBuffers(buffer);
+        alcDestroyContext(context);
+        alcCloseDevice(device);
+
+        });
+        movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
         movePlaybackLine.setFromX(playbackLineStartPos);
         movePlaybackLine.setToX(currentTrack.getWidth());
         movePlaybackLine.setCycleCount(1);
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                for (NotesView noteView : allNoteViews) {
-                    Shape intersection = Shape.intersect(playbackLine, noteView);
-                    NotesTrack track = noteView.getNote().getTrack();
-
-                    if (intersection.getBoundsInLocal().getWidth() > 0
-                            || intersection.getBoundsInLocal().getHeight() > 0) {
-                        if (!noteView.getNote().isPlaying()) {
-                            synthController.playAudio(track.getAudioThread(), track.getFrequency(), track.getText1(), track.getText2(), track.getText3(), track.getTone1Value(), track.getTone2Value(), track.getTone3Value(), track.getVolume1Value(), track.getVolume2Value(), track.getVolume3Value());
-                            noteView.getNote().setPlaying(true);
-                        }
-                    } else {
-                        if (noteView.getNote().isPlaying()) {
-                            synthController.stopAudio(track.getAudioThread());
-                            noteView.getNote().setPlaying(false);
-                        }
-                    }
-                }
-            }
-        };
-        movePlaybackLine.setOnFinished(e -> {
-            timer.stop();
-        });
-        movePlaybackLine.play();
-        timer.start();
+        
+        thread.start();
     }
-
+    
     //returns an array list of all notes in the pane
     private ArrayList<NotesView> getNotes() {
         //create 
@@ -320,5 +374,25 @@ public class NotesController {
             currentNoteViews.add((NotesView) n);
         }
         return currentNoteViews;
+    }
+
+    public double generateWaveSample(String waveformType, double frequency, double wavePosition) {
+        double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
+
+        final double a = 2d * (tDivP - Math.floor(0.5 + tDivP));
+        return switch (waveformType) {
+            case "Sine" ->
+                Math.sin(Utility.Math.frequencyToAngularFrequency(frequency) * wavePosition / Utility.AudioInfo.SAMPLE_RATE);
+            case "Square" ->
+                Math.signum(Math.sin(Utility.Math.frequencyToAngularFrequency(frequency) * wavePosition / Utility.AudioInfo.SAMPLE_RATE));
+            case "Saw" ->
+                a;
+            case "Triangle" ->
+                2d * Math.abs(a) - 1;
+            case "Noise" ->
+                random.nextDouble() * 2 - 1;
+            default ->
+                throw new RuntimeException("Oscillator is set to unknown waveform");
+        };
     }
 }

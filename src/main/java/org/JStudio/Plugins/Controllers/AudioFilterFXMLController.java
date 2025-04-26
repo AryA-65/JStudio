@@ -1,20 +1,23 @@
 package org.JStudio.Plugins.Controllers;
 
 
-import javafx.concurrent.Task;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
+import org.JStudio.Plugins.Models.Plugin;
+import org.JStudio.Plugins.Models.audioFilters;
+import org.JStudio.Utils.AlertBox;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.JStudio.Plugins.Models.Plugin;
-import org.JStudio.Plugins.Models.audioFilters;
-import org.JStudio.Utils.AlertBox;
 
 public class AudioFilterFXMLController extends Plugin {
     private final Map<MenuButton, String> filterType = new HashMap<>();
@@ -75,6 +78,15 @@ public class AudioFilterFXMLController extends Plugin {
             filteredBytes = audioFilters.shortsToBytes(samples);
 
             playAudio(filteredBytes);
+
+            if (filteredBytes != null) {
+                playBtn.setDisable(true);
+                playAudio(filteredBytes);
+
+                PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(3));
+                delay.setOnFinished(e -> playBtn.setDisable(false));
+                delay.play();
+            }
         });
 
         saveBtn.setOnAction(event -> {

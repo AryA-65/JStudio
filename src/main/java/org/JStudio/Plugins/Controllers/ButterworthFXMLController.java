@@ -1,11 +1,13 @@
 package org.JStudio.Plugins.Controllers;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
 import org.JStudio.Utils.AlertBox;
@@ -14,11 +16,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
-import java.io.IOException;
 
 public class ButterworthFXMLController extends Plugin {
     @FXML
-    private Button importButton, applyButton, exportButton;
+    private Button playButton, exportButton;
 
     @FXML
     private RadioButton lowPassRadio, highPassRadio, bandPassRadio, bandStopRadio;
@@ -57,7 +58,7 @@ public class ButterworthFXMLController extends Plugin {
 
         getFile();
 
-        applyButton.setOnMouseClicked(event -> {
+        playButton.setOnMouseClicked(event -> {
             stopAudio();
             try {
                 if (samples == null || samples.length == 0) {
@@ -99,6 +100,15 @@ public class ButterworthFXMLController extends Plugin {
 
                 filteredBytes = audioFilters.shortsToBytes(samples);
 
+                if (filteredBytes != null) {
+                    playButton.setDisable(true);
+                    playAudio(filteredBytes);
+
+                    PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(3));
+                    delay.setOnFinished(e -> playButton.setDisable(false));
+                    delay.play();
+                }
+
                 playAudio(filteredBytes);
             } catch (NumberFormatException e) {
                 AlertBox.display("Input Error", "Invalid number format in Frequency or Q field.");
@@ -116,6 +126,7 @@ public class ButterworthFXMLController extends Plugin {
         try {
             FileChooser fileChooser = new FileChooser();
             inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
+            setFilePathName(inputFile);
             File file = new File(inputFile);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             format = audioStream.getFormat();

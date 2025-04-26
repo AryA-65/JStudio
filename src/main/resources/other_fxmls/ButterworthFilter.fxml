@@ -13,7 +13,7 @@
    <top>
       <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-          <Button fx:id="applyButton" mnemonicParsing="false" text="Apply" />
+          <Button fx:id="playButton" mnemonicParsing="false" text="Play" />
             <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
         </items>
       </ToolBar>

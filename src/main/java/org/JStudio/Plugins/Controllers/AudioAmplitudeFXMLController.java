@@ -70,9 +70,10 @@ public class AudioAmplitudeFXMLController {
                 playButton.setDisable(true);
                 playAudio(amplitudeSlider.getValue());
 
-                PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(5));
+                PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(3));
                 delay.setOnFinished(e -> playButton.setDisable(false));
-                delay.play();            }
+                delay.play();
+            }
         });
 
 

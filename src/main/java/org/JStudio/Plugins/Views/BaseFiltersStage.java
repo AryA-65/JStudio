@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioFilterFXMLController;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class BaseFiltersStage extends Stage {
     public BaseFiltersStage() {
         setTitle("Base Filters");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 

@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.FlangerFXMLController;
 import org.JStudio.Plugins.Controllers.StereoFXMLController;
 
@@ -20,6 +21,7 @@ public class StereoStage extends Stage {
     public StereoStage() {
         setTitle("Stereo");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 
@@ -29,8 +31,9 @@ public class StereoStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/stereo.fxml"));
-            fxmlLoader.setController(new StereoFXMLController());
-
+            StereoFXMLController controller = new StereoFXMLController();
+            controller.setStage(this);
+            fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {

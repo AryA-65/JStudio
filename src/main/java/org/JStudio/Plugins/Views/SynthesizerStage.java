@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Synthesizer.Controller;
 import org.JStudio.SettingsController;
 
@@ -18,13 +19,14 @@ public class SynthesizerStage {
     public void synth() {
         stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UTILITY);
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/waveGenerator.fxml"));
             Parent root = fxmlLoader.load();
 
             Controller myController = fxmlLoader.getController();
-            Scene mainScene = new Scene(root, 650, 400);
+            mainScene = new Scene(root, 650, 400);
 
             stage.setScene(mainScene);
 

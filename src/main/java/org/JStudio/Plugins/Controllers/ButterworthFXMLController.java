@@ -7,6 +7,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
@@ -18,6 +19,8 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 
 public class ButterworthFXMLController extends Plugin {
+    private Stage stage;
+
     @FXML
     private Button playButton, exportButton;
 
@@ -109,7 +112,6 @@ public class ButterworthFXMLController extends Plugin {
                     delay.play();
                 }
 
-                playAudio(filteredBytes);
             } catch (NumberFormatException e) {
                 AlertBox.display("Input Error", "Invalid number format in Frequency or Q field.");
             } catch (Exception e) {
@@ -147,5 +149,13 @@ public class ButterworthFXMLController extends Plugin {
             return null;
         }
         return filteredBytes;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        this.stage.setOnCloseRequest(event -> {
+            stopAudio();
+        });
     }
 }

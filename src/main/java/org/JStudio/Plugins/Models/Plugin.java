@@ -207,18 +207,6 @@ public abstract class Plugin {
         T process(T input);
     }
 
-    /**
-     * Method to kill audio plays when you close the stage
-     * @param stage the stage of the plugin
-     */
-    public void setStage(Stage stage) {
-        this.stage = stage;
-
-        this.stage.setOnCloseRequest(event -> {
-            stopAudio();
-        });
-    }
-
     public byte[] creatingByteArray(double[] array) {
         byte[] placeHolder = new byte[array.length * 2];
 
@@ -231,5 +219,30 @@ public abstract class Plugin {
     }
     public SourceDataLine getAudioLine() {
         return line;
+    }
+
+    public short[] bytesToShorts(byte[] bytes) {
+        short[] shorts = new short[bytes.length / 2];
+        for (int i = 0; i < shorts.length; i++) {
+            shorts[i] = (short) ((bytes[2 * i + 1] << 8) | (bytes[2 * i] & 0xFF));
+        }
+        return shorts;
+    }
+
+    public byte[] shortsToBytes(short[] shorts) {
+        byte[] bytes = new byte[shorts.length * 2];
+        for (int i = 0; i < shorts.length; i++) {
+            bytes[2 * i] = (byte) (shorts[i] & 0xFF);
+            bytes[2 * i + 1] = (byte) ((shorts[i] >> 8) & 0xFF);
+        }
+        return bytes;
+    }
+
+    public float[] shortsToFloats(short[] shorts) {
+        float[] floats = new float[shorts.length];
+        for (int i = 0; i < shorts.length; i++) {
+            floats[i] = shorts[i] / 32768f;
+        }
+        return floats;
     }
 }

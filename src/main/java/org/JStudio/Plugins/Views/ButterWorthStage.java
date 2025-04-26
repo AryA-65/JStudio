@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.ButterworthFXMLController;
 import org.JStudio.Plugins.Controllers.ReverbFXMLController;
 import org.JStudio.Plugins.Synthesizer.Controller;
@@ -18,6 +19,7 @@ public class ButterWorthStage extends Stage {
     public ButterWorthStage() {
         setTitle("Butterworth Filter");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 

@@ -5,6 +5,7 @@ import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AudioFilterFXMLController extends Plugin {
+    private Stage stage;
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
     @FXML
@@ -145,7 +147,15 @@ public class AudioFilterFXMLController extends Plugin {
             AlertBox.display("Export Error", "No processed audio to export.");
             return null;
         }
-        return filteredBytes; // todo need to do double?
+        return filteredBytes;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        this.stage.setOnCloseRequest(event -> {
+            stopAudio();
+        });
     }
 
 }

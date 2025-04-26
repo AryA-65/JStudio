@@ -70,9 +70,11 @@ public abstract class Plugin {
      * Stops audio playback
      */
     public void stopAudio() {
-        line.flush(); // discard non called data
-        line.stop(); // stop
-        line.close(); // close resources
+        if (line != null && line.isOpen()) {
+            line.flush(); // discard non called data
+            line.stop(); // stop
+            line.close(); // close resources
+        }
     }
     
     /**
@@ -203,5 +205,16 @@ public abstract class Plugin {
         this.stage.setOnCloseRequest(event -> {
             stopAudio();
         });
+    }
+
+    public byte[] creatingByteArray(double[] array) {
+        byte[] placeHolder = new byte[array.length * 2];
+
+        for (int i = 0; i < array.length; i++) {
+            short sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, array[i] * 32768));
+            placeHolder[i * 2] = (byte) (sample & 0xFF);
+            placeHolder[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
+        }
+        return placeHolder;
     }
 }

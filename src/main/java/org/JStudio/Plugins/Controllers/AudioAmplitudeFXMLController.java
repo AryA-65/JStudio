@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.AudioFormat;
@@ -19,7 +20,7 @@ import javax.sound.sampled.SourceDataLine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-public class AudioAmplitudeFXMLController {
+public class AudioAmplitudeFXMLController extends Plugin {
     private Stage stage;
     @FXML
     Button exportButton, playButton;
@@ -31,7 +32,10 @@ public class AudioAmplitudeFXMLController {
     private double[] audioData;
 
     private File audioFile;
-    public double[] processedAudioData;
+    private double[] processedAudioData;
+
+    public byte[] buffer;
+    public byte[] outputArray;
 
     private double amp;
 
@@ -185,13 +189,7 @@ public class AudioAmplitudeFXMLController {
                 line.open(format);
                 line.start();
 
-                byte[] buffer = new byte[processedAudioData.length * 2];
-
-                for (int i = 0; i < processedAudioData.length; i++) {
-                    short sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, processedAudioData[i] * 32768));
-                    buffer[i * 2] = (byte) (sample & 0xFF);
-                    buffer[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
-                }
+                buffer = creatingByteArray(processedAudioData);
 
                 line.write(buffer, 0, buffer.length);
                 line.drain();
@@ -210,20 +208,14 @@ public class AudioAmplitudeFXMLController {
         });
     }
 
-    public double[] getProcessedAudio() {
+    public byte[] getProcessedAudio() {
         if (processedAudioData == null || processedAudioData.length == 0) {
             AlertBox.display("Export Error", "No processed audio to export.");
             return null;
         }
-        return processedAudioData;
-    }
 
-    private void stopAudio() {
-        if (line != null && line.isOpen()) {
-            line.flush();
-            line.stop();
-            line.close();
-        }
+        outputArray = creatingByteArray(processedAudioData);
+        return outputArray;
     }
 
 }

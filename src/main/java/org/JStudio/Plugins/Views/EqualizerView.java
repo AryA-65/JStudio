@@ -9,11 +9,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class EqualizerView extends Pane {
 
-    EqualizerController eqController;
-    EqualizerBand[] eqBands = new EqualizerBand[10];
+    private EqualizerController eqController;
+    private EqualizerBand[] eqBands = new EqualizerBand[10];
+    private Stage stage;
 
     //returns all the equalizer bands
     public EqualizerBand[] getEqBands() {
@@ -22,6 +24,10 @@ public class EqualizerView extends Pane {
     
     public EqualizerController getEqualizerController(){
         return eqController;
+    }
+    
+    public void setStage(Stage stage){
+        this.stage = stage;
     }
 
     public EqualizerView() {
@@ -33,11 +39,13 @@ public class EqualizerView extends Pane {
 
         Button playButton = new Button("Play");
         Button stopButton = new Button("Stop");
+        Button exportButton = new Button("Export");
 
         playButton.setOnAction(e -> {
             //disable the play button, enable the stop button, and create a controller to modify and play the audio
             playButton.setDisable(true);
             eqController = new EqualizerController(file);
+            eqController.setStage(stage);
             eqController.setEqView(this);
             eqController.start(); //start a new thread that plays the audio
             stopButton.setDisable(false);
@@ -50,10 +58,17 @@ public class EqualizerView extends Pane {
             eqController.stopPlaying();
             playButton.setDisable(false);
         });
+        
+        exportButton.setOnAction(e -> {
+            //disable the stop button, enable the play button, and stop the audio
+            stopButton.setDisable(true);
+            playButton.setDisable(true);
+            eqController.export();
+        });
 
         HBox hbButtons = new HBox();
 
-        hbButtons.getChildren().addAll(playButton, stopButton);
+        hbButtons.getChildren().addAll(playButton, stopButton, exportButton);
 
         HBox hbBands = new HBox();
         HBox hbLabels = new HBox();

@@ -1,8 +1,5 @@
 package PianoManualSynth;
 
-import static PianoManualSynth.Utility.Math.root;
-import static java.lang.Math.pow;
-import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;

@@ -15,7 +15,6 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public abstract class Plugin {
-    protected String fileName;
     protected String filePathName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
@@ -26,7 +25,11 @@ public abstract class Plugin {
      */
     protected void convertAudioFileToByteArray() {
         try {
-            File file = new FileChooser().showOpenDialog(null);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
+                new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
+                new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
+            File file = fileChooser.showOpenDialog(null);
             filePathName = file.getAbsolutePath();
             originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
@@ -39,6 +42,11 @@ public abstract class Plugin {
      * @param audioData the audio data to be played
      */
     protected void playAudio(byte[] audioData) {
+        // Stops any previous audio playing
+        if (line!=null) {
+            line.close();
+        }
+        
         new Thread(() -> {
             try {
                 File file = new File(filePathName);
@@ -87,6 +95,7 @@ public abstract class Plugin {
     /**
      * Revert short[] audio data back to byte array to have playback functionality
      * @param audioData the audio data to be converted to a byte array
+     * @param sizeOfByteArray the size of the array to save
      */
     protected void convertToByteArray(short[] audioData, int sizeOfByteArray) {
         // Revert back to byte array to have playback functionality
@@ -112,5 +121,9 @@ public abstract class Plugin {
             sample = Short.MIN_VALUE;
         }
         return sample;
+    }
+
+    public byte[] getFinalAudio() {
+        return finalAudio;
     }
 }

@@ -12,7 +12,7 @@ import javafx.stage.Stage;
  * @author Theodore Georgiou
  */
 public class SettingsWindow extends Stage{
-    Scene scene;
+    private Scene scene;
     /**
      * Creates the stage
      */
@@ -32,12 +32,23 @@ public class SettingsWindow extends Stage{
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            updateStyle();
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {
             System.out.println(e);
+        }
+    }
+    
+    /**
+     * Updates style of main scene (light or dark)
+     */
+    public void updateStyle() {
+        scene.getStylesheets().clear();
+        if (SettingsController.getStyle()) {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else if (!SettingsController.getStyle()) {
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         }
     }
 }

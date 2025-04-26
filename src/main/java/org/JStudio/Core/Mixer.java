@@ -48,4 +48,8 @@ public class Mixer { //calls all the process methods for all active channels and
         }
     }
 
+    public void setMasterGain(float masterGain) {
+        this.masterGain = masterGain;
+    }
+
 }

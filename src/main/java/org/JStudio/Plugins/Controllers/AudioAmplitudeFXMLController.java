@@ -20,7 +20,7 @@ import javax.sound.sampled.SourceDataLine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-public class AudioAmplitudeFXMLController extends Plugin {
+public class AudioAmplitudeFXMLController {
     private Stage stage;
     @FXML
     Button exportButton, playButton;
@@ -41,8 +41,16 @@ public class AudioAmplitudeFXMLController extends Plugin {
 
     private SourceDataLine line;
     public void initialize() {
+        amplitudeSlider.setValue(0);
         amplitudeSlider.setMax(5);
-        amplitudeSlider.setMin(-1);
+        amplitudeSlider.setMin(-5);
+        amplitudeSlider.setBlockIncrement(0.1);
+        amplitudeSlider.setMajorTickUnit(1.0);
+        amplitudeSlider.setMinorTickCount(10);
+
+        amplitudeSlider.setShowTickMarks(true);
+        amplitudeSlider.setShowTickLabels(true);
+
 
         handleImportAudio();
 
@@ -218,4 +226,22 @@ public class AudioAmplitudeFXMLController extends Plugin {
         return outputArray;
     }
 
+    public byte[] creatingByteArray(double[] array) {
+        byte[] placeHolder = new byte[array.length * 2];
+
+        for (int i = 0; i < array.length; i++) {
+            short sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, array[i] * 32768));
+            placeHolder[i * 2] = (byte) (sample & 0xFF);
+            placeHolder[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
+        }
+        return placeHolder;
+    }
+
+    public void stopAudio() {
+        if (line != null && line.isOpen()) {
+            line.flush(); // discard non called data
+            line.stop(); // stop
+            line.close(); // close resources
+        }
+    }
 }

@@ -1,16 +1,20 @@
 package org.JStudio;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.JStudio.Core.Track;
 
 import java.util.ArrayList;
 
 public class Song {
     private String songName;
-    private float bpm, sampleRate = 44100f;
+    private float bpm;
+    private short sampleRate = (short) 44100;
     private long duration;
     private final byte MIN_TRACKS = 16, MAX_TRACKS = 64; //might reduce max tracks to something like 48 or 32
     private byte numTracks = MIN_TRACKS;
     private ArrayList<Track> tracks;
+    private BooleanProperty snapping = new SimpleBooleanProperty(false);
 
     Song(String name) {
         this.songName = name;

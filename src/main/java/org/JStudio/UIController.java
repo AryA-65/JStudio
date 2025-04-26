@@ -457,10 +457,12 @@ public class UIController {
 
         tracks_scrollpane.hvalueProperty().bindBidirectional(timeline_scrollpane.hvalueProperty());
 
+        int num = 0;
         for (Track track : song.getTracks()) {
-            track_vbox.getChildren().add(track.addTrack((int) (song.getBpm() * 32)));
+            track_vbox.getChildren().add(track.getContainer((int) (song.getBpm() * 32), num));
             track_id_vbox.getChildren().add(track.addTrackID());
-            channel_rack.getChildren().add(track.createChannel((byte) (track.getId() - 1)));
+            channel_rack.getChildren().add(track.createChannel((byte) (num + 1)));
+            num++;
             System.out.println(track.getId());
         }
 

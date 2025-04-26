@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -105,6 +106,147 @@ public class Track {
         this.pitch.set(pitch);
     }
 
+    public StackPane getContainer(int width, int num) {
+        StackPane container = new StackPane();
+        container.setPrefSize(width, 64);
+        container.setAlignment(Pos.CENTER_LEFT);
+
+        Pane clipContainer = new Pane();
+        clipContainer.setPrefSize(width, 64);
+        clipContainer.setId("clipContainer" + num);
+
+        container.setOnDragOver(e -> {
+            if (e.getGestureSource() != container && e.getDragboard().hasString()) {
+                e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
+            }
+            e.consume();
+        });
+
+        container.setOnDragDropped(e -> {
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+
+            if (db.hasString()) {
+//                System.out.println("True");
+
+                double dropX = e.getX();
+
+                String string = db.getString();
+
+//                System.out.println(string);
+                double size = Double.parseDouble(string) * ((double) 120 / 60) * 32;
+
+//                System.out.println(string);
+
+                Canvas tempo = new Canvas(size, 64);
+
+                tempo.setLayoutX(dropX);
+
+                final double RESIZE_MARGIN  = 4;
+                final double MIN_WIDTH = 4;
+
+//                tempo.setOnMouseEntered(ev -> {
+//                    tempo.setCursor(Cursor.MOVE);
+//                });
+
+                tempo.setOnMousePressed(ev -> {
+                    double mouseX = ev.getX();
+                    if (mouseX < RESIZE_MARGIN) {
+                        tempo.setCursor(Cursor.W_RESIZE);
+                    } else if (mouseX > tempo.getWidth() - RESIZE_MARGIN) {
+                        tempo.setCursor(Cursor.E_RESIZE);
+                    } else {
+                        tempo.setCursor(Cursor.MOVE);
+                    }
+                });
+
+                tempo.setOnMouseDragged(ev -> {
+                    Cursor cursor = tempo.getCursor();
+
+                    if (cursor == Cursor.MOVE) {
+                        double newX = tempo.getLayoutX() + ev.getX() - tempo.getWidth() / 2;
+                        newX = Math.max(0, Math.min(newX, container.getWidth() - tempo.getWidth()));
+
+                        if (!isOverlapping(newX, tempo.getWidth(), tempo, clipContainer)) {
+                            tempo.setLayoutX(newX);
+                        }
+
+                    } else if (cursor == Cursor.E_RESIZE) {
+                        double newWidth = ev.getX();
+                        newWidth = Math.max(MIN_WIDTH, Math.min(newWidth, container.getWidth() - tempo.getLayoutX()));
+
+                        if (!isOverlapping(tempo.getLayoutX(), newWidth, tempo, clipContainer)) {
+                            tempo.setWidth(newWidth);
+                            redrawTempo(tempo, newWidth);
+                        }
+
+                    } else if (cursor == Cursor.W_RESIZE) {
+                        double mouseSceneX = ev.getSceneX();
+                        double deltaX = mouseSceneX - tempo.localToScene(0, 0).getX();
+                        double newX = tempo.getLayoutX() + deltaX;
+                        double newWidth = tempo.getWidth() - deltaX;
+
+                        if (newX >= 0 && newWidth >= MIN_WIDTH && newX + newWidth <= container.getWidth()) {
+                            if (!isOverlapping(newX, newWidth, tempo, clipContainer)) {
+                                tempo.setLayoutX(newX);
+                                tempo.setWidth(newWidth);
+                                redrawTempo(tempo, newWidth);
+                            }
+                        }
+                    }
+                });
+
+                tempo.setOnMouseReleased(ev -> {
+                    double length = 0;
+                    if (ev.getX() < RESIZE_MARGIN) {
+                        length = tempo.getWidth() / (((double) 120 / 60) * 32);
+                        System.out.println(length + " " + Math.round(length * 44100));
+                        tempo.setCursor(Cursor.W_RESIZE);
+                    } else if (ev.getX() > tempo.getWidth() - RESIZE_MARGIN) {
+                        length = tempo.getWidth() / (((double) 120 / 60) * 32);
+                        System.out.println(length + " " + Math.round(length * 44100));
+                        tempo.setCursor(Cursor.E_RESIZE);
+                    } else {
+                        tempo.setCursor(Cursor.MOVE);
+                    }
+                });
+
+                redrawTempo(tempo, size);
+
+                clipContainer.getChildren().add(tempo);
+
+                success = true;
+            }
+
+            e.setDropCompleted(success);
+            e.consume();
+        });
+
+        container.getChildren().addAll(addTrack(width), clipContainer);
+
+        return container;
+    }
+
+    private boolean isOverlapping(double x, double width, Canvas self, Pane clipContainer) {
+        for (Node node : clipContainer.getChildren()) {
+            if (node instanceof Canvas && node != self) {
+                double otherX = node.getLayoutX();
+                double otherW = ((Canvas) node).getWidth();
+                if (x < otherX + otherW && x + width > otherX) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void redrawTempo(Canvas canvas, double width) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.setFill(Color.RED);
+        gc.fillRoundRect(0, 0, width, canvas.getHeight(), 10, 10);
+    }
+
     public Canvas addTrack(int width) {
         Canvas canvas = new Canvas();
         canvas.setWidth(width);
@@ -129,42 +271,6 @@ public class Track {
                 gc.strokeLine(i, 0, i, canvas.getHeight());
             }
         }
-
-        canvas.setOnDragOver(e -> {
-//            if (e.getGestureSource() != canvas && e.getDragboard().hasFiles()) {
-//                e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
-//            }
-            if (e.getGestureSource() != canvas && e.getDragboard().hasString()) {
-                e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
-            }
-            e.consume();
-        });
-
-        canvas.setOnDragDropped(e -> {
-            Dragboard db = e.getDragboard();
-            boolean success = false;
-
-            if (db.hasString()) {
-//                System.out.println("True");
-
-                double dropX = e.getX();
-
-                String string = db.getString();
-
-//                System.out.println(string);
-                double size = Double.parseDouble(string) * ((double) 120 / 60) * 32;
-
-//                System.out.println(string);
-
-                gc.setFill(Color.BLACK);
-                gc.fillRoundRect(dropX, 0, size, canvas.getHeight(), 10, 10);
-
-                success = true;
-            }
-
-            e.setDropCompleted(success);
-            e.consume();
-        });
 
         return canvas;
     }

@@ -24,8 +24,10 @@ public class ButterWorthStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
-            fxmlLoader.setController(new ButterworthFXMLController());
+            ButterworthFXMLController controller = new ButterworthFXMLController();
+            controller.setStage(this);
 
+            fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
             if (SettingsController.getStyle()) {

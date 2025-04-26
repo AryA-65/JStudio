@@ -11,6 +11,7 @@ import org.JStudio.SettingsController;
 
 public class EchoStage extends Stage{
     public static Scene scene;
+    public static EchoFXMLController controller;
     
     /**
      * Creates the stage
@@ -27,7 +28,9 @@ public class EchoStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/echo_layout.fxml"));
-            fxmlLoader.setController(new EchoFXMLController());
+            controller = new EchoFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

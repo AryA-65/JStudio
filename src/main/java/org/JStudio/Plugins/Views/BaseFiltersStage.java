@@ -22,8 +22,10 @@ public class BaseFiltersStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/low_highCutOffFilter.fxml"));
-            fxmlLoader.setController(new AudioFilterFXMLController());
+            AudioFilterFXMLController controller = new AudioFilterFXMLController();
+            controller.setStage(this);
 
+            fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {

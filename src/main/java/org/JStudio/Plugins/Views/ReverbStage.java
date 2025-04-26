@@ -15,6 +15,7 @@ import org.JStudio.SettingsController;
  */
 public class ReverbStage extends Stage{
     public static Scene scene;
+    public static ReverbFXMLController controller;
     
     /**
      * Creates the stage
@@ -31,8 +32,9 @@ public class ReverbStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/reverb_layout.fxml"));
-            fxmlLoader.setController(new ReverbFXMLController());
-
+            controller = new ReverbFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);
             if (SettingsController.getStyle()) {

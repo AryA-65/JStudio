@@ -15,6 +15,7 @@ import org.JStudio.SettingsController;
  */
 public class FlangerStage extends Stage{
     public static Scene scene;
+    public static FlangerFXMLController controller;
     
     /**
      * Creates the stage
@@ -31,7 +32,9 @@ public class FlangerStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/flanger_layout.fxml"));
-            fxmlLoader.setController(new FlangerFXMLController());
+            controller = new FlangerFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

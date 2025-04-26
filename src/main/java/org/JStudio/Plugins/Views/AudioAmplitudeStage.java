@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Controllers.AudioAmplitudeFXMLController;
+import org.JStudio.SettingsController;
 
 import java.io.IOException;
 
@@ -27,6 +28,11 @@ public class AudioAmplitudeStage extends Stage {
             fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
+            if (SettingsController.getStyle()) {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+            } else {
+                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            }
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {

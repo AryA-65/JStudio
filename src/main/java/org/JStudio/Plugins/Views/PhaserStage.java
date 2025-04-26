@@ -15,6 +15,7 @@ import org.JStudio.SettingsController;
  */
 public class PhaserStage extends Stage{
     public static Scene scene;
+    public static PhaserFXMLController controller;
     
     /**
      * Creates the stage
@@ -31,7 +32,9 @@ public class PhaserStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/phaser_layout.fxml"));
-            fxmlLoader.setController(new PhaserFXMLController());
+            controller = new PhaserFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

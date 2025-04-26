@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Echo;
+import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -31,6 +32,7 @@ public class EchoFXMLController {
     Knob diffusionKnob = new Knob(100, true, 0.1, REG);
     Knob echoNumKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private static EchoStage window;
     private Echo echo;
     
     @FXML
@@ -157,5 +159,13 @@ public class EchoFXMLController {
             echoNumSlider.setValue(5);
             wetDrySlider.setValue(5);
         });
+        
+        EchoFXMLController.window.setOnCloseRequest(e ->{
+            echo.getAudioLine().close();
+        });
+    }
+    
+    public static void setWindow(EchoStage window) {
+        EchoFXMLController.window = window;
     }
 }

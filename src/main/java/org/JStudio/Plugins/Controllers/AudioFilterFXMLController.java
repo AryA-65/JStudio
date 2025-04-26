@@ -19,7 +19,6 @@ import org.JStudio.Utils.AlertBox;
 public class AudioFilterFXMLController extends Plugin {
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
-    public String outputFile = "filtered_output.wav"; //todo create a field for the user to enter the output file name
     @FXML
     private Label cutOffLabel;
     @FXML
@@ -82,7 +81,7 @@ public class AudioFilterFXMLController extends Plugin {
 
         saveBtn.setOnAction(event -> {
             stopAudio();
-
+            getProcessedAudio();
         });
     }
 
@@ -106,7 +105,7 @@ public class AudioFilterFXMLController extends Plugin {
             samples = audioFilters.bytesToShorts(audioBytes);
             sampleRate = format.getSampleRate();
         } catch (UnsupportedAudioFileException | IOException e) {
-            AlertBox.display("File Error", "There was a problem during the file conversion.");
+            AlertBox.display("File Error", "There was a problem during the file conversion:" + e.getMessage());
         }
     }
 

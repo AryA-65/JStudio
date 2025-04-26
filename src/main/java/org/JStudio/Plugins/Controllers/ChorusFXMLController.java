@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
+import org.JStudio.Plugins.Views.ChorusStage;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -25,6 +26,7 @@ public class ChorusFXMLController {
     Knob frequencyKnob = new Knob(100, false, 0, REG);
     Knob deviationKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private static ChorusStage window;
     private Modulation chorus;
     
     /**
@@ -112,5 +114,13 @@ public class ChorusFXMLController {
             deviationSlider.setValue(2);
             wetDrySlider.setValue(5);
         });
+        
+        ChorusFXMLController.window.setOnCloseRequest(e ->{
+            chorus.getAudioLine().close();
+        });
+    }
+    
+    public static void setWindow(ChorusStage window) {
+        ChorusFXMLController.window = window;
     }
 }

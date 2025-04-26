@@ -4,7 +4,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Echo;
+import org.JStudio.UI.Knob;
+import static org.JStudio.UI.Knob.Type.REG;
 
 public class EchoFXMLController {
     @FXML
@@ -21,78 +24,123 @@ public class EchoFXMLController {
     private Slider preDelaySlider;
     @FXML
     private Slider wetDrySlider;
+    @FXML
+    private GridPane grid;
+    Knob preDelayKnob = new Knob(100, true, 0.1, REG);
+    Knob decayTimeKnob = new Knob(100, false, 0, REG);
+    Knob diffusionKnob = new Knob(100, true, 0.1, REG);
+    Knob echoNumKnob = new Knob(100, true, 0.1, REG);
+    Knob wetDryKnob = new Knob(100, false, 0, REG);
     private Echo echo;
     
     @FXML
     public void initialize() {
         echo = new Echo(1000, 1/11, 10000, 5, 0.5); // Create a echo
         
-        // Set the visual components/max and min values of the sliders
-        preDelaySlider.setMin(1);
-        preDelaySlider.setMax(9.9);
-        preDelaySlider.setShowTickMarks(true);
-        preDelaySlider.setMajorTickUnit(1);
-        preDelaySlider.setMinorTickCount(0);
-        preDelaySlider.setShowTickLabels(true);
-        preDelaySlider.setSnapToTicks(true);
-        preDelaySlider.setValue(1);
+        preDelayKnob.setTranslateX(15);
+        decayTimeKnob.setTranslateX(15);
+        diffusionKnob.setTranslateX(15);
+        echoNumKnob.setTranslateX(15);
+        wetDryKnob.setTranslateX(15);
         
-        decayTimeSlider.setMin(1);
-        decayTimeSlider.setMax(10);
-        decayTimeSlider.setShowTickMarks(true);
-        decayTimeSlider.setMajorTickUnit(1);
-        decayTimeSlider.setMinorTickCount(0);
-        decayTimeSlider.setShowTickLabels(true);
-        decayTimeSlider.setSnapToTicks(true);
-        decayTimeSlider.setValue(1);
         
-        diffusionSlider.setMin(1);
-        diffusionSlider.setMax(10);
-        diffusionSlider.setShowTickMarks(true);
-        diffusionSlider.setMajorTickUnit(1);
-        diffusionSlider.setMinorTickCount(0);
-        diffusionSlider.setShowTickLabels(true);
-        diffusionSlider.setSnapToTicks(true);
-        diffusionSlider.setValue(2);
+        grid.add(preDelayKnob, 0, 1);
+        grid.add(decayTimeKnob, 1, 1);
+        grid.add(diffusionKnob, 2, 1);
+        grid.add(echoNumKnob, 3, 1);
+        grid.add(wetDryKnob, 4, 1);
         
-        echoNumSlider.setMin(1);
-        echoNumSlider.setMax(10);
-        echoNumSlider.setShowTickMarks(true);
-        echoNumSlider.setMajorTickUnit(1);
-        echoNumSlider.setMinorTickCount(0);
-        echoNumSlider.setShowTickLabels(true);
-        echoNumSlider.setSnapToTicks(true);
-        echoNumSlider.setValue(1);
-        
-        wetDrySlider.setMin(1);
-        wetDrySlider.setMax(10);
-        wetDrySlider.setShowTickMarks(true);
-        wetDrySlider.setMajorTickUnit(1);
-        wetDrySlider.setMinorTickCount(0);
-        wetDrySlider.setShowTickLabels(true);
-        wetDrySlider.setValue(5);
-        
-        // Set listeners and actions for sliders and buttons
-        preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
-            echo.setPreDelay(newPreDelay.intValue()*1000);
+        preDelayKnob.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
+            newPreDelay = preDelayKnob.getValue() * 10 * 1000;
+            echo.setPreDelay(newPreDelay.intValue());
         });
         
-        decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
-            echo.setDecay(newDecayTime.doubleValue()/11);
+        decayTimeKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
+            newDecayTime = decayTimeKnob.getValue() * 10 * 1/11;
+            echo.setDecay(newDecayTime.doubleValue());
         });
         
-        wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
-            echo.setWetDryFactor(newWetDryFactor.doubleValue()/10);
-
+        diffusionKnob.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
+            newDiffusion = diffusionKnob.getValue() * 10 * 5000;
+            echo.setDiffusion(newDiffusion.intValue());
         });
         
-        diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
-            echo.setDiffusion(newDiffusion.intValue()*5000);
-        });
-        
-        echoNumSlider.valueProperty().addListener((ObservableValue<? extends Number> echoNum, Number oldEchoNum, Number newEchoNum) -> {
+        echoNumKnob.valueProperty().addListener((ObservableValue<? extends Number> echoNum, Number oldEchoNum, Number newEchoNum) -> {
+            newEchoNum = echoNumKnob.getValue() * 10;
             echo.setEchoNum(newEchoNum.intValue());
         });
+        
+        wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> wetDryFactor, Number oldWetDryFactor, Number newWetDryFactor) -> {
+            newWetDryFactor = wetDryKnob.getValue();
+            echo.setWetDryFactor(newWetDryFactor.doubleValue());
+        });
+        
+//        // Set the visual components/max and min values of the sliders
+//        preDelaySlider.setMin(1);
+//        preDelaySlider.setMax(9.9);
+//        preDelaySlider.setShowTickMarks(true);
+//        preDelaySlider.setMajorTickUnit(1);
+//        preDelaySlider.setMinorTickCount(0);
+//        preDelaySlider.setShowTickLabels(true);
+//        preDelaySlider.setSnapToTicks(true);
+//        preDelaySlider.setValue(1);
+//        
+//        decayTimeSlider.setMin(1);
+//        decayTimeSlider.setMax(10);
+//        decayTimeSlider.setShowTickMarks(true);
+//        decayTimeSlider.setMajorTickUnit(1);
+//        decayTimeSlider.setMinorTickCount(0);
+//        decayTimeSlider.setShowTickLabels(true);
+//        decayTimeSlider.setSnapToTicks(true);
+//        decayTimeSlider.setValue(1);
+//        
+//        diffusionSlider.setMin(1);
+//        diffusionSlider.setMax(10);
+//        diffusionSlider.setShowTickMarks(true);
+//        diffusionSlider.setMajorTickUnit(1);
+//        diffusionSlider.setMinorTickCount(0);
+//        diffusionSlider.setShowTickLabels(true);
+//        diffusionSlider.setSnapToTicks(true);
+//        diffusionSlider.setValue(2);
+//        
+//        echoNumSlider.setMin(1);
+//        echoNumSlider.setMax(10);
+//        echoNumSlider.setShowTickMarks(true);
+//        echoNumSlider.setMajorTickUnit(1);
+//        echoNumSlider.setMinorTickCount(0);
+//        echoNumSlider.setShowTickLabels(true);
+//        echoNumSlider.setSnapToTicks(true);
+//        echoNumSlider.setValue(1);
+//        
+//        wetDrySlider.setMin(1);
+//        wetDrySlider.setMax(10);
+//        wetDrySlider.setShowTickMarks(true);
+//        wetDrySlider.setMajorTickUnit(1);
+//        wetDrySlider.setMinorTickCount(0);
+//        wetDrySlider.setShowTickLabels(true);
+//        wetDrySlider.setValue(5);
+//        
+//        // Set listeners and actions for sliders and buttons
+//        preDelaySlider.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
+//            echo.setPreDelay(newPreDelay.intValue()*1000);
+//        });
+//        
+//        decayTimeSlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
+//            echo.setDecay(newDecayTime.doubleValue()/11);
+//        });
+//        
+//        wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
+//            echo.setWetDryFactor(newWetDryFactor.doubleValue()/10);
+//
+//        });
+//        
+//        diffusionSlider.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
+//            echo.setDiffusion(newDiffusion.intValue()*5000);
+//        });
+//        
+//        echoNumSlider.valueProperty().addListener((ObservableValue<? extends Number> echoNum, Number oldEchoNum, Number newEchoNum) -> {
+//            echo.setEchoNum(newEchoNum.intValue());
+//        });
         
         // Play the audio
         playButton.setOnAction(e -> {

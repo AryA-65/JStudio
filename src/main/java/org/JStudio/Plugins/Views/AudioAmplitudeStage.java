@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioAmplitudeFXMLController;
 import org.JStudio.SettingsController;
 
@@ -16,6 +17,7 @@ public class AudioAmplitudeStage extends Stage {
     public AudioAmplitudeStage() {
         setTitle("Audio Amplitude");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 

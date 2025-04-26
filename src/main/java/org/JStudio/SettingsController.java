@@ -23,6 +23,7 @@ public class SettingsController {
     private static UIController controller;
     private static SettingsWindow window;
 
+    @FXML
     private Button helpButton;
 
     @FXML

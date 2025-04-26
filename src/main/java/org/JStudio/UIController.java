@@ -1,5 +1,6 @@
 package org.JStudio;
 
+import PianoManualSynth.SynthPiano;
 import PianoSection.Piano;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -55,6 +56,8 @@ public class UIController {
     private Button equalizerBtn;
     @FXML
     private Button pianoBtn;
+    @FXML
+    private Button synthPianoBtn;
 
     @FXML
     private Button stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
@@ -211,6 +214,11 @@ public class UIController {
         pianoBtn.setOnAction(e -> {
             Piano piano = new Piano();
             piano.openPiano();
+        });
+        
+        synthPianoBtn.setOnAction(e -> {
+            SynthPiano synthPiano = new SynthPiano();
+            synthPiano.openSynthPiano();
         });
         
         

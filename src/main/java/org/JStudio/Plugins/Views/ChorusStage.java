@@ -6,12 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.ChorusFXMLController;
 import org.JStudio.SettingsController;
 
 
 public class ChorusStage extends Stage {
     public static Scene scene;
+    public static ChorusFXMLController controller;
     
     /**
      * Creates the stage
@@ -19,6 +21,7 @@ public class ChorusStage extends Stage {
     public ChorusStage() {
         setTitle("Chorus");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
     
@@ -28,7 +31,9 @@ public class ChorusStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/chorus_layout.fxml"));
-            fxmlLoader.setController(new ChorusFXMLController());
+            controller = new ChorusFXMLController();
+            fxmlLoader.setController(controller);
+            controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 640, 480);

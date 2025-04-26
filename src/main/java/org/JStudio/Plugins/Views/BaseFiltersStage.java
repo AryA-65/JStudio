@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioFilterFXMLController;
 
 import java.io.IOException;
@@ -16,14 +17,17 @@ public class BaseFiltersStage extends Stage {
     public BaseFiltersStage() {
         setTitle("Base Filters");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/low_highCutOffFilter.fxml"));
-            fxmlLoader.setController(new AudioFilterFXMLController());
+            AudioFilterFXMLController controller = new AudioFilterFXMLController();
+            controller.setStage(this);
 
+            fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {

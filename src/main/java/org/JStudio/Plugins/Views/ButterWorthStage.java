@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.ButterworthFXMLController;
 import org.JStudio.Plugins.Controllers.ReverbFXMLController;
 import org.JStudio.Plugins.Synthesizer.Controller;
@@ -18,14 +19,17 @@ public class ButterWorthStage extends Stage {
     public ButterWorthStage() {
         setTitle("Butterworth Filter");
         initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.UTILITY);
         initPlugin();
     }
 
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
-            fxmlLoader.setController(new ButterworthFXMLController());
+            ButterworthFXMLController controller = new ButterworthFXMLController();
+            controller.setStage(this);
 
+            fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
             if (SettingsController.getStyle()) {

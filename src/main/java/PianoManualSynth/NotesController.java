@@ -11,23 +11,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
-import javax.sound.midi.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import org.JStudio.Plugins.Controllers.PopUpController;
 
 public class NotesController {
 
@@ -243,7 +237,8 @@ public class NotesController {
     }
 
     public void addTrack(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
-        String trackName = showTextInputPopup();
+        PopUpController popUp = new PopUpController();
+        String trackName = popUp.showTextInputPopup();
 
         Label label = new Label(trackName);
         label.setAlignment(Pos.CENTER);
@@ -325,33 +320,5 @@ public class NotesController {
             currentNoteViews.add((NotesView) n);
         }
         return currentNoteViews;
-    }
-
-    public String showTextInputPopup() {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Add Track");
-        dialog.setHeaderText(null);
-
-        ButtonType addButton = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(addButton, ButtonType.CANCEL);
-
-        TextField inputNameField = new TextField();
-        inputNameField.setPromptText("Name");
-
-        VBox content = new VBox(inputNameField);
-        content.setSpacing(10);
-        dialog.getDialogPane().setContent(content);
-
-        // Convert result to String when "Add" is clicked
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == addButton) {
-
-                return inputNameField.getText();
-            }
-            return null;
-        });
-
-        Optional<String> result = dialog.showAndWait();
-        return result.orElse(null);
     }
 }

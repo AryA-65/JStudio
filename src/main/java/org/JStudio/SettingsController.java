@@ -2,18 +2,30 @@ package org.JStudio;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class SettingsController {
     private static boolean style; // false means light, true means dark
+    private static Stage mainStage;
+
+    private Scene helpScene;
     private ToggleGroup group;
     private static RadioButton selected;
     private static UIController controller;
     private static SettingsWindow window;
-    
+
+    @FXML
+    private Button helpButton;
+
     @FXML
     RadioButton lightRadio, darkRadio;
     
@@ -49,7 +61,30 @@ public class SettingsController {
             updateMainUIStyle();
             updateSettingsUIStyle();
         });
-        
+
+        helpButton.setOnMouseClicked(event -> {
+            helpButton.setDisable(true);
+            Stage childStage = new Stage();
+            childStage.initOwner(mainStage);
+
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("tools_descriptions.fxml"));
+                fxmlLoader.setController(new HelpController());
+
+                Parent root = fxmlLoader.load();
+                helpScene = new Scene(root, 640, 480);
+
+                childStage.setScene(helpScene);
+                childStage.setTitle("Help Menu");
+                childStage.sizeToScene();
+                childStage.show();
+
+                childStage.setOnHidden(e -> helpButton.setDisable(false));
+            } catch (IOException e) {
+                helpButton.setDisable(false);
+            }
+        });
+
         //todo implement the other funcitons
     }
 
@@ -76,4 +111,9 @@ public class SettingsController {
     public void updateSettingsUIStyle() {
         SettingsController.window.updateStyle();
     }
+
+    public static void setMainStage(Stage stage) {
+        mainStage = stage;
+    }
+
 }

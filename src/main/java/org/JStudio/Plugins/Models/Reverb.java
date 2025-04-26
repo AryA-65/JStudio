@@ -30,8 +30,13 @@ public class Reverb extends Plugin {
         delayLines = new ArrayList<>();
        
         short[] audioToReverb = convertToShortArray();
+        int numOfDelayLines = 0;
+        if (originalAudio.length < 200000) {
+            numOfDelayLines =  5;
+        } else {
+            numOfDelayLines =  20;
+        }
         
-        int numOfDelayLines =  20;
         
         double decayNumber;
         double initialDecay = decay/35000;

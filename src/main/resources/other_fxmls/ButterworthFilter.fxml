@@ -13,8 +13,7 @@
    <top>
       <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-           <Button fx:id="importButton"  mnemonicParsing="false" text="Import" />
-          <Button fx:id="applyButton" mnemonicParsing="false" text="Apply" />
+          <Button fx:id="playButton" mnemonicParsing="false" text="Play" />
             <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
         </items>
       </ToolBar>
@@ -34,7 +33,6 @@
                <children>
                   <TextField fx:id="frequencyField" promptText="Center frequency" />
                   <TextField fx:id="qualityField" prefHeight="26.0" prefWidth="106.0" promptText="Quality factor" />
-                  <TextField fx:id="outputFileName" prefHeight="26.0" prefWidth="106.0" promptText="Output File" />
                </children>
             </VBox>
          </children>

@@ -1,16 +1,19 @@
 package org.JStudio.Plugins.Controllers;
 
-import javafx.stage.FileChooser;
-import org.JStudio.FileChooserController;
+import java.io.ByteArrayInputStream;
 import org.JStudio.Plugins.Models.EqualizerBand;
 import org.JStudio.Plugins.Views.EqualizerView;
 import java.io.File;
+import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.*;
 import org.jtransforms.fft.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import javafx.event.Event;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class EqualizerController extends Thread {
 
@@ -25,11 +28,12 @@ public class EqualizerController extends Thread {
     private EqualizerView eqView;
     private SourceDataLine line;
     private File file;
+    private Stage stage;
 
     public EqualizerController(File audioFile) {
         this.file = audioFile;
     }
-    
+
     public void setEqView(EqualizerView eqView) {
         this.eqView = eqView;
     }
@@ -37,7 +41,11 @@ public class EqualizerController extends Thread {
     public SourceDataLine getLine() {
         return line;
     }
-    
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     @Override
     public void run() {
 
@@ -70,7 +78,7 @@ public class EqualizerController extends Thread {
 
             //get equalizer bands
             EqualizerBand[] eqBands = eqView.getEqBands();
-            
+
             // Manipulate magnitude of frequencies
             for (int i = 0; i < fftSize; i++) {
                 double frequency = (i * sampleRate) / fftSize;
@@ -126,6 +134,28 @@ public class EqualizerController extends Thread {
             line.close();
         }
         this.interrupt(); //interrupt the thread
+    }
+
+    public void export() {
+        String userHome = System.getProperty("user.home");
+        File downloadsDir = new File(userHome, "Downloads");
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(processedBytes);
+
+        // Now create an AudioInputStream
+        AudioInputStream ais = new AudioInputStream(bais, audioFormat, processedBytes.length / audioFormat.getFrameSize());
+
+        File outputFile = new File(downloadsDir, "Processed_" + file.getName());
+
+        try {
+            // Write the AudioInputStream to a WAV file
+            AudioSystem.write(ais, AudioFileFormat.Type.WAVE, outputFile);
+            WindowEvent we = new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST);
+            Event.fireEvent(stage, we);
+            stage.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

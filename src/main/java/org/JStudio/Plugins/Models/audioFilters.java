@@ -112,25 +112,6 @@ public class audioFilters {
         line.close();
     }
 
-
-    /**
-     * BiquadFilter filter = new BiquadFilter();
-     * filter.lowPass(1000, 0.707, 44100);  // Low-pass filter at 1000Hz, Q=0.707, sample rate = 44.1kHz
-     *
-     * double[] signal = {1.0, 0.5, 0.25, 0.0};  // Example input signal
-     * for (int i = 0; i < signal.length; i++) {
-     *     double filteredSample = filter.apply(signal[i]);
-     *     System.out.println(filteredSample);
-     * }
-     */
-
-    /**
-     * BiquadFilter is a versatile second-order IIR filter implementation.
-     * It supports low-pass, high-pass, band-pass, and band-stop filtering.
-     *
-     * Inspired from https://webaudio.github.io/Audio-EQ-Cookbook/audio-eq-cookbook.html
-     *          and https://webaudio.github.io/Audio-EQ-Cookbook/Audio-EQ-Cookbook.txt
-     */
     public class BiquadFilter {
 
         // These are calculated based on filter type and configuration

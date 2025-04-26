@@ -6,6 +6,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
+import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
 import org.JStudio.Utils.AlertBox;
 
@@ -15,7 +16,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 import java.io.IOException;
 
-public class ButterworthFXMLController {
+public class ButterworthFXMLController extends Plugin {
     @FXML
     private Button importButton, applyButton, exportButton;
 
@@ -31,7 +32,6 @@ public class ButterworthFXMLController {
 
     public short[] samples;
     public float sampleRate;
-
     public byte[] filteredBytes;
 
     public AudioFormat format;
@@ -55,26 +55,10 @@ public class ButterworthFXMLController {
             }
         });
 
-        importButton.setOnAction(event -> {
-            try {
-                FileChooser fileChooser = new FileChooser();
-                inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
-                File file = new File(inputFile);
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-                format = audioStream.getFormat();
-                byte[] audioBytes = audioStream.readAllBytes();
-                audioStream.close();
+        getFile();
 
-                samples = audioFilters.bytesToShorts(audioBytes);
-                sampleRate = format.getSampleRate();
-
-                AlertBox.display("Success", "Audio file successfully imported.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        applyButton.setOnAction(event -> {
+        applyButton.setOnMouseClicked(event -> {
+            stopAudio();
             try {
                 if (samples == null || samples.length == 0) {
                     AlertBox.display("Error", "No audio file loaded. Please import an audio file first.");
@@ -114,15 +98,43 @@ public class ButterworthFXMLController {
                 }
 
                 filteredBytes = audioFilters.shortsToBytes(samples);
-                System.out.println("Effect applied.");
 
+                playAudio(filteredBytes);
             } catch (NumberFormatException e) {
                 AlertBox.display("Input Error", "Invalid number format in Frequency or Q field.");
             } catch (Exception e) {
-                e.printStackTrace();
                 AlertBox.display("Error", "An unexpected error occurred: " + e.getMessage());
             }
         });
 
+        exportButton.setOnMouseClicked(event -> {
+            stopAudio();
+            getProcessedAudio();
+        });
+    }
+    public void getFile() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
+            File file = new File(inputFile);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            format = audioStream.getFormat();
+            byte[] audioBytes = audioStream.readAllBytes();
+            audioStream.close();
+
+            samples = audioFilters.bytesToShorts(audioBytes);
+            sampleRate = format.getSampleRate();
+
+        } catch (Exception e) {
+            AlertBox.display("File Error", "There was a problem during the file conversion:" + e.getMessage());
+        }
+    }
+
+    public byte[] getProcessedAudio() {
+        if (filteredBytes == null || filteredBytes.length == 0) {
+            AlertBox.display("Export Error", "No processed audio to export.");
+            return null;
+        }
+        return filteredBytes;
     }
 }

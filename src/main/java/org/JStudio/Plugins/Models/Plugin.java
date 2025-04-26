@@ -1,25 +1,24 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.JStudio.Utils.AlertBox;
+
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import javafx.stage.FileChooser;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public abstract class Plugin {
     protected String filePathName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
     protected SourceDataLine line;
-    
+    private Stage stage;
+
     /**
      * Converts audio data from a wav file to a byte array
      */
@@ -71,7 +70,9 @@ public abstract class Plugin {
      * Stops audio playback
      */
     public void stopAudio() {
-        line.close();
+        line.flush(); // discard non called data
+        line.stop(); // stop
+        line.close(); // close resources
     }
     
     /**
@@ -164,5 +165,43 @@ public abstract class Plugin {
 
     public byte[] getFinalAudio() {
         return finalAudio;
+    }
+
+    /**
+     * Method
+     *
+     * @param array
+     * @param converter
+     * @param <T>
+     * @return
+     */
+    public <T> T getProcessedAudio(T array, TypeConverter<T> converter) {
+        if (array == null || Array.getLength(array) == 0) {
+            AlertBox.display("Export Error", "No processed audio to export.");
+            return null;
+        }
+        return converter.process(array);
+    }
+
+    /**
+     * Method to be used in conversion
+     *
+     * @param <T> the method to be used to transform a type of array into another
+     */
+    @FunctionalInterface
+    interface TypeConverter<T> {
+        T process(T input);
+    }
+
+    /**
+     * Method to kill audio plays when you close the stage
+     * @param stage the stage of the plugin
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        this.stage.setOnCloseRequest(event -> {
+            stopAudio();
+        });
     }
 }

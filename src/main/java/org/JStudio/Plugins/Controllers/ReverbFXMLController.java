@@ -37,9 +37,9 @@ public class ReverbFXMLController {
     private Slider wetDrySlider;
     @FXML
     private GridPane grid;
-    Knob preDelayKnob = new Knob(100, false, 0, REG);
+    Knob preDelayKnob = new Knob(100, true, 0.1, REG);
     Knob decayTimeKnob = new Knob(100, false, 0, REG);
-    Knob diffusionKnob = new Knob(100, false, 0, REG);
+    Knob diffusionKnob = new Knob(100, true, 0.1, REG);
     Knob wetDryKnob = new Knob(100, false, 0, REG);
     private Reverb reverb;
     
@@ -62,25 +62,21 @@ public class ReverbFXMLController {
         
         preDelayKnob.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
             newPreDelay = preDelayKnob.getValue() * 10 * 500;
-            System.out.println(newPreDelay);
             reverb.setPreDelay(newPreDelay.intValue());
         });
         
         decayTimeKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldDecayTime, Number newDecayTime) -> {
             newDecayTime = decayTimeKnob.getValue() * 10 * 3000;
-            System.out.println(newDecayTime);
             reverb.setDecay(newDecayTime.doubleValue());
         });
         
         diffusionKnob.valueProperty().addListener((ObservableValue<? extends Number> diffusion, Number oldDiffusion, Number newDiffusion) -> {
             newDiffusion = diffusionKnob.getValue() * 10 * 300;
-            System.out.println(newDiffusion);
             reverb.setDiffusion(newDiffusion.intValue());
         });
         
-        wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
+        wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> wetDryFactor, Number oldWetDryFactor, Number newWetDryFactor) -> {
             newWetDryFactor = wetDryKnob.getValue();
-            System.out.println(newWetDryFactor);
             reverb.setWetDryFactor(newWetDryFactor.doubleValue());
         });
         

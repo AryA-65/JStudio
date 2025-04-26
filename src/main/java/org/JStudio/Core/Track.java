@@ -54,8 +54,8 @@ public class Track {
 //        this.id = ;
     }
 
-    public void addClip() {
-        //empty for now
+    public void addClip(Clip clip) {
+        clips.add(clip);
     }
 
     public void removeClip(int position) {
@@ -116,7 +116,7 @@ public class Track {
         clipContainer.setId("clipContainer" + num);
 
         container.setOnDragOver(e -> {
-            if (e.getGestureSource() != container && e.getDragboard().hasString()) {
+            if (e.getGestureSource() != container && e.getDragboard().hasFiles()) {
                 e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
             }
             e.consume();
@@ -126,15 +126,16 @@ public class Track {
             Dragboard db = e.getDragboard();
             boolean success = false;
 
-            if (db.hasString()) {
-//                System.out.println("True");
+            if (db.hasFiles()) {
+                System.out.println("True");
 
                 double dropX = e.getX();
 
-                String string = db.getString();
+                Clip testFuckingshit = new AudioClip((int) dropX, db.getFiles().get(db.getFiles().size() - 1));
 
 //                System.out.println(string);
-                double size = Double.parseDouble(string) * ((double) 120 / 60) * 32;
+                double size = (double) testFuckingshit.getLength() / 44100 * ((double) 120 / 60) * 32;
+                System.out.println(size);
 
 //                System.out.println(string);
 

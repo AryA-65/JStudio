@@ -19,7 +19,7 @@ public class TrackUI extends StackPane {
     private final Canvas trackCanvas;
     private final Pane clipLayer;
 
-    TrackUI(double width, Track track) {
+    public TrackUI(double width, Track track) {
         this.track = track;
         setPrefSize(width, 64);
 

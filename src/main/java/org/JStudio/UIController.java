@@ -20,9 +20,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
-import org.JStudio.Plugins.Synthesizer.Controller;
 import org.JStudio.Plugins.Views.*;
+import org.JStudio.UI.TrackUI;
 import org.JStudio.Utils.AudioVisualizer;
 import org.JStudio.Utils.SystemMonitor;
 
@@ -31,8 +32,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
-
-import static org.JStudio.Plugins.Views.ReverbStage.scene;
 
 /*
 MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
@@ -123,16 +122,12 @@ public class UIController {
     private Stage rootStage;
 
     private SystemMonitor sm;
-    private AudioVisualizer vis;
 
     private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
     private boolean resizing = false;
     private FileLoader fileLoader;
-    private float lengthMultiplier = 1;
 
     //testing params
-    private double temporaryBPM = 120;
-    private long playbackPos = -1;
     private String curUser;
     private FileChooserController fileLoaderController;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
@@ -171,7 +166,7 @@ public class UIController {
         scene.getStylesheets().clear();
         if (SettingsController.getStyle()) {
             scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
-        } else if (!SettingsController.getStyle()) {
+        } else {
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         }
     }
@@ -250,24 +245,6 @@ public class UIController {
             synthesizerStage.synth();
         });
 
-//        DropShadow dropShadow = new DropShadow();
-//        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5));
-//        dropShadow.setRadius(3);
-//        dropShadow.setSpread(.1);
-//        dropShadow.setOffsetX(2);
-//        dropShadow.setOffsetY(2);
-//
-//        InnerShadow innerShadow = new InnerShadow();
-//        innerShadow.setRadius(5);
-//        innerShadow.setOffsetX(4);
-//        innerShadow.setOffsetY(4);
-//        innerShadow.setColor(Color.rgb(255, 255, 255, 1));
-//
-//        Blend blend = new Blend();
-//        blend.setMode(BlendMode.MULTIPLY);
-//        blend.setBottomInput(dropShadow);
-//        blend.setTopInput(innerShadow);
-
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/icons/load.png"));
         open_song_btn.setCursor(Cursor.HAND);
@@ -295,12 +272,10 @@ public class UIController {
 
         grid_root.setStyle("-fx-background-color: #D9D9D9");
         song_name.getParent().setStyle("-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black; -fx-background-color: #D9D9D9; -fx-background-radius: 5px");
-//        song_name.getParent().setEffect(blend);
         song_name.setStyle("-fx-background-color: transparent; -fx-border-width: 0px 1px 0px 1px; -fx-border-color: black; -fx-border-style: solid; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
-//        song_name.setStyle("-fx-background-color: transparent;-fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
-        export_song_btn.getParent().setStyle("-fx-border-style: solid; -fx-border-width: 0px 0px 0px 1px; -fx-border-color: black; -fx-background-color: transparent"); //doesnt work
+        export_song_btn.getParent().setStyle("-fx-border-style: solid; -fx-border-width: 0px 0px 0px 1px; -fx-border-color: black; -fx-background-color: transparent");
         bpm_control.setStyle("-fx-background-color: transparent; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-color: black; -fx-border-style: solid; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
-        record_control.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 100%; -fx-border-width: 1px; -fx-border-style: solid"); //doesnt work
+        record_control.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 100%; -fx-border-width: 1px; -fx-border-style: solid");
         metronome_control.getParent().setStyle("-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black;");
         playback_pos.setStyle("-fx-background-color: transparent; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-color: black; -fx-border-style: solid;");
         audio_vis_top.getParent().setStyle("-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1px; -fx-border-style: solid");
@@ -311,10 +286,6 @@ public class UIController {
         initialHeight = Screen.getPrimary().getVisualBounds().getHeight();
         initialWidth = Screen.getPrimary().getVisualBounds().getWidth();
 
-        //adding missing nodes
-//        VBox testBox = new VBox();
-//        testBox.setId("testBox");
-//        tab_scroll.getChildrenUnmodifiable().add(testBox);
 
         //adding different code for nodes
         tab_vbox.setSpacing(15);
@@ -334,34 +305,13 @@ public class UIController {
             System.out.println("Pressed record_control");
         });
 
-//        bpm_control.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-//            if (event.getButton() == MouseButton.SECONDARY) {
-//                startX = event.getScreenX();
-//            }
-//        });
-//
-//        bpm_control.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-//            if (event.getButton() == MouseButton.SECONDARY) {
-//                double currentX = event.getScreenX();
-//                double deltaX = currentX - startX;
-//
-//                temporaryBPM += Math.min(999, deltaX);
-//                temporaryBPM = Math.max(temporaryBPM, 0);
-//                bpm_control.setText(String.valueOf(temporaryBPM));
-//
-//                startX = currentX;
-//            }
-//        });
-
         bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            reInitTracks();
+
         });
 
         grid_root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             xResize = event.getSceneX();
             yResize = event.getSceneY();
-//            initialHeight = grid_root.getHeight();
-//            initialWidth = grid_root.getWidth();
 
             if (event.getX() >= grid_root.getWidth() - 10 && event.getY() >= grid_root.getHeight() - 10) {
                 resizing = true;
@@ -391,10 +341,7 @@ public class UIController {
         });
 
         maxim_btn.setOnMouseClicked(event -> {
-            //rootStage.getWidth() != Screen.getPrimary().getVisualBounds().getWidth() || rootStage.getHeight() != Screen.getPrimary().getVisualBounds().getHeight()
             if (!rootStage.isMaximized()) {
-//                rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-//                rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
                 rootStage.setX(0);
                 rootStage.setY(0);
                 rootStage.setMaximized(true);
@@ -405,52 +352,20 @@ public class UIController {
                 rootStage.setHeight(initialHeight);
                 maxim_btn.setImage(new Image("/icons/maximize.png"));
             }
-//            System.out.println(splitpane.getHeight());
             setSplitRatio();
         });
 
         close_btn.setOnMouseClicked(event -> {
             sm.stop();
-//            vis.stop();
             rootStage.close();
         });
 
         track_vbox.addEventFilter(ScrollEvent.SCROLL, e -> {
-//            if (e.isControlDown()) { //doesnt work well
-//                double delta = e.getDeltaY() * (beat_scrollpane.getWidth() / (100 * beat_canvas.getWidth()));
-//                for (Node track : track_vbox.getChildren()) {
-//                    track.setScaleX(track.getScaleX() + delta);
-//                }
-//                beat_canvas.setScaleX(beat_canvas.getScaleX() + delta);
-//                e.consume();
-//            }
             if (e.isShiftDown()) {
                 double delta = e.getDeltaX() * 0.005;
                 tracks_scrollpane.setHvalue(tracks_scrollpane.getHvalue() - delta);
                 e.consume();
             }
-        });
-
-//        track_id_vbox.setOnMousePressed(e -> {
-//            if (e.getButton() == MouseButton.PRIMARY) {
-//                if (e.getClickCount() == 2) {
-//
-//                }
-//                rootStage.getScene().setCursor(Cursor.DEFAULT);
-//                e.consume();
-//            }
-//        });
-
-        timeline_canvas.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                if (e.getClickCount() == 2) {
-                    playbackPos = (long) (e.getX() + timeline_scrollpane.getHvalue() * (timeline_canvas.getWidth() - timeline_scrollpane.getViewportBounds().getWidth())); //currentPos is in milliseconds, make a variable for the position
-                    drawTimeline();
-                }
-                rootStage.getScene().setCursor(Cursor.DEFAULT);
-                e.consume();
-            }
-
         });
 
         tracks_scrollpane.vvalueProperty().bindBidirectional(track_id_scrollpane.vvalueProperty());
@@ -459,11 +374,12 @@ public class UIController {
 
         int num = 0;
         for (Track track : song.getTracks()) {
-            track_vbox.getChildren().add(track.getContainer((int) (song.getBpm() * 32), num));
-            track_id_vbox.getChildren().add(track.addTrackID());
-            channel_rack.getChildren().add(track.createChannel((byte) (num + 1)));
-            num++;
-            System.out.println(track.getId());
+            track_vbox.getChildren().addAll(new TrackUI((song.getBpm() * 32), track));
+//            track_vbox.getChildren().add(track.getContainer((int) (song.getBpm() * 32), num));
+//            track_id_vbox.getChildren().add(track.addTrackID());
+//            channel_rack.getChildren().add(track.createChannel((byte) (num + 1)));
+//            num++;
+//            System.out.println(track.getId());
         }
 
         //Test functions
@@ -482,48 +398,15 @@ public class UIController {
 
         fileLoader = new FileLoader(tab_vbox);
 
-//        getWavData(new File("C:\\Users\\The Workstation\\Music\\JStudio\\audio_Files\\SFXs\\woosh-13225.wav"));
-
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("fileLoader-UI.fxml"));
-//        Parent root = loader.load();
-
-//        fileLoaderController = loader.getController();
-//
-//        Stage fileLoaderStage = new Stage();
-//        Scene fileLoaderScene = new Scene(root);
-//
-//        fileLoaderController.setStage(fileLoaderStage);
-//
-//        fileLoaderStage.setScene(fileLoaderScene);
-//        fileLoaderStage.initStyle(StageStyle.TRANSPARENT);
-//        fileLoaderStage.setResizable(false);
-//        fileLoaderStage.show();
-
         drawTimeline();
-
-//        ClipAndNoteLayoutManager cnlm = new ClipAndNoteLayoutManager();
-//        cnlm.init(new Stage());
-
-//        Knob testKnob = new Knob(0, );
-//        testKnob.setAngle(180);
 
         grid_root.setOnKeyPressed(e -> {
             pressedKeys.add(e.getCode());
-            System.out.println("pressedKey: " + e.getCode());
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.A)) {
-                Track addedTrack = new Track("");
-                song.addTrack(addedTrack);
-                track_vbox.getChildren().add(addedTrack.addTrack((int) (song.getBpm() * 32)));
-                track_id_vbox.getChildren().add(addedTrack.addTrackID());
-                channel_rack.getChildren().add(addedTrack.createChannel((byte) (addedTrack.getId() - 1)));
-                System.out.println("Track added");
+
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.D)) {
-                song.removeTrack();
-                track_vbox.getChildren().remove(track_vbox.getChildren().size() - 1);
-                track_id_vbox.getChildren().remove(track_id_vbox.getChildren().size() - 1);
-                channel_rack.getChildren().remove(channel_rack.getChildren().size() - 1);
-                System.out.println("Track removed");
+
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.Q)) {
                 //get all the children in the track vbox and increase their width to the bpm * n (n being the increment -> default = 1, can increase in fractions or ints)
@@ -560,9 +443,6 @@ public class UIController {
 
         amp_audio_top.setClip(clipAmp);
         audio_vis_top.setClip(clipWave);
-
-//        vis = new AudioVisualizer(audio_vis_top, amp_audio_top);
-//        vis.start();
     }
 
     protected void setSplitRatio() {
@@ -576,8 +456,6 @@ public class UIController {
             rootStage.setHeight(initialHeight);
         }
     }
-
-    //temporary function (this shit needs to be optimized and put into another class)
 
     public Node creatingMasterChannel() {
         AtomicBoolean clicked = new AtomicBoolean(false);
@@ -606,11 +484,6 @@ public class UIController {
         Canvas masterChannelVis = new Canvas();
         masterChannelVis.setHeight(40);
         masterChannelVis.setWidth(16);
-
-        //testing canvas, remove later
-        GraphicsContext gc = masterChannelVis.getGraphicsContext2D();
-        gc.setFill(Color.RED);
-        gc.fillRect(0, 0, masterChannelVis.getWidth(), masterChannelVis.getHeight());
 
         VBox masterChannelContainer = new VBox();
         masterChannelContainer.setPrefHeight(256);
@@ -668,10 +541,7 @@ public class UIController {
                     activeBtn.getStyleClass().add("active");
                     activeBtn.setStyle("-fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px");
                 }
-//                        System.out.println("Registered");
             } else clicked.set(false);
-
-//                    System.out.println("Released");
         });
 
         Slider channelAmp = new Slider(0,100,100);
@@ -695,33 +565,6 @@ public class UIController {
         masterContainer.getChildren().addAll(masterVisContainer, masterChannelContainer);
 
         return masterContainer;
-    }
-
-    private void reInitTracks() {
-        double newSize = 32 * temporaryBPM * lengthMultiplier;
-
-        for (Node track : track_vbox.getChildren()) {
-            if (track instanceof Canvas) {
-                ((Canvas) track).setWidth(newSize);
-                GraphicsContext gc = ((Canvas) track).getGraphicsContext2D();
-
-                double width = ((Canvas) track).getWidth(), height = ((Canvas) track).getHeight();
-
-                gc.clearRect(0,0,width,height);
-                gc.setFill(Color.GREY);
-                gc.fillRoundRect(0, 0, width, height, 10, 10);
-
-                gc.setStroke(Color.BLACK);
-                for (int i = 0; i < newSize; i++) {
-                    if (i % 32 == 0 && i != 0) {
-                        gc.strokeLine(i, 0, i, height);
-                    }
-                }
-            }
-        }
-
-        timeline_canvas.setWidth(newSize);
-        drawTimeline();
     }
 
     private void drawTimeline() {
@@ -750,33 +593,6 @@ public class UIController {
 
     }
 
-    //idk if this works, but still its part of the testing functions and shit
-    private void handleDragOver(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        if (db.hasFiles()) {
-            event.acceptTransferModes(TransferMode.COPY);
-        }
-        event.consume();
-    }
-
-    private void handleDragDropped(DragEvent event, GraphicsContext gc) {
-        Dragboard db = event.getDragboard();
-        boolean success = false;
-        if (db.hasFiles()) {
-            List<File> files = db.getFiles();
-
-            double dropX = event.getX();
-
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(dropX, 0, 128, 32, 10, 10);
-
-            success = true;
-        }
-        event.setDropCompleted(success);
-        event.consume();
-    }
-
-    //use this in the playback watchdog
     public String timeToString(long time) {
         long minutes = (time / 60000);
         long seconds = (time % 60000) / 1000;
@@ -785,7 +601,6 @@ public class UIController {
         return String.format("%d:%02d:%02d", minutes, seconds, milliseconds);
     }
 
-    //temporary
     public void filterAudioSections(String searchText) {
 
         if (searchText == null || searchText.trim().isEmpty()) {

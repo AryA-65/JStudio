@@ -37,11 +37,8 @@ public class FileLoader {
     private VBox tab_vbox;
     private String curUser;
     private int CANVAS_WIDTH = 234, CANVAS_HEIGHT = 64;
-    private long fileCount = 0;
     private double fileLength = 0;
     private MediaPlayer mediaPlayer;
-
-    private List<VBox> sections = new ArrayList<>();
 
     FileLoader(VBox tab_vbox) {
         this.tab_vbox = tab_vbox;
@@ -62,11 +59,8 @@ public class FileLoader {
         if (file.exists() && file.isDirectory() && file.listFiles() != null) {
             for (File f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isDirectory()) {
-
-//                    System.out.println("Num Folders: " + folderIntex);
-                    Node section = audioSection(f);
 //                    sections.add((VBox) section);
-                    tab_vbox.getChildren().add(section);
+                    tab_vbox.getChildren().add(audioSection(f));
                 }
             }
         }
@@ -242,7 +236,7 @@ public class FileLoader {
             Dragboard db = rootVBox.startDragAndDrop(TransferMode.COPY);
             ClipboardContent content = new ClipboardContent();
 //            content.putFiles(Collections.singletonList(file));
-            content.putString(audioFileLength.getText().substring(0, audioFileLength.getText().lastIndexOf('s')));
+            content.putFiles(Collections.singletonList(file));
             db.setContent(content);
             event.consume();
 

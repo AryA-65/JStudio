@@ -57,7 +57,10 @@ public abstract class Plugin {
                 line.open(audioFormat);
                 line.start();
 
-                line.write(audioData, 0, audioData.length);
+                int frameSize = audioFormat.getFrameSize();
+                int lengthToWrite = audioData.length - (audioData.length % frameSize);
+
+                line.write(audioData, 0, lengthToWrite);
 
                 line.drain();
                 line.close();

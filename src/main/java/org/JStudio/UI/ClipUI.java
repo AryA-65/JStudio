@@ -66,7 +66,7 @@ public class ClipUI extends Canvas {
     }
 
     private void drawAudioClip(GraphicsContext gc, AudioClip audioClip) {
-        float[][] buffer = audioClip.getBufferData();
+        float[][] buffer = audioClip.getBuffer();
         if (buffer == null || buffer[0] == null) return;
 
         int width = (int) getWidth();
@@ -120,4 +120,3 @@ public class ClipUI extends Canvas {
         gc.strokeRect(1, 1, getWidth() - 2, getHeight() - 2);
     }
 }
-

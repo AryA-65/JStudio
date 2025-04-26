@@ -27,11 +27,11 @@ public class AudioClip extends Clip {
         }
     }
 
-    public String getBuffer() {
+    public String getBuffertoString() {
         return Arrays.deepToString(buffer);
     }
 
-    public float[][] getBufferData() {return buffer;}
+    public float[][] getBuffer() {return buffer;}
 
     private float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException { //Reading wav file (this method repeats a lot, move every other version to this one)
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);

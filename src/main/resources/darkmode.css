@@ -86,12 +86,16 @@
     -fx-background-color: #282E33 !important;
 }
 
-.HBox {
+#hbox_WAVE1, #hbox_WAVE2, #hbox_WAVE3, #recordExportBox {
     -fx-background-color: #282E33 !important;
 }
 
-.VBox {
+#vbox, #parameterChooser1, #parameterChooser2, #parameterChooser3, #waveVbox {
     -fx-background-color: #282E33 !important;
+}
+
+.pane {
+    -fx-background-color: #282E33;
 }
 
 .tool-bar {

@@ -18,7 +18,7 @@ public class Piano {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             
-            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes.fxml"));
+            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Piano.fxml"));
             Scene scene = new Scene(root,1500,900);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());

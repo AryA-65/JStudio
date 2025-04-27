@@ -14,7 +14,7 @@ public class SynthPiano{
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Notes_1.fxml"));
+            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));
             Scene scene = new Scene(root,1500,900);
             if (SettingsController.getStyle()) {
             scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());

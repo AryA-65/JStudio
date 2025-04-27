@@ -1,12 +1,12 @@
 package org.JStudio;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 
 public class Main extends Application {
 //    public String currentUser;
@@ -26,17 +26,12 @@ public class Main extends Application {
 //        stage.setScene(scene);
 //        stage.show();
 
-
-
-
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-
 //        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
 //
 //        ButterworthFxmlController butterworthFxmlController = new ButterworthFxmlController();
 //        loader.setController(butterworthFxmlController);
 //
-
 //        Parent root = loader.load();
 //
 //        Scene scene = new Scene(root);
@@ -52,7 +47,6 @@ public class Main extends Application {
         controller = loader.getController();
         controller.setStage(stage);
         controller.setScreenSize();
-
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());

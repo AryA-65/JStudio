@@ -22,7 +22,7 @@ public class SynthesizerStage {
         stage.initStyle(StageStyle.UTILITY);
 
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/waveGenerator.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/waveGen.fxml"));
             Parent root = fxmlLoader.load();
 
             Controller myController = fxmlLoader.getController();

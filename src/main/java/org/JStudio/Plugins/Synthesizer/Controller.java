@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.JStudio.SettingsController;
 
 
 public class Controller {
@@ -306,7 +307,11 @@ public class Controller {
         GraphicsContext gc = waveformCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
-        gc.setStroke(javafx.scene.paint.Color.BLACK);
+        if (SettingsController.getStyle()) {
+            gc.setStroke(javafx.scene.paint.Color.WHITE);
+        } else {
+            gc.setStroke(javafx.scene.paint.Color.BLACK);
+        }
         gc.setLineWidth(1);
 
         double centerY = waveformCanvas.getHeight() / 2;

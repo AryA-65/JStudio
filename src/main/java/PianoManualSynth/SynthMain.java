@@ -18,7 +18,7 @@ public class SynthMain {
     public void open() throws IOException {
         Stage stage = new Stage();
         
-        FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/waveGenerator_1.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/synthPianoWaveGen.fxml"));
         Parent root = fxmlLoader.load();
 
         Controller myController = fxmlLoader.getController();

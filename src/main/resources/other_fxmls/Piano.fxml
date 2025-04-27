@@ -22,13 +22,6 @@
                         <Font size="17.0" />
                     </font>
                 </Button>
-                <ComboBox prefHeight="38.0" prefWidth="128.0" promptText="Instruments" />
-                <CheckBox mnemonicParsing="false" prefHeight="38.0" prefWidth="86.0" text="Loop">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </CheckBox>
-                <ComboBox prefHeight="38.0" prefWidth="101.0" promptText="Note Type" />
             </children>
             <padding>
                 <Insets left="20.0" top="32.0" />

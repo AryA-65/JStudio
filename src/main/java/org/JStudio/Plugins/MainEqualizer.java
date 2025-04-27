@@ -25,7 +25,11 @@ public class MainEqualizer{
         stage.setScene(scene);
         
         stage.setOnCloseRequest(e ->{
+            try{
             eqView.getEqualizerController().getLine().close();
+            } catch(Exception ex){
+                System.out.println(ex.getMessage());
+            }
         });
         
         stage.show();

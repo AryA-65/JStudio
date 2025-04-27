@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import org.JStudio.SettingsController;
 
 public class SynthMain {
     private NotesController notesController;
@@ -23,7 +24,11 @@ public class SynthMain {
         Controller myController = fxmlLoader.getController();
         myController.setNotesController(notesController);
         Scene mainScene = new Scene(root, 650, 400);
-
+        if (SettingsController.getStyle()) {
+            mainScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else {
+            mainScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        }
         stage.setScene(mainScene);
 
         if (myController != null) {

@@ -13,7 +13,7 @@
 }
 
 .tab-content {
-    -fx-background-color: #282E33;
+    -fx-background-color: #38414A;
 }
 
 .tab-pane {
@@ -27,7 +27,7 @@
 }
 
 .tab {
-    -fx-background-color: #2C333A;
+    -fx-background-color: #38414A;
 }
 
 .tab:selected {
@@ -38,6 +38,10 @@
 
 .tab-content {
     -fx-background-color: transparent;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #2C333A !important;
 }
 
 .scroll-pane .viewport {
@@ -86,12 +90,18 @@
     -fx-background-color: #282E33 !important;
 }
 
-#hbox_WAVE1, #hbox_WAVE2, #hbox_WAVE3, #recordExportBox {
+#hbox_WAVE1, #hbox_WAVE2, #hbox_WAVE3, #recordExportBox, #waveHbox {
     -fx-background-color: #282E33 !important;
 }
 
 #vbox, #parameterChooser1, #parameterChooser2, #parameterChooser3, #waveVbox {
     -fx-background-color: #282E33 !important;
+}
+
+
+.menu-button {
+    -fx-background-color: #38414A;
+    -fx-text-fill: #B6C2CF;
 }
 
 .pane {

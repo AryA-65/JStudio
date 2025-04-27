@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -32,8 +33,8 @@ public class Track {
     private short id;
     private final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0);
     private final BooleanProperty activeTrack = new SimpleBooleanProperty(true);
-    private List<Clip> clips = new ArrayList<>();
-    private List<Plugin> plugins = new ArrayList<>();
+    private ArrayList<Clip> clips = new ArrayList<>();
+    private ArrayList<Plugin> plugins = new ArrayList<>();
 
     //test colors
     public final List<String> MATTE_COLORS = List.of(
@@ -51,7 +52,6 @@ public class Track {
 
     public Track(String name) {
         this.name = name;
-//        this.id = ;
     }
 
     public void addClip(Clip clip) {
@@ -63,6 +63,14 @@ public class Track {
             if (position >= clip.getPosition() && position < clip.getPosition() + clip.getLength()) {
                 clips.remove(clip);
                 break;
+            }
+        }
+    }
+
+    private void removeClip(Event e) {
+        for (Clip clip : clips) {
+            if (e.getTarget() == clip) {
+                clips.remove(clip);
             }
         }
     }
@@ -115,6 +123,19 @@ public class Track {
         clipContainer.setPrefSize(width, 64);
         clipContainer.setId("clipContainer" + num);
 
+        container.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+
+            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                for (Node clip : clipContainer.getChildren()) {
+                    if (event.getTarget() == clip) {
+                        clipContainer.getChildren().remove(clip);
+                        break;
+                    }
+                }
+            }
+        });
+
         container.setOnDragOver(e -> {
             if (e.getGestureSource() != container && e.getDragboard().hasFiles()) {
                 e.acceptTransferModes(TransferMode.COPY);  // Accept the drop
@@ -125,21 +146,28 @@ public class Track {
         container.setOnDragDropped(e -> {
             Dragboard db = e.getDragboard();
             boolean success = false;
+            boolean snap = true;
 
             if (db.hasFiles()) {
                 System.out.println("True");
 
                 double dropX = e.getX();
 
-                Clip testFuckingshit = new AudioClip((int) dropX, db.getFiles().get(db.getFiles().size() - 1));
+                if (snap) {
+                    dropX = Math.round(dropX / 32) * 32;
+                }
+
+                AudioClip testFuckingshit = new AudioClip((int) dropX, db.getFiles().get(db.getFiles().size() - 1));
 
 //                System.out.println(string);
-                double size = (double) testFuckingshit.getLength() / 44100 * ((double) 120 / 60) * 32;
+                double size = testFuckingshit.lengthToTime() * ((double) 120 / 60) * 32;
                 System.out.println(size);
 
 //                System.out.println(string);
 
                 Canvas tempo = new Canvas(size, 64);
+                drawWaveform(testFuckingshit, tempo, 120);
+
 
                 tempo.setLayoutX(dropX);
 
@@ -168,6 +196,10 @@ public class Track {
                         double newX = tempo.getLayoutX() + ev.getX() - tempo.getWidth() / 2;
                         newX = Math.max(0, Math.min(newX, container.getWidth() - tempo.getWidth()));
 
+                        if (snap) {
+                            newX = Math.round(newX / 32.0) * 32.0;
+                        }
+
                         if (!isOverlapping(newX, tempo.getWidth(), tempo, clipContainer)) {
                             tempo.setLayoutX(newX);
                         }
@@ -176,9 +208,15 @@ public class Track {
                         double newWidth = ev.getX();
                         newWidth = Math.max(MIN_WIDTH, Math.min(newWidth, container.getWidth() - tempo.getLayoutX()));
 
+                        if (snap) {
+                            double rightEdge = tempo.getLayoutX() + newWidth;
+                            rightEdge = Math.round(rightEdge / 32.0) * 32.0;
+                            newWidth = Math.max(MIN_WIDTH, rightEdge - tempo.getLayoutX());
+                        }
+
                         if (!isOverlapping(tempo.getLayoutX(), newWidth, tempo, clipContainer)) {
                             tempo.setWidth(newWidth);
-                            redrawTempo(tempo, newWidth);
+//                            redrawTempo(tempo, newWidth);
                         }
 
                     } else if (cursor == Cursor.W_RESIZE) {
@@ -187,11 +225,16 @@ public class Track {
                         double newX = tempo.getLayoutX() + deltaX;
                         double newWidth = tempo.getWidth() - deltaX;
 
+                        if (snap) {
+                            newX = Math.round(newX / 32.0) * 32.0;
+                            newWidth = Math.max(MIN_WIDTH, (tempo.getLayoutX() + tempo.getWidth()) - newX);
+                        }
+
                         if (newX >= 0 && newWidth >= MIN_WIDTH && newX + newWidth <= container.getWidth()) {
                             if (!isOverlapping(newX, newWidth, tempo, clipContainer)) {
                                 tempo.setLayoutX(newX);
                                 tempo.setWidth(newWidth);
-                                redrawTempo(tempo, newWidth);
+//                                redrawTempo(tempo, newWidth);
                             }
                         }
                     }
@@ -212,7 +255,7 @@ public class Track {
                     }
                 });
 
-                redrawTempo(tempo, size);
+//                redrawTempo(tempo, size);
 
                 clipContainer.getChildren().add(tempo);
 
@@ -239,13 +282,6 @@ public class Track {
             }
         }
         return false;
-    }
-
-    private void redrawTempo(Canvas canvas, double width) {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.RED);
-        gc.fillRoundRect(0, 0, width, canvas.getHeight(), 10, 10);
     }
 
     public Canvas addTrack(int width) {
@@ -398,6 +434,59 @@ public class Track {
 //        }
 
         return activeBtn;
+    }
+
+    public void drawWaveform(AudioClip clip, Canvas c, double bpm) {
+        GraphicsContext gc = c.getGraphicsContext2D();
+
+        double pixelsPerBeat = 32.0;
+        double beatsPerSecond = bpm / 60.0;
+        double pixelsPerSecond = pixelsPerBeat * beatsPerSecond;
+        double sampleRate = clip.getSampleRate();
+        double samplesPerPixel = sampleRate / pixelsPerSecond;
+
+        float[][] buffer = clip.getBuffer();
+        double clipStartX = clip.getPosition();
+        double clipDuration = clip.lengthToTime();
+        double clipWidth = clipDuration * pixelsPerSecond;
+
+        double waveformHeight = 64;
+        double centerY = 64 / 2.0;
+        boolean isStereo = buffer[1] != null;
+
+        gc.setFill(Color.WHITE);
+        gc.fillRect(clipStartX, 0, clipWidth, 64);
+
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1.0);
+
+        for (int x = 0; x < clipWidth; x++) {
+            int sampleStart = (int) (x * samplesPerPixel);
+            int sampleEnd = (int) ((x + 1) * samplesPerPixel);
+            if (sampleEnd >= buffer[0].length) {
+                sampleEnd = buffer[0].length - 1;
+            }
+
+            float maxLeft = 0;
+            for (int i = sampleStart; i < sampleEnd; i++) {
+                maxLeft = Math.max(maxLeft, Math.abs(buffer[0][i]));
+            }
+
+            float maxRight = maxLeft;
+            if (isStereo) {
+                maxRight = 0;
+                for (int i = sampleStart; i < sampleEnd; i++) {
+                    maxRight = Math.max(maxRight, Math.abs(buffer[1][i]));
+                }
+            }
+
+            float maxAmplitude = Math.max(maxLeft, maxRight);
+
+            double scaledHeight = maxAmplitude * waveformHeight / 2.0;
+
+            double pixelX = clipStartX + x;
+            gc.strokeLine(pixelX, centerY - scaledHeight, pixelX, centerY + scaledHeight);
+        }
     }
 }
 

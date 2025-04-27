@@ -1,14 +1,5 @@
 package org.JStudio.Core;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public abstract class Clip {
     private int position, s_pos, e_pos, length; //s_pos (start) and e_pos (end) is for shifting/cutting audio clips
 

@@ -382,11 +382,11 @@ public class UIController {
 
         int num = 0;
         for (Track track : song.getTracks()) {
-            track_vbox.getChildren().addAll(new TrackUI((song.getBpm() * 32), track));
-//            track_vbox.getChildren().add(track.getContainer((int) (song.getBpm() * 32), num));
-//            track_id_vbox.getChildren().add(track.addTrackID());
-//            channel_rack.getChildren().add(track.createChannel((byte) (num + 1)));
-//            num++;
+//            track_vbox.getChildren().addAll(new TrackUI((song.getBpm() * 32), track));
+            track_vbox.getChildren().add(track.getContainer((int) (song.getBpm() * 32), num));
+            track_id_vbox.getChildren().add(track.addTrackID());
+            channel_rack.getChildren().add(track.createChannel((byte) (num + 1)));
+            num++;
 //            System.out.println(track.getId());
         }
 

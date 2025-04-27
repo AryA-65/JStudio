@@ -16,8 +16,8 @@ public class ClipUI extends Canvas {
     private int endOffset = 0;   // Trim from end
     private int shiftOffset = 0; // Shift view
 
-    public ClipUI(Clip clip, double width, double height) {
-        super(width, height);
+    public ClipUI(Clip clip, double width) {
+        super(width, 64);
         this.clip = clip;
 
         widthProperty().addListener((obs, oldVal, newVal) -> redraw());

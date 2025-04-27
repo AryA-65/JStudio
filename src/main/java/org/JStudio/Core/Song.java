@@ -7,11 +7,14 @@ public class Song {
     private float bpm = 120;
     private final byte MIN_TRACKS = 16, MAX_TRACKS = 64;
     private byte numTracks = MIN_TRACKS;
-    private ArrayList<Track> tracks = new ArrayList<>(MIN_TRACKS);
+    private ArrayList<Track> tracks = new ArrayList<>(numTracks);
 
     public Song(String name) {
         this.songName = name;
-
+        System.out.println();
+        for (int i = 0; i < numTracks; i++) { //for testing
+            tracks.add(new Track("Track " + i));
+        }
     }
 
     public void setBpm(float bpm) {

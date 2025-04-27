@@ -50,42 +50,6 @@ public class TrackUI extends StackPane {
     }
 
     private void setupDragAndDrop() {
-        setOnDragOver(e -> {
-            if (e.getGestureSource() != this && e.getDragboard().hasString()) {
-                e.acceptTransferModes(TransferMode.COPY);
-            }
-            e.consume();
-        });
 
-        setOnDragDropped(e -> {
-            Dragboard db = e.getDragboard();
-            boolean success = false;
-
-            if (db.hasString()) {
-                try {
-                    double beats = Double.parseDouble(db.getString());
-                    double pixelsPerBeat = 32;
-                    double clipWidth = beats * pixelsPerBeat;
-                    double clipX = e.getX();
-
-//                    Clip clip = new AudioClip((int) clipX, (int) clipWidth);
-//                    track.addClip(clip);
-//
-//                    ClipUI clipUI = new ClipUI(clip);
-//                    clipUI.setLayoutX(clipX);
-//                    clipUI.setLayoutY(0);
-//
-//                    clipUIs.add(clipUI);
-//                    clipLayer.getChildren().add(clipUI);
-
-                    success = true;
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-            e.setDropCompleted(success);
-            e.consume();
-        });
     }
 }

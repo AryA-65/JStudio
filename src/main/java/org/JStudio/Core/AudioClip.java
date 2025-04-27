@@ -7,10 +7,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class AudioClip extends Clip {
 //    private short[][] buffer;
     private float[][] buffer;
+    private int sampleRate;
 
     AudioClip(int position) {
         super(position);
@@ -37,6 +39,7 @@ public class AudioClip extends Clip {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         AudioFormat format = audioInputStream.getFormat();
 
+        this.sampleRate = (int) format.getSampleRate();
         int sampleSize = format.getSampleSizeInBits();
         int channels = format.getChannels();
         byte[] pcmData = audioInputStream.readAllBytes();
@@ -58,6 +61,8 @@ public class AudioClip extends Clip {
             }
         }
 
+        int frames = (int) audioInputStream.getFrameLength();
+        this.setLength(frames);
         return new float[][]{leftChannel, rightChannel};
     }
 
@@ -78,5 +83,13 @@ public class AudioClip extends Clip {
         }
 
         return sample; // Unsupported bit depth
+    }
+
+    public double lengthToTime() {
+        return (double) this.getLength() / sampleRate;
+    }
+
+    public int getSampleRate() {
+        return sampleRate;
     }
 }

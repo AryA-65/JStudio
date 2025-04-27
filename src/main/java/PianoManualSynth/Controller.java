@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javafx.scene.control.TextField;
+import org.JStudio.Plugins.Controllers.PopUpController;
 
 public class Controller {
 
@@ -43,6 +44,7 @@ public class Controller {
 //    private double speedFactor = 1;
     private NotesController notesController;
     private double frequency = 0;
+    private PopUpController popUpController;
 
     public void setNotesController(NotesController nc) {
         notesController = nc;
@@ -50,6 +52,8 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        popUpController = new PopUpController();
+
         setupMenu(functionChooser1);
         setupMenu(functionChooser2);
         setupMenu(functionChooser3);
@@ -66,7 +70,6 @@ public class Controller {
         sliderSetUp(volume3, 1);
 
 //        sliderSetUp(playSpeed, 10);
-
 //        updateSlider(tone1, 0, true);
 //        updateSlider(tone2, 1, true);
 //        updateSlider(tone3, 2, true);
@@ -74,25 +77,43 @@ public class Controller {
 //        updateSlider(volume1, 0, false);
 //        updateSlider(volume2, 1, false);
 //        updateSlider(volume3, 2, false);
+        frequencyTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                frequencyTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
         playSynthButton.setOnMousePressed(e -> {
-            frequency = Double.parseDouble(frequencyTextField.getText());
-            oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
-            oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
-            oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
-            
-            playAudio(auTh, frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+            if (frequencyTextField.getText().isBlank()) {
+                popUpController.showWarningPopup("Please enter a frequency");
+                tempStage.requestFocus();
+                tempStage.toFront();
+            } else {
+                frequency = Double.parseDouble(frequencyTextField.getText());
+
+                oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
+                oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
+                oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
+
+                playAudio(auTh, frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+            }
         });
-        
+
         playSynthButton.setOnMouseReleased(e -> {
             stopAudio(auTh);
         });
 
         addTrackButton.setOnAction(event -> {
-            frequency = Double.parseDouble(frequencyTextField.getText());
+            if (frequencyTextField.getText().isBlank()) {
+                popUpController.showWarningPopup("Please enter a frequency");
+                tempStage.requestFocus();
+                tempStage.toFront();
+            } else {
+                frequency = Double.parseDouble(frequencyTextField.getText());
 
-            notesController.addTrack(frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
-            tempStage.close();
+                notesController.addTrack(frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+                tempStage.close();
+            }
         });
 
         auTh = new AudioThread(() -> {
@@ -104,14 +125,14 @@ public class Controller {
             for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
                 double mixedSample = 0;
 
-                if(tone1.getValue()!= 0){
-                        mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
+                if (tone1.getValue() != 0) {
+                    mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
                 }
-                if(tone2.getValue()!= 0){
-                        mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
+                if (tone2.getValue() != 0) {
+                    mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
                 }
-                if(tone3.getValue()!= 0){
-                        mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
+                if (tone3.getValue() != 0) {
+                    mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
                 }
 
                 s[i] = (short) (Short.MAX_VALUE * mixedSample);
@@ -125,7 +146,6 @@ public class Controller {
 //            KEY_FREQUENCIES.put(Utility.AudioInfo.KEYS[key], Utility.Math.getKeyFrequency(i));
 //        }
         //playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
-
     }
 
     public double generateWaveSample(String waveformType, double frequency, int wavePosition) {
@@ -183,7 +203,6 @@ public class Controller {
 //            }
 //        });
 //    }
-
     public void playAudio(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         shouldGenerate = true;
         auTh.triggerPlayback();
@@ -212,7 +231,6 @@ public class Controller {
 //            }
 //        });
 //    }
-
     private void closeApplication() {
         if (tempStage == null) {
             System.err.println("tempStage is not set, cannot close application");
@@ -243,6 +261,7 @@ public class Controller {
         }
         slider.setShowTickMarks(true);
         slider.setShowTickLabels(true);
+        slider.setMajorTickUnit(1);
     }
 
     private void setupMenu(MenuButton menuButton) {

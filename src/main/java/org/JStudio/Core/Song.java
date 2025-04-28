@@ -13,7 +13,8 @@ public class Song {
         this.songName = name;
         System.out.println();
         for (int i = 0; i < numTracks; i++) { //for testing
-            tracks.add(new Track("Track " + i));
+            tracks.add(new Track());
+//            System.out.println(Integer.parseInt(tracks.get(i).getId().get()));
         }
     }
 

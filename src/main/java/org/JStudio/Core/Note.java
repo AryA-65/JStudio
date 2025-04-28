@@ -1,12 +1,11 @@
 package org.JStudio.Core;
 
 public class Note {
-    private double default_l = 0.25, length;
-    private long position;
+    private double default_l = 0.5, length, position; //in seconds
     private short note;
     private float volume;
 
-    Note(short sample_rate, short note, long position) {
+    Note(short sample_rate, short note, double position) {
         this.length = sample_rate * default_l;
         this.note = note;
         this.position = position;
@@ -21,7 +20,7 @@ public class Note {
         this.note = note;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(double position) {
         this.position = position;
     }
 
@@ -34,7 +33,7 @@ public class Note {
         return note;
     }
 
-    public long getPosition() {
+    public double getPosition() {
         return position;
     }
 

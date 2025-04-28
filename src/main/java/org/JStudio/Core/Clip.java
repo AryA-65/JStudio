@@ -1,16 +1,13 @@
 package org.JStudio.Core;
 
 public abstract class Clip {
-    private int position, s_pos, e_pos, length; //s_pos (start) and e_pos (end) is for shifting/cutting audio clips
+    private double position, length;
 
-    Clip(int position) {
+    Clip(double position) {
         this.position = position;
     }
 
-    Clip(int position, short sample_rate) {
-        this.position = position;
-        this.length = sample_rate * 2;
-    }
+    Clip(int position, int length) {}
 
     public void setPosition(int position) {
         this.position = position;
@@ -20,28 +17,12 @@ public abstract class Clip {
         this.length = length;
     }
 
-    public int getPosition() {
+    public double getPosition() {
         return position;
     }
 
-    public int getLength() {
+    public double getLength() {
         return length;
-    }
-
-    public void setStartOffset(int start_offset) {
-        this.s_pos = start_offset;
-    }
-
-    public void setEndOffset(int end_offset) {
-        this.e_pos = end_offset;
-    }
-
-    public int getStartOffset() {
-        return s_pos;
-    }
-
-    public int getEndOffset() {
-        return e_pos;
     }
 
     public String getInfo() {

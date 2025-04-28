@@ -1,0 +1,67 @@
+package org.JStudio.UI;
+
+import javafx.animation.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
+import java.io.File;
+import java.util.Objects;
+
+public class SectionUI extends VBox {
+    private final ImageView expand_img = new ImageView(new Image("/icons/arrow.png"));
+    private final Button section_btn = new Button("", expand_img);
+    private final VBox section_content = new VBox();
+    private final Timeline expand_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN)));
+    private final Timeline collapse_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), 0, Interpolator.EASE_IN)));
+    private final RotateTransition rotate = new RotateTransition(Duration.millis(150), expand_img);
+
+    public SectionUI(File file) {
+        setAlignment(Pos.TOP_CENTER);
+
+        expand_img.setSmooth(true);
+        expand_img.setFitWidth(16);
+        expand_img.setFitHeight(16);
+
+        section_content.setAlignment(Pos.TOP_CENTER);
+        section_content.setSpacing(10);
+        section_content.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        VBox.setMargin(section_content, new Insets(0, 10, 0, 10));
+
+        section_btn.setText(file.getName());
+        section_btn.setPrefWidth(246);
+        section_btn.setAlignment(Pos.TOP_LEFT);
+        VBox.setMargin(section_btn, new Insets(0, 0, 10, 0));
+
+        rotate.setByAngle(-180);
+
+        section_btn.setOnAction(e -> {
+            if (section_content.isVisible()) {
+                rotate.play();
+                collapse_anim.play();
+                collapse_anim.setOnFinished(event -> {
+                    section_content.setVisible(false);
+                    section_content.setManaged(false);
+                });
+            } else {
+                rotate.play();
+                section_content.setVisible(true);
+                section_content.setManaged(true);
+                expand_anim.play();
+            }
+        });
+
+        getChildren().addAll(section_btn, section_content);
+
+        for (File f : Objects.requireNonNull(file.listFiles())) {
+            if (f.exists() && f.isFile()) {
+                section_content.getChildren().add(new FileUI(f));
+            }
+        }
+    }
+}

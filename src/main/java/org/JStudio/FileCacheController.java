@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class FileChooserController {
+public class FileCacheController {
 
     @FXML
     private ScrollPane cache_scroll;

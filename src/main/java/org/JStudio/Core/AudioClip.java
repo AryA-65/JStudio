@@ -7,26 +7,37 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class AudioClip extends Clip {
-//    private short[][] buffer;
     private float[][] buffer;
     private int sampleRate;
+    private double s_pos, e_pos; //s_pos (start) and e_pos (end) is for shifting/cutting audio clips
 
-    AudioClip(int position) {
+    AudioClip(double position) {
         super(position);
-//        this.buffer = ;
+        this.buffer = new float[2][1024];
     }
 
     //test init class
-    public AudioClip(int position, File f) {
+    public AudioClip(double position, float[][] buff) {
         super(position);
-        try {
-            this.buffer = readWavFile(f);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.buffer = buff;
+    }
+
+    public void setS_pos(double s_pos) {
+        this.s_pos = s_pos;
+    }
+
+    public void setE_pos(double e_pos) {
+        this.e_pos = e_pos;
+    }
+
+    public double getS_pos() {
+        return s_pos;
+    }
+
+    public double getE_pos() {
+        return e_pos;
     }
 
     public String getBuffertoString() {
@@ -35,6 +46,7 @@ public class AudioClip extends Clip {
 
     public float[][] getBuffer() {return buffer;}
 
+    //this should be handled by the UI class
     private float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException { //Reading wav file (this method repeats a lot, move every other version to this one)
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         AudioFormat format = audioInputStream.getFormat();
@@ -62,7 +74,7 @@ public class AudioClip extends Clip {
         }
 
         int frames = (int) audioInputStream.getFrameLength();
-        this.setLength(frames);
+        this.setLength(frames / sampleRate);
         return new float[][]{leftChannel, rightChannel};
     }
 
@@ -83,10 +95,6 @@ public class AudioClip extends Clip {
         }
 
         return sample; // Unsupported bit depth
-    }
-
-    public double lengthToTime() {
-        return (double) this.getLength() / sampleRate;
     }
 
     public int getSampleRate() {

@@ -17,9 +17,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 
-<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
+<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
   <columnConstraints>
     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -37,12 +37,15 @@
                         <ImageView id="load_song_btn" fx:id="open_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </StackPane>
+                  <Rectangle height="24.0" stroke="TRANSPARENT" strokeType="INSIDE" width="1.0" />
                   <TextField id="file_name" fx:id="song_name" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="128.0" />
+                  <Rectangle height="24.0" stroke="TRANSPARENT" strokeType="INSIDE" width="1.0" />
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0">
                      <children>
                         <ImageView id="save_song_btn" fx:id="save_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </StackPane>
+                  <Rectangle height="24.0" stroke="TRANSPARENT" strokeType="INSIDE" width="1.0" />
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">
                      <children>
                         <ImageView id="export_song_btn" fx:id="export_song_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
@@ -54,9 +57,9 @@
                </padding>
             </HBox>
             <TextField id="bpm_control" fx:id="bpm_control" alignment="CENTER" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" prefWidth="64.0" text="120.0" />
-            <StackPane>
+            <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0">
                <children>
-                  <Circle id="record_control_btn" fx:id="record_control" fill="RED" radius="12.0" smooth="false" stroke="#d9d9d9" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="6.0" />
+                  <ImageView fx:id="record_control" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </StackPane>
             <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">
@@ -106,7 +109,7 @@
                      <content>
                         <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
                            <children>
-                              <TextField fx:id="search_samples" promptText="Search" styleClass="search">
+                              <TextField id="search" fx:id="search_samples" promptText="Search">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" />
                                  </VBox.margin>
@@ -200,7 +203,7 @@
             </TabPane>
             <SplitPane fx:id="splitpane" dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
                <items>
-                  <HBox fx:id="tracks_channels" prefHeight="100.0" prefWidth="200.0">
+                  <HBox id="track_section" fx:id="tracks_channels" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <VBox prefHeight="200.0" prefWidth="128.0">
                            <children>

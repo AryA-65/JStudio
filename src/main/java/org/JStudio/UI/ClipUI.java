@@ -10,15 +10,15 @@ import org.JStudio.Core.SynthClip;
 
 public class ClipUI extends Canvas {
     private final Clip clip;
+    private final GraphicsContext gc;
     private boolean selected = false;
 
-    private int startOffset = 0; // Trim from start
-    private int endOffset = 0;   // Trim from end
-    private int shiftOffset = 0; // Shift view
+    private int startOffset = 0, endOffset = -1, shiftOffset = 0; // Shift view
 
-    public ClipUI(Clip clip, double width) {
-        super(width, 64);
+    public ClipUI(Clip clip, double bpm) {
+        super(clip.getLength() * ((double) bpm / 60), 64);
         this.clip = clip;
+        gc = getGraphicsContext2D();
 
         widthProperty().addListener((obs, oldVal, newVal) -> redraw());
         heightProperty().addListener((obs, oldVal, newVal) -> redraw());
@@ -26,22 +26,9 @@ public class ClipUI extends Canvas {
         redraw();
     }
 
-    public void setStartOffset(int offset) {
-        this.startOffset = offset;
-        this.clip.setStartOffset(startOffset);
-        redraw();
-    }
-
-    public void setEndOffset(int offset) {
-        this.endOffset = offset;
-        this.clip.setEndOffset(endOffset);
-        redraw();
-    }
-
-    public void setShiftOffset(int offset) {
-        this.shiftOffset = offset;
-        redraw();
-    }
+//    public void setEndOffset(double endOffset) {
+//
+//    }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
@@ -53,7 +40,6 @@ public class ClipUI extends Canvas {
     }
 
     public void redraw() {
-        GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, getWidth(), getHeight());
 
         if (clip instanceof AudioClip) {
@@ -101,7 +87,7 @@ public class ClipUI extends Canvas {
 
         gc.setFill(Color.CORNFLOWERBLUE);
         for (var note : synthClip.getNotes()) {
-            long noteTime = note.getPosition() + shiftOffset;
+            double noteTime = note.getPosition() + shiftOffset;
             if (noteTime < startOffset || noteTime > synthClip.getLength() - endOffset) continue;
 
             double x = (noteTime - startOffset) * (getWidth() / (double) synthClip.getLength());

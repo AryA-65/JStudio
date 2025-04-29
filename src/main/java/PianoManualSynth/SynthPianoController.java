@@ -35,33 +35,33 @@ public class SynthPianoController {
     private final double NOTE_HEIGHT = 27;
     private final double RESIZE_BORDER = 10;
     private final double NOTE_MIN_WIDTH = 50;
+    private double oldMousePos;
+    private double newMousePos;
+    private double playbackLineStartPos;
 
     private PianoTrack currentTrack;
     private ArrayList<NoteView> allNoteViews = new ArrayList<>();
     private List<NoteView> currentNoteViews = new ArrayList<>();
 
-    private double oldMousePos;
-    private double newMousePos;
-
     private SynthController_Piano synthController;
 
-    private int notesTrackWidth = 5320;
-    private int newPaneWidth = 0;
+    private long device;
+    private long context;
 
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
 
-    private long device;
-    private long context;
+    private int notesTrackWidth = 5320;
+    private int newPaneWidth = 0;
     private int buffer;
     private int source;
 
     private TranslateTransition movePlaybackLine;
-    
+
     private Thread trackThread;
 
-    Random random = new Random();
+    private Random random = new Random();
 
     @FXML
     private Pane mainPane;
@@ -78,14 +78,14 @@ public class SynthPianoController {
     @FXML
     private ScrollPane scrollPane;
 
-    private double playbackLineStartPos;
-
+    //getter
     public SynthController_Piano getSynth() {
         return synthController;
     }
 
     @FXML
     public void initialize() {
+        //creates a new controller
         synthController = new SynthController_Piano();
         synthController.setNotesController(this);
 
@@ -97,24 +97,25 @@ public class SynthPianoController {
         mainPane.setMaxHeight(0);
         mainPane.setMinHeight(0);
 
+        //gets the playback line starting position
         playbackLineStartPos = playbackLine.getLayoutX();
 
+        //sets the size of the master pane
         mainPane.setPrefWidth(labelVBox.getPrefWidth() + newPaneWidth);
 
+        //plays the notes on the tracks when the play button is clicked
         playButton.setOnAction(e -> {
-            if (source != 0 && buffer != 0 && context != 0 && device != 0) {
-                alDeleteSources(source);
-                alDeleteBuffers(buffer);
-                alcDestroyContext(context);
-                alcCloseDevice(device);
-            }
             playNotes();
         });
 
+        //opens the track settings/synthesizer so the user can create their own sounds
         addNoteTrack.setOnAction(e -> {
+            //stops the playback line
             if (movePlaybackLine != null) {
                 movePlaybackLine.stop();
             }
+
+            //stops any audio playback
             if (source != 0 && buffer != 0 && context != 0 && device != 0) {
                 alDeleteSources(source);
                 alDeleteBuffers(buffer);
@@ -126,6 +127,7 @@ public class SynthPianoController {
         });
     }
 
+    //adds a note to the track
     private void addNote(MouseEvent e) {
         currentNoteViews = getNotes();
 
@@ -171,11 +173,13 @@ public class SynthPianoController {
         }
     }
 
+    //removes a note from the track
     private void removeNote(MouseEvent e) {
         currentTrack.getChildren().remove(e.getSource());
         allNoteViews.remove(e.getSource());
     }
 
+    //alows a note to be draggable and resizable
     private void dragNote(NoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
@@ -234,6 +238,7 @@ public class SynthPianoController {
         }
         );
 
+        //reset bools on mouse release
         noteView.setOnMouseReleased(mouseEvent -> {
             isResizingRight = false;
             isResizingLeft = false;
@@ -241,6 +246,7 @@ public class SynthPianoController {
 
     }
 
+    //detects if a note will overlap with another note
     private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
@@ -263,6 +269,7 @@ public class SynthPianoController {
         }
     }
 
+    //opens the track settings/synthesizer for the user to make their own sounds
     public void openTrackOptions() {
         SynthMain_Piano synth = new SynthMain_Piano();
         synth.setNotesController(this);
@@ -273,10 +280,13 @@ public class SynthPianoController {
         }
     }
 
+    //adds a new track to the piano
     public void addTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+        //asks the user for the track name
         PopUpController popUp = new PopUpController();
         String trackName = popUp.showTextInputPopup();
 
+        //setup the name label
         Label label = new Label(trackName);
         label.setAlignment(Pos.CENTER);
         label.setPrefSize(111.0, 27.0);
@@ -285,6 +295,7 @@ public class SynthPianoController {
         label.setStyle("-fx-border-color: #000000");
         labelVBox.getChildren().add(label);
 
+        //setup the track itself
         PianoTrack track = new PianoTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
         track.setId("pane" + noteTracks.getChildren().size());
         track.setPrefSize(1820.0, 27.0);
@@ -296,6 +307,8 @@ public class SynthPianoController {
         track.setPrefWidth(notesTrackWidth);
         track.setTranslateX((notesTrackWidth - 1820) / 2);
         track.setOnMouseEntered(mouseEvent -> currentTrack = track);
+
+        //adds a note to the track if the track is clicked
         track.setOnMousePressed(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 addNote(e);
@@ -303,6 +316,7 @@ public class SynthPianoController {
         });
         noteTracks.getChildren().add(track);
 
+        //dynamically increase the size of the master pane as tracks get added
         mainPane.setMaxWidth(label.getPrefWidth() + track.getMinWidth());
         mainPane.setPrefWidth(label.getPrefWidth() + track.getMinWidth());
         mainPane.setMinWidth(label.getPrefWidth() + track.getMinWidth());
@@ -310,12 +324,15 @@ public class SynthPianoController {
         mainPane.setMinHeight(track.getPrefHeight() * noteTracks.getChildren().size());
         mainPane.setPrefHeight(track.getPrefHeight() * noteTracks.getChildren().size());
 
+        //enable the playback line
         playbackLine.setVisible(true);
         playbackLine.setEndY(track.getPrefHeight() * noteTracks.getChildren().size());
     }
 
+    //plays the notes that the user placed on the tracks
     private void playNotes() {
-        
+
+        //creates a new thread that plays the audio
         trackThread = new Thread(() -> {
 
             device = alcOpenDevice((ByteBuffer) null);
@@ -330,13 +347,16 @@ public class SynthPianoController {
             short[] finalTrackSamples = new short[totalSamples];
 
             int wavePos = 1;
+
+            //calculates each sample of the audio (44100 samples per second)
             for (int i = 0; i < totalSamples; i++) {
                 double currentTime = (double) i / sampleRate; // current time in seconds
                 double mixedSample = 0;
 
-                for (NoteView noteView : allNoteViews) {
+                for (NoteView noteView : allNoteViews) { //for all notes placed
                     Note note = noteView.getNote();
-                    if (note.isActive(currentTime)) { // Check if this note is playing now
+                    if (note.isActive(currentTime)) { // Check if this note should be playing
+                        //calculate the sample
                         int NORMALIZER = 6;
                         PianoTrack track = note.getTrack();
                         if (track.getTone1Value() != 0) {
@@ -350,19 +370,22 @@ public class SynthPianoController {
                         }
                     }
                 }
+                //add the sample to the sample array to be played
                 finalTrackSamples[i] = (short) (mixedSample * Short.MAX_VALUE);
                 wavePos += 1;
             }
 
+            //setup buffer and play the audio
             buffer = alGenBuffers();
             source = alGenSources();
-
             alBufferData(buffer, AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
             alSourcei(source, AL_BUFFER, buffer);
             alSourcePlay(source);
 
+            //start the playback line movement
             movePlaybackLine.play();
 
+            //wait until the audio is done playing
             while (alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
                 try {
                     Thread.sleep(100);
@@ -376,19 +399,20 @@ public class SynthPianoController {
             alcDestroyContext(context);
             alcCloseDevice(device);
         });
-        
+
+        //create translate transition for the playback line to scroll across the tracks
         movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
         movePlaybackLine.setFromX(playbackLineStartPos);
         movePlaybackLine.setToX(currentTrack.getWidth());
         movePlaybackLine.setCycleCount(1);
 
+        //start the thread
         trackThread.start();
     }
 
     //returns an array list of all notes in the pane
     private ArrayList<NoteView> getNotes() {
-        //create 
         ArrayList<NoteView> currentNoteViews = new ArrayList<>();
         for (Node n : currentTrack.getChildren()) {
             currentNoteViews.add((NoteView) n);
@@ -396,6 +420,7 @@ public class SynthPianoController {
         return currentNoteViews;
     }
 
+    //generates the audio samples to be played depending on the user's set parameters
     public double generateWaveSample(String waveformType, double frequency, double wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
 

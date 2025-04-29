@@ -4,17 +4,17 @@ import javafx.scene.layout.Pane;
 
 public class PianoTrack extends Pane{
     private double frequency;
-    private String txt1;
-    private String txt2;
-    private String txt3;
     private double tone1Value;
     private double tone2Value;
     private double tone3Value;
     private double volume1Value;
     private double volume2Value;
     private double volume3Value;
-    private AudioThread auTh;
+    private String txt1;
+    private String txt2;
+    private String txt3;
     
+    //getters and setters
     public double getFrequency(){
         return frequency;
     }
@@ -54,13 +54,9 @@ public class PianoTrack extends Pane{
     public double getVolume3Value(){
         return volume3Value;
     }
-    
-    public AudioThread getAudioThread(){
-        return auTh;
-    }
 
+    //stores all parameters relating to the sound of the notes on the track
     public PianoTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
-        //this.auTh = auTh;
         this.frequency = frequency;
         this.txt1 = txt1;
         this.txt2 = txt2;

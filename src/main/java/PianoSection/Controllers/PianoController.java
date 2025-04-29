@@ -58,18 +58,23 @@ public class PianoController {
 
     @FXML
     public void initialize() {
+        //get starting position of the playback line
         playbackLineStartPos = playbackLine.getLayoutX();
         
         int addedTrackWidth = 3500;
         int newPaneWidth = 0;
 
+        //All panes (tracks) have ID's from 0-35
+        //get each pane
         for (int i = 0; i < 36; i++) {
             Pane pane = (Pane) noteTracks.lookup("#pane" + i);
-            if (pane != null) {
+            if (pane != null) { //if the pane exists, set parameters
                 pane.setPrefWidth(pane.getPrefWidth()+addedTrackWidth);
                 newPaneWidth = (int) pane.getPrefWidth();
                 pane.setTranslateX(addedTrackWidth/2);
                 pane.setOnMouseEntered(mouseEvent -> currentPane = pane);
+                
+                //add note to the pane if the user clicks on it
                 pane.setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.PRIMARY) {
                         addNote(e);
@@ -78,13 +83,17 @@ public class PianoController {
             }
         }
         
+        //sets the size of the master pane
         mainPane.setPrefWidth(labelVBox.getPrefWidth() + newPaneWidth);
 
+        //loads the javax synthesizer
         loadChannel();
 
+        //plays the notes when the user clicks the play button
         playButton.setOnAction(e -> playNotes());
     }
 
+    //adds notes to the track when the user clicks on it
     private void addNote(MouseEvent e) {
         currentNoteViews = getNotes();
 
@@ -138,11 +147,13 @@ public class PianoController {
         }
     }
 
+    //remove a note from the track
     private void removeNote(MouseEvent e) {
         currentPane.getChildren().remove(e.getSource());
         allNoteViews.remove(e.getSource());
     }
 
+    //makes notes draggable and resizable
     private void dragNote(NoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
@@ -201,6 +212,7 @@ public class PianoController {
         }
         );
 
+        //reset bools on mouse release
         noteView.setOnMouseReleased(mouseEvent -> {
             isResizingRight = false;
             isResizingLeft = false;
@@ -208,6 +220,7 @@ public class PianoController {
 
     }
 
+    //detect if a note will overlap with another note
     private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
@@ -230,25 +243,31 @@ public class PianoController {
         }
     }
 
+    //plays the notes on each track
     private void playNotes() {
+        //create playback line translate transition
         TranslateTransition movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
         movePlaybackLine.setFromX(playbackLineStartPos);
         movePlaybackLine.setToX(currentPane.getWidth());
         movePlaybackLine.setCycleCount(1);
+        
+        //called every frame
         AnimationTimer timer = new AnimationTimer() {
             @Override
+            //detect if the playback line is touching each note and play/stop the note
             public void handle(long now) {
                 for (NoteView noteView : allNoteViews) {
                     Shape intersection = Shape.intersect(playbackLine, noteView);
                     
+                    //if the playback line is touching a note and the note is not playing, then play the note
                     if (intersection.getBoundsInLocal().getWidth() > 0 ||
                     intersection.getBoundsInLocal().getHeight() > 0) {
                         if (!noteView.getNote().isPlaying()) {
                             channel.noteOn(noteView.getNote().getNoteNum(), noteView.getNote().getVelocity());
                             noteView.getNote().setPlaying(true);
                         }
-                    } else {
+                    } else {//if the playback line is not touching a note and the note is playing, then stop playing the note
                         if (noteView.getNote().isPlaying()) {
                             channel.noteOff(noteView.getNote().getNoteNum());
                             noteView.getNote().setPlaying(false);
@@ -257,13 +276,17 @@ public class PianoController {
                 }
             }
         };
+        //stop the animation timer when the playback line animation ends
         movePlaybackLine.setOnFinished(e -> {
             timer.stop();
         });
+        
+        //start the animation and timer
         movePlaybackLine.play();
         timer.start();
     }
 
+    //loads the javax synthesizer
     private void loadChannel() {
         try {
             synth = MidiSystem.getSynthesizer();
@@ -277,7 +300,6 @@ public class PianoController {
 
     //returns an array list of all notes in the pane
     private ArrayList<NoteView> getNotes() {
-        //create 
         ArrayList<NoteView> currentNoteViews = new ArrayList<>();
         for (Node n : currentPane.getChildren()) {
             currentNoteViews.add((NoteView) n);

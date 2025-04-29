@@ -2,38 +2,32 @@ package PianoManualSynth;
 
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
-
 import java.util.function.Supplier;
 import org.JStudio.Plugins.Synthesizer.OpenALException;
 import org.JStudio.Plugins.Synthesizer.Utility;
-
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
-
 
 class AudioThread extends Thread {
     static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
     static final int BUFFER_COUNT = 8; // how many buffers will be in queue
     private final int[] buffers = new int[BUFFER_COUNT];
+    private final int source;
+    private int bufferIndex = 0;
+
     private final long device = alcOpenDevice(alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
     private final long context = alcCreateContext(device, new int[1]); // context of the device
-    private final int source;
-
-    private int bufferIndex = 0;
 
     private boolean closed;
     private boolean running;
 
     private final Supplier<short[]> bufferSupplier;
-
-    boolean isRunning() {
-        return running;
-    }
     
     public boolean isClosed(){
         return closed;
     }
 
+    //adds samples to a buffer, queues the buffer, and starts playing the audio
     public AudioThread(Supplier<short[]> bufferSupplier) {
         this.bufferSupplier = bufferSupplier;
         alcMakeContextCurrent(context);
@@ -49,11 +43,12 @@ class AudioThread extends Thread {
 
     @Override
     public synchronized void run() {
-        while (!closed) {
+        while (!closed) { //loop until stopped
             while (!running) {
                 Utility.handleProcedure(this::wait, false); // more efficient than using a condition
                 // while not running, sleep for 1 sec -> has to continuously loop
             }
+            //gets all samples and plays them
             int processedBuffs = alGetSourcei(source, AL_BUFFERS_PROCESSED);
             for (int i = 0; i < processedBuffs; i++) {
                 short[] samples = bufferSupplier.get();
@@ -76,20 +71,23 @@ class AudioThread extends Thread {
         alcCloseDevice(device);
     }
 
+    //breaks out of the loop and "runs" the thread
     synchronized void triggerPlayback() {
         running = true;
         notify();
     }
     
+    //makes the thread enter the loop again to wait
     public void pause(){
         running = false;
     }
 
+    //breaks out of the loop and closes the thread
     void close() {
         closed = true;
-        this.interrupt();
     }
 
+    //Queues samples in a buffer
     private void bufferSamples(short[] samples) {
         int buf = buffers[bufferIndex++];
         alBufferData(buf, AL_FORMAT_MONO16, samples, Utility.AudioInfo.SAMPLE_RATE);
@@ -97,6 +95,7 @@ class AudioThread extends Thread {
         bufferIndex %= BUFFER_COUNT; // Reset the bufferIndex
     }
 
+    //cathes any errors with the OpenAL library
     private void catchInternalException() {
         int err = alcGetError(device);
         if (err != ALC_NO_ERROR) {

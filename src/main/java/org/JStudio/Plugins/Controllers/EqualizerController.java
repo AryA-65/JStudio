@@ -34,6 +34,7 @@ public class EqualizerController extends Thread {
         this.file = audioFile;
     }
 
+    //getters and setters
     public void setEqView(EqualizerView eqView) {
         this.eqView = eqView;
     }

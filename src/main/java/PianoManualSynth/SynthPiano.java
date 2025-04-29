@@ -13,13 +13,16 @@ public class SynthPiano{
 
     public void openSynthPiano() {
         try {
+            //creates a new stage
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setMaximized(true);
             
+            //loads the fxml file
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));
             Parent root = fxmlLoader.load();
             
+            //creates a scene and loads the selected theme (dark/light mode)
             Scene scene = new Scene(root,Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
             if (SettingsController.getStyle()) {
             scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());

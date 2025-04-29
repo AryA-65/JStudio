@@ -1,7 +1,5 @@
 package PianoManualSynth;
 
-import PianoSection.Models.*;
-
 public class Note {
 
     private PianoTrack track;
@@ -10,10 +8,12 @@ public class Note {
     private double startTime;
     private double endTime;
 
+    //sets the track that the note is on
     public Note(PianoTrack track) {
         this.track = track;
     }
 
+    //getters and setters
     public NoteView getNoteView() {
         return noteView;
     }
@@ -38,6 +38,7 @@ public class Note {
         return startTime;
     }
 
+    //returns whether a note should be playing at a specific moment in time
     boolean isActive(double currentTime) {
         int trackLengthSeconds = 30;
         startTime = noteView.getLayoutX() / track.getPrefWidth() * trackLengthSeconds;

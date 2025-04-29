@@ -9,6 +9,7 @@ public class Note {
     private double positionX;
     private double width;
     
+    //sets note parameters in the constructor
     public Note(int noteNum, double length, double positionX, double width) {
         this.noteNum = noteNum;
         this.length = length;
@@ -17,6 +18,7 @@ public class Note {
         this.isPlaying = false;
     }
 
+    //getters and setters
     public int getNoteNum() {
         return noteNum;
     }

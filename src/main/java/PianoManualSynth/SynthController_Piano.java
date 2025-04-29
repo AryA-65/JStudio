@@ -1,7 +1,6 @@
 package PianoManualSynth;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -9,14 +8,12 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javafx.scene.control.TextField;
 import org.JStudio.Plugins.Controllers.PopUpController;
 import org.JStudio.Plugins.Synthesizer.Utility;
-import static org.JStudio.Plugins.Views.ReverbStage.scene;
 import org.JStudio.SettingsController;
 
 public class SynthController_Piano {
@@ -24,12 +21,17 @@ public class SynthController_Piano {
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
     private final double[] oscillatorFrequencies = new double[3];
+    private double frequency = 0;
     private final int NORMALIZER = 6;
-    Random random = new Random();
-    String txt1 = "Sine", txt2 = "Sine", txt3 = "Sine";
+    private int wavePos;
+    private boolean shouldGenerate;
+    private Random random = new Random();
+    private String txt1 = "Sine", txt2 = "Sine", txt3 = "Sine";
     private AudioThread auTh;
-    private Scene tempScene;
     private Stage tempStage;
+    private SynthPianoController notesController;
+    private PopUpController popUpController;
+    private GraphicsContext gc;
     @FXML
     private MenuButton functionChooser1, functionChooser2, functionChooser3;
     @FXML
@@ -42,25 +44,18 @@ public class SynthController_Piano {
     private Button playSynthButton;
     @FXML
     private TextField frequencyTextField;
-    private boolean shouldGenerate;
-    private int wavePos;
-    private SynthPianoController notesController;
-    private double frequency = 0;
-    private PopUpController popUpController;
-    private GraphicsContext gc;
 
+    //setter
     public void setNotesController(SynthPianoController nc) {
         notesController = nc;
-    }
-    
-    public AudioThread getAudioThread(){
-        return auTh;
     }
 
     @FXML
     public void initialize() {
+        //initialize popup controller to make popups if necessary
         popUpController = new PopUpController();
 
+        //setup UI elements
         setupMenu(functionChooser1);
         setupMenu(functionChooser2);
         setupMenu(functionChooser3);
@@ -76,18 +71,22 @@ public class SynthController_Piano {
         sliderSetUp(volume2, 1);
         sliderSetUp(volume3, 1);
 
+        //Add listener to automatically remove any non-numerical values from the frequency text field
         frequencyTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 frequencyTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
+        //plays the synth depending on the sliders, the waveform, and the frequency set by the user
         playSynthButton.setOnMousePressed(e -> {
+            //asks the user to input a frequency if they have not
             if (frequencyTextField.getText().isBlank()) {
                 popUpController.showWarningPopup("Please enter a frequency");
                 tempStage.requestFocus();
                 tempStage.toFront();
             } else {
+                //calculates the frequency depending on the tone slider and plays the synth audio
                 frequency = Double.parseDouble(frequencyTextField.getText());
 
                 oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
@@ -98,16 +97,20 @@ public class SynthController_Piano {
             }
         });
 
+        //stop audio when user releases the play button
         playSynthButton.setOnMouseReleased(e -> {
             stopAudio(auTh);
         });
 
+        //Adds a new track with the user's synth settings
         addTrackButton.setOnAction(event -> {
+            //asks the user to input a frequency if they have not
             if (frequencyTextField.getText().isBlank()) {
                 popUpController.showWarningPopup("Please enter a frequency");
                 tempStage.requestFocus();
                 tempStage.toFront();
             } else {
+                //adds a new track
                 frequency = Double.parseDouble(frequencyTextField.getText());
 
                 notesController.addTrack(frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
@@ -115,6 +118,7 @@ public class SynthController_Piano {
             }
         });
 
+        //creates a new thread that draws the waveform while playing the synth audio
         auTh = new AudioThread(() -> {
             if (!shouldGenerate) {
                 return null;
@@ -135,13 +139,14 @@ public class SynthController_Piano {
                 }
 
                 s[i] = (short) (Short.MAX_VALUE * mixedSample);
-                wavePos += 1;//(int) (speedFactor);
+                wavePos += 1;
             }
             drawWaveform(s);
             return s;
         });
     }
 
+    //generates the audio samples to be played depending on the user's set parameters
     public double generateWaveSample(String waveformType, double frequency, int wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
 
@@ -162,17 +167,20 @@ public class SynthController_Piano {
         };
     }
     
+    //plays the synth audio
     public void playAudio(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         gc = waveformCanvas.getGraphicsContext2D();
         shouldGenerate = true;
         auTh.triggerPlayback();
     }
 
+    //stops the synth audio and clears the canvas that draws the waveform
     public void stopAudio(AudioThread auTh) {
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
         auTh.pause();
     }
     
+    //sets onCloseRequest to properly close any threads
     private void closeApplication() {
         if (tempStage == null) {
             System.err.println("tempStage is not set, cannot close application");
@@ -186,16 +194,13 @@ public class SynthController_Piano {
         });
     }
 
+    //sets slider parameters
     private void sliderSetUp(Slider slider, int border) {
         slider.setMax(border);
         if (border == 1) {
             slider.setValue(border);
             slider.setMax(border);
             slider.setMin(0);
-        } else if (border == 10) {
-            slider.setValue(1);
-            slider.setMin(1);
-            slider.setMax(border);
         } else {
             slider.setValue(0);
             slider.setMin(-border);
@@ -206,6 +211,7 @@ public class SynthController_Piano {
         slider.setMajorTickUnit(1);
     }
 
+    //sets menu button parameters
     private void setupMenu(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             item.setOnAction(event -> {
@@ -222,6 +228,7 @@ public class SynthController_Piano {
         }
     }
 
+    //sets the initial selection of the menu buttons
     private void setDefaultMenuSelection(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             if (item.getText().equals("Sine")) {
@@ -231,19 +238,17 @@ public class SynthController_Piano {
         }
     }
 
-    public void setScene(Scene scene) {
-        this.tempScene = scene;
-        //setupKeyboardListeners();
-    }
-
+    //sets the stage
     public void setStage(Stage stage) {
         this.tempStage = stage;
         closeApplication();
     }
 
+    //Draws the synth audio waveform depending on the user's set parameters
     private void drawWaveform(short[] audioBuffer) {
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
+        //change color of the wave depending on dark/light mode
         if (SettingsController.getStyle()) {
             gc.setStroke(javafx.scene.paint.Color.WHITE);
         } else {

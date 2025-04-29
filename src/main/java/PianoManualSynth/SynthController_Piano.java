@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import javafx.scene.control.TextField;
 import org.JStudio.Plugins.Controllers.PopUpController;
+import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.JStudio.Plugins.Views.ReverbStage.scene;
 import org.JStudio.SettingsController;
 

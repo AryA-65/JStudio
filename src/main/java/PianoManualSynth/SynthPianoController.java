@@ -23,6 +23,7 @@ import java.util.*;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
+import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALC;

@@ -30,7 +30,7 @@ public class SynthMain {
             mainScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         }
         stage.setScene(mainScene);
-
+        
         if (myController != null) {
             System.out.println("Is not null");
             myController.setScene(mainScene);

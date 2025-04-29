@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.SettingsController;
 
@@ -14,13 +15,18 @@ public class SynthPiano{
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));
-            Scene scene = new Scene(root,1500,900);
+            stage.setMaximized(true);
+            
+            FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));
+            Parent root = fxmlLoader.load();
+            
+            Scene scene = new Scene(root,Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
             if (SettingsController.getStyle()) {
             scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
             }
+            
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {

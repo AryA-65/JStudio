@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.SettingsController;
 
@@ -17,9 +18,10 @@ public class Piano {
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setMaximized(true);
             
             Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Piano.fxml"));
-            Scene scene = new Scene(root,1500,900);
+            Scene scene = new Scene(root,Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

@@ -20,8 +20,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.JStudio.Plugins.Controllers.PopUpController;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
@@ -52,10 +50,16 @@ public class NotesController {
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
-    
+
+    private long device;
+    private long context;
+    private int buffer;
+    private int source;
+
     private TranslateTransition movePlaybackLine;
     
-    
+    private Thread trackThread;
+
     Random random = new Random();
 
     @FXML
@@ -96,9 +100,29 @@ public class NotesController {
 
         mainPane.setPrefWidth(labelVBox.getPrefWidth() + newPaneWidth);
 
-        playButton.setOnAction(e -> playNotes());
+        playButton.setOnAction(e -> {
+            if (source != 0 && buffer != 0 && context != 0 && device != 0) {
+                alDeleteSources(source);
+                alDeleteBuffers(buffer);
+                alcDestroyContext(context);
+                alcCloseDevice(device);
+            }
+            playNotes();
+        });
 
-        addNoteTrack.setOnAction(e -> openTrackOptions());
+        addNoteTrack.setOnAction(e -> {
+            if (movePlaybackLine != null) {
+                movePlaybackLine.stop();
+            }
+            if (source != 0 && buffer != 0 && context != 0 && device != 0) {
+                alDeleteSources(source);
+                alDeleteBuffers(buffer);
+                alcDestroyContext(context);
+                alcCloseDevice(device);
+            }
+
+            openTrackOptions();
+        });
     }
 
     private void addNote(MouseEvent e) {
@@ -290,82 +314,77 @@ public class NotesController {
     }
 
     private void playNotes() {
-        Thread thread = new Thread(()->{
-            
-        long device = alcOpenDevice((ByteBuffer) null);
-        long context = alcCreateContext(device, (IntBuffer) null);
-        alcMakeContextCurrent(context);
-        AL.createCapabilities(ALC.createCapabilities(device));
         
-        int trackLengthSeconds = 30;
-        double sampleRate = 44100;
+        trackThread = new Thread(() -> {
 
-        int totalSamples = (int) (trackLengthSeconds * sampleRate);
-        short[] finalTrackSamples = new short[totalSamples];
+            device = alcOpenDevice((ByteBuffer) null);
+            context = alcCreateContext(device, (IntBuffer) null);
+            alcMakeContextCurrent(context);
+            AL.createCapabilities(ALC.createCapabilities(device));
 
-        int wavePos = 1;
-        for (int i = 0; i < totalSamples; i++) {
-            double currentTime = (double) i / sampleRate; // current time in seconds
-            double mixedSample = 0;
+            int trackLengthSeconds = 30;
+            double sampleRate = 44100;
 
-            for (NotesView noteView : allNoteViews) {
-                Note note = noteView.getNote();
-                if (note.isActive(currentTime)) { // Check if this note is playing now
-                    //mixedSample += note.generateSample(currentTime);
-                    int NORMALIZER = 6;
-                    NotesTrack track = note.getTrack();
-                    if(track.getTone1Value() != 0){
-                        mixedSample += (generateWaveSample(track.getText1(), Utility.Math.offsetTone(207, track.getTone1Value()), wavePos) * track.getVolume1Value())/NORMALIZER;
-                    }
-                    if(track.getTone2Value() != 0){
-                        mixedSample += (generateWaveSample(track.getText2(), Utility.Math.offsetTone(207, track.getTone2Value()), wavePos) * track.getVolume2Value())/NORMALIZER;
-                    }
-                    if(track.getTone3Value() != 0){
-                        mixedSample += (generateWaveSample(track.getText3(), Utility.Math.offsetTone(207, track.getTone3Value()), wavePos) * track.getVolume3Value())/NORMALIZER;
+            int totalSamples = (int) (trackLengthSeconds * sampleRate);
+            short[] finalTrackSamples = new short[totalSamples];
+
+            int wavePos = 1;
+            for (int i = 0; i < totalSamples; i++) {
+                double currentTime = (double) i / sampleRate; // current time in seconds
+                double mixedSample = 0;
+
+                for (NotesView noteView : allNoteViews) {
+                    Note note = noteView.getNote();
+                    if (note.isActive(currentTime)) { // Check if this note is playing now
+                        int NORMALIZER = 6;
+                        NotesTrack track = note.getTrack();
+                        if (track.getTone1Value() != 0) {
+                            mixedSample += (generateWaveSample(track.getText1(), Utility.Math.offsetTone(track.getFrequency(), track.getTone1Value()), wavePos) * track.getVolume1Value()) / NORMALIZER;
+                        }
+                        if (track.getTone2Value() != 0) {
+                            mixedSample += (generateWaveSample(track.getText2(), Utility.Math.offsetTone(track.getFrequency(), track.getTone2Value()), wavePos) * track.getVolume2Value()) / NORMALIZER;
+                        }
+                        if (track.getTone3Value() != 0) {
+                            mixedSample += (generateWaveSample(track.getText3(), Utility.Math.offsetTone(track.getFrequency(), track.getTone3Value()), wavePos) * track.getVolume3Value()) / NORMALIZER;
+                        }
                     }
                 }
+                finalTrackSamples[i] = (short) (mixedSample * Short.MAX_VALUE);
+                wavePos += 1;
             }
-            finalTrackSamples[i] = (short) (mixedSample * Short.MAX_VALUE);
-            wavePos +=1;
-            
-//            if(finalTrackSamples[i] != 0){
-//                System.out.println(finalTrackSamples[i]);
-//            }
-        }
-        
-        
-        int buffer = alGenBuffers();
-        int source = alGenSources();
 
-        alBufferData(buffer, AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
-        alSourcei(source, AL_BUFFER, buffer);
-        alSourcePlay(source);
-        
-        movePlaybackLine.play();
+            buffer = alGenBuffers();
+            source = alGenSources();
 
-        while (alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                System.out.println("Error: "+ex.getMessage());
+            alBufferData(buffer, AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
+            alSourcei(source, AL_BUFFER, buffer);
+            alSourcePlay(source);
+
+            movePlaybackLine.play();
+
+            while (alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    System.out.println("Error: " + ex.getMessage());
+                }
             }
-        }
 
-        alDeleteSources(source);
-        alDeleteBuffers(buffer);
-        alcDestroyContext(context);
-        alcCloseDevice(device);
-
+            alDeleteSources(source);
+            alDeleteBuffers(buffer);
+            alcDestroyContext(context);
+            alcCloseDevice(device);
         });
+        
         movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
         movePlaybackLine.setInterpolator(Interpolator.LINEAR);
         movePlaybackLine.setFromX(playbackLineStartPos);
         movePlaybackLine.setToX(currentTrack.getWidth());
         movePlaybackLine.setCycleCount(1);
-        
-        thread.start();
+
+        trackThread.start();
     }
-    
+
     //returns an array list of all notes in the pane
     private ArrayList<NotesView> getNotes() {
         //create 

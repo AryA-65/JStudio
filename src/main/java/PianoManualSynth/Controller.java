@@ -43,13 +43,17 @@ public class Controller {
     private TextField frequencyTextField;
     private boolean shouldGenerate;
     private int wavePos;
-//    private double speedFactor = 1;
     private NotesController notesController;
     private double frequency = 0;
     private PopUpController popUpController;
+    private GraphicsContext gc;
 
     public void setNotesController(NotesController nc) {
         notesController = nc;
+    }
+    
+    public AudioThread getAudioThread(){
+        return auTh;
     }
 
     @FXML
@@ -71,14 +75,6 @@ public class Controller {
         sliderSetUp(volume2, 1);
         sliderSetUp(volume3, 1);
 
-//        sliderSetUp(playSpeed, 10);
-//        updateSlider(tone1, 0, true);
-//        updateSlider(tone2, 1, true);
-//        updateSlider(tone3, 2, true);
-//
-//        updateSlider(volume1, 0, false);
-//        updateSlider(volume2, 1, false);
-//        updateSlider(volume3, 2, false);
         frequencyTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 frequencyTextField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -143,11 +139,6 @@ public class Controller {
             drawWaveform(s);
             return s;
         });
-
-//        for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {
-//            KEY_FREQUENCIES.put(Utility.AudioInfo.KEYS[key], Utility.Math.getKeyFrequency(i));
-//        }
-        //playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
     }
 
     public double generateWaveSample(String waveformType, double frequency, int wavePosition) {
@@ -169,70 +160,18 @@ public class Controller {
                 throw new RuntimeException("Oscillator is set to unknown waveform");
         };
     }
-
-//    private void setupKeyboardListeners() {
-//        if (tempScene == null) {
-//            System.err.println("tempScene is not set, cannot set up keyboard listeners");
-//            return;
-//        }
-//
-//        tempScene.setOnKeyPressed(event -> {
-//            if (!auTh.isRunning()) {
-//                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-//                if (KEY_FREQUENCIES.containsKey(key)) {
-//
-//                    double frequency = KEY_FREQUENCIES.get(key);
-//
-//                    oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
-//                    oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
-//                    oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
-//
-//                    if (tone1.getValue() == 0 && tone2.getValue() == 0 && tone3.getValue() == 0) {
-//                        return;
-//                    }
-//                    if (volume1.getValue() == 0 && volume2.getValue() == 0 && volume3.getValue() == 0) {
-//                        return;
-//                    }
-//                    shouldGenerate = true;
-//                    auTh.triggerPlayback();
-//                }
-//            }
-//        });
-//
-//        tempScene.setOnKeyReleased(event -> {
-//            if (tempScene.getOnKeyPressed() != null) {
-//                shouldGenerate = false;
-//            }
-//        });
-//    }
+    
     public void playAudio(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+        gc = waveformCanvas.getGraphicsContext2D();
         shouldGenerate = true;
         auTh.triggerPlayback();
     }
 
     public void stopAudio(AudioThread auTh) {
+        gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
         auTh.pause();
     }
-
-//    private void updateSlider(Slider slider, int index, boolean isToneSlider) {
-//        slider.valueProperty().addListener((obs, oldValue, newValue) -> {
-//
-//            if (isToneSlider && tempScene != null) {
-//                tempScene.setOnKeyPressed(event -> {
-//                    char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-//                    if (KEY_FREQUENCIES.containsKey(key)) {
-//                        double frequency = KEY_FREQUENCIES.get(key);
-//                        oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency, newValue.doubleValue());
-//                    }
-//
-//                    if (!auTh.isRunning() && (volume1.getValue() > 0 || volume2.getValue() > 0 || volume3.getValue() > 0)) {
-//                        shouldGenerate = true;
-//                        auTh.triggerPlayback();
-//                    }
-//                });
-//            }
-//        });
-//    }
+    
     private void closeApplication() {
         if (tempStage == null) {
             System.err.println("tempStage is not set, cannot close application");
@@ -302,7 +241,6 @@ public class Controller {
     }
 
     private void drawWaveform(short[] audioBuffer) {
-        GraphicsContext gc = waveformCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
         if (SettingsController.getStyle()) {
@@ -331,8 +269,4 @@ public class Controller {
             gc.strokeLine(x1, y1, x2, y2);
         }
     }
-
-//    public void setSpeedFactor(double speedFactor) {
-//        this.speedFactor = speedFactor;
-//    }
 }

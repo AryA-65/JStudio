@@ -2,7 +2,7 @@ package PianoManualSynth;
 
 import javafx.scene.layout.Pane;
 
-public class NotesTrack extends Pane{
+public class PianoTrack extends Pane{
     private double frequency;
     private String txt1;
     private String txt2;
@@ -59,7 +59,7 @@ public class NotesTrack extends Pane{
         return auTh;
     }
 
-    public NotesTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+    public PianoTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         //this.auTh = auTh;
         this.frequency = frequency;
         this.txt1 = txt1;

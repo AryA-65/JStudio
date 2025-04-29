@@ -4,25 +4,25 @@ import PianoSection.Models.*;
 
 public class Note {
 
-    private NotesTrack track;
-    private NotesView noteView;
+    private PianoTrack track;
+    private NoteView noteView;
     private boolean isPlaying;
     private double startTime;
     private double endTime;
 
-    public Note(NotesTrack track) {
+    public Note(PianoTrack track) {
         this.track = track;
     }
 
-    public NotesView getNoteView() {
+    public NoteView getNoteView() {
         return noteView;
     }
 
-    public void setNoteView(NotesView noteView) {
+    public void setNoteView(NoteView noteView) {
         this.noteView = noteView;
     }
 
-    public NotesTrack getTrack() {
+    public PianoTrack getTrack() {
         return track;
     }
 

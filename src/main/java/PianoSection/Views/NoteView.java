@@ -4,10 +4,10 @@ import PianoSection.Models.Note;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class NotesView extends Rectangle {
+public class NoteView extends Rectangle {
     private Note note;
 
-    public NotesView(Note note, double height) {
+    public NoteView(Note note, double height) {
         super(note.getWidth(), height);
         this.note = note;
         setLayoutX(note.getPositionX());

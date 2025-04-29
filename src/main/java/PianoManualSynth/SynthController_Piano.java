@@ -18,7 +18,7 @@ import org.JStudio.Plugins.Controllers.PopUpController;
 import static org.JStudio.Plugins.Views.ReverbStage.scene;
 import org.JStudio.SettingsController;
 
-public class Controller {
+public class SynthController_Piano {
 
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
@@ -43,12 +43,12 @@ public class Controller {
     private TextField frequencyTextField;
     private boolean shouldGenerate;
     private int wavePos;
-    private NotesController notesController;
+    private SynthPianoController notesController;
     private double frequency = 0;
     private PopUpController popUpController;
     private GraphicsContext gc;
 
-    public void setNotesController(NotesController nc) {
+    public void setNotesController(SynthPianoController nc) {
         notesController = nc;
     }
     

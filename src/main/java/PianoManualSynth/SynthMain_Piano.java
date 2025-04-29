@@ -8,10 +8,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import org.JStudio.SettingsController;
 
-public class SynthMain {
-    private NotesController notesController;
+public class SynthMain_Piano {
+    private SynthPianoController notesController;
     
-    public void setNotesController(NotesController nc){
+    public void setNotesController(SynthPianoController nc){
         notesController = nc;
     }
     
@@ -21,9 +21,9 @@ public class SynthMain {
         FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/synthPianoWaveGen.fxml"));
         Parent root = fxmlLoader.load();
 
-        Controller myController = fxmlLoader.getController();
+        SynthController_Piano myController = fxmlLoader.getController();
         myController.setNotesController(notesController);
-        Scene mainScene = new Scene(root, 650, 400);
+        Scene mainScene = new Scene(root, 650, 450);
         if (SettingsController.getStyle()) {
             mainScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
         } else {

@@ -3,10 +3,10 @@ package PianoManualSynth;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class NotesView extends Rectangle {
+public class NoteView extends Rectangle {
     private Note note;
 
-    public NotesView(Note note, double width, double height, double positionX) {
+    public NoteView(Note note, double width, double height, double positionX) {
         super(width, height);
         note.setNoteView(this);
         this.note = note;

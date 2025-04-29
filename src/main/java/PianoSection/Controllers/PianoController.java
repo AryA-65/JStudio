@@ -1,7 +1,7 @@
 package PianoSection.Controllers;
 
 import PianoSection.Models.Note;
-import PianoSection.Views.NotesView;
+import PianoSection.Views.NoteView;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-public class NotesController {
+public class PianoController {
 
     private final double NOTE_BASE_WIDTH = 50;
     private final double NOTE_HEIGHT = 100;
@@ -29,8 +29,8 @@ public class NotesController {
     private final double NOTE_MIN_WIDTH = 50;
 
     private Pane currentPane;
-    private ArrayList<NotesView> allNoteViews = new ArrayList<>();
-    private List<NotesView> currentNoteViews = new ArrayList<>();
+    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
+    private List<NoteView> currentNoteViews = new ArrayList<>();
 
     private double oldMousePos;
     private double newMousePos;
@@ -112,7 +112,7 @@ public class NotesController {
         //if the are not intersection issues then add a note to the pane
         if (!overlaps) {
             Note newNote = new Note(noteNum, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2, NOTE_BASE_WIDTH);
-            NotesView noteView = new NotesView(newNote, NOTE_HEIGHT);
+            NoteView noteView = new NoteView(newNote, NOTE_HEIGHT);
             noteView.setLayoutX(x - NOTE_BASE_WIDTH / 2);
             noteView.getNote().setNoteNum(noteNumStart + Integer.parseInt(currentPane.getId().replace("pane", ""))); //set the note number of the note to the corresponding synth note number
             dragNote(noteView); //make the rectangle draggable
@@ -143,7 +143,7 @@ public class NotesController {
         allNoteViews.remove(e.getSource());
     }
 
-    private void dragNote(NotesView noteView) {
+    private void dragNote(NoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
@@ -208,7 +208,7 @@ public class NotesController {
 
     }
 
-    private void detectOverlap(NotesView noteView, double nextPosX, double nextWidth) {
+    private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
         tempRect.setLayoutX(nextPosX);
@@ -239,7 +239,7 @@ public class NotesController {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                for (NotesView noteView : allNoteViews) {
+                for (NoteView noteView : allNoteViews) {
                     Shape intersection = Shape.intersect(playbackLine, noteView);
                     
                     if (intersection.getBoundsInLocal().getWidth() > 0 ||
@@ -276,11 +276,11 @@ public class NotesController {
     }
 
     //returns an array list of all notes in the pane
-    private ArrayList<NotesView> getNotes() {
+    private ArrayList<NoteView> getNotes() {
         //create 
-        ArrayList<NotesView> currentNoteViews = new ArrayList<>();
+        ArrayList<NoteView> currentNoteViews = new ArrayList<>();
         for (Node n : currentPane.getChildren()) {
-            currentNoteViews.add((NotesView) n);
+            currentNoteViews.add((NoteView) n);
         }
         return currentNoteViews;
     }

@@ -28,21 +28,21 @@ import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.AL;
 
-public class NotesController {
+public class SynthPianoController {
 
     private final double NOTE_BASE_WIDTH = 50;
     private final double NOTE_HEIGHT = 27;
     private final double RESIZE_BORDER = 10;
     private final double NOTE_MIN_WIDTH = 50;
 
-    private NotesTrack currentTrack;
-    private ArrayList<NotesView> allNoteViews = new ArrayList<>();
-    private List<NotesView> currentNoteViews = new ArrayList<>();
+    private PianoTrack currentTrack;
+    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
+    private List<NoteView> currentNoteViews = new ArrayList<>();
 
     private double oldMousePos;
     private double newMousePos;
 
-    private Controller synthController;
+    private SynthController_Piano synthController;
 
     private int notesTrackWidth = 5320;
     private int newPaneWidth = 0;
@@ -79,13 +79,13 @@ public class NotesController {
 
     private double playbackLineStartPos;
 
-    public Controller getSynth() {
+    public SynthController_Piano getSynth() {
         return synthController;
     }
 
     @FXML
     public void initialize() {
-        synthController = new Controller();
+        synthController = new SynthController_Piano();
         synthController.setNotesController(this);
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -152,7 +152,7 @@ public class NotesController {
         //if the are not intersection issues then add a note to the pane
         if (!overlaps) {
             Note newNote = new Note(currentTrack);
-            NotesView noteView = new NotesView(newNote, NOTE_BASE_WIDTH, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2);
+            NoteView noteView = new NoteView(newNote, NOTE_BASE_WIDTH, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2);
             dragNote(noteView); //make the rectangle draggable
             noteView.setOnMousePressed(event -> {
                 if (event.getButton() == MouseButton.SECONDARY) {
@@ -175,7 +175,7 @@ public class NotesController {
         allNoteViews.remove(e.getSource());
     }
 
-    private void dragNote(NotesView noteView) {
+    private void dragNote(NoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
@@ -240,7 +240,7 @@ public class NotesController {
 
     }
 
-    private void detectOverlap(NotesView noteView, double nextPosX, double nextWidth) {
+    private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
         tempRect.setLayoutX(nextPosX);
@@ -263,7 +263,7 @@ public class NotesController {
     }
 
     public void openTrackOptions() {
-        SynthMain synth = new SynthMain();
+        SynthMain_Piano synth = new SynthMain_Piano();
         synth.setNotesController(this);
         try {
             synth.open();
@@ -284,7 +284,7 @@ public class NotesController {
         label.setStyle("-fx-border-color: #000000");
         labelVBox.getChildren().add(label);
 
-        NotesTrack track = new NotesTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
+        PianoTrack track = new PianoTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
         track.setId("pane" + noteTracks.getChildren().size());
         track.setPrefSize(1820.0, 27.0);
         track.setMaxWidth(notesTrackWidth);
@@ -333,11 +333,11 @@ public class NotesController {
                 double currentTime = (double) i / sampleRate; // current time in seconds
                 double mixedSample = 0;
 
-                for (NotesView noteView : allNoteViews) {
+                for (NoteView noteView : allNoteViews) {
                     Note note = noteView.getNote();
                     if (note.isActive(currentTime)) { // Check if this note is playing now
                         int NORMALIZER = 6;
-                        NotesTrack track = note.getTrack();
+                        PianoTrack track = note.getTrack();
                         if (track.getTone1Value() != 0) {
                             mixedSample += (generateWaveSample(track.getText1(), Utility.Math.offsetTone(track.getFrequency(), track.getTone1Value()), wavePos) * track.getVolume1Value()) / NORMALIZER;
                         }
@@ -386,11 +386,11 @@ public class NotesController {
     }
 
     //returns an array list of all notes in the pane
-    private ArrayList<NotesView> getNotes() {
+    private ArrayList<NoteView> getNotes() {
         //create 
-        ArrayList<NotesView> currentNoteViews = new ArrayList<>();
+        ArrayList<NoteView> currentNoteViews = new ArrayList<>();
         for (Node n : currentTrack.getChildren()) {
-            currentNoteViews.add((NotesView) n);
+            currentNoteViews.add((NoteView) n);
         }
         return currentNoteViews;
     }

@@ -1,6 +1,8 @@
 package org.JStudio.Plugins.Models;
 
 import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Reverb plugin that takes in audio data and applies a reverb effect to it
@@ -12,6 +14,7 @@ public class Reverb extends Plugin {
     private int preDelay;
     private int diffusion;
     private ArrayList<short[]> delayLines = new ArrayList<>();
+    private StringProperty name = new SimpleStringProperty("Reverb");
 
     // Creates a reverb
     public Reverb(int preDelay, int decay, int diffusion, double wetDryFactor) {

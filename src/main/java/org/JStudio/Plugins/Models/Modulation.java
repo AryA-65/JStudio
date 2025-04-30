@@ -1,6 +1,8 @@
 package org.JStudio.Plugins.Models;
 
 import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Modulation plugin that takes in audio data and applies a flanging or chorus effect on it
@@ -11,6 +13,7 @@ public class Modulation extends Plugin{
     private double frequency;
     private double wetDryFactor;
     private int deviation;
+    private StringProperty name = new SimpleStringProperty();
 
     // Creates a modulator
     public Modulation(double frequency, int deviation, double wetDryFactor) {
@@ -87,5 +90,13 @@ public class Modulation extends Plugin{
     */
     public void setWetDryFactor(double wetDryFactor) {
         this.wetDryFactor = wetDryFactor;
+    }
+
+    /**
+     * Sets the name of the modulation plugin (flanger/chorus)
+     * @param name the name of the plugin
+     */
+    public void setName(String name) {
+        this.name.set(name);
     }
 }

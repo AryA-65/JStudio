@@ -1,5 +1,8 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Phaser plugin that takes in audio data and applies a phasing effect on it
  * @author Theodore Georgiou
@@ -8,6 +11,7 @@ public class PhaserPlugin extends Plugin {
     private double frequency;
     private double wetDryFactor;
     private int deviation;
+    private StringProperty name = new SimpleStringProperty("Phaser");
 
     // Creates a phaser
     public PhaserPlugin(double frequency, int deviation, double wetDryFactor) {

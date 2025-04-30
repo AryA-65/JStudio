@@ -40,6 +40,7 @@ public class FlangerFXMLController {
     @FXML
     public void initialize() {
         flanger = new Modulation(100000, 100, 0.5); // Create a flanger
+        flanger.setName("Flanger");
         
         frequencyKnob.setTranslateX(25);
         deviationKnob.setTranslateX(25);

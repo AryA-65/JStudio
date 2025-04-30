@@ -36,6 +36,7 @@ public class ChorusFXMLController {
     @FXML
     public void initialize() {
         chorus = new Modulation(20000, 200, 0.5); // Create a chorus
+        chorus.setName("Chorus");
         
         frequencyKnob.setTranslateX(25);
         deviationKnob.setTranslateX(25);

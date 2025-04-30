@@ -11,9 +11,11 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
+/**
+ * Abstract plugin class that handles basic use (playing, stopping, array conversions)
+ * @author Theo, Ahmet
+ */
 public abstract class Plugin {
     protected String filePathName;
     protected byte[] originalAudio;
@@ -21,7 +23,6 @@ public abstract class Plugin {
     protected SourceDataLine line;
     private Stage stage;
     private Thread playingThread;
-    private StringProperty name = new SimpleStringProperty();
 
     /**
      * Converts audio data from a wav file to a byte array

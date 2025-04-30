@@ -56,6 +56,12 @@ public class Track {
         }
     }
 
+    public void removeClip(Clip clip) {
+        System.out.println("Removing clip");
+        clips.remove(clip);
+        System.out.println(clips.size());
+    }
+
     private void removeClip(Event e) {
         for (Clip clip : clips) {
             if (e.getTarget() == clip) {
@@ -117,6 +123,18 @@ public class Track {
 
     public void setMuted(boolean muted) {
         this.muted.set(muted);
+    }
+
+    public ArrayList<Plugin> getPlugins() {
+        return plugins;
+    }
+
+    public void addPlugin(Plugin plugin) {
+        plugins.add(plugin);
+    }
+
+    public void removePlugin(Plugin plugin) {
+        plugins.remove(plugin);
     }
 
     public StackPane getContainer(int width, int num) {

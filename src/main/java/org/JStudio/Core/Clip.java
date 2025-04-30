@@ -7,9 +7,9 @@ public abstract class Clip {
         this.position = position;
     }
 
-    Clip(int position, int length) {}
+    Clip(double position, int length) {}
 
-    public void setPosition(int position) {
+    public void setPosition(double position) {
         this.position = position;
     }
 

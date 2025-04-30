@@ -16,12 +16,15 @@ public class AudioClip extends Clip {
     AudioClip(double position) {
         super(position);
         this.buffer = new float[2][1024];
+        super.setLength(1024 / 44100);
     }
 
     //test init class
-    public AudioClip(double position, float[][] buff) {
+    public AudioClip(double position, float[][] buff, int sampleRate) {
         super(position);
         this.buffer = buff;
+        this.sampleRate = sampleRate;
+        super.setLength(Math.max(buff[0].length, buff[1] == null ? 0 : buff[1].length) / this.sampleRate);
     }
 
     public void setS_pos(double s_pos) {
@@ -45,57 +48,6 @@ public class AudioClip extends Clip {
     }
 
     public float[][] getBuffer() {return buffer;}
-
-    //this should be handled by the UI class
-    private float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException { //Reading wav file (this method repeats a lot, move every other version to this one)
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-        AudioFormat format = audioInputStream.getFormat();
-
-        this.sampleRate = (int) format.getSampleRate();
-        int sampleSize = format.getSampleSizeInBits();
-        int channels = format.getChannels();
-        byte[] pcmData = audioInputStream.readAllBytes();
-        int bytesPerSample = sampleSize / 8;
-        int totalSamples = pcmData.length / (bytesPerSample * channels);
-
-        float[] leftChannel = new float[totalSamples];
-        float[] rightChannel = (channels == 2) ? new float[totalSamples] : null;
-
-        for (int i = 0; i < totalSamples; i++) {
-            int sampleIndex = i * channels * bytesPerSample;
-
-            // Extract Left Channel
-            leftChannel[i] = extractSample(pcmData, sampleIndex, sampleSize);
-
-            // Extract Right Channel (if Stereo)
-            if (channels == 2) {
-                rightChannel[i] = extractSample(pcmData, sampleIndex + bytesPerSample, sampleSize);
-            }
-        }
-
-        int frames = (int) audioInputStream.getFrameLength();
-        this.setLength(frames / sampleRate);
-        return new float[][]{leftChannel, rightChannel};
-    }
-
-    private float extractSample(byte[] data, int index, int bitDepth) { //Extracting audio (support for 8, 16 and 24 bit audio - 32 bit will also be supported soon)
-        int sample = 0;
-
-        //combine this with the edian class that ahmet made (arya)
-        if (bitDepth == 8) {
-            sample = (data[index] & 0xFF) - 128;
-            return sample / 128.0f; //converting unsigned 8-bit to signed
-        } else if (bitDepth == 16) {
-            sample = ((data[index + 1] << 8) | (data[index] & 0xFF));
-            return sample / 32768.0f; //converting 16-bit signed to unsigned
-        } else if (bitDepth == 24) {
-            sample = ((data[index + 2] << 16) | ((data[index + 1] & 0xFF) << 8) | (data[index] & 0xFF));
-            if (sample > 0x7FFFFF) sample -= 0x1000000; //converting 24-bit signed to unsigned
-            return sample / 8388608.0f;
-        }
-
-        return sample; // Unsupported bit depth
-    }
 
     public int getSampleRate() {
         return sampleRate;

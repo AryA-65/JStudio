@@ -200,6 +200,10 @@ public abstract class Plugin {
         return converter.process(array);
     }
 
+    public String getName() {
+        return "";
+    }
+
     /**
      * Method to be used in conversion
      *

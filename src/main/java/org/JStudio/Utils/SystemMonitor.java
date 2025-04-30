@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SystemMonitor {
+public class SystemMonitor { //make into static class
     private final int DUR = 60;
     private final LinkedList<Double> CPUBUFF = new LinkedList<>(), MEMBUFF = new LinkedList<>();
     private final OperatingSystemMXBean OS = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -54,9 +54,8 @@ public class SystemMonitor {
 
     private void updateData() {
         double cpuUsage = OS.getCpuLoad();
-
-        Runtime rt = Runtime.getRuntime();
-        double norm = (double) (rt.totalMemory() - rt.freeMemory()) / rt.totalMemory();
+//        double norm = (OS.getTotalMemorySize() - OS.getFreeMemorySize()) / 1e9;
+        double norm = (double) (OS.getTotalMemorySize() - OS.getFreeMemorySize()) / OS.getTotalMemorySize();
 
         synchronized (CPUBUFF) {
             if (CPUBUFF.size() >= DUR) CPUBUFF.removeFirst();
@@ -104,9 +103,9 @@ public class SystemMonitor {
         Color c;
 
         if (sl) {
-            c = Color.web("#F57C00");
+            c = Color.web("#f89820");
         } else {
-            c = Color.web("#118AB2");
+            c = Color.web("#5382a1");
         }
 
         gc.setFill(c);
@@ -136,7 +135,7 @@ public class SystemMonitor {
             }
         } else {
             if (sl) {
-                gc.fillText(String.format("%.2f GB", MEMBUFF.getLast()), 2, 6);
+                gc.fillText(String.format("%1.2f %%", MEMBUFF.getLast()), 2, 6);
             } else {
                 gc.fillText(String.format("%3.0f %%", CPUBUFF.getLast() * 100), 2, 18);
             }

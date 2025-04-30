@@ -2,36 +2,34 @@ package org.JStudio;
 
 import PianoManualSynth.SynthPiano;
 import PianoSection.Piano;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
 import org.JStudio.Plugins.Views.*;
-import org.JStudio.UI.ChannelUI;
-import org.JStudio.UI.MixerUI;
-import org.JStudio.UI.TrackIDUI;
-import org.JStudio.UI.TrackUI;
+import org.JStudio.UI.*;
+import org.JStudio.Utils.FileLoader;
 import org.JStudio.Utils.SystemMonitor;
 
 import java.util.*;
 
 import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
+import org.JStudio.Utils.TimeConverter;
 
 /*
 MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
@@ -39,6 +37,10 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
 
 public class UIController {
     private Scene scene;
+    @FXML
+    public Pane plugin_pane;
+    @FXML
+    public TabPane channel_pipeline; //make this private but have a return function for it
     @FXML
     private ImageView snap_btn;
     @FXML
@@ -123,19 +125,19 @@ public class UIController {
     @FXML
     private Stage rootStage;
 
-    private SystemMonitor sm;
+    private SystemMonitor sm; //make this a static class that runs
 
     private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
     private boolean resizing = false;
-    private FileLoader fileLoader;
+
+    public static BooleanProperty snap = new SimpleBooleanProperty(true);
 
     //testing params
     private String curUser;
-    private FileCacheController fileLoaderController;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     //part of test params, but this should its own thing
-    private Song song = new Song("test");
+    private Song song = new Song("New Song");
 
     //stage controller functions
     public void setStage(Stage stage) {
@@ -261,7 +263,6 @@ public class UIController {
         export_song_btn.setCursor(Cursor.HAND);
         close_btn.setImage(new Image("/icons/close.png"));
         close_btn.setCursor(Cursor.HAND);
-//        close_btn.setEffect(blend);
         minim_btn.setImage(new Image("/icons/inconify.png"));
         minim_btn.getParent().setCursor(Cursor.HAND);
         maxim_btn.setImage(new Image("/icons/minimize.png"));
@@ -275,11 +276,13 @@ public class UIController {
         record_control.setImage(new Image("/icons/record.png"));
         record_control.getParent().setCursor(Cursor.HAND);
 
-        playback_pos.setText(timeToString(0));
+        playback_pos.setText(TimeConverter.longToString(0));
 
         grid_root.setId("grid_root");
+        open_song_btn.getParent().setId("open_song_btn_parent");
         song_name.getParent().setId("song_name_parent");
         song_name.setId("song_name");
+        save_song_btn.getParent().setId("save_song_btn_parent");
         export_song_btn.getParent().setId("export_song_btn_parent");
         bpm_control.setId("bpm_control");
         record_control.getParent().setId("record_control_parent");
@@ -291,35 +294,38 @@ public class UIController {
         tab_vbox.setId("tab_vbox");
         snap_btn.getParent().setId("snap_btn_parent");
 
+        snap_btn.getParent().getStyleClass().add("iactive");
+        song_name.setText("New Song");
+
         initialHeight = Screen.getPrimary().getVisualBounds().getHeight();
         initialWidth = Screen.getPrimary().getVisualBounds().getWidth();
 
         //more testing
         metronome_control.getParent().setOnMousePressed(e -> {
-            metronome_control.getParent().getStyleClass().add("pressed");
-        });
-
-        metronome_control.getParent().setOnMouseReleased(e -> {
-            metronome_control.getParent().getStyleClass().remove("pressed");
-        });
-
-        snap_btn.getParent().setOnMousePressed(e -> {
-            snap_btn.getParent().getStyleClass().add("pressed");
-        });
-
-        snap_btn.getParent().setOnMouseReleased(e -> {
-            snap_btn.getParent().getStyleClass().remove("pressed");
-        });
-
-        //testing
-        GaussianBlur blur = new GaussianBlur();
-        blur.setRadius(2);
-
-        for (Node node : song_name.getParent().getChildrenUnmodifiable()) {
-            if (node instanceof Rectangle) {
-                node.setEffect(blur);
+            if (metronome_control.getParent().getStyleClass().contains("iactive")) {
+                metronome_control.getParent().getStyleClass().remove("iactive");
+            } else {
+                metronome_control.getParent().getStyleClass().add("iactive");
             }
-        }
+        });
+
+        snap_btn.getParent().setOnMousePressed(e -> snap.set(!snap.get()));
+
+        snap.addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                if (!snap_btn.getParent().getStyleClass().contains("iactive")) snap_btn.getParent().getStyleClass().add("iactive");
+            } else {
+                snap_btn.getParent().getStyleClass().remove("iactive");
+            }
+        });
+
+        record_control.getParent().setOnMousePressed(event -> {
+            if (record_control.getParent().getStyleClass().contains("iactive")) {
+                record_control.getParent().getStyleClass().remove("iactive");
+            } else {
+                record_control.getParent().getStyleClass().add("iactive");
+            }
+        });
 
         //adding different code for nodes
         tab_vbox.setSpacing(15);
@@ -333,10 +339,6 @@ public class UIController {
         info_panel.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             rootStage.setX(event.getScreenX() + xOffset);
             rootStage.setY(event.getScreenY() + yOffset);
-        });
-
-        record_control.setOnMouseClicked(event -> {
-            System.out.println("Pressed record_control");
         });
 
         bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
@@ -402,32 +404,40 @@ public class UIController {
             }
         });
 
+        song_name.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                if (song_name.getText() != null && !song_name.getText().trim().isEmpty()) {
+                    song_name.getParent().requestFocus();
+                }
+            }
+        });
+
         tracks_scrollpane.vvalueProperty().bindBidirectional(track_id_scrollpane.vvalueProperty());
 
         tracks_scrollpane.hvalueProperty().bindBidirectional(timeline_scrollpane.hvalueProperty());
 
         for (Track track : song.getTracks()) {
-            track_vbox.getChildren().addAll(new TrackUI((song.getBpm() * 32), track));
-            track_id_vbox.getChildren().add(new TrackIDUI(track));
+            track_vbox.getChildren().addAll(new TrackUI((Song.bpm.get() * 32), track));
+            track_id_vbox.getChildren().add(new TrackIDUI(track, this));
             channel_rack.getChildren().add(new ChannelUI(track));
         }
 
         //Test functions
-        timeline_canvas.setWidth(song.getBpm() * 32);
+        timeline_canvas.setWidth(Song.bpm.get() * 32);
         curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
 
         channel_rack.getChildren().add(0, new MixerUI()); //test
 
-        song_name.setText(song.getSongName());
+        song_name.textProperty().unbindBidirectional(song.getSongName());
 
         search_samples.textProperty().addListener((observable, oldValue, newValue) -> {
             filterAudioSections(newValue);
         });
 
-        fileLoader = new FileLoader(tab_vbox);
+        FileLoader.init(tab_vbox);
 
-        drawTimeline();
+        new TimelineUI(timeline_canvas);
 
         grid_root.setOnKeyPressed(e -> {
             pressedKeys.add(e.getCode());
@@ -478,41 +488,63 @@ public class UIController {
         }
     }
 
-    private void drawTimeline() {
-        GraphicsContext gc = timeline_canvas.getGraphicsContext2D();
+    //test function
+    public void display_nodes(Track track) {
+        plugin_pane.getChildren().clear();
 
-        Rectangle clip = new Rectangle(timeline_canvas.getWidth(), timeline_canvas.getHeight());
-        clip.setArcHeight(10);
-        clip.setArcWidth(10);
-
-        timeline_canvas.setClip(clip);
-
-        gc.clearRect(0, 0, timeline_canvas.getWidth(), timeline_canvas.getHeight());
-
-        gc.setFill(Color.GREY);
-        gc.fillRoundRect(0,0, timeline_canvas.getWidth(), timeline_canvas.getHeight(), 10, 10);
-
-        gc.setFill(Color.BLACK);
-        gc.setFont(new Font("Inter Regular", 12));
-
-        for (int i = 0; i < timeline_canvas.getWidth(); i++) {
-            if (i % 32 == 0) {
-                short mult = (short) ((i / 32) + 1);
-                gc.fillText(String.valueOf(mult), i, timeline_canvas.getHeight() - 12);
-            }
-            if (i % 8 == 0) {
-                gc.fillRect(i - 1, timeline_canvas.getHeight() - 10, (i % 32 != 0) ? 1 : 2, 8);
-            }
+        if (track == null) {
+            Label message = new Label("No Track Selected: Plugins Unavailable");
+            message.setLayoutX(plugin_pane.getWidth() / 2);
+            message.setLayoutY(plugin_pane.getHeight() / 2);
+            plugin_pane.getChildren().add(message);
+            return;
         }
 
-    }
+        ArrayList<PluginNode> plugins = new ArrayList<>();
 
-    public String timeToString(long time) {
-        long minutes = (time / 60000);
-        long seconds = (time % 60000) / 1000;
-        long milliseconds = time % 1000;
+        double startX = 50;
+        double startY = 100;
 
-        return String.format("%d:%02d:%02d", minutes, seconds, milliseconds);
+        InputNode input = new InputNode(track);
+        input.setLayoutX(startX);
+        input.setLayoutY(startY);
+        plugin_pane.getChildren().add(input);
+
+        startX += 150;
+
+        PluginNode firstNode = null;
+
+        for (Object plugin : track.getPlugins()) {
+            PluginNode node = new PluginNode(plugin);
+            node.setLayoutX(startX);
+            node.setLayoutY(startY);
+
+            plugin_pane.getChildren().add(node);
+            plugins.add(node);
+
+            if (firstNode == null) firstNode = node;
+
+            startX += 200;
+        }
+
+        if (firstNode != null) {
+            Circle firstInput = firstNode.getInputPort();
+            ConnectionUI connection = new ConnectionUI(input.getOutput(), firstInput);
+            plugin_pane.getChildren().add(connection);
+
+            Platform.runLater(() -> connection.update(input.getOutput(), firstInput));
+        }
+
+        for (int i = 0; i < plugins.size() - 1; i++) {
+            Circle from = plugins.get(i).getOutputPort();
+            Circle to = plugins.get(i + 1).getInputPort();
+
+            ConnectionUI connection = new ConnectionUI(from, to);
+            System.out.println("Setting connections: " + track.getName().get());
+            plugin_pane.getChildren().add(connection);
+
+            Platform.runLater(() -> connection.update(from, to));
+        }
     }
 
     public void filterAudioSections(String searchText) {

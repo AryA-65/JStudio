@@ -22,6 +22,7 @@
     -fx-border-width: 0px;
     -fx-border-color: transparent;
     -fx-effect: null;
+    -fx-padding: 0px;
 }
 
 .scroll-pane {
@@ -35,6 +36,12 @@
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 
+}
+
+.text-field {
+    /*-fx-highlight-fill: #f89820;*/
+    -fx-highlight-fill: rgba(0,0,0,0.25);
+    /*-fx-highlight-text-fill: #000000;*/
 }
 
 .text-field:selected {
@@ -52,7 +59,6 @@
 .tab {
     -fx-background-color: #D9D9D9;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-    -fx-transition: -fx-background-color 0.15s;
 }
 
 .tab:hover {
@@ -60,8 +66,7 @@
 }
 
 .tab:selected {
-    -fx-background-color: #c1c1c1;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 10, .25, 3, 3);
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3);
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
@@ -144,12 +149,23 @@
     -fx-background-color: #d9d9d9;
 }
 
+.stackpane {
+    -fx-padding: 0px;
+}
+
 #track_section {
     -fx-background-color: #D9D9D9;
 }
 
 #trackID {
     -fx-background-radius: 5;
+    -fx-border-width: 2px;
+    -fx-border-insets: 2px;
+    -fx-border-radius: 5px;
+}
+
+#trackID.selected_track {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .5, 0, 0);
 }
 
 #trackIDtext {
@@ -192,74 +208,41 @@
     -fx-background-color: #D9D9D9
 }
 
-#song_name_parent {
-    /*-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black; -fx-background-color: #D9D9D9; -fx-background-radius: 5px*/
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#song_name {
-    /*-fx-background-color: transparent; -fx-border-width: 0px 1px 0px 1px; -fx-border-color: black; -fx-border-style: solid; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;*/
-    -fx-background-color: transparent; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;
-}
-
-#export_song_btn_parent {
+#open_song_btn_parent, #song_name, #export_song_btn_parent, #save_song_btn_parent {
     -fx-background-color: #D9D9D9;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
 }
 
-/*#export_song_btn_parent:hover {*/
-/*    -fx-background-color: rgba(0,0,0,0.1);*/
+#open_song_btn_parent:hover, #save_song_btn_parent:hover, #export_song_btn_parent:hover, #snap_btn_parent:hover, #metronome_control_parent:hover, #record_control_parent:hover {
+    -fx-background-color: #c1c1c1;
+}
+
+#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3);
+}
+
+/*#song_name_parent {*/
+/*    !*-fx-border-width: 1px; -fx-border-radius: 5px; -fx-border-style: solid; -fx-border-color: black; -fx-background-color: #D9D9D9; -fx-background-radius: 5px*!*/
+/*    -fx-background-color: #D9D9D9;*/
+/*    !*-fx-background-radius: 6px;*!*/
+/*    !*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*!*/
 /*}*/
 
-/*#export_song_btn_parent:hover {*/
-/*    -fx-background-color: rgba(0,0,0,0.1);*/
-/*}*/
-
-#bpm_control {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+#record_control_parent, #bpm_control, #metronome_control_parent, #playback_pos, #audio_vis_top_parent, #amp_audio_top_parent, #pc_stats_parent, #snap_btn_parent {
+    -fx-background-color: #d9d9d9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3); -fx-background-radius: 5px;
 }
 
 #record_control_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 100%; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+    -fx-background-radius: 100%;
 }
 
-#metronome_control_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+#record_control_parent.iactive, #metronome_control_parent.iactive, #snap_btn_parent.iactive {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3);
 }
 
-#metronome_control_parent:hover {
+#record_control_parent.iactive:hover, #metronome_control_parent.iactive:hover, #snap_btn_parent.iactive:hover {
     -fx-background-color: #c1c1c1;
-}
-
-#metronome_control_parent.pressed {
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3)
-}
-
-#playback_pos {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#audio_vis_top_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#amp_audio_top_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#pc_stats_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#snap_btn_parent {
-    -fx-background-color: #d9d9d9; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
-}
-
-#snap_btn_parent:hover {
-    -fx-background-color: #c1c1c1;
-}
-
-#snap_btn_parent.pressed {
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3)
 }
 
 #track_channel {
@@ -303,6 +286,21 @@
 
 #vis_background {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+}
+
+#output_port, #input_port {
+    -fx-fill: #00FD11;
+    -fx-stroke: black; -fx-stroke-width: 1;
+}
+
+#plugin_node {
+    -fx-background-color: #d9d9d9;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+}
+
+#connection_node {
+    /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*/
 }
 
 /*.slider {*/

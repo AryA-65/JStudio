@@ -2,11 +2,17 @@ package org.JStudio.UI;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import org.JStudio.Core.AudioClip;
 import org.JStudio.Core.Clip;
 import org.JStudio.Core.SynthClip;
+import org.JStudio.UIController;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.JStudio.Core.Song.bpm;
 
 public class ClipUI extends Canvas {
     private final Clip clip;
@@ -15,20 +21,55 @@ public class ClipUI extends Canvas {
 
     private int startOffset = 0, endOffset = -1, shiftOffset = 0; // Shift view
 
-    public ClipUI(Clip clip, double bpm) {
-        super(clip.getLength() * ((double) bpm / 60), 64);
+    public ClipUI(Clip clip) {
+        super(clip.getLength() * ((double) bpm.get() / 60) * 32, 64);
         this.clip = clip;
         gc = getGraphicsContext2D();
 
         widthProperty().addListener((obs, oldVal, newVal) -> redraw());
         heightProperty().addListener((obs, oldVal, newVal) -> redraw());
 
+        setupDrag();
+
         redraw();
+
+        //small test
+        setOnMouseClicked(e -> {
+            selected = !selected;
+            redraw();
+        });
     }
 
 //    public void setEndOffset(double endOffset) {
 //
 //    }
+
+    private void setupDrag() {
+        AtomicBoolean isDragged = new AtomicBoolean(false);
+
+        setOnMouseDragged(e -> {
+           double newX = getLayoutX() + e.getX();
+           newX = Math.max(0, Math.min(newX, ((Pane) getParent()).getWidth() - getWidth()));
+
+           if (UIController.snap.get()) newX = Math.round(newX / 8) * 8;
+
+           setLayoutX(newX);
+
+           if (!isDragged.get()) {
+               isDragged.set(true);
+           }
+        });
+
+        setOnMouseReleased(e -> {
+            if (isDragged.get()) {
+                isDragged.set(false);
+                clip.setPosition((getLayoutX() / 32) * (60 / bpm.get()));
+                System.out.println(clip.getPosition());
+            }
+        });
+
+
+    }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
@@ -48,7 +89,7 @@ public class ClipUI extends Canvas {
             drawSynthClip(gc, (SynthClip) clip);
         }
 
-        if (selected) drawOutline(gc);
+        if (selected) drawOutline();
     }
 
     private void drawAudioClip(GraphicsContext gc, AudioClip audioClip) {
@@ -60,29 +101,39 @@ public class ClipUI extends Canvas {
         float[] left = buffer[0];
 
         int start = Math.max(0, startOffset + shiftOffset);
-        int end = Math.min(left.length - endOffset, left.length);
+        int end = (endOffset == -1) ? left.length : Math.min(left.length - endOffset, left.length);
         int visibleSamples = end - start;
         if (visibleSamples <= 0) return;
 
-        double xScale = (double) width / visibleSamples;
         double yMid = height / 2.0;
 
-        gc.setStroke(Color.LIGHTGREEN);
+        gc.setFill(Color.web("#000000", 0.5));
+        gc.fillRoundRect(0, 0, width, height, 10, 10);
+
+        int samplesPerPixel = Math.max(1, visibleSamples / width);
+        gc.setStroke(Color.LIGHTGREY);
         gc.setLineWidth(1.0);
         gc.beginPath();
-        for (int i = 0; i < visibleSamples; i++) {
-            int sampleIndex = start + i;
-            float sample = left[sampleIndex];
-            double x = i * xScale;
-            double y = yMid - (sample * yMid);
-            if (i == 0) gc.moveTo(x, y);
-            else gc.lineTo(x, y);
+        for (int x = 0; x < width; x++) {
+            int startSample = start + x * samplesPerPixel;
+            int endSample = Math.min(startSample + samplesPerPixel, end);
+            float min = Float.MAX_VALUE, max = Float.MIN_VALUE;
+
+            for (int i = startSample; i < endSample; i++) {
+                float sample = left[i];
+                if (sample < min) min = sample;
+                if (sample > max) max = sample;
+            }
+
+            double y1 = yMid - (max * yMid);
+            double y2 = yMid - (min * yMid);
+            gc.moveTo(x, y1);
+            gc.lineTo(x, y2);
         }
         gc.stroke();
     }
 
     private void drawSynthClip(GraphicsContext gc, SynthClip synthClip) {
-        int width = (int) getWidth();
         int height = (int) getHeight();
 
         gc.setFill(Color.CORNFLOWERBLUE);
@@ -90,19 +141,23 @@ public class ClipUI extends Canvas {
             double noteTime = note.getPosition() + shiftOffset;
             if (noteTime < startOffset || noteTime > synthClip.getLength() - endOffset) continue;
 
-            double x = (noteTime - startOffset) * (getWidth() / (double) synthClip.getLength());
+            double x = (noteTime - startOffset) * (getWidth() / synthClip.getLength());
             double y = height - (note.getNote() * (height / 128.0));
-            double w = 10; // Placeholder width (note duration)
+            double w = 10;
             double h = 10;
 
             gc.fillRect(x, y, w, h);
         }
     }
 
-    private void drawOutline(GraphicsContext gc) {
-        gc.setStroke(Color.ORANGE);
+    private void drawOutline() {
+        gc.setStroke(Color.WHITE);
         gc.setLineWidth(2.0);
         gc.setLineCap(StrokeLineCap.ROUND);
-        gc.strokeRect(1, 1, getWidth() - 2, getHeight() - 2);
+        gc.strokeRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 10, 10);
+    }
+
+    public Clip getNodeClip() {
+        return clip;
     }
 }

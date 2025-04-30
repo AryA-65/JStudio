@@ -56,6 +56,10 @@ public class AudioFileExtractor {
         return ais.getFrameLength() / format.getSampleRate();
     }
 
+    public static int getSampleRate() {
+        return (int) format.getSampleRate();
+    }
+
     public static float[] downsample(float[] samples, int targetSize) {
         float[] downsampled = new float[targetSize];
         int step = samples.length / targetSize;

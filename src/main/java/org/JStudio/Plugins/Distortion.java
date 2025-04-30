@@ -98,64 +98,6 @@ class ClippingDistortion extends Distortion {
     }
 }
 
-class AliasingDistortion extends Distortion {
-    AliasingDistortion(float gain, float mix) {
-        super(gain, mix);
-    }
-
-    @Override
-    public float[] processMono(float[] inputData) {
-        float[] gainedData = applyGain(inputData);
-        float[] output = new float[gainedData.length];
-        for (int i = 0; i < gainedData.length; i++) {
-            output[i] = (float) Math.sin(gainedData[i] * Math.PI);
-        }
-        return applyMixMono(inputData, output);
-    }
-
-    @Override
-    public float[][] processStereo(float[][] inputData) {
-        float[][] gainedData = applyGain(inputData);
-        float[][] output = new float[2][gainedData[0].length];
-        for (byte ch = 0; ch < 2; ch++) {
-            for (int i = 0; i < inputData.length; i++) {
-                output[ch][i] = (float) Math.sin(gainedData[ch][i] * Math.PI);
-            }
-        }
-        return applyMixStereo(inputData, output);
-    }
-}
-
-class HarmonicDistortion extends Distortion {
-    HarmonicDistortion(float gain, float mix) {
-        super(gain, mix);
-    }
-
-    @Override
-    public float[] processMono(float[] inputData) {
-        float[] gainedData = applyGain(inputData);
-        float[] output = new float[gainedData.length];
-        for (int i = 0; i < gainedData.length; i++) {
-            float x = gainedData[i];
-            output[i] = (float) (x - (1.0f / 3.0f) * Math.pow(x, 3));
-        }
-        return applyMixMono(inputData, output);
-    }
-
-    @Override
-    public float[][] processStereo(float[][] inputData) {
-        float[][] gainedData = applyGain(inputData);
-        float[][] output = new float[2][gainedData[0].length];
-        for (byte ch = 0; ch < 2; ch++) {
-            for (int i = 0; i < inputData.length; i++) {
-                float x = gainedData[ch][i];
-                output[ch][i] = (float) (x - (1.0f / 3.0f) * Math.pow(x, 3));
-            }
-        }
-        return applyMixStereo(inputData, output);
-    }
-}
-
 class BitcrushDistortion extends Distortion {
     private BitCrush bitCrusher;
 

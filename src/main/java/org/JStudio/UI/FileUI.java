@@ -8,7 +8,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -18,6 +21,7 @@ import javafx.scene.text.Font;
 import org.JStudio.Utils.AudioFileExtractor;
 
 import java.io.*;
+import java.util.List;
 
 public class FileUI extends Pane {
     private final HBox file_info = new HBox();
@@ -106,6 +110,13 @@ public class FileUI extends Pane {
             }
         });
 
+        setOnDragDetected(e -> {
+            Dragboard db = startDragAndDrop(TransferMode.COPY);
+            ClipboardContent content = new ClipboardContent();
+            content.putFiles(List.of(file));
+            db.setContent(content);
+        });
+
         file_info.setSpacing(4);
         file_info.setAlignment(Pos.BOTTOM_LEFT);
         file_info.getChildren().addAll(f_name, f_ext, f_size);
@@ -164,4 +175,5 @@ public class FileUI extends Pane {
         }
         gc.stroke();
     }
+
 }

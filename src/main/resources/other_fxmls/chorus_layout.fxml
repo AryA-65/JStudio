@@ -52,13 +52,13 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="49.0">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
                   <Button fx:id="playButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="50.0" text="Play" />
                   <Button fx:id="resetButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="50.0" text="Reset" />
                </children>
                <padding>
-                  <Insets top="50.1" />
+                  <Insets left="5.0" top="50.1" />
                </padding>
             </HBox>
          </children>

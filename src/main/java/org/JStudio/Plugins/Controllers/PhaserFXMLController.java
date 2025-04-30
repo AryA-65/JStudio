@@ -41,13 +41,13 @@ public class PhaserFXMLController {
     public void initialize() {
         phaser = new PhaserPlugin(100000, 8, 0.5); // Create a phaser
         
-        frequencyKnob.setTranslateX(52);
-        deviationKnob.setTranslateX(52);
-        wetDryKnob.setTranslateX(52);
+        frequencyKnob.setTranslateX(25);
+        deviationKnob.setTranslateX(25);
+        wetDryKnob.setTranslateX(25);
         
-        grid.add(frequencyKnob, 0, 1);
-        grid.add(deviationKnob, 1, 1);
-        grid.add(wetDryKnob, 2, 1);
+        grid.add(frequencyKnob, 0, 0);
+        grid.add(deviationKnob, 1, 0);
+        grid.add(wetDryKnob, 2, 0);
 
         frequencyKnob.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
             newFrequency = frequencyKnob.getValue() * 10 * 50000;

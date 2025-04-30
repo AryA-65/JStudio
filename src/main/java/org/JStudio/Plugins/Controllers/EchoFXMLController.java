@@ -39,18 +39,18 @@ public class EchoFXMLController {
     public void initialize() {
         echo = new Echo(1000, 1/11, 10000, 5, 0.5); // Create a echo
         
-        preDelayKnob.setTranslateX(15);
-        decayTimeKnob.setTranslateX(15);
-        diffusionKnob.setTranslateX(15);
-        echoNumKnob.setTranslateX(15);
-        wetDryKnob.setTranslateX(15);
+        preDelayKnob.setTranslateX(5);
+        decayTimeKnob.setTranslateX(5);
+        diffusionKnob.setTranslateX(5);
+        echoNumKnob.setTranslateX(5);
+        wetDryKnob.setTranslateX(5);
         
         
-        grid.add(preDelayKnob, 0, 1);
-        grid.add(decayTimeKnob, 1, 1);
-        grid.add(diffusionKnob, 2, 1);
-        grid.add(echoNumKnob, 3, 1);
-        grid.add(wetDryKnob, 4, 1);
+        grid.add(preDelayKnob, 0, 0);
+        grid.add(decayTimeKnob, 1, 0);
+        grid.add(diffusionKnob, 2, 0);
+        grid.add(echoNumKnob, 3, 0);
+        grid.add(wetDryKnob, 4, 0);
         
         preDelayKnob.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
             newPreDelay = preDelayKnob.getValue() * 10 * 1000;

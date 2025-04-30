@@ -35,7 +35,7 @@ public class EchoStage extends Stage{
             controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 640, 480);
+            scene = new Scene(root, 650, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

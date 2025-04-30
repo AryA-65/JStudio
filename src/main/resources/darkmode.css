@@ -5,7 +5,7 @@
 }
 
 .button:hover {
-    -fx-background-color: #BCD6F00A;
+    -fx-background-color: #738496;
 }
 
 .root {
@@ -36,7 +36,7 @@
 }
 
 .tab:hover {
-    -fx-background-color: #BCD6F00A;
+    -fx-background-color: #738496;
 }
 
 .tab:selected {
@@ -50,14 +50,18 @@
     -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .5, 0, 0);
 }
 
-#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed {
-    -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .25, 3, 3);
-}
-
 #open_song_btn_parent, #song_name, #export_song_btn_parent, #save_song_btn_parent {
     -fx-background-color: #38414A;
     -fx-background-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+#open_song_btn_parent:hover, #save_song_btn_parent:hover, #export_song_btn_parent:hover, #snap_btn_parent:hover, #metronome_control_parent:hover, #record_control_parent:hover {
+    -fx-background-color: #738496;
+}
+
+#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed {
+    -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .25, 3, 3);
 }
 
 #record_control_parent.iactive, #metronome_control_parent.iactive, #snap_btn_parent.iactive {
@@ -86,6 +90,14 @@
     -fx-background-color: #38414A;
     -fx-background-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+#pan_knob {
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, -3, 3);
+}
+
+#pitch_knob {
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, -3, 3);
 }
 
 .tab-content {
@@ -154,6 +166,15 @@
 .menu-button {
     -fx-background-color: #38414A;
     -fx-text-fill: #B6C2CF;
+}
+
+.menu-item {
+    -fx-background-color: #38414A;
+    -fx-text-fill: #B6C2CF;
+}
+
+.menu-item:hover {
+    -fx-background-color: #738496;
 }
 
 .pane {

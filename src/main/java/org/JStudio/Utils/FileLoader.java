@@ -12,8 +12,23 @@ public class FileLoader {
 
     public static void init(VBox vbox) {
         tab_vbox = vbox;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        String userHome = System.getProperty("user.home");
+        String musicPath;
+
+        if (os.contains("win")) {
+            musicPath = userHome + "\\Music\\JStudio\\audio_Files";
+        } else if (os.contains("mac")) {
+            musicPath = userHome + "/Music/JStudio/audio_Files";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            musicPath = userHome + "/Music/JStudio/audio_Files";
+        } else {
+            throw new RuntimeException("Unsupported OS");
+        }
+
         try {
-            loadFolders("C:\\Users\\" + System.getProperty("user.name") + "\\Music\\JStudio\\audio_Files");
+            loadFolders(musicPath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

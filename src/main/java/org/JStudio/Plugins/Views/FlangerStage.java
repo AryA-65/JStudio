@@ -25,6 +25,7 @@ public class FlangerStage extends Stage{
         setTitle("Flanger");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     

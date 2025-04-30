@@ -25,6 +25,7 @@ public class ReverbStage extends Stage{
         setTitle("Reverb");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     

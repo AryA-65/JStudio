@@ -25,6 +25,7 @@ public class PhaserStage extends Stage{
         setTitle("Phaser");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     

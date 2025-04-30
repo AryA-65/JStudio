@@ -22,6 +22,7 @@ public class ChorusStage extends Stage {
         setTitle("Chorus");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     

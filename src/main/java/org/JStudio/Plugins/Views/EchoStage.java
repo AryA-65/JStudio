@@ -21,6 +21,7 @@ public class EchoStage extends Stage{
         setTitle("Echo");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     

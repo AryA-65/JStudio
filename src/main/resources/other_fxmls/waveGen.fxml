@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17.0.14" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.Plugins.Synthesizer.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.Plugins.Synthesizer.Controller">
    <children>
-      <HBox prefHeight="375.0" prefWidth="650.0" spacing="20" style="-fx-padding: 15px; -fx-background-color: #f4f4f4;">
+      <HBox fx:id="waveHbox" prefHeight="375.0" prefWidth="650.0" spacing="20" style="-fx-padding: 15px; -fx-background-color: #f4f4f4;">
          <children>
             <VBox fx:id="vbox" prefHeight="350.0" prefWidth="350.0" spacing="15">
                <children>

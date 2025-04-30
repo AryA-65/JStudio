@@ -17,8 +17,8 @@ public class SectionUI extends VBox {
     private final ImageView expand_img = new ImageView(new Image("/icons/arrow.png"));
     private final Button section_btn = new Button("", expand_img);
     private final VBox section_content = new VBox();
-    private final Timeline expand_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN)));
-    private final Timeline collapse_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), 0, Interpolator.EASE_IN)));
+    private final Timeline expand_anim = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(section_content.prefHeightProperty(), 0)), new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN)));
+    private final Timeline collapse_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE)), new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), 0, Interpolator.EASE_IN)));
     private final RotateTransition rotate = new RotateTransition(Duration.millis(150), expand_img);
 
     public SectionUI(File file) {
@@ -64,4 +64,57 @@ public class SectionUI extends VBox {
             }
         }
     }
+
+    //test code for animation
+//    public void fadeOutVBoxAndShrink(VBox vbox, double durationMillis) {
+//        ObservableList<Node> children = vbox.getChildren();
+//        double initialHeight = vbox.getHeight();
+//
+//        vbox.setPrefHeight(initialHeight); // lock initial height for animation
+//
+//        for (int i = 0; i < children.size(); i++) {
+//            Node child = children.get(i);
+//            Timeline fadeTimeline = new Timeline(
+//                    new KeyFrame(Duration.ZERO, new KeyValue(child.opacityProperty(), 1)),
+//                    new KeyFrame(Duration.millis(durationMillis), new KeyValue(child.opacityProperty(), 0, Interpolator.EASE_IN))
+//            );
+//            fadeTimeline.setDelay(Duration.millis(i * 100));
+//            fadeTimeline.play();
+//        }
+//
+//        Timeline heightTimeline = new Timeline(
+//                new KeyFrame(Duration.ZERO, new KeyValue(vbox.prefHeightProperty(), initialHeight)),
+//                new KeyFrame(Duration.millis(durationMillis + children.size() * 100), new KeyValue(vbox.prefHeightProperty(), 0, Interpolator.EASE_IN))
+//        );
+//        heightTimeline.play();
+//    }
+//
+//    public void fadeInVBoxAndGrow(VBox vbox, double durationMillis) {
+//        ObservableList<Node> children = vbox.getChildren();
+//
+//        // Prepare VBox
+//        vbox.setPrefHeight(0);
+//
+//        for (Node child : children) {
+//            child.setOpacity(0);
+//        }
+//
+//        Timeline heightTimeline = new Timeline(
+//                new KeyFrame(Duration.ZERO, new KeyValue(vbox.prefHeightProperty(), 0)),
+//                new KeyFrame(Duration.millis(durationMillis + children.size() * 100),
+//                        new KeyValue(vbox.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN))
+//        );
+//        heightTimeline.setOnFinished(e -> vbox.setPrefHeight(Region.USE_COMPUTED_SIZE));
+//        heightTimeline.play();
+//
+//        for (int i = 0; i < children.size(); i++) {
+//            Node child = children.get(i);
+//            Timeline fadeTimeline = new Timeline(
+//                    new KeyFrame(Duration.ZERO, new KeyValue(child.opacityProperty(), 0)),
+//                    new KeyFrame(Duration.millis(durationMillis), new KeyValue(child.opacityProperty(), 1, Interpolator.EASE_IN))
+//            );
+//            fadeTimeline.setDelay(Duration.millis(i * 100));
+//            fadeTimeline.play();
+//        }
+//    }
 }

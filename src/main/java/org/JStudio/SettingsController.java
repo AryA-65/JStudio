@@ -34,10 +34,11 @@ public class SettingsController {
         group = new ToggleGroup();
         lightRadio.setToggleGroup(group);
         darkRadio.setToggleGroup(group);
-        
+
+        //todo
         if (selected != null) {
             if (selected.equals(lightRadio)) {
-                lightRadio.setSelected(true);
+                lightRadio.setSelected(false);
             } else {
                 darkRadio.setSelected(true);
             }

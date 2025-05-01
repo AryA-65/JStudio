@@ -12,6 +12,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
+import org.JStudio.SettingsController;
+import org.JStudio.Utils.FileLoader;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -22,11 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.*;
 
-import org.JStudio.SettingsController;
-
-
 public class Controller {
-    private StringProperty name = new SimpleStringProperty("Synthesizer");
+    private final StringProperty name = new SimpleStringProperty("Synthesizer");
 
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
@@ -182,7 +181,10 @@ public class Controller {
             ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
             AudioInputStream audioInputStream = new AudioInputStream(bais, format, audioBytes.length / 2);
 
-            File wavFile = new File("recorded_output.wav");
+            File dir = new File(FileLoader.getMusicPath());
+
+            File wavFile = new File(dir, "synth.wav");
+
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
 
             System.out.println("Saved WAV file: " + wavFile.getAbsolutePath());

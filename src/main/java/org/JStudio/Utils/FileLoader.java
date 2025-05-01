@@ -10,12 +10,13 @@ import java.util.*;
 public class FileLoader {
     private static VBox tab_vbox;
 
+    private static String musicPath;
+
     public static void init(VBox vbox) {
         tab_vbox = vbox;
 
         String os = System.getProperty("os.name").toLowerCase();
         String userHome = System.getProperty("user.home");
-        String musicPath;
 
         if (os.contains("win")) {
             musicPath = userHome + "\\Music\\JStudio\\audio_Files";
@@ -45,5 +46,9 @@ public class FileLoader {
         } else if (!file.exists()) {
             throw new Exception("Folder does not exist");
         }
+    }
+
+    public static String getMusicPath() {
+        return musicPath;
     }
 }

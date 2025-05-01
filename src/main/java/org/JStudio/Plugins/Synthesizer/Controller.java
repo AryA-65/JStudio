@@ -20,6 +20,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -79,6 +80,7 @@ public class Controller {
         sliderSetUp(volume3, 1);
 
         sliderSetUp(playSpeed, 10);
+        sliderSetUp(glideSp, 0.001);
 
         updateSlider(tone1, 0, true);
         updateSlider(tone2, 1, true);
@@ -94,20 +96,23 @@ public class Controller {
         });
 
         glideSp.valueProperty().addListener((obs, oldValue, newValue) -> {
-            glideSpeed = newValue.doubleValue() / 100; // Adjust the range as needed
+            glideSpeed = newValue.doubleValue() / 100;
         });
 
         recordButton.setOnAction(event -> {
             if (!isRecording) {
-                recordingBuffer = new ByteArrayOutputStream();
                 isRecording = true;
+                shouldGenerate = true;
+                recordingBuffer = new ByteArrayOutputStream();
                 recordButton.setText("Stop Recording");
             } else {
                 isRecording = false;
                 recordButton.setText("Record");
-                saveRecordingAsWav();
+                saveRecordingAsWav(recordingBuffer, "/Users/ahmetyusufyildirim/Music/JStudio/audio_Files");
+                recordingBuffer = null;  
             }
         });
+
 
         final AudioThread audioThread = new AudioThread(() -> {
             int bufferSize = AudioThread.SAMPLE_RATE;
@@ -124,20 +129,19 @@ public class Controller {
                     double targetFreq = oscillatorFrequencies[j];
 
                     if (glideEnabled) {
-                        // Smooth transition to target frequency
-                        currentFrequencies[j] += (targetFreq - currentFrequencies[j]) * 0.02; // glide speed
+                        currentFrequencies[j] += (targetFreq - currentFrequencies[j]) * glideSpeed;
                     } else {
-                        currentFrequencies[j] = targetFreq; // immediate jump
+                        currentFrequencies[j] = targetFreq;
                     }
                 }
 
-                if (oscillatorFrequencies[0] != 0) {
+                if (oscillatorFrequencies[0] != 0 && tone1.getValue() != 0) {
                     mixedSample += (generateWaveSample(txt1, currentFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
                 }
-                if (oscillatorFrequencies[1] != 0) {
+                if (oscillatorFrequencies[1] != 0 && tone2.getValue() != 0) {
                     mixedSample += (generateWaveSample(txt2, currentFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
                 }
-                if (oscillatorFrequencies[2] != 0) {
+                if (oscillatorFrequencies[2] != 0 && tone3.getValue() != 0) {
                     mixedSample += (generateWaveSample(txt3, currentFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
                 }
 
@@ -154,9 +158,12 @@ public class Controller {
                 delayBuffer[delayBufferIndex] = finalSample;
                 delayBufferIndex = (delayBufferIndex + 1) % delayBuffer.length;
 
-                // Store the final sample in the output buffer
-                s[i] = finalSample;
-                wavePos += (int) speedFactor;
+                s[i] = rawSample;
+                if (isRecording) {
+                    recordingBuffer.write(finalSample & 0xFF);          // low byte
+                    recordingBuffer.write((finalSample >> 8) & 0xFF);   // high byte
+                }
+                wavePos += (int) (speedFactor);
             }
             drawWaveform(s);
             return s;
@@ -173,29 +180,48 @@ public class Controller {
 
     }
 
-    private void saveRecordingAsWav() {
+    public static void saveRecordingAsWav(ByteArrayOutputStream recordingBuffer, String filePath) {
         try {
             byte[] audioBytes = recordingBuffer.toByteArray();
 
+            // Ensure the byte array length is even (since we're using 16-bit samples)
+            if (audioBytes.length % 2 != 0) {
+                byte[] correctedBytes = new byte[audioBytes.length - 1];
+                System.arraycopy(audioBytes, 0, correctedBytes, 0, correctedBytes.length);
+                audioBytes = correctedBytes;
+            }
+
             AudioFormat format = new AudioFormat(
-                    AudioThread.SAMPLE_RATE,
-                    16,
-                    1,
-                    true,
-                    false
+                    AudioThread.SAMPLE_RATE,  // sample rate
+                    16,                      // sample size in bits
+                    1,                       // channels
+                    true,                    // signed
+                    false                    // bigEndian
             );
 
             ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
-            AudioInputStream audioInputStream = new AudioInputStream(bais, format, audioBytes.length / 2);
+            AudioInputStream audioInputStream = new AudioInputStream(
+                    bais,
+                    format,
+                    audioBytes.length / 2  // frames = total bytes / 2 (16-bit samples)
+            );
 
-            File wavFile = new File("recorded_output.wav");
+            // Ensure directory exists
+            File dir = new File(filePath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String uniqueFileName = filePath + "/synth_output_" + System.currentTimeMillis() + ".wav";
+            File wavFile = new File(uniqueFileName);
+
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
-
-            System.out.println("Saved WAV file: " + wavFile.getAbsolutePath());
-        } catch (Exception e) {
+            System.out.println("WAV file saved successfully: " + wavFile.getAbsolutePath());
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 
 
@@ -223,16 +249,17 @@ public class Controller {
         }
 
         tempScene.setOnKeyPressed(event -> {
-            if (!auTh.isRunning()) {
-                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-                if (KEY_FREQUENCIES.containsKey(key)) {
-                    pressedKeys.add(key);
-                    updateOscillatorFrequencies();
-                    shouldGenerate = true;
+            char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
+            if (KEY_FREQUENCIES.containsKey(key)) {
+                pressedKeys.add(key);
+                updateOscillatorFrequencies();
+                shouldGenerate = true;
+                if (!auTh.isRunning()) {
                     auTh.triggerPlayback();
                 }
             }
         });
+
 
         tempScene.setOnKeyReleased(event -> {
             char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
@@ -280,7 +307,7 @@ public class Controller {
         });
     }
 
-    private void sliderSetUp(Slider slider, int border) {
+    private void sliderSetUp(Slider slider, double border) {
         slider.setMax(border);
         if (border == 1) {
             slider.setValue(border);
@@ -290,6 +317,9 @@ public class Controller {
             slider.setValue(1);
             slider.setMin(1);
             slider.setMax(border);
+        } else if (border == 0.001) {
+            slider.setMin(0.001);
+            slider.setMax(1);
         } else {
             slider.setValue(0);
             slider.setMin(-border);

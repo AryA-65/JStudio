@@ -26,7 +26,7 @@ public class SynthesizerStage {
             Parent root = fxmlLoader.load();
 
             Controller myController = fxmlLoader.getController();
-            mainScene = new Scene(root, 650, 420);
+            mainScene = new Scene(root, 650, 460);
 
             stage.setScene(mainScene);
 

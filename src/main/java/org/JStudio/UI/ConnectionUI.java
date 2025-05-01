@@ -6,30 +6,31 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 
 public class ConnectionUI extends CubicCurve {
+    private final Circle startNode;
+    private final Circle endNode;
+
     public ConnectionUI(Circle start, Circle end) {
-//        setStartX(start.getLayoutX());
-//        setStartY(start.getLayoutY());
-//        setEndX(end.getLayoutX());
-//        setEndY(end.getLayoutY());
+        this.startNode = start;
+        this.endNode = end;
+
         setStroke(Color.web("#00FD11"));
         setStrokeWidth(2);
         setFill(null);
         setId("connection_node");
 
-        start.getParent().layoutXProperty().addListener((obs, old, newVal) -> update(start, end));
-        start.getParent().layoutYProperty().addListener((obs, old, newVal) -> update(start, end));
-        end.getParent().layoutXProperty().addListener((obs, old, newVal) -> update(start, end));
-        end.getParent().layoutYProperty().addListener((obs, old, newVal) -> update(start, end));
+        start.getParent().layoutXProperty().addListener((obs, old, newVal) -> update());
+        start.getParent().layoutYProperty().addListener((obs, old, newVal) -> update());
+        end.getParent().layoutXProperty().addListener((obs, old, newVal) -> update());
+        end.getParent().layoutYProperty().addListener((obs, old, newVal) -> update());
 
-        update(start, end);
+        update();
     }
 
-    public void update(Circle start, Circle end) {
-        double startX = start.getParent().getLayoutX() + ((StackPane) start.getParent()).getLayoutBounds().getWidth();
-        System.out.printf("Start position %.1f, translateX %.1f\n", startX, ((StackPane) start.getParent()).getLayoutBounds().getWidth());
-        double startY = start.getParent().getLayoutY() + 16;
-        double endX = end.getParent().getLayoutX();
-        double endY = end.getParent().getLayoutY() + 16;
+    public void update() {
+        double startX = startNode.getParent().getLayoutX() + 54;
+        double startY = startNode.getParent().getLayoutY() + 16;
+        double endX = endNode.getParent().getLayoutX();
+        double endY = endNode.getParent().getLayoutY() + 16;
 
         setStartX(startX);
         setStartY(startY);
@@ -40,8 +41,15 @@ public class ConnectionUI extends CubicCurve {
 
         setControlX1(startX + controlOffset);
         setControlY1(startY);
-
         setControlX2(endX - controlOffset);
         setControlY2(endY);
+    }
+
+    public Circle getStartNode() {
+        return startNode;
+    }
+
+    public Circle getEndNode() {
+        return endNode;
     }
 }

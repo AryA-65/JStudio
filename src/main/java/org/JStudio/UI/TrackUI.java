@@ -21,6 +21,8 @@ import java.util.Arrays;
 public class TrackUI extends StackPane {
 //    private ArrayList<ClipUI> clips = new ArrayList<ClipUI>();
 
+//    private PluginRenderer pluginUI = new PluginRenderer();
+
     private final Track track;
     private final Canvas trackCanvas;
     private final GraphicsContext gc;

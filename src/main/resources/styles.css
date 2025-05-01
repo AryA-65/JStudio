@@ -293,7 +293,7 @@
     -fx-stroke: black; -fx-stroke-width: 1;
 }
 
-#plugin_node {
+#pipeline_node {
     -fx-background-color: #d9d9d9;
     -fx-background-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);

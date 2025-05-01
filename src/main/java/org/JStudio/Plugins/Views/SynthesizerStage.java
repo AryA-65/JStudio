@@ -9,8 +9,8 @@ import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Synthesizer.Controller;
 import org.JStudio.SettingsController;
 
+
 import java.io.IOException;
-import java.net.URL;
 
 public class SynthesizerStage {
     public static Scene mainScene;
@@ -26,7 +26,7 @@ public class SynthesizerStage {
             Parent root = fxmlLoader.load();
 
             Controller myController = fxmlLoader.getController();
-            mainScene = new Scene(root, 650, 400);
+            mainScene = new Scene(root, 650, 420);
 
             stage.setScene(mainScene);
 

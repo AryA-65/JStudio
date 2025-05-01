@@ -27,15 +27,14 @@ public class FlangerFXMLController {
     private Button playButton;
     @FXML
     private GridPane grid;
-    Knob frequencyKnob = new Knob(100, false, 0, REG);
-    Knob deviationKnob = new Knob(100, true, 0.1, REG);
-    Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob frequencyKnob = new Knob(100, false, 0, REG);
+    private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
+    private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static FlangerStage window;
     private Modulation flanger;
     
     /**
-     * Initializes the UI, showing the tick marks on the slider and setting
-     * actions for the sliders and buttons
+     * Initializes the UI and sets actions for the knobs and buttons
      */
     @FXML
     public void initialize() {
@@ -52,19 +51,16 @@ public class FlangerFXMLController {
 
         frequencyKnob.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
             newFrequency = frequencyKnob.getValue() * 10 * 50000;
-            System.out.println(newFrequency);
             flanger.setFrequency(newFrequency.intValue());
         });
         
         deviationKnob.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
             newDeviation = deviationKnob.getValue() * 10 * 50;
-            System.out.println(newDeviation);
             flanger.setDeviation(newDeviation.intValue());
         });
         
         wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
             newWetDryFactor = wetDryKnob.getValue();
-            System.out.println(newWetDryFactor);
             flanger.setWetDryFactor(newWetDryFactor.doubleValue());
         });
         
@@ -128,6 +124,10 @@ public class FlangerFXMLController {
         });
     }
     
+    /**
+     * Assigns a flanger window object to the flanger controller
+     * @param window the flanger window to be assigned to the controller
+     */
     public static void setWindow(FlangerStage window) {
         FlangerFXMLController.window = window;
     }

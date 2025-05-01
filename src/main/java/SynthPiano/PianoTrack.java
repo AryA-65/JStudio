@@ -1,4 +1,4 @@
-package PianoManualSynth;
+package SynthPiano;
 
 import javafx.scene.layout.Pane;
 

@@ -1,4 +1,4 @@
-package PianoManualSynth;
+package SynthPiano;
 
 import java.io.IOException;
 import java.util.Set;
@@ -10,7 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.SettingsController;
 
-public class SynthPiano {
+public class SynthPianoRun {
 
     public void openSynthPiano() {
         try {
@@ -35,7 +35,7 @@ public class SynthPiano {
 
             //stop audio playback on close
             stage.setOnCloseRequest(e -> {
-                synthPianoController.setShouldStopPlayback(true);
+                synthPianoController.getSynthPiano().setShouldStopPlayback(true);
             });
 
             stage.setScene(scene);

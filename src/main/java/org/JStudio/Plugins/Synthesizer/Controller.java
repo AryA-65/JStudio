@@ -12,8 +12,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
-import org.JStudio.SettingsController;
-import org.JStudio.Utils.FileLoader;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -24,9 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.*;
 
+
 public class Controller {
     private final StringProperty name = new SimpleStringProperty("Synthesizer");
-
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
     private final double[] oscillatorFrequencies = new double[3];
@@ -47,13 +45,14 @@ public class Controller {
     private boolean shouldGenerate;
     private int wavePos;
     private double speedFactor = 1;
-
     private boolean isRecording = false;
     private ByteArrayOutputStream recordingBuffer;
-
     private GraphicsContext gc;
-
     private final Set<Character> pressedKeys = new HashSet<>();
+
+    private double[] currentFrequencies = new double[3];
+    private double glideSpeed = 0.001; // Adjust for faster/slower glides
+
 
 
     @FXML
@@ -101,36 +100,18 @@ public class Controller {
             }
             short[] s = new short[AudioThread.BUFFER_SIZE];
 
-            boolean activeOscillator1 = volume1.getValue() > 0 && tone1.getValue() != 0;
-            boolean activeOscillator2 = volume2.getValue() > 0 && tone2.getValue() != 0;
-            boolean activeOscillator3 = volume3.getValue() > 0 && tone3.getValue() != 0;
-
-
-            if (!activeOscillator1 && !activeOscillator2 && !activeOscillator3) {
-                shouldGenerate = false;
-                return null;
-            }
-
+            // Mix the active oscillators
             for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
                 double mixedSample = 0;
 
-                for (char key : pressedKeys) {
-                    if (!KEY_FREQUENCIES.containsKey(key)) continue;
-                    double baseFreq = KEY_FREQUENCIES.get(key);
-
-                    double partial = 0;
-                    if (activeOscillator1)
-                        partial += (generateWaveSample(txt1, Utility.Math.offsetTone(baseFreq, tone1.getValue()), wavePos) * volume1.getValue()) / NORMALIZER;
-                    if (activeOscillator2)
-                        partial += (generateWaveSample(txt2, Utility.Math.offsetTone(baseFreq, tone2.getValue()), wavePos) * volume2.getValue()) / NORMALIZER;
-                    if (activeOscillator3)
-                        partial += (generateWaveSample(txt3, Utility.Math.offsetTone(baseFreq, tone3.getValue()), wavePos) * volume3.getValue()) / NORMALIZER;
-
-                    mixedSample += partial;
+                if (oscillatorFrequencies[0] != 0) {
+                    mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
                 }
-
-                if (!pressedKeys.isEmpty()) {
-                    mixedSample /= pressedKeys.size();
+                if (oscillatorFrequencies[1] != 0) {
+                    mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
+                }
+                if (oscillatorFrequencies[2] != 0) {
+                    mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
                 }
 
                 s[i] = (short) (Short.MAX_VALUE * mixedSample);
@@ -141,6 +122,7 @@ public class Controller {
             return s;
         });
 
+
         this.auTh = audioThread;
 
         for (int i = Utility.AudioInfo.STARTING_KEY, key = 0; i < (Utility.AudioInfo.KEYS).length * Utility.AudioInfo.KEY_FREQUENCY_INCREMENT + Utility.AudioInfo.STARTING_KEY; i += Utility.AudioInfo.KEY_FREQUENCY_INCREMENT, ++key) {
@@ -148,21 +130,6 @@ public class Controller {
         }
         playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
         this.auTh = audioThread;
-
-        tempScene.setOnKeyReleased(event -> { // delete canvas when left go of the key
-            String text = event.getText();
-            if (text.length() != 1) return;
-
-            char key = text.charAt(0);
-
-            if (new String(Utility.AudioInfo.KEYS).contains(String.valueOf(key))) {
-                shouldGenerate = false;
-
-                GraphicsContext gc = waveformCanvas.getGraphicsContext2D();
-                gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
-            }
-        });
-
 
     }
 
@@ -181,10 +148,7 @@ public class Controller {
             ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
             AudioInputStream audioInputStream = new AudioInputStream(bais, format, audioBytes.length / 2);
 
-            File dir = new File(FileLoader.getMusicPath());
-
-            File wavFile = new File(dir, "synth.wav");
-
+            File wavFile = new File("recorded_output.wav");
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
 
             System.out.println("Saved WAV file: " + wavFile.getAbsolutePath());
@@ -219,34 +183,27 @@ public class Controller {
         }
 
         tempScene.setOnKeyPressed(event -> {
-            String text = event.getText();
-            if (text.length() != 1) return;
-
-            char key = text.charAt(0);
-            if (!KEY_FREQUENCIES.containsKey(key)) return; // [MODIFIED]
-
-            pressedKeys.add(key); // [ADDED]
-            if (!pressedKeys.isEmpty()) {
-                shouldGenerate = true;
-                auTh.triggerPlayback();
+            if (!auTh.isRunning()) {
+                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
+                if (KEY_FREQUENCIES.containsKey(key)) {
+                    pressedKeys.add(key);
+                    updateOscillatorFrequencies();
+                    shouldGenerate = true;
+                    auTh.triggerPlayback();
+                }
             }
         });
 
         tempScene.setOnKeyReleased(event -> {
-            String text = event.getText();
-            if (text.length() != 1) return;
-
-            char key = text.charAt(0);
-            pressedKeys.remove(key); // [ADDED]
-
+            char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
+            pressedKeys.remove(key);
+            updateOscillatorFrequencies();
             if (pressedKeys.isEmpty()) {
                 shouldGenerate = false;
-
-                GraphicsContext gc = waveformCanvas.getGraphicsContext2D(); // [ADDED]
-                gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // [ADDED]
             }
         });
     }
+
 
     private void updateSlider(Slider slider, int index, boolean isToneSlider) {
         slider.valueProperty().addListener((obs, oldValue, newValue) -> {
@@ -339,13 +296,9 @@ public class Controller {
 
     private void drawWaveform(short[] audioBuffer) {
         gc = waveformCanvas.getGraphicsContext2D();
-//        gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
+        gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
-        if (SettingsController.getStyle()) {
-            gc.setStroke(javafx.scene.paint.Color.WHITE);
-        } else {
-            gc.setStroke(javafx.scene.paint.Color.BLACK);
-        }
+        gc.setStroke(javafx.scene.paint.Color.BLACK);
         gc.setLineWidth(1);
 
         double centerY = waveformCanvas.getHeight() / 2;
@@ -370,6 +323,18 @@ public class Controller {
     public void setSpeedFactor(double speedFactor) {
         this.speedFactor = speedFactor;
     }
+
+    private void updateOscillatorFrequencies() {
+
+        int index = 0;
+        for (char key : pressedKeys) {
+            double frequency = KEY_FREQUENCIES.get(key);
+            if (index < 3) {
+                oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency, (index == 0 ? tone1.getValue() :
+                        (index == 1 ? tone2.getValue() : tone3.getValue())));
+                index++;
+            }
+        }
+    }
+
 }
-
-

@@ -1,7 +1,7 @@
 package org.JStudio;
 
-import PianoManualSynth.SynthPiano;
-import PianoSection.Piano;
+import SynthPiano.SynthPianoRun;
+import PianoSection.PianoRun;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -213,12 +213,12 @@ public class UIController {
         });
         
         pianoBtn.setOnAction(e -> {
-            Piano piano = new Piano();
+            PianoRun piano = new PianoRun();
             piano.openPiano();
         });
         
         synthPianoBtn.setOnAction(e -> {
-            SynthPiano synthPiano = new SynthPiano();
+            SynthPianoRun synthPiano = new SynthPianoRun();
             synthPiano.openSynthPiano();
         });
         

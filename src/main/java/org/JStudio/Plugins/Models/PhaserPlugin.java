@@ -82,7 +82,7 @@ public class PhaserPlugin extends Plugin {
     }
     
     /**
-     * Wrapper class to set flanger effect
+     * Wrapper class to set phaser effect
      */
     public void setPhaserEffect() {
         applyPhaserEffect();

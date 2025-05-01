@@ -12,7 +12,6 @@ import java.io.IOException;
 public class audioFilters {
     private StringProperty name = new SimpleStringProperty("Audio Filters");
 
-
     private void amplifyAudio(double amplitudeFactor, String source) {
         new Thread(() -> {
             try {

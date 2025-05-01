@@ -25,10 +25,10 @@ public class StereoFXMLController extends Plugin {
     private short[] samples;
     private float sampleRate;
     private byte[] filteredBytes;
-
     private byte[] audioBytes;
-
     private int delay;
+
+    private float[][] processedStereoOutput;
 
     @FXML
     public void initialize() {
@@ -44,7 +44,6 @@ public class StereoFXMLController extends Plugin {
             getProcessedAudio();
         });
     }
-
 
     private void importAudio() {
         try {
@@ -76,7 +75,6 @@ public class StereoFXMLController extends Plugin {
         }
     }
 
-
     private void applyStereoEffect() {
         stopAudio();
         if (samples == null || format == null) {
@@ -100,8 +98,8 @@ public class StereoFXMLController extends Plugin {
         }
 
         try {
-            float[][] stereoOutput = stereoizer.process(mono);
-            short[] interleaved = interleaveStereo(stereoOutput);
+            processedStereoOutput = stereoizer.process(mono); // <-- Store processed float[][]
+            short[] interleaved = interleaveStereo(processedStereoOutput);
             filteredBytes = shortsToBytes(interleaved);
             playAudio(filteredBytes);
         } catch (Exception e) {
@@ -117,6 +115,10 @@ public class StereoFXMLController extends Plugin {
         return filteredBytes;
     }
 
+    public float[][] getProcessedStereoOutput() {
+        return processedStereoOutput;
+    }
+
     private int parseDelaySample() {
         try {
             return Integer.parseInt(delaySample.getText());
@@ -125,6 +127,7 @@ public class StereoFXMLController extends Plugin {
             return 20;
         }
     }
+
     private short[] interleaveStereo(float[][] stereo) {
         int length = Math.min(stereo[0].length, stereo[1].length);
         short[] interleaved = new short[length * 2];
@@ -137,9 +140,6 @@ public class StereoFXMLController extends Plugin {
 
     public void setStage(Stage stage) {
         this.stage = stage;
-
-        this.stage.setOnCloseRequest(event -> {
-            stopAudio();
-        });
+        this.stage.setOnCloseRequest(event -> stopAudio());
     }
 }

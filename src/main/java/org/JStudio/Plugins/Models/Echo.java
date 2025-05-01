@@ -128,22 +128,42 @@ public class Echo extends Plugin {
         applyEchoEffect();
     }
     
+    /**
+     * Assigns a value for decay
+     * @param decay the value of decay to be assigned
+     */
     public void setDecay(double decay) {
         this.decay = decay;
     }
 
+    /**
+     * Assigns a value for pre delay
+     * @param preDelay the value of pre delay to be assigned
+     */
     public void setPreDelay(int preDelay) {
         this.preDelay = preDelay;
     }
 
+    /**
+     * Assigns a value for the number of echos
+     * @param echoNum the value of the number of echos to be assigned
+     */
     public void setEchoNum(int echoNum) {
         this.echoNum = echoNum;
     }
 
+    /**
+     * Assigns a value for diffusion
+     * @param diffusion the value of diffusion to be assigned
+     */
     public void setDiffusion(int diffusion) {
         this.diffusion = diffusion;
     }
 
+    /**
+     * Assigns a value for the wet/dry audio ratio
+     * @param wetDryFactor the ratio of wet/dry to be assigned
+     */
     public void setWetDryFactor(double wetDryFactor) {
         this.wetDryFactor = wetDryFactor;
     }

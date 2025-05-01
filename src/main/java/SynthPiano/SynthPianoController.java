@@ -1,4 +1,4 @@
-package PianoManualSynth;
+package SynthPiano;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,7 +10,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -19,11 +18,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.JStudio.Plugins.Controllers.PopUpController;
-import java.util.*;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.lwjgl.openal.AL10.*;
@@ -32,41 +28,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.AL;
 
 public class SynthPianoController {
-
-    private final double NOTE_BASE_WIDTH = 50;
-    private final double NOTE_HEIGHT = 27;
-    private final double RESIZE_BORDER = 10;
-    private final double NOTE_MIN_WIDTH = 50;
-    private double oldMousePos;
-    private double newMousePos;
-    private double playbackLineStartPos;
-
-    private PianoTrack currentTrack;
-    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
-    private List<NoteView> currentNoteViews = new ArrayList<>();
-
-    private SynthController_Piano synthController;
-
-    private long device;
-    private long context;
-
-    private boolean overlaps;
-    private boolean isResizingRight = false;
-    private boolean isResizingLeft = false;
-    volatile boolean shouldStopPlayback = false;
-
-    private int notesTrackWidth = 5320;
-    private int newPaneWidth = 0;
-    private int buffer;
-    private int source;
-
-    private TranslateTransition movePlaybackLine;
-
-    private Thread trackThread;
-
-    private Random random = new Random();
-    
-    private StringProperty name = new SimpleStringProperty("Synth Piano");
+    SynthPiano synthPiano;
 
     @FXML
     private Pane mainPane;
@@ -82,21 +44,18 @@ public class SynthPianoController {
     private Line playbackLine;
     @FXML
     private ScrollPane scrollPane;
-
-    //getter
-    public SynthController_Piano getSynth() {
-        return synthController;
-    }
     
-    public void setShouldStopPlayback(boolean shouldStop){
-        shouldStopPlayback = shouldStop;
+    public SynthPiano getSynthPiano(){
+        return synthPiano;
     }
 
     @FXML
     public void initialize() {
+        synthPiano = new SynthPiano();
+        
         //creates a new controller
-        synthController = new SynthController_Piano();
-        synthController.setNotesController(this);
+        synthPiano.setSynthController(new SynthController_Piano());
+        synthPiano.getSynthController().getSynth().setNotesController(this);
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -107,10 +66,10 @@ public class SynthPianoController {
         mainPane.setMinHeight(0);
 
         //gets the playback line starting position
-        playbackLineStartPos = playbackLine.getLayoutX();
+        synthPiano.setPlaybackLineStartPos(playbackLine.getLayoutX());
 
         //sets the size of the master pane
-        mainPane.setPrefWidth(labelVBox.getPrefWidth() + newPaneWidth);
+        mainPane.setPrefWidth(labelVBox.getPrefWidth() + synthPiano.getNewPaneWidth());
 
         //plays the notes on the tracks when the play button is clicked
         playButton.setOnAction(e -> {
@@ -121,11 +80,11 @@ public class SynthPianoController {
         //opens the track settings/synthesizer so the user can create their own sounds
         addNoteTrack.setOnAction(e -> {
             //stop any audio that was running
-            shouldStopPlayback = true;
+            synthPiano.setShouldStopPlayback(true);
             
             //stops the playback line
-            if (movePlaybackLine != null) {
-                movePlaybackLine.stop();
+            if (synthPiano.getMovePlaybackLine() != null) {
+                synthPiano.getMovePlaybackLine().stop();
             }
 
             openTrackOptions();
@@ -134,54 +93,54 @@ public class SynthPianoController {
 
     //adds a note to the track
     private void addNote(MouseEvent e) {
-        currentNoteViews = getNotes();
+        synthPiano.setCurrentNoteViews(getNotes());
 
         //get array list of all currentNoteViews in the pane
         double x = e.getX(); //get mouse position
-        overlaps = false;
+        synthPiano.setOverlaps(false);
 
-        Rectangle rectangle = new Rectangle(NOTE_BASE_WIDTH, NOTE_HEIGHT);
-        rectangle.setLayoutX(x - NOTE_BASE_WIDTH / 2);
+        Rectangle rectangle = new Rectangle(synthPiano.getNoteBaseWidth(), synthPiano.getNoteHeight());
+        rectangle.setLayoutX(x - synthPiano.getNoteBaseWidth() / 2);
 
-        if (rectangle.getLayoutX() < 0 || rectangle.getLayoutX() + rectangle.getWidth() > currentTrack.getLayoutX() + currentTrack.getTranslateX() + currentTrack.getPrefWidth()) {
-            overlaps = true;
+        if (rectangle.getLayoutX() < 0 || rectangle.getLayoutX() + rectangle.getWidth() > synthPiano.getCurrentTrack().getLayoutX() + synthPiano.getCurrentTrack().getTranslateX() + synthPiano.getCurrentTrack().getPrefWidth()) {
+            synthPiano.setOverlaps(true);;
         }
 
         //if there are already notes in the array list
-        if (!currentNoteViews.isEmpty()) {
-            for (int i = 0; i < currentNoteViews.size(); i++) {
+        if (!synthPiano.getCurrentNoteViews().isEmpty()) {
+            for (int i = 0; i < synthPiano.getCurrentNoteViews().size(); i++) {
                 //make sure it does not intersect with other notes in the pane
-                if (currentNoteViews.get(i).getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
-                    overlaps = true;
+                if (synthPiano.getCurrentNoteViews().get(i).getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
+                    synthPiano.setOverlaps(true);;
                 }
             }
         }
 
         //if the are not intersection issues then add a note to the pane
-        if (!overlaps) {
-            Note newNote = new Note(currentTrack);
-            NoteView noteView = new NoteView(newNote, NOTE_BASE_WIDTH, NOTE_HEIGHT, x - NOTE_BASE_WIDTH / 2);
+        if (!synthPiano.isOverlaps()) {
+            Note newNote = new Note(synthPiano.getCurrentTrack());
+            NoteView noteView = new NoteView(newNote, synthPiano.getNoteBaseWidth(), synthPiano.getNoteHeight(), x - synthPiano.getNoteBaseWidth() / 2);
             dragNote(noteView); //make the rectangle draggable
             noteView.setOnMousePressed(event -> {
                 if (event.getButton() == MouseButton.SECONDARY) {
                     removeNote(event);
                 } else {
-                    oldMousePos = event.getX();
-                    newMousePos = event.getX();
+                    synthPiano.setOldMousePos(event.getX());
+                    synthPiano.setNewMousePos(event.getX());
 
-                    isResizingLeft = (newMousePos > 0) && (newMousePos < RESIZE_BORDER);
-                    isResizingRight = (newMousePos < noteView.getWidth()) && (newMousePos > noteView.getWidth() - RESIZE_BORDER);
+                    synthPiano.setResizingLeft((synthPiano.getNewMousePos() > 0) && (synthPiano.getNewMousePos() < synthPiano.getResizeBorder()));
+                    synthPiano.setResizingRight((synthPiano.getNewMousePos() < noteView.getWidth()) && (synthPiano.getNewMousePos() > noteView.getWidth() - synthPiano.getResizeBorder()));
                 }
             });
-            currentTrack.getChildren().add(noteView);
-            allNoteViews.add(noteView);
+            synthPiano.getCurrentTrack().getChildren().add(noteView);
+            synthPiano.getAllNoteViews().add(noteView);
         }
     }
 
     //removes a note from the track
     private void removeNote(MouseEvent e) {
-        currentTrack.getChildren().remove(e.getSource());
-        allNoteViews.remove(e.getSource());
+        synthPiano.getCurrentTrack().getChildren().remove(e.getSource());
+        synthPiano.getAllNoteViews().remove(e.getSource());
     }
 
     //alows a note to be draggable and resizable
@@ -189,54 +148,54 @@ public class SynthPianoController {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
-            newMousePos = mouseEvent.getX();
-            overlaps = false;
+            synthPiano.setNewMousePos(mouseEvent.getX());
+            synthPiano.setOverlaps(false);;
 
-            double deltaMousePos = newMousePos - oldMousePos; //get how much the mouse moved since starting the drag
+            double deltaMousePos = synthPiano.getNewMousePos() - synthPiano.getOldMousePos(); //get how much the mouse moved since starting the drag
 
             //resize left
-            if (isResizingLeft) {
+            if (synthPiano.isResizingLeft()) {
                 double nextPosX = noteView.getLayoutX() + deltaMousePos; //get the next position that the note will be in once moved
                 double nextWidth = noteView.getWidth() - deltaMousePos; // get the next width that the note will have once resized
 
                 detectOverlap(noteView, nextPosX, nextWidth);
 
-                if (!overlaps) {
+                if (!synthPiano.isOverlaps()) {
                     noteView.setLayoutX(nextPosX);
                     noteView.setWidth(nextWidth);
 
-                    if (noteView.getWidth() < NOTE_MIN_WIDTH) { //width is now below the minimum
+                    if (noteView.getWidth() < synthPiano.getNoteMinWidth()) { //width is now below the minimum
                         double shrunkenWidth = noteView.getWidth(); //get the width it was reduced to
-                        noteView.setWidth(NOTE_MIN_WIDTH); //set the width back to the minimum
-                        noteView.setLayoutX(noteView.getLayoutX() - (NOTE_MIN_WIDTH - shrunkenWidth)); //move the note back by the difference between the minimum width and the width it was reduced to
+                        noteView.setWidth(synthPiano.getNoteMinWidth()); //set the width back to the minimum
+                        noteView.setLayoutX(noteView.getLayoutX() - (synthPiano.getNoteMinWidth() - shrunkenWidth)); //move the note back by the difference between the minimum width and the width it was reduced to
                     }
 
                 }
                 //resize right
-            } else if (isResizingRight) {
+            } else if (synthPiano.isResizingRight()) {
                 double nextWidth = noteView.getWidth() + deltaMousePos; //get the next position that the note will be in once moved
-                overlaps = false;
+                synthPiano.setOverlaps(false);
 
                 detectOverlap(noteView, noteView.getLayoutX(), nextWidth);
 
-                if (!overlaps) {
+                if (!synthPiano.isOverlaps()) {
                     noteView.setWidth(nextWidth);
 
-                    if (noteView.getWidth() < NOTE_MIN_WIDTH) {
-                        noteView.setWidth(NOTE_MIN_WIDTH);
+                    if (noteView.getWidth() < synthPiano.getNoteMinWidth()) {
+                        noteView.setWidth(synthPiano.getNoteMinWidth());
                     }
-                    oldMousePos = newMousePos;
+                    synthPiano.setOldMousePos(synthPiano.getNewMousePos());
                 }
 
                 //move along pane
             } else {
                 double nextPosX = noteView.getLayoutX() + deltaMousePos; //get the next position that the note will be in once moved
-                overlaps = false;
+                synthPiano.setOverlaps(false);
 
                 detectOverlap(noteView, nextPosX, noteView.getWidth());
 
                 //if it doesn't intersect then move the note to that position
-                if (!overlaps) {
+                if (!synthPiano.isOverlaps()) {
                     noteView.setLayoutX(nextPosX);
                 }
             }
@@ -245,8 +204,8 @@ public class SynthPianoController {
 
         //reset bools on mouse release
         noteView.setOnMouseReleased(mouseEvent -> {
-            isResizingRight = false;
-            isResizingLeft = false;
+            synthPiano.setResizingRight(false);
+            synthPiano.setResizingLeft(false);
         });
 
     }
@@ -258,16 +217,16 @@ public class SynthPianoController {
         tempRect.setLayoutX(nextPosX);
 
         //Determine if intersection with the edge of the pane
-        if (tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > currentTrack.getLayoutX() + currentTrack.getTranslateX() + currentTrack.getPrefWidth()) {
-            overlaps = true;
+        if (tempRect.getLayoutX() < 0 || tempRect.getLayoutX() + tempRect.getWidth() > synthPiano.getCurrentTrack().getLayoutX() + synthPiano.getCurrentTrack().getTranslateX() + synthPiano.getCurrentTrack().getPrefWidth()) {
+            synthPiano.setOverlaps(true);
             return;
         }
 
         //Determine if intersecting with other notes
-        for (int i = 0; i < currentNoteViews.size(); i++) {
-            if (currentNoteViews.get(i) != noteView) {
-                if (currentNoteViews.get(i).getBoundsInParent().intersects(tempRect.getBoundsInParent())) {
-                    overlaps = true;
+        for (int i = 0; i < synthPiano.getCurrentNoteViews().size(); i++) {
+            if (synthPiano.getCurrentNoteViews().get(i) != noteView) {
+                if (synthPiano.getCurrentNoteViews().get(i).getBoundsInParent().intersects(tempRect.getBoundsInParent())) {
+                    synthPiano.setOverlaps(true);
                     return;
                 }
             }
@@ -304,14 +263,14 @@ public class SynthPianoController {
         PianoTrack track = new PianoTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
         track.setId("pane" + noteTracks.getChildren().size());
         track.setPrefSize(1820.0, 27.0);
-        track.setMaxWidth(notesTrackWidth);
-        track.setMinWidth(notesTrackWidth);
-        track.setPrefWidth(notesTrackWidth);
+        track.setMaxWidth(synthPiano.getNotesTrackWidth());
+        track.setMinWidth(synthPiano.getNotesTrackWidth());
+        track.setPrefWidth(synthPiano.getNotesTrackWidth());
         track.setStyle("-fx-background-color: #FFFFFF");
         track.setStyle("-fx-border-color: #000000");
-        track.setPrefWidth(notesTrackWidth);
-        track.setTranslateX((notesTrackWidth - 1820) / 2);
-        track.setOnMouseEntered(mouseEvent -> currentTrack = track);
+        track.setPrefWidth(synthPiano.getNotesTrackWidth());
+        track.setTranslateX((synthPiano.getNotesTrackWidth() - 1820) / 2);
+        track.setOnMouseEntered(mouseEvent -> synthPiano.setCurrentTrack(track));
 
         //adds a note to the track if the track is clicked
         track.setOnMousePressed(e -> {
@@ -338,25 +297,25 @@ public class SynthPianoController {
     private void playNotes() {
 
         //if there is already a thread running, stop the audio and wait for it to end
-        if (trackThread != null && trackThread.isAlive()) {
-            shouldStopPlayback = true;
-            alSourceStop(source);
+        if (synthPiano.getTrackThread() != null && synthPiano.getTrackThread().isAlive()) {
+            synthPiano.setShouldStopPlayback(true);
+            alSourceStop(synthPiano.getSource());
             try {
-                trackThread.join();
+                synthPiano.getTrackThread().join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        shouldStopPlayback = false;
+        synthPiano.setShouldStopPlayback(false);
 
         //creates a new thread that plays the audio
-        trackThread = new Thread(() -> {
+        synthPiano.setTrackThread(new Thread(() -> {
 
-            device = alcOpenDevice((ByteBuffer) null);
-            context = alcCreateContext(device, (IntBuffer) null);
-            alcMakeContextCurrent(context);
-            AL.createCapabilities(ALC.createCapabilities(device));
+            synthPiano.setDevice(alcOpenDevice((ByteBuffer) null));
+            synthPiano.setContext(alcCreateContext(synthPiano.getDevice(), (IntBuffer) null));
+            alcMakeContextCurrent(synthPiano.getContext());
+            AL.createCapabilities(ALC.createCapabilities(synthPiano.getDevice()));
 
             int trackLengthSeconds = 30;
             double sampleRate = 44100;
@@ -367,11 +326,11 @@ public class SynthPianoController {
             int wavePos = 1;
 
             //calculates each sample of the audio (44100 samples per second)
-            for (int i = 0; i < totalSamples && !shouldStopPlayback; i++) {
+            for (int i = 0; i < totalSamples && !synthPiano.isShouldStopPlayback(); i++) {
                 double currentTime = (double) i / sampleRate; // current time in seconds
                 double mixedSample = 0;
 
-                for (NoteView noteView : allNoteViews) { //for all notes placed
+                for (NoteView noteView : synthPiano.getAllNoteViews()) { //for all notes placed
                     Note note = noteView.getNote();
                     if (note.isActive(currentTime)) { // Check if this note should be playing
                         //calculate the sample
@@ -394,22 +353,22 @@ public class SynthPianoController {
             }
 
             //setup buffer and play the audio
-            buffer = alGenBuffers();
-            source = alGenSources();
-            alBufferData(buffer, AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
-            alSourcei(source, AL_BUFFER, buffer);
-            alSourcePlay(source);
+            synthPiano.setBuffer(alGenBuffers());
+            synthPiano.setSource(alGenSources());
+            alBufferData(synthPiano.getBuffer(), AL_FORMAT_MONO16, finalTrackSamples, (int) sampleRate);
+            alSourcei(synthPiano.getSource(), AL_BUFFER, synthPiano.getBuffer());
+            alSourcePlay(synthPiano.getSource());
 
             //start the playback line movement
-            movePlaybackLine.play();
+            synthPiano.getMovePlaybackLine().play();
 
-            shouldStopPlayback = false;
+            synthPiano.setShouldStopPlayback(false);
             
             //enable the play button
             playButton.setDisable(false);
 
             //wait until the audio is done playing
-            while (!shouldStopPlayback && alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
+            while (!synthPiano.isShouldStopPlayback() && alGetSourcei(synthPiano.getSource(), AL_SOURCE_STATE) == AL_PLAYING) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
@@ -418,27 +377,27 @@ public class SynthPianoController {
                 }
             }
 
-            alDeleteSources(source);
-            alDeleteBuffers(buffer);
-            alcDestroyContext(context);
-            alcCloseDevice(device);
-        });
+            alDeleteSources(synthPiano.getSource());
+            alDeleteBuffers(synthPiano.getBuffer());
+            alcDestroyContext(synthPiano.getContext());
+            alcCloseDevice(synthPiano.getDevice());
+        }));
 
         //create translate transition for the playback line to scroll across the tracks
-        movePlaybackLine = new TranslateTransition(Duration.seconds(30), playbackLine);
-        movePlaybackLine.setInterpolator(Interpolator.LINEAR);
-        movePlaybackLine.setFromX(playbackLineStartPos);
-        movePlaybackLine.setToX(currentTrack.getWidth());
-        movePlaybackLine.setCycleCount(1);
+        synthPiano.setMovePlaybackLine(new TranslateTransition(Duration.seconds(30), playbackLine));
+        synthPiano.getMovePlaybackLine().setInterpolator(Interpolator.LINEAR);
+        synthPiano.getMovePlaybackLine().setFromX(synthPiano.getPlaybackLineStartPos());
+        synthPiano.getMovePlaybackLine().setToX(synthPiano.getCurrentTrack().getWidth());
+        synthPiano.getMovePlaybackLine().setCycleCount(1);
 
         //start the thread
-        trackThread.start();
+        synthPiano.getTrackThread().start();
     }
 
     //returns an array list of all notes in the pane
     private ArrayList<NoteView> getNotes() {
         ArrayList<NoteView> currentNoteViews = new ArrayList<>();
-        for (Node n : currentTrack.getChildren()) {
+        for (Node n : synthPiano.getCurrentTrack().getChildren()) {
             currentNoteViews.add((NoteView) n);
         }
         return currentNoteViews;
@@ -459,7 +418,7 @@ public class SynthPianoController {
             case "Triangle" ->
                 2d * Math.abs(a) - 1;
             case "Noise" ->
-                random.nextDouble() * 2 - 1;
+                synthPiano.getRandom().nextDouble() * 2 - 1;
             default ->
                 throw new RuntimeException("Oscillator is set to unknown waveform");
         };

@@ -1,7 +1,6 @@
 package org.JStudio.Utils;
 
 import javafx.scene.layout.VBox;
-
 import org.JStudio.UI.SectionUI;
 
 import java.io.*;
@@ -9,7 +8,6 @@ import java.util.*;
 
 public class FileLoader {
     private static VBox tab_vbox;
-
     private static String musicPath;
 
     public static void init(VBox vbox) {
@@ -27,6 +25,8 @@ public class FileLoader {
         } else {
             throw new RuntimeException("Unsupported OS");
         }
+
+        createFolderIfNeeded(musicPath);
 
         try {
             loadFolders(musicPath);
@@ -50,5 +50,13 @@ public class FileLoader {
 
     public static String getMusicPath() {
         return musicPath;
+    }
+
+    // Method to create the folder only if it doesn't exist
+    private static void createFolderIfNeeded(String path) {
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
     }
 }

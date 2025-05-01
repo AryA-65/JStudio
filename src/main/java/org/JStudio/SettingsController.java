@@ -36,7 +36,7 @@ public class SettingsController {
         darkRadio.setToggleGroup(group);
         
         if (selected != null) {
-            if (selected.equals(lightRadio)) {
+            if (!style) {
                 lightRadio.setSelected(true);
             } else {
                 darkRadio.setSelected(true);

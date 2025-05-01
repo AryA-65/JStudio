@@ -47,7 +47,7 @@
 }
 
 #trackID.selected_track {
-    -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .5, 0, 0);
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .5, 0, 0);
 }
 
 #open_song_btn_parent, #song_name, #export_song_btn_parent, #save_song_btn_parent {
@@ -162,6 +162,17 @@
     -fx-background-color: #282E33 !important;
 }
 
+.muted {
+    -fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.active {
+    -fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.stackpane {
+    -fx-padding: 0px;
+}
 
 .menu-button {
     -fx-background-color: #38414A;
@@ -187,7 +198,9 @@
 }
 
 .text-field {
-    -fx-background-color: #596773;
+    -fx-background-color: #596773 !important;
+    /*-fx-effect: dropshadow(gaussian, rgba(115, 132, 150, 0.5), 3, 0, 2, 2);*/
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
 }
 
 .radio-button {
@@ -216,8 +229,4 @@
     -fx-border-width: 2px;
     -fx-border-insets: 2px;
     -fx-border-radius: 5px;
-}
-
-#trackID.selected_track {
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .5, 0, 0);
 }

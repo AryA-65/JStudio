@@ -500,22 +500,22 @@ public class UIController {
             return;
         }
 
-        ArrayList<PluginNode> plugins = new ArrayList<>();
+        ArrayList<PipelineNode> plugins = new ArrayList<>();
 
         double startX = 50;
         double startY = 100;
 
-        InputNode input = new InputNode(track);
-        input.setLayoutX(startX);
-        input.setLayoutY(startY);
-        plugin_pane.getChildren().add(input);
+        PipelineNode inputNode = new PipelineNode(track);
+        inputNode.setLayoutX(startX);
+        inputNode.setLayoutY(startY);
+        plugin_pane.getChildren().add(inputNode);
 
-        startX += 150;
+        startX += 200;
 
-        PluginNode firstNode = null;
+        PipelineNode firstNode = null;
 
         for (Object plugin : track.getPlugins()) {
-            PluginNode node = new PluginNode(plugin);
+            PipelineNode node = new PipelineNode(plugin);
             node.setLayoutX(startX);
             node.setLayoutY(startY);
 
@@ -527,12 +527,33 @@ public class UIController {
             startX += 200;
         }
 
+        PipelineNode outputNode = new PipelineNode("OUTPUT_NODE");
+        outputNode.setLayoutX(startX);
+        outputNode.setLayoutY(startY);
+        plugin_pane.getChildren().add(outputNode);
+
         if (firstNode != null) {
             Circle firstInput = firstNode.getInputPort();
-            ConnectionUI connection = new ConnectionUI(input.getOutput(), firstInput);
+            Circle inputOut = inputNode.getOutputPort();
+            ConnectionUI connection = new ConnectionUI(inputOut, firstInput);
             plugin_pane.getChildren().add(connection);
 
-            Platform.runLater(() -> connection.update(input.getOutput(), firstInput));
+            Platform.runLater(connection::update);
+
+            Circle lastOutput = plugins.get(plugins.size() - 1).getOutputPort();
+            Circle outputIn = outputNode.getInputPort();
+            ConnectionUI outConnection = new ConnectionUI(lastOutput, outputIn);
+            plugin_pane.getChildren().add(outConnection);
+
+            Platform.runLater(outConnection::update);
+        } else {
+            // No plugins: connect input directly to output
+            Circle inputOut = inputNode.getOutputPort();
+            Circle outputIn = outputNode.getInputPort();
+            ConnectionUI directConnection = new ConnectionUI(inputOut, outputIn);
+            plugin_pane.getChildren().add(directConnection);
+
+            Platform.runLater(directConnection::update);
         }
 
         for (int i = 0; i < plugins.size() - 1; i++) {
@@ -540,15 +561,13 @@ public class UIController {
             Circle to = plugins.get(i + 1).getInputPort();
 
             ConnectionUI connection = new ConnectionUI(from, to);
-            System.out.println("Setting connections: " + track.getName().get());
             plugin_pane.getChildren().add(connection);
 
-            Platform.runLater(() -> connection.update(from, to));
+            Platform.runLater(connection::update);
         }
     }
 
     public void filterAudioSections(String searchText) {
-
         if (searchText == null || searchText.trim().isEmpty()) {
             for (Node node : tab_vbox.getChildren()) {
                 if (node instanceof VBox section) {

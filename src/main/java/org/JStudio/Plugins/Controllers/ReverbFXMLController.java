@@ -38,16 +38,15 @@ public class ReverbFXMLController {
 //    private Slider wetDrySlider;
     @FXML
     private GridPane grid;
-    Knob preDelayKnob = new Knob(100, true, 0.1, REG);
-    Knob decayTimeKnob = new Knob(100, false, 0, REG);
-    Knob diffusionKnob = new Knob(100, true, 0.1, REG);
-    Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob preDelayKnob = new Knob(100, true, 0.1, REG);
+    private final Knob decayTimeKnob = new Knob(100, false, 0, REG);
+    private final Knob diffusionKnob = new Knob(100, true, 0.1, REG);
+    private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static ReverbStage window;
     private Reverb reverb;
     
     /**
-     * Initializes the UI, showing the tick marks on the slider and setting
-     * actions for the sliders and buttons
+     * Initializes the UI and sets actions for the knobs and buttons
      */
     @FXML
     public void initialize() {
@@ -158,6 +157,10 @@ public class ReverbFXMLController {
         });
     }
 
+    /**
+     * Assigns a reverb window object to the reverb controller
+     * @param window the reverb window to be assigned to the controller
+     */
     public static void setWindow(ReverbStage window) {
         ReverbFXMLController.window = window;
     }

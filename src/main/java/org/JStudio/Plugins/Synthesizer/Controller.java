@@ -37,11 +37,11 @@ public class Controller {
     @FXML
     private MenuButton functionChooser1, functionChooser2, functionChooser3;
     @FXML
-    private Slider tone1, tone2, tone3, volume1, volume2, volume3, playSpeed;
+    private Slider tone1, tone2, tone3, volume1, volume2, volume3, playSpeed, glideSp;
     @FXML
     private Canvas waveformCanvas;
     @FXML
-    private Button recordButton;
+    private Button recordButton, smothButton;
     private boolean shouldGenerate;
     private int wavePos;
     private double speedFactor = 1;
@@ -51,8 +51,14 @@ public class Controller {
     private final Set<Character> pressedKeys = new HashSet<>();
 
     private double[] currentFrequencies = new double[3];
-    private double glideSpeed = 0.001; // Adjust for faster/slower glides
+    private double glideSpeed; // Adjust for faster/slower glides
 
+    private short[] delayBuffer; // Buffer for storing delayed audio samples
+    private int delayBufferIndex = 0; // Current index in the delay buffer
+    private int delayOffsetSamples = 1000; // The number of samples to delay by (adjust as needed)
+    private double delayFeedback = 0.5;
+
+    private boolean glideEnabled = false;
 
 
     @FXML
@@ -82,6 +88,15 @@ public class Controller {
         updateSlider(volume2, 1, false);
         updateSlider(volume3, 2, false);
 
+        smothButton.setOnAction(event -> {
+            glideEnabled = !glideEnabled;
+            smothButton.setText(glideEnabled ? "Glide ON" : "Glide OFF");
+        });
+
+        glideSp.valueProperty().addListener((obs, oldValue, newValue) -> {
+            glideSpeed = newValue.doubleValue() / 100; // Adjust the range as needed
+        });
+
         recordButton.setOnAction(event -> {
             if (!isRecording) {
                 recordingBuffer = new ByteArrayOutputStream();
@@ -95,29 +110,54 @@ public class Controller {
         });
 
         final AudioThread audioThread = new AudioThread(() -> {
+            int bufferSize = AudioThread.SAMPLE_RATE;
+            delayBuffer = new short[bufferSize];
             if (!shouldGenerate) {
                 return null;
             }
             short[] s = new short[AudioThread.BUFFER_SIZE];
 
-            // Mix the active oscillators
             for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
                 double mixedSample = 0;
 
+                for (int j = 0; j < 3; j++) {
+                    double targetFreq = oscillatorFrequencies[j];
+
+                    if (glideEnabled) {
+                        // Smooth transition to target frequency
+                        currentFrequencies[j] += (targetFreq - currentFrequencies[j]) * 0.02; // glide speed
+                    } else {
+                        currentFrequencies[j] = targetFreq; // immediate jump
+                    }
+                }
+
                 if (oscillatorFrequencies[0] != 0) {
-                    mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
+                    mixedSample += (generateWaveSample(txt1, currentFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
                 }
                 if (oscillatorFrequencies[1] != 0) {
-                    mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
+                    mixedSample += (generateWaveSample(txt2, currentFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
                 }
                 if (oscillatorFrequencies[2] != 0) {
-                    mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
+                    mixedSample += (generateWaveSample(txt3, currentFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
                 }
 
-                s[i] = (short) (Short.MAX_VALUE * mixedSample);
-                wavePos += (int) (speedFactor);
-            }
+                short rawSample = (short) (Short.MAX_VALUE * mixedSample);
 
+                // Fetch the delayed sample from the delay buffer
+                int delayedIndex = (delayBufferIndex - delayOffsetSamples + delayBuffer.length) % delayBuffer.length;
+                short delayedSample = delayBuffer[delayedIndex];
+
+                // Combine the raw sample with the delayed sample, applying feedback
+                short finalSample = (short) (rawSample + delayFeedback * delayedSample);
+
+                // Store the final sample in the delay buffer
+                delayBuffer[delayBufferIndex] = finalSample;
+                delayBufferIndex = (delayBufferIndex + 1) % delayBuffer.length;
+
+                // Store the final sample in the output buffer
+                s[i] = finalSample;
+                wavePos += (int) speedFactor;
+            }
             drawWaveform(s);
             return s;
         });
@@ -325,16 +365,17 @@ public class Controller {
     }
 
     private void updateOscillatorFrequencies() {
-
         int index = 0;
         for (char key : pressedKeys) {
             double frequency = KEY_FREQUENCIES.get(key);
             if (index < 3) {
-                oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency, (index == 0 ? tone1.getValue() :
-                        (index == 1 ? tone2.getValue() : tone3.getValue())));
+                oscillatorFrequencies[index] = Utility.Math.offsetTone(frequency,
+                        (index == 0 ? tone1.getValue() :
+                                (index == 1 ? tone2.getValue() : tone3.getValue())));
                 index++;
             }
         }
     }
+
 
 }

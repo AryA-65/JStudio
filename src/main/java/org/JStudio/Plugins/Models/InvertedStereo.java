@@ -1,6 +1,11 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class InvertedStereo extends Stereoizer {
+    private StringProperty name = new SimpleStringProperty("Inverted Stereo");
+
     public InvertedStereo(float sampleRate) {
         super(sampleRate);
     }

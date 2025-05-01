@@ -1,7 +1,13 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class HAASStereo extends Stereoizer {
     private final int delaySamples;
+
+    private StringProperty name = new SimpleStringProperty("HAAS Stereo");
+
 
     public HAASStereo(float sampleRate, int delaySamples) {
         super(sampleRate);

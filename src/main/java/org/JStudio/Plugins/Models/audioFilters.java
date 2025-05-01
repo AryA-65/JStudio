@@ -1,12 +1,17 @@
 package org.JStudio.Plugins.Models;
 
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
 public class audioFilters {
+    private StringProperty name = new SimpleStringProperty("Audio Filters");
+
 
     private void amplifyAudio(double amplitudeFactor, String source) {
         new Thread(() -> {

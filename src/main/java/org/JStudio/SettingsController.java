@@ -29,7 +29,6 @@ public class SettingsController {
     @FXML
     RadioButton lightRadio, darkRadio;
 
-
     public void initialize() {
         group = new ToggleGroup();
         lightRadio.setToggleGroup(group);

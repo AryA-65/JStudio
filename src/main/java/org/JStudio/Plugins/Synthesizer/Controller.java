@@ -1,6 +1,8 @@
 package org.JStudio.Plugins.Synthesizer;
 
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -18,13 +20,14 @@ import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 import org.JStudio.SettingsController;
 
 
 public class Controller {
+    private StringProperty name = new SimpleStringProperty("Synthesizer");
+
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
     private final double[] oscillatorFrequencies = new double[3];
@@ -48,6 +51,10 @@ public class Controller {
 
     private boolean isRecording = false;
     private ByteArrayOutputStream recordingBuffer;
+
+    private GraphicsContext gc;
+
+    private final Set<Character> pressedKeys = new HashSet<>();
 
 
     @FXML
@@ -108,20 +115,29 @@ public class Controller {
             for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
                 double mixedSample = 0;
 
-                if (activeOscillator1) {
-                    mixedSample += (generateWaveSample(txt1, oscillatorFrequencies[0], wavePos) * volume1.getValue()) / NORMALIZER;
-                }
-                if (activeOscillator2) {
-                    mixedSample += (generateWaveSample(txt2, oscillatorFrequencies[1], wavePos) * volume2.getValue()) / NORMALIZER;
+                for (char key : pressedKeys) {
+                    if (!KEY_FREQUENCIES.containsKey(key)) continue;
+                    double baseFreq = KEY_FREQUENCIES.get(key);
+
+                    double partial = 0;
+                    if (activeOscillator1)
+                        partial += (generateWaveSample(txt1, Utility.Math.offsetTone(baseFreq, tone1.getValue()), wavePos) * volume1.getValue()) / NORMALIZER;
+                    if (activeOscillator2)
+                        partial += (generateWaveSample(txt2, Utility.Math.offsetTone(baseFreq, tone2.getValue()), wavePos) * volume2.getValue()) / NORMALIZER;
+                    if (activeOscillator3)
+                        partial += (generateWaveSample(txt3, Utility.Math.offsetTone(baseFreq, tone3.getValue()), wavePos) * volume3.getValue()) / NORMALIZER;
+
+                    mixedSample += partial;
                 }
 
-                if (activeOscillator3) {
-                    mixedSample += (generateWaveSample(txt3, oscillatorFrequencies[2], wavePos) * volume3.getValue()) / NORMALIZER;
+                if (!pressedKeys.isEmpty()) {
+                    mixedSample /= pressedKeys.size();
                 }
 
                 s[i] = (short) (Short.MAX_VALUE * mixedSample);
                 wavePos += (int) (speedFactor);
             }
+
             drawWaveform(s);
             return s;
         });
@@ -133,6 +149,21 @@ public class Controller {
         }
         playSpeed.valueProperty().addListener((obs, oldValue, newValue) -> setSpeedFactor(newValue.doubleValue()));
         this.auTh = audioThread;
+
+        tempScene.setOnKeyReleased(event -> { // delete canvas when left go of the key
+            String text = event.getText();
+            if (text.length() != 1) return;
+
+            char key = text.charAt(0);
+
+            if (new String(Utility.AudioInfo.KEYS).contains(String.valueOf(key))) {
+                shouldGenerate = false;
+
+                GraphicsContext gc = waveformCanvas.getGraphicsContext2D();
+                gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
+            }
+        });
+
 
     }
 
@@ -186,30 +217,31 @@ public class Controller {
         }
 
         tempScene.setOnKeyPressed(event -> {
-            if (!auTh.isRunning()) {
-                char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);
-                if (KEY_FREQUENCIES.containsKey(key)) {
-                    double frequency = KEY_FREQUENCIES.get(key);
+            String text = event.getText();
+            if (text.length() != 1) return;
 
-                    oscillatorFrequencies[0] = Utility.Math.offsetTone(frequency, tone1.getValue());
-                    oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
-                    oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
+            char key = text.charAt(0);
+            if (!KEY_FREQUENCIES.containsKey(key)) return; // [MODIFIED]
 
-                    if (tone1.getValue() == 0 && tone2.getValue() == 0 && tone3.getValue() == 0) {
-                        return;
-                    }
-                    if (volume1.getValue() == 0 && volume2.getValue() == 0 && volume3.getValue() == 0) {
-                        return;
-                    }
-                    shouldGenerate = true;
-                    auTh.triggerPlayback();
-                }
+            pressedKeys.add(key); // [ADDED]
+            if (!pressedKeys.isEmpty()) {
+                shouldGenerate = true;
+                auTh.triggerPlayback();
             }
         });
 
         tempScene.setOnKeyReleased(event -> {
-            if (tempScene.getOnKeyPressed() != null) {
+            String text = event.getText();
+            if (text.length() != 1) return;
+
+            char key = text.charAt(0);
+            pressedKeys.remove(key); // [ADDED]
+
+            if (pressedKeys.isEmpty()) {
                 shouldGenerate = false;
+
+                GraphicsContext gc = waveformCanvas.getGraphicsContext2D(); // [ADDED]
+                gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // [ADDED]
             }
         });
     }
@@ -304,8 +336,8 @@ public class Controller {
     }
 
     private void drawWaveform(short[] audioBuffer) {
-        GraphicsContext gc = waveformCanvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
+        gc = waveformCanvas.getGraphicsContext2D();
+//        gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
         if (SettingsController.getStyle()) {
             gc.setStroke(javafx.scene.paint.Color.WHITE);

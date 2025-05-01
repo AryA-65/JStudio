@@ -1,6 +1,11 @@
 package org.JStudio.Plugins.Models;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class LFOStereo extends Stereoizer {
+    private StringProperty name = new SimpleStringProperty("LFO Stereo");
+
     private float lfoFrequency;
 
     public LFOStereo(float sampleRate, float lfoFrequency) {

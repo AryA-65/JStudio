@@ -3,6 +3,8 @@ package PianoManualSynth;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.JStudio.Plugins.Synthesizer.OpenALException;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.lwjgl.openal.AL10.*;
@@ -83,8 +85,10 @@ class AudioThread extends Thread {
     }
 
     //breaks out of the loop and closes the thread
-    void close() {
+    public synchronized void close() {
         closed = true;
+        running = true;
+        notify();
     }
 
     //Queues samples in a buffer

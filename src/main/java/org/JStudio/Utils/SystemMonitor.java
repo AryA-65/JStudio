@@ -75,7 +75,7 @@ public class SystemMonitor { //make into static class
         byte halfH = (byte) (HEIGHT / 2);
 
         drawGraph(gc, MEMBUFF, halfH, (byte) 0, true);
-        drawGraph(gc, CPUBUFF, (byte) (C.getHeight() - 1), halfH, false);
+        drawGraph(gc, CPUBUFF, (byte) C.getHeight(), halfH, false);
 //        drawCpuGraph(gc, CPUBUFF, (byte) C.getHeight(), halfH, false);
 
         gc.setStroke(Color.BLACK);

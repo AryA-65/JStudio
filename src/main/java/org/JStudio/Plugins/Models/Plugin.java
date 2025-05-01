@@ -12,6 +12,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 
+/**
+ * Abstract plugin class that handles basic use (playing, stopping, array conversions)
+ * @author Theo, Ahmet
+ */
 public abstract class Plugin {
     protected String filePathName;
     protected byte[] originalAudio;

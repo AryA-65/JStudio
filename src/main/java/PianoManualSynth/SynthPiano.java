@@ -1,6 +1,7 @@
 package PianoManualSynth;
 
 import java.io.IOException;
+import java.util.Set;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,7 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.SettingsController;
 
-public class SynthPiano{
+public class SynthPiano {
 
     public void openSynthPiano() {
         try {
@@ -17,24 +18,31 @@ public class SynthPiano{
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setMaximized(true);
-            
+
             //loads the fxml file
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));
             Parent root = fxmlLoader.load();
-            
+
+            SynthPianoController synthPianoController = fxmlLoader.getController();
+
             //creates a scene and loads the selected theme (dark/light mode)
-            Scene scene = new Scene(root,Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
+            Scene scene = new Scene(root, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
             if (SettingsController.getStyle()) {
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
             }
-            
+
+            //stop audio playback on close
+            stage.setOnCloseRequest(e -> {
+                synthPianoController.setShouldStopPlayback(true);
+            });
+
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
-    
+
 }

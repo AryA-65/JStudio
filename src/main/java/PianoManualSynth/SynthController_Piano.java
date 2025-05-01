@@ -11,7 +11,9 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import javafx.event.Event;
 import javafx.scene.control.TextField;
+import javafx.stage.WindowEvent;
 import org.JStudio.Plugins.Controllers.PopUpController;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import org.JStudio.SettingsController;
@@ -48,6 +50,10 @@ public class SynthController_Piano {
     //setter
     public void setNotesController(SynthPianoController nc) {
         notesController = nc;
+    }
+    
+    public AudioThread getAuTh(){
+        return auTh;
     }
 
     @FXML
@@ -93,7 +99,7 @@ public class SynthController_Piano {
                 oscillatorFrequencies[1] = Utility.Math.offsetTone(frequency, tone2.getValue());
                 oscillatorFrequencies[2] = Utility.Math.offsetTone(frequency, tone3.getValue());
 
-                playAudio(auTh, frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
+                playAudio(auTh);
             }
         });
 
@@ -114,7 +120,11 @@ public class SynthController_Piano {
                 frequency = Double.parseDouble(frequencyTextField.getText());
 
                 notesController.addTrack(frequency, txt1, txt2, txt3, tone1.getValue(), tone2.getValue(), tone3.getValue(), volume1.getValue(), volume2.getValue(), volume3.getValue());
-                tempStage.close();
+                
+                //close the stage/window
+                WindowEvent closeEvent = new WindowEvent(tempStage, WindowEvent.WINDOW_CLOSE_REQUEST);
+                Event.fireEvent(tempStage, closeEvent);
+
             }
         });
 
@@ -168,7 +178,7 @@ public class SynthController_Piano {
     }
     
     //plays the synth audio
-    public void playAudio(AudioThread auTh, double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+    public void playAudio(AudioThread auTh) {
         gc = waveformCanvas.getGraphicsContext2D();
         shouldGenerate = true;
         auTh.triggerPlayback();
@@ -178,20 +188,6 @@ public class SynthController_Piano {
     public void stopAudio(AudioThread auTh) {
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
         auTh.pause();
-    }
-    
-    //sets onCloseRequest to properly close any threads
-    private void closeApplication() {
-        if (tempStage == null) {
-            System.err.println("tempStage is not set, cannot close application");
-            return;
-        }
-
-        tempStage.setOnCloseRequest(event -> {
-            event.consume();
-            auTh.close();
-            tempStage.close();
-        });
     }
 
     //sets slider parameters
@@ -241,7 +237,6 @@ public class SynthController_Piano {
     //sets the stage
     public void setStage(Stage stage) {
         this.tempStage = stage;
-        closeApplication();
     }
 
     //Draws the synth audio waveform depending on the user's set parameters

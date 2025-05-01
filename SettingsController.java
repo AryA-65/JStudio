@@ -28,13 +28,13 @@ public class SettingsController {
 
     @FXML
     RadioButton lightRadio, darkRadio;
-
+    
 
     public void initialize() {
         group = new ToggleGroup();
         lightRadio.setToggleGroup(group);
         darkRadio.setToggleGroup(group);
-
+        
         if (selected != null) {
             if (!style) {
                 lightRadio.setSelected(true);
@@ -48,15 +48,15 @@ public class SettingsController {
             selected = (RadioButton) group.getSelectedToggle();
             System.out.println(selected.getId());
             switch (selected.getId()) {
-                case "lightRadio":
-                    style = false;
-                    break;
-                case "darkRadio":
-                    style = true;
-                    break;
-                default:
-                    style = false;
-                    break;
+            case "lightRadio":
+                style = false;
+                break;
+            case "darkRadio":
+                style = true;
+                break;
+            default:
+                style = false;
+                break;
             }
             updateMainUIStyle();
             updateSettingsUIStyle();
@@ -103,11 +103,11 @@ public class SettingsController {
     public static void setWindow(SettingsWindow window) {
         SettingsController.window = window;
     }
-
+    
     public void updateMainUIStyle() {
         SettingsController.controller.updateStyle();
     }
-
+    
     public void updateSettingsUIStyle() {
         SettingsController.window.updateStyle();
     }

@@ -51,6 +51,7 @@ public class SynthPianoController {
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
+    volatile boolean shouldStopPlayback = false;
 
     private int notesTrackWidth = 5320;
     private int newPaneWidth = 0;
@@ -82,6 +83,10 @@ public class SynthPianoController {
     public SynthController_Piano getSynth() {
         return synthController;
     }
+    
+    public void setShouldStopPlayback(boolean shouldStop){
+        shouldStopPlayback = shouldStop;
+    }
 
     @FXML
     public void initialize() {
@@ -105,22 +110,18 @@ public class SynthPianoController {
 
         //plays the notes on the tracks when the play button is clicked
         playButton.setOnAction(e -> {
+            playButton.setDisable(true);
             playNotes();
         });
 
         //opens the track settings/synthesizer so the user can create their own sounds
         addNoteTrack.setOnAction(e -> {
+            //stop any audio that was running
+            shouldStopPlayback = true;
+            
             //stops the playback line
             if (movePlaybackLine != null) {
                 movePlaybackLine.stop();
-            }
-
-            //stops any audio playback
-            if (source != 0 && buffer != 0 && context != 0 && device != 0) {
-                alDeleteSources(source);
-                alDeleteBuffers(buffer);
-                alcDestroyContext(context);
-                alcCloseDevice(device);
             }
 
             openTrackOptions();
@@ -332,6 +333,19 @@ public class SynthPianoController {
     //plays the notes that the user placed on the tracks
     private void playNotes() {
 
+        //if there is already a thread running, stop the audio and wait for it to end
+        if (trackThread != null && trackThread.isAlive()) {
+            shouldStopPlayback = true;
+            alSourceStop(source);
+            try {
+                trackThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        shouldStopPlayback = false;
+
         //creates a new thread that plays the audio
         trackThread = new Thread(() -> {
 
@@ -349,7 +363,7 @@ public class SynthPianoController {
             int wavePos = 1;
 
             //calculates each sample of the audio (44100 samples per second)
-            for (int i = 0; i < totalSamples; i++) {
+            for (int i = 0; i < totalSamples && !shouldStopPlayback; i++) {
                 double currentTime = (double) i / sampleRate; // current time in seconds
                 double mixedSample = 0;
 
@@ -385,12 +399,18 @@ public class SynthPianoController {
             //start the playback line movement
             movePlaybackLine.play();
 
+            shouldStopPlayback = false;
+            
+            //enable the play button
+            playButton.setDisable(false);
+
             //wait until the audio is done playing
-            while (alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
+            while (!shouldStopPlayback && alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     System.out.println("Error: " + ex.getMessage());
+                    break;
                 }
             }
 

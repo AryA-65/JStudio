@@ -22,6 +22,7 @@ public class ChorusStage extends Stage {
         setTitle("Chorus");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
+        setResizable(false);
         initPlugin();
     }
     
@@ -36,7 +37,7 @@ public class ChorusStage extends Stage {
             controller.setWindow(this);
 
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 640, 480);
+            scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

@@ -4,6 +4,10 @@
     -fx-border-color: #738496;
 }
 
+.button:hover {
+    -fx-background-color: #738496;
+}
+
 .root {
     -fx-background-color: #282E33 !important;
 }
@@ -28,12 +32,72 @@
 
 .tab {
     -fx-background-color: #38414A;
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+.tab:hover {
+    -fx-background-color: #738496;
 }
 
 .tab:selected {
     -fx-background-color: #454F59;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-effect: innershadow(gaussian, rgba(89,103,115,0.5), 5, .25, 3, 3);
+}
+
+#trackID.selected_track {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .5, 0, 0);
+}
+
+#open_song_btn_parent, #song_name, #export_song_btn_parent, #save_song_btn_parent {
+    -fx-background-color: #38414A;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+#open_song_btn_parent:hover, #save_song_btn_parent:hover, #export_song_btn_parent:hover, #snap_btn_parent:hover, #metronome_control_parent:hover, #record_control_parent:hover {
+    -fx-background-color: #738496;
+}
+
+#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed {
+    -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .25, 3, 3);
+}
+
+#record_control_parent.iactive, #metronome_control_parent.iactive, #snap_btn_parent.iactive {
+    -fx-effect: innershadow(gaussian, rgba(115,132,150,0.5), 5, .25, 3, 3);
+}
+
+#record_control_parent, #bpm_control, #metronome_control_parent, #playback_pos, #audio_vis_top_parent, #amp_audio_top_parent, #pc_stats_parent, #snap_btn_parent {
+    -fx-background-color: #38414A; -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3); -fx-background-radius: 5px;
+}
+
+#trackIDtext {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-highlight-fill: transparent;
+    -fx-highlight-text-fill: -fx-text-inner-color;
+}
+
+#plugin_node {
+    -fx-background-color: #38414A;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+#pan_knob {
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, -3, 3);
+}
+
+#pitch_knob {
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, -3, 3);
 }
 
 .tab-content {
@@ -98,10 +162,30 @@
     -fx-background-color: #282E33 !important;
 }
 
+.muted {
+    -fx-background-color: rgb(0,90,6); -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.active {
+    -fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
+}
+
+.stackpane {
+    -fx-padding: 0px;
+}
 
 .menu-button {
     -fx-background-color: #38414A;
     -fx-text-fill: #B6C2CF;
+}
+
+.menu-item {
+    -fx-background-color: #38414A;
+    -fx-text-fill: #B6C2CF;
+}
+
+.menu-item:hover {
+    -fx-background-color: #738496;
 }
 
 .pane {
@@ -114,9 +198,35 @@
 }
 
 .text-field {
-    -fx-background-color: #596773;
+    -fx-background-color: #596773 !important;
+    /*-fx-effect: dropshadow(gaussian, rgba(115, 132, 150, 0.5), 3, 0, 2, 2);*/
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
 }
 
 .radio-button {
     -fx-text-fill: #B6C2CF;
+}
+
+.slider .thumb {
+    /*-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #ffffff, #d9d9d9);*/
+    -fx-background-color: #d9d9d9;
+    -fx-background-image: url("icons/line.png");
+    -fx-background-size: 10px 10px;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-radius: 3;
+    -fx-pref-height: 24px;
+    -fx-effect: dropshadow(gaussian, rgba(115, 132, 150, 0.5), 3, 0, 2, 2);
+    -fx-border-radius: 3;
+}
+
+#track_section {
+    -fx-background-color: #282E33;
+}
+
+#trackID {
+    -fx-background-radius: 5;
+    -fx-border-width: 2px;
+    -fx-border-insets: 2px;
+    -fx-border-radius: 5px;
 }

@@ -16,26 +16,26 @@ import static org.JStudio.UI.Knob.Type.REG;
  * @author Theodore Georgiou
  */
 public class ReverbFXMLController {
-    @FXML
-    private Label preDelayLabel;
-    @FXML
-    private Label decayTimeLabel;
-    @FXML
-    private Label diffusionLabel;
-    @FXML
-    private Label wetDryLabel;
+//    @FXML
+//    private Label preDelayLabel;
+//    @FXML
+//    private Label decayTimeLabel;
+//    @FXML
+//    private Label diffusionLabel;
+//    @FXML
+//    private Label wetDryLabel;
     @FXML
     private Button resetButton;
     @FXML
     private Button playButton;
-    @FXML
-    private Slider preDelaySlider;
-    @FXML
-    private Slider decayTimeSlider;
-    @FXML
-    private Slider diffusionSlider;
-    @FXML
-    private Slider wetDrySlider;
+//    @FXML
+//    private Slider preDelaySlider;
+//    @FXML
+//    private Slider decayTimeSlider;
+//    @FXML
+//    private Slider diffusionSlider;
+//    @FXML
+//    private Slider wetDrySlider;
     @FXML
     private GridPane grid;
     Knob preDelayKnob = new Knob(100, true, 0.1, REG);
@@ -57,10 +57,10 @@ public class ReverbFXMLController {
         diffusionKnob.setTranslateX(15);
         wetDryKnob.setTranslateX(15);
         
-        grid.add(preDelayKnob, 0, 1);
-        grid.add(decayTimeKnob, 1, 1);
-        grid.add(diffusionKnob, 3, 1);
-        grid.add(wetDryKnob, 4, 1);
+        grid.add(preDelayKnob, 0, 0);
+        grid.add(decayTimeKnob, 1, 0);
+        grid.add(diffusionKnob, 3, 0);
+        grid.add(wetDryKnob, 4, 0);
         
         preDelayKnob.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
             newPreDelay = preDelayKnob.getValue() * 10 * 500;
@@ -144,11 +144,11 @@ public class ReverbFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             reverb.stopAudio();
-            reverb = new Reverb(1000, 10000, 2000, 0.5);
-            preDelaySlider.setValue(1);
-            decayTimeSlider.setValue(1);
-            diffusionSlider.setValue(2);
-            wetDrySlider.setValue(5);
+//            reverb = new Reverb(1000, 10000, 2000, 0.5);
+//            preDelaySlider.setValue(1);
+//            decayTimeSlider.setValue(1);
+//            diffusionSlider.setValue(2);
+//            wetDrySlider.setValue(5);
         });
         
         ReverbFXMLController.window.setOnCloseRequest(e ->{

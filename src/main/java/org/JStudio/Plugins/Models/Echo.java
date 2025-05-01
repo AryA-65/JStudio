@@ -1,6 +1,8 @@
 package org.JStudio.Plugins.Models;
 
 import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Echo plugin that takes in audio data and applies an echo effect to it
@@ -13,6 +15,7 @@ public class Echo extends Plugin {
     private int echoNum;
     private int diffusion;
     private ArrayList<short[]> echos = new ArrayList<>();
+    private StringProperty name = new SimpleStringProperty("Echo");
 
     // Creates an echo
     public Echo(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {

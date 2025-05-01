@@ -50,6 +50,10 @@ public class Controller {
     private GraphicsContext gc;
     private final Set<Character> pressedKeys = new HashSet<>();
 
+    private double[] currentFrequencies = new double[3];
+    private double glideSpeed = 0.001; // Adjust for faster/slower glides
+
+
 
     @FXML
     public void initialize() {

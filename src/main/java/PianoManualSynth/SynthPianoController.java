@@ -22,6 +22,8 @@ import org.JStudio.Plugins.Controllers.PopUpController;
 import java.util.*;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.lwjgl.openal.AL10.*;
@@ -63,6 +65,8 @@ public class SynthPianoController {
     private Thread trackThread;
 
     private Random random = new Random();
+    
+    private StringProperty name = new SimpleStringProperty("Synth Piano");
 
     @FXML
     private Pane mainPane;

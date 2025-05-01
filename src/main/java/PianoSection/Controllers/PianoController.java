@@ -15,6 +15,8 @@ import javafx.util.Duration;
 import javax.sound.midi.*;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
@@ -42,6 +44,8 @@ public class PianoController {
     private boolean overlaps;
     private boolean isResizingRight = false;
     private boolean isResizingLeft = false;
+    
+    private StringProperty name = new SimpleStringProperty("Piano");
 
     @FXML
     private Pane mainPane;

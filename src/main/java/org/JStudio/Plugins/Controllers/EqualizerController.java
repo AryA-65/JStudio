@@ -11,6 +11,8 @@ import javax.sound.sampled.*;
 import org.jtransforms.fft.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.Event;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -29,6 +31,7 @@ public class EqualizerController extends Thread {
     private SourceDataLine line;
     private File file;
     private Stage stage;
+    private StringProperty name = new SimpleStringProperty("Equalizer");
 
     public EqualizerController(File audioFile) {
         this.file = audioFile;

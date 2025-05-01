@@ -18,6 +18,7 @@ import org.JStudio.Plugins.Controllers.PopUpController;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import org.JStudio.SettingsController;
 
+
 public class SynthController_Piano {
 
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();

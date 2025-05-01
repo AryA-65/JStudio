@@ -10,7 +10,6 @@ import org.JStudio.Plugins.Synthesizer.Controller;
 import org.JStudio.SettingsController;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class SynthesizerStage {
     public static Scene mainScene;

@@ -7,11 +7,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.ButterworthFXMLController;
-import org.JStudio.Plugins.Controllers.ReverbFXMLController;
-import org.JStudio.Plugins.Synthesizer.Controller;
+import org.JStudio.SettingsController;
 
 import java.io.IOException;
-import org.JStudio.SettingsController;
 
 public class ButterWorthStage extends Stage {
     public static Scene scene;

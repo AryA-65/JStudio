@@ -40,6 +40,10 @@ public class SynthMain_Piano {
         
         synthController.setStage(stage);
         
+        stage.setOnCloseRequest(e -> {
+            synthController.getAuTh().close();
+        });
+        
         stage.show();
     }
 }

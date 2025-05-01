@@ -4,8 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 import org.JStudio.SettingsController;
+
+import java.io.IOException;
 
 public class SynthMain_Piano {
     private SynthPianoController notesController;

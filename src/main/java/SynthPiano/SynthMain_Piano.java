@@ -1,4 +1,4 @@
-package PianoManualSynth;
+package SynthPiano;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,7 +26,7 @@ public class SynthMain_Piano {
         
         //gets the fxml controller
         SynthController_Piano synthController = fxmlLoader.getController();
-        synthController.setNotesController(notesController);
+        synthController.getSynth().setNotesController(notesController);
         
         //creates a scene and loads the selected theme (dark/light mode)
         Scene mainScene = new Scene(root, 650, 450);
@@ -38,10 +38,10 @@ public class SynthMain_Piano {
         
         stage.setScene(mainScene);
         
-        synthController.setStage(stage);
+        synthController.getSynth().setTempStage(stage);
         
         stage.setOnCloseRequest(e -> {
-            synthController.getAuTh().close();
+            synthController.getSynth().getAuTh().close();
         });
         
         stage.show();

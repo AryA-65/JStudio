@@ -1,4 +1,4 @@
-package PianoManualSynth;
+package SynthPiano;
 
 public class Note {
 

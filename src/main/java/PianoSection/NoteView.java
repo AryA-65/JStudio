@@ -1,5 +1,6 @@
-package PianoManualSynth;
+package PianoSection;
 
+import PianoSection.Note;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -7,11 +8,10 @@ public class NoteView extends Rectangle {
     private Note note;
 
     //creates a rectangle to represent the note on the track
-    public NoteView(Note note, double width, double height, double positionX) {
-        super(width, height);
-        note.setNoteView(this);
+    public NoteView(Note note, double height) {
+        super(note.getWidth(), height);
         this.note = note;
-        setLayoutX(positionX);
+        setLayoutX(note.getPositionX());
         setFill(Color.BLACK);
 
         //changes the color of note if the user has mouse over note

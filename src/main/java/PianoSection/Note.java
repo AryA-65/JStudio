@@ -1,4 +1,4 @@
-package PianoSection.Models;
+package PianoSection;
 
 public class Note {
     private int noteNum;

@@ -27,15 +27,14 @@ public class PhaserFXMLController {
     private Button playButton;
     @FXML
     private GridPane grid;
-    Knob frequencyKnob = new Knob(100, false, 0, REG);
-    Knob deviationKnob = new Knob(100, true, 0.1, REG);
-    Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob frequencyKnob = new Knob(100, false, 0, REG);
+    private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
+    private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static PhaserStage window;
     private PhaserPlugin phaser;
     
     /**
-     * Initializes the UI, showing the tick marks on the slider and setting
-     * actions for the sliders and buttons
+     * Initializes the UI and sets actions for the knobs and buttons
      */
     @FXML
     public void initialize() {
@@ -51,19 +50,16 @@ public class PhaserFXMLController {
 
         frequencyKnob.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
             newFrequency = frequencyKnob.getValue() * 10 * 50000;
-            System.out.println(newFrequency);
             phaser.setFrequency(newFrequency.intValue());
         });
         
         deviationKnob.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
             newDeviation = deviationKnob.getValue() * 10;
-            System.out.println(newDeviation);
             phaser.setDeviation(newDeviation.intValue());
         });
         
         wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
             newWetDryFactor = wetDryKnob.getValue();
-            System.out.println(newWetDryFactor);
             phaser.setWetDryFactor(newWetDryFactor.doubleValue());
         });
         
@@ -128,6 +124,10 @@ public class PhaserFXMLController {
         });
     }
     
+    /**
+     * Assigns a phaser window object to the phaser controller
+     * @param window the phaser window to be assigned to the controller
+     */
     public static void setWindow(PhaserStage window) {
         PhaserFXMLController.window = window;
     }

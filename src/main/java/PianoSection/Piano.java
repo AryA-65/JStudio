@@ -1,41 +1,157 @@
 package PianoSection;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import org.JStudio.SettingsController;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.layout.Pane;
+import javax.sound.midi.MidiChannel;
+import javax.sound.midi.Synthesizer;
 
 public class Piano {
-    public void openPiano() {
-        try {
-            //creates a new stage
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setMaximized(true);
-            
-            //loads the fxml file
-            Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Piano.fxml"));
-            
-            //creates a scene and loads the selected theme (dark/light mode)
-            Scene scene = new Scene(root,Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
-            if (SettingsController.getStyle()) {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
-            } else {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            }
-            
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
+    private final double noteBaseWidth = 50;
+    private final double noteHeight = 27;
+    private final double resizeBorder = 10;
+    private final double noteMinWidth = 50;
+
+    private Pane currentPane;
+    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
+    private List<NoteView> currentNoteViews = new ArrayList<>();
+
+    private double oldMousePos;
+    private double newMousePos;
+
+    private Synthesizer synth;
+    private MidiChannel channel;
+    private int noteNumStart = 37;
+
+    private boolean overlaps;
+    private boolean resizingRight = false;
+    private boolean resizingLeft = false;
+    
+    private StringProperty name = new SimpleStringProperty("Piano");
+
+    private double playbackLineStartPos;
+
+    //getters and setters
+    public ArrayList<NoteView> getAllNoteViews() {
+        return allNoteViews;
     }
+
+    public MidiChannel getChannel() {
+        return channel;
+    }
+
+    public List<NoteView> getCurrentNoteViews() {
+        return currentNoteViews;
+    }
+
+    public Pane getCurrentPane() {
+        return currentPane;
+    }
+
+    public double getNoteBaseWidth() {
+        return noteBaseWidth;
+    }
+
+    public double getNoteHeight() {
+        return noteHeight;
+    }
+
+    public double getNoteMinWidth() {
+        return noteMinWidth;
+    }
+
+    public StringProperty getName() {
+        return name;
+    }
+
+    public double getNewMousePos() {
+        return newMousePos;
+    }
+
+    public int getNoteNumStart() {
+        return noteNumStart;
+    }
+
+    public double getOldMousePos() {
+        return oldMousePos;
+    }
+
+    public double getPlaybackLineStartPos() {
+        return playbackLineStartPos;
+    }
+
+    public double getResizeBorder() {
+        return resizeBorder;
+    }
+
+    public Synthesizer getSynth() {
+        return synth;
+    }
+
+    public boolean isResizingLeft() {
+        return resizingLeft;
+    }
+
+    public boolean isResizingRight() {
+        return resizingRight;
+    }
+
+    public boolean isOverlaps() {
+        return overlaps;
+    }
+
+    public void setAllNoteViews(ArrayList<NoteView> allNoteViews) {
+        this.allNoteViews = allNoteViews;
+    }
+
+    public void setChannel(MidiChannel channel) {
+        this.channel = channel;
+    }
+
+    public void setCurrentNoteViews(List<NoteView> currentNoteViews) {
+        this.currentNoteViews = currentNoteViews;
+    }
+
+    public void setCurrentPane(Pane currentPane) {
+        this.currentPane = currentPane;
+    }
+
+    public void setResizingLeft(boolean resizingLeft) {
+        this.resizingLeft = resizingLeft;
+    }
+
+    public void setResizingRight(boolean resizingRight) {
+        this.resizingRight = resizingRight;
+    }
+
+    public void setName(StringProperty name) {
+        this.name = name;
+    }
+
+    public void setNewMousePos(double newMousePos) {
+        this.newMousePos = newMousePos;
+    }
+
+    public void setNoteNumStart(int noteNumStart) {
+        this.noteNumStart = noteNumStart;
+    }
+
+    public void setOldMousePos(double oldMousePos) {
+        this.oldMousePos = oldMousePos;
+    }
+
+    public void setOverlaps(boolean overlaps) {
+        this.overlaps = overlaps;
+    }
+
+    public void setPlaybackLineStartPos(double playbackLineStartPos) {
+        this.playbackLineStartPos = playbackLineStartPos;
+    }
+
+    public void setSynth(Synthesizer synth) {
+        this.synth = synth;
+    }
+    
 }

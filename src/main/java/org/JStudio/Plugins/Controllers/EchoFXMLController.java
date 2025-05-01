@@ -27,14 +27,17 @@ public class EchoFXMLController {
     private Slider wetDrySlider;
     @FXML
     private GridPane grid;
-    Knob preDelayKnob = new Knob(100, true, 0.1, REG);
-    Knob decayTimeKnob = new Knob(100, false, 0, REG);
-    Knob diffusionKnob = new Knob(100, true, 0.1, REG);
-    Knob echoNumKnob = new Knob(100, true, 0.1, REG);
-    Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob preDelayKnob = new Knob(100, true, 0.1, REG);
+    private final Knob decayTimeKnob = new Knob(100, false, 0, REG);
+    private final Knob diffusionKnob = new Knob(100, true, 0.1, REG);
+    private final Knob echoNumKnob = new Knob(100, true, 0.1, REG);
+    private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static EchoStage window;
     private Echo echo;
     
+    /**
+     * Initializes the UI and sets actions for the knobs and buttons
+     */
     @FXML
     public void initialize() {
         echo = new Echo(1000, 1/11, 10000, 5, 0.5); // Create a echo
@@ -167,6 +170,10 @@ public class EchoFXMLController {
         });
     }
     
+    /**
+     * Assigns a reverb window object to the reverb controller
+     * @param window the reverb window to be assigned to the controller
+     */
     public static void setWindow(EchoStage window) {
         EchoFXMLController.window = window;
     }

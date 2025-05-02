@@ -15,16 +15,16 @@ public class EchoFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
-    @FXML
-    private Slider echoNumSlider;
-    @FXML
-    private Slider decayTimeSlider;
-    @FXML
-    private Slider diffusionSlider;
-    @FXML
-    private Slider preDelaySlider;
-    @FXML
-    private Slider wetDrySlider;
+//    @FXML
+//    private Slider echoNumSlider;
+//    @FXML
+//    private Slider decayTimeSlider;
+//    @FXML
+//    private Slider diffusionSlider;
+//    @FXML
+//    private Slider preDelaySlider;
+//    @FXML
+//    private Slider wetDrySlider;
     @FXML
     private GridPane grid;
     private final Knob preDelayKnob = new Knob(100, true, 0.1, REG);
@@ -42,12 +42,16 @@ public class EchoFXMLController {
     public void initialize() {
         echo = new Echo(1000, 1/11, 10000, 5, 0.5); // Create a echo
         
+        preDelayKnob.setValue(0.1);
+        decayTimeKnob.setValue(0.1);
+        diffusionKnob.setValue(0.2);
+        echoNumKnob.setValue(0.5);
+        wetDryKnob.setValue(0.5);
         preDelayKnob.setTranslateX(5);
         decayTimeKnob.setTranslateX(5);
         diffusionKnob.setTranslateX(5);
         echoNumKnob.setTranslateX(5);
         wetDryKnob.setTranslateX(5);
-        
         
         grid.add(preDelayKnob, 0, 0);
         grid.add(decayTimeKnob, 1, 0);
@@ -156,11 +160,16 @@ public class EchoFXMLController {
         resetButton.setOnAction(e -> {
             echo.stopAudio();
             echo = new Echo(1000, 1/11, 10000, 5, 0.5);
-            preDelaySlider.setValue(1);
-            decayTimeSlider.setValue(1);
-            diffusionSlider.setValue(2);
-            echoNumSlider.setValue(5);
-            wetDrySlider.setValue(5);
+            preDelayKnob.setValue(0.1);
+            decayTimeKnob.setValue(0.1);
+            diffusionKnob.setValue(0.2);
+            echoNumKnob.setValue(0.5);
+            wetDryKnob.setValue(0.5);
+//            preDelaySlider.setValue(1);
+//            decayTimeSlider.setValue(1);
+//            diffusionSlider.setValue(2);
+//            echoNumSlider.setValue(5);
+//            wetDrySlider.setValue(5);
         });
         
         EchoFXMLController.window.setOnCloseRequest(e ->{

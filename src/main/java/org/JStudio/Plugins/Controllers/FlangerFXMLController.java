@@ -15,12 +15,12 @@ import static org.JStudio.UI.Knob.Type.REG;
  * @author Theodore Georgiou
  */
 public class FlangerFXMLController {
-    @FXML
-    private Slider frequencySlider;
-    @FXML
-    private Slider deviationSlider;
-    @FXML
-    private Slider wetDrySlider;
+//    @FXML
+//    private Slider frequencySlider;
+//    @FXML
+//    private Slider deviationSlider;
+//    @FXML
+//    private Slider wetDrySlider;
     @FXML
     private Button resetButton;
     @FXML
@@ -41,6 +41,9 @@ public class FlangerFXMLController {
         flanger = new Modulation(100000, 100, 0.5); // Create a flanger
         flanger.setName("Flanger");
         
+        frequencyKnob.setValue(0.2);
+        deviationKnob.setValue(0.2);
+        wetDryKnob.setValue(0.5);
         frequencyKnob.setTranslateX(25);
         deviationKnob.setTranslateX(25);
         wetDryKnob.setTranslateX(25);
@@ -112,9 +115,13 @@ public class FlangerFXMLController {
         resetButton.setOnAction(e -> {
             flanger.stopAudio();
             flanger = new Modulation(100000, 100, 0.5);
-            frequencySlider.setValue(2);
-            deviationSlider.setValue(2);
-            wetDrySlider.setValue(5);
+            frequencyKnob.setValue(0.2);
+            deviationKnob.setValue(0.2);
+            wetDryKnob.setValue(0.5);
+//            frequencySlider.setValue(2);
+//            deviationSlider.setValue(2);
+//            wetDrySlider.setValue(5);
+
         });
         
         FlangerFXMLController.window.setOnCloseRequest(e ->{

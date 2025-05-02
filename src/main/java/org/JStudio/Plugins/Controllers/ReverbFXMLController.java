@@ -51,10 +51,15 @@ public class ReverbFXMLController {
     @FXML
     public void initialize() {
         reverb = new Reverb(1000, 10000, 2000, 0.5); // Create a reverb
+        
         preDelayKnob.setTranslateX(15);
         decayTimeKnob.setTranslateX(15);
         diffusionKnob.setTranslateX(15);
         wetDryKnob.setTranslateX(15);
+        preDelayKnob.setValue(0.1);
+        decayTimeKnob.setValue(0.1);
+        diffusionKnob.setValue(0.2);
+        wetDryKnob.setValue(0.5);
         
         grid.add(preDelayKnob, 0, 0);
         grid.add(decayTimeKnob, 1, 0);
@@ -143,7 +148,11 @@ public class ReverbFXMLController {
         // Reset to initial values
         resetButton.setOnAction(e -> {
             reverb.stopAudio();
-//            reverb = new Reverb(1000, 10000, 2000, 0.5);
+            reverb = new Reverb(1000, 10000, 2000, 0.5);
+            preDelayKnob.setValue(0.1);
+            decayTimeKnob.setValue(0.1);
+            diffusionKnob.setValue(0.2);
+            wetDryKnob.setValue(0.5);
 //            preDelaySlider.setValue(1);
 //            decayTimeSlider.setValue(1);
 //            diffusionSlider.setValue(2);

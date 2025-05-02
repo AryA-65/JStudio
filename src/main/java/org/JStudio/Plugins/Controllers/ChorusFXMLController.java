@@ -15,12 +15,12 @@ import static org.JStudio.UI.Knob.Type.REG;
  * @author Theodore Georgiou
  */
 public class ChorusFXMLController {
-    @FXML
-    private Slider frequencySlider;
-    @FXML
-    private Slider deviationSlider;
-    @FXML
-    private Slider wetDrySlider;
+//    @FXML
+//    private Slider frequencySlider;
+//    @FXML
+//    private Slider deviationSlider;
+//    @FXML
+//    private Slider wetDrySlider;
     @FXML
     private Button resetButton;
     @FXML
@@ -41,6 +41,9 @@ public class ChorusFXMLController {
         chorus = new Modulation(20000, 200, 0.5); // Create a chorus
         chorus.setName("Chorus");
         
+        frequencyKnob.setValue(0.2);
+        deviationKnob.setValue(0.2);
+        wetDryKnob.setValue(0.5);
         frequencyKnob.setTranslateX(25);
         deviationKnob.setTranslateX(25);
         wetDryKnob.setTranslateX(25);
@@ -111,9 +114,12 @@ public class ChorusFXMLController {
         resetButton.setOnAction(e -> {
             chorus.stopAudio();
             chorus = new Modulation(20000, 200, 0.5);
-            frequencySlider.setValue(2);
-            deviationSlider.setValue(2);
-            wetDrySlider.setValue(5);
+            frequencyKnob.setValue(0.2);
+            deviationKnob.setValue(0.2);
+            wetDryKnob.setValue(0.5);
+//            frequencySlider.setValue(2);
+//            deviationSlider.setValue(2);
+//            wetDrySlider.setValue(5);
         });
         
         ChorusFXMLController.window.setOnCloseRequest(e ->{

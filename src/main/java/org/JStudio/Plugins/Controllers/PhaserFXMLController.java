@@ -15,12 +15,12 @@ import static org.JStudio.UI.Knob.Type.REG;
  * @author Theodore Georgiou
  */
 public class PhaserFXMLController {
-    @FXML
-    private Slider frequencySlider;
-    @FXML
-    private Slider deviationSlider;
-    @FXML
-    private Slider wetDrySlider;
+//    @FXML
+//    private Slider frequencySlider;
+//    @FXML
+//    private Slider deviationSlider;
+//    @FXML
+//    private Slider wetDrySlider;
     @FXML
     private Button resetButton;
     @FXML
@@ -28,7 +28,7 @@ public class PhaserFXMLController {
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
-    private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
+    private final Knob deviationKnob = new Knob(100, true, 0.2, REG);
     private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static PhaserStage window;
     private PhaserPlugin phaser;
@@ -40,6 +40,10 @@ public class PhaserFXMLController {
     public void initialize() {
         phaser = new PhaserPlugin(100000, 8, 0.5); // Create a phaser
         
+        deviationKnob.setValues(0.6, 1);
+        frequencyKnob.setValue(0.2);
+        deviationKnob.setValue(0.8);
+        wetDryKnob.setValue(0.5);
         frequencyKnob.setTranslateX(25);
         deviationKnob.setTranslateX(25);
         wetDryKnob.setTranslateX(25);
@@ -112,9 +116,12 @@ public class PhaserFXMLController {
         resetButton.setOnAction(e -> {
             phaser.stopAudio();
             phaser = new PhaserPlugin(100000, 8, 0.5);
-            frequencySlider.setValue(2);
-            deviationSlider.setValue(8);
-            wetDrySlider.setValue(5);
+            frequencyKnob.setValue(0.2);
+            deviationKnob.setValue(0.8);
+            wetDryKnob.setValue(0.5);
+//            frequencySlider.setValue(2);
+//            deviationSlider.setValue(8);
+//            wetDrySlider.setValue(5);
         });
         
         PhaserFXMLController.window.setOnCloseRequest(e ->{

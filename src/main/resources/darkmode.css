@@ -219,6 +219,10 @@
     -fx-border-radius: 3;
 }
 
+.slider .axis {
+    -fx-tick-label-fill: #B6C2CF;
+}
+
 #track_section {
     -fx-background-color: #282E33;
 }

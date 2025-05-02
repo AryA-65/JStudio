@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.JStudio.Login.EncryptionAndDecryption;
@@ -25,7 +27,8 @@ public class LoginController {
 
     @FXML
     private Button createAccount, enterBtn;
-
+    @FXML
+    private ImageView logo;
     private String userId, userPass;
 
     private int key1, key2;
@@ -37,6 +40,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
+        logo.setImage(new Image("JS_ico.png"));
         userDataController = new UserDataController();
         csvSetUp();
         entryLimiters();

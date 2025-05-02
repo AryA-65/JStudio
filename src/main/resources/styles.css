@@ -307,6 +307,29 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
 }
 
+#logingrid {
+    -fx-background-color: linear-gradient(to bottom right, #F89820, #d9d9d9, #5362A1);
+}
+
+#appName {
+    -fx-text-fill: #626F86;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+}
+
+#userLabel, #passLabel, #key1Label, #key2Label {
+    -fx-text-fill: #626F86;
+}
+
+#createAccount, #enterBtn {
+    -fx-background-color: #626F86;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+}
+
+#createAccount:hover, #enterBtn:hover {
+    -fx-background-color: #738496;
+}
+
 #connection_node {
     /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*/
 }

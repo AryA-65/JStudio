@@ -43,6 +43,7 @@ public class FileLoader {
                     tab_vbox.getChildren().add(new SectionUI(f));
                 }
             }
+            System.gc();
         } else if (!file.exists()) {
             throw new Exception("Folder does not exist");
         }

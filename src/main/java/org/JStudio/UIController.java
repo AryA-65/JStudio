@@ -1,8 +1,5 @@
 package org.JStudio;
 
-import SynthPiano.SynthPianoRun;
-import PianoSection.PianoRun;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -14,13 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
-import org.JStudio.Plugins.Views.*;
 import org.JStudio.UI.*;
 import org.JStudio.Utils.FileLoader;
 import org.JStudio.Utils.SystemMonitor;
@@ -28,7 +23,6 @@ import org.JStudio.Utils.SystemMonitor;
 import java.util.*;
 
 import javafx.scene.Scene;
-import org.JStudio.Plugins.MainEqualizer;
 import org.JStudio.Utils.TimeConverter;
 
 /*
@@ -36,6 +30,10 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
  */
 
 public class UIController {
+    @FXML
+    private VBox plugin_btn_pane;
+    @FXML
+    private Tab plugins_tab;
     private Scene scene;
     @FXML
     public Pane plugin_pane;
@@ -43,25 +41,6 @@ public class UIController {
     public TabPane channel_pipeline; //make this private but have a return function for it
     @FXML
     private ImageView snap_btn;
-    @FXML
-    private Button reverbBtn;
-    @FXML
-    private Button flangerBtn;
-    @FXML
-    private Button chorusBtn;
-    @FXML
-    private Button echoBtn;
-    @FXML
-    private Button phaserBtn;
-    @FXML
-    private Button equalizerBtn;
-    @FXML
-    private Button pianoBtn;
-    @FXML
-    private Button synthPianoBtn;
-
-    @FXML
-    private Button stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
     
     @FXML
     private TextField search_samples;
@@ -175,81 +154,10 @@ public class UIController {
     
     @FXML
     public void initialize() throws Exception {
-        reverbBtn.setOnAction(e -> {
-            ReverbStage reverb = new ReverbStage();
-            reverb.show();
-        });
-        
-        flangerBtn.setOnAction(e -> {
-            FlangerStage flanger = new FlangerStage();
-            flanger.show();
-        });
-        
-        chorusBtn.setOnAction(e -> {
-            ChorusStage chorus = new ChorusStage();
-            chorus.show();
-        });
-        
-        echoBtn.setOnAction(e -> {
-            EchoStage echo = new EchoStage();
-            echo.show();
-        });
-        
-        phaserBtn.setOnAction(e -> {
-            PhaserStage phaser = new PhaserStage();
-            phaser.show();
-        });
-        
-        equalizerBtn.setOnAction(e -> {
-            MainEqualizer mainEQ = new MainEqualizer();
-            mainEQ.openEQ();
-        });
-        
-        equalizerBtn.setOnAction(e -> {
-            MainEqualizer mainEQ = new MainEqualizer();
-            mainEQ.openEQ();
-        });
-        
-        pianoBtn.setOnAction(e -> {
-            PianoRun piano = new PianoRun();
-            piano.openPiano();
-        });
-        
-        synthPianoBtn.setOnAction(e -> {
-            SynthPianoRun synthPiano = new SynthPianoRun();
-            synthPiano.openSynthPiano();
-        });
-        
-        
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
             SettingsController.setWindow(settings);
             settings.show();
-        });
-
-        stereoBtn.setOnMouseClicked(e -> {
-            StereoStage stereo = new StereoStage();
-            stereo.show();
-        });
-
-        butterworthBtn.setOnMouseClicked(e -> {
-            ButterWorthStage butterWorth = new ButterWorthStage();
-            butterWorth.show();
-        });
-
-        basicFilterBtn.setOnMouseClicked(e -> {
-            BaseFiltersStage baseFilters = new BaseFiltersStage();
-            baseFilters.show();
-        });
-
-        amplitudeBtn.setOnMouseClicked(e -> {
-            AudioAmplitudeStage audioAmplitude = new AudioAmplitudeStage();
-            audioAmplitude.show();
-        });
-
-        synthesizerBtn.setOnMouseClicked(e -> {
-            SynthesizerStage synthesizerStage = new SynthesizerStage();
-            synthesizerStage.synth();
         });
 
         //initializing nodes (loading images and other stuff)
@@ -474,7 +382,7 @@ public class UIController {
     }
 
     protected void setSplitRatio() {
-        double ratio = ((splitpane.getHeight() - 289) / splitpane.getHeight());
+        double ratio = ((splitpane.getHeight() - 285) / splitpane.getHeight());
         splitpane.setDividerPosition(0, ratio);
     }
 

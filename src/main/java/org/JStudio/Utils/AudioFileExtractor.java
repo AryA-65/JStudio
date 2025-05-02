@@ -78,7 +78,7 @@ public class AudioFileExtractor {
         return result;
     }
 
-    // MP3 section
+    //MP3 section
     private static float[][] readMp3(File file) throws Exception {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);

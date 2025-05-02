@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.JStudio.Utils.AudioFileExtractor;
 
 import java.io.File;
 import java.util.Objects;

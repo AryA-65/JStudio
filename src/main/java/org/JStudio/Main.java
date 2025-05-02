@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -51,6 +52,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         controller.setScene(scene);
+        stage.getIcons().add(new Image("/JS_ico.png"));
         stage.setScene(scene);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(true);

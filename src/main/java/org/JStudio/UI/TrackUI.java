@@ -10,13 +10,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.JStudio.Core.AudioClip;
-import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
 import org.JStudio.UIController;
 import org.JStudio.Utils.AudioFileExtractor;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class TrackUI extends StackPane {
 //    private ArrayList<ClipUI> clips = new ArrayList<ClipUI>();
@@ -101,6 +97,10 @@ public class TrackUI extends StackPane {
                     float[][] audio_data = AudioFileExtractor.readFile(db.getFiles().get(db.getFiles().size() - 1));
 
                     AudioClip audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+
+//                    if (AudioFileExtractor.isMp3()) audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getMP3SampleRate());
+//                    else audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+
                     ClipUI clip = new ClipUI(audioClip);
 
                     clip.setLayoutX(dropX);

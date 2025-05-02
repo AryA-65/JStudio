@@ -71,6 +71,23 @@
             <version>17.0.15</version>
         </dependency>
 
+        <!--    Extracting MP3 audio file length     -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5-1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.googlecode.soundlibs</groupId>-->
+<!--            <artifactId>tritonus-share</artifactId>-->
+<!--            <version>0.3.6-2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.googlecode.soundlibs</groupId>-->
+<!--            <artifactId>jl</artifactId>-->
+<!--            <version>1.0.1-1</version>-->
+<!--        </dependency>-->
+
         <!--    JFoenix GUI Elements     -->
         <dependency>
             <groupId>com.jfoenix</groupId>

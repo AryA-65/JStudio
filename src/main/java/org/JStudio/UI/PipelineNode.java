@@ -61,8 +61,10 @@ public class PipelineNode extends StackPane {
         }
 
         setOnMousePressed(e -> {
-            offsetX = e.getX();
-            offsetY = e.getY();
+            if (e.getButton() == MouseButton.PRIMARY) {
+                offsetX = e.getX();
+                offsetY = e.getY();
+            }
         });
 
         setOnMouseDragged(e -> {

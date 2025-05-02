@@ -17,7 +17,8 @@ public class TrackIDUI extends Pane {
     private final Track track;
     private final TextField trackName = new TextField();
     private final MutedBTN mutedBtn;
-    private final UIController reference;
+//    private final UIController reference;
+    private PluginRenderer renderer;
 
     public static final List<String> MATTE_COLORS = List.of(
             "#FF6B6B", // Matte Red
@@ -44,7 +45,7 @@ public class TrackIDUI extends Pane {
 
     public TrackIDUI(Track track, UIController reference) {
         this.track = track;
-        this.reference = reference;
+        renderer = new PluginRenderer(reference.plugin_pane);
 
         setPrefSize(126,64);
         setId("trackID");
@@ -62,7 +63,8 @@ public class TrackIDUI extends Pane {
 
         setOnMouseClicked(e -> {
             if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
-                reference.display_nodes(this.track);
+//                reference.display_nodes(this.track);
+                renderer.renderGraph(track);
                 reference.channel_pipeline.getSelectionModel().select(1);
             } else if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 1) {
                 for (Node node : getParent().getChildrenUnmodifiable()) {
@@ -70,8 +72,6 @@ public class TrackIDUI extends Pane {
                         node.getStyleClass().remove("selected_track");
                     }
                 }
-
-                System.out.println(track.getName().get() + " selected");
 
                 getStyleClass().add("selected_track");
             } else if (e.getButton() == MouseButton.SECONDARY) {

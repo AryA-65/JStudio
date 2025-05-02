@@ -27,7 +27,7 @@ public class ConnectionUI extends CubicCurve {
     }
 
     public void update() {
-        double startX = startNode.getParent().getLayoutX() + 54;
+        double startX = startNode.getParent().getLayoutX() + 108;
         double startY = startNode.getParent().getLayoutY() + 16;
         double endX = endNode.getParent().getLayoutX();
         double endY = endNode.getParent().getLayoutY() + 16;

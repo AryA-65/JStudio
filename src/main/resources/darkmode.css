@@ -230,6 +230,17 @@
     -fx-border-radius: 5px;
 }
 
+#file_ui {
+    -fx-background-color: #282E33;
+    -fx-background-radius: 5px;
+    -fx-effect: innershadow(gaussian, rgba(115, 132, 150, 0.5), 5, 0.25, 3, 3);
+}
+
+#hover_file {
+    -fx-background-color: rgba(80, 86, 91, 0.1);
+    -fx-background-radius: 5px;
+}
+
 #file_canvas {
     -fx-effect: dropshadow(gaussian, rgba(140,155,171,0.5), 5, 0, 3, 3);
     -fx-background-color: rgba(140,155,171,0.1);

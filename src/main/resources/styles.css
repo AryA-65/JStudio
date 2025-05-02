@@ -267,9 +267,17 @@
     -fx-background-radius: 5px
 }
 
-#file_canvas {
+#file_ui {
+    -fx-background-color: #d9d9d9;
+    -fx-background-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
 }
+
+/*#file_canvas {*/
+/*    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 3, 3);*/
+/*    -fx-background-color: rgba(140,155,171,0.1);*/
+/*    -fx-text-fill: #000000;*/
+/*}*/
 
 #hover_file {
     -fx-background-color: rgba(0,0,0,0.1);
@@ -301,20 +309,6 @@
 
 #connection_node {
     /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*/
-}
-
-
-#logingrid {
-    -fx-background-color: linear-gradient(to bottom right, #F89820, #d9d9d9, #5382A1) !important;
-}
-
-#appName, #userLabel, #passLabel, #key1Label, #key2Label {
-   -fx-text-fill: #626F86; 
-}
-
-#createAccount, #enterBtn {
-    -fx-background-color: #626F86 !important;
-    -fx-text-fill: #ffffff; 
 }
 
 /*.slider {*/

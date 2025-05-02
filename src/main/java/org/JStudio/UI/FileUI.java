@@ -18,6 +18,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.JStudio.SettingsController;
 import org.JStudio.Utils.AudioFileExtractor;
 
 import java.io.*;
@@ -37,7 +38,7 @@ public class FileUI extends Pane {
         setMaxHeight(48);
         setMaxWidth(200);
         setCursor(Cursor.HAND);
-
+        setId("file_ui");
 //        InnerShadow innerShadow = new InnerShadow();
 //        innerShadow.setColor(Color.WHITE);
 //        innerShadow.setRadius(0);
@@ -48,7 +49,7 @@ public class FileUI extends Pane {
 
         canvas.setWidth(200);
         canvas.setHeight(48);
-        canvas.setId("file_canvas");
+//        canvas.setId("file_canvas");
 
         file_info.setPrefWidth(200);
         file_info.setPrefHeight(48);
@@ -71,12 +72,10 @@ public class FileUI extends Pane {
         f_size.setTextOverrun(OverrunStyle.ELLIPSIS);
         f_size.setFont(new Font("Inter", 10));
 
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 10, 10);
-
         try {
             float[][] audioData = AudioFileExtractor.readFile(file);
-            f_size.setText(String.format("%.2f", AudioFileExtractor.getLength()));
+            if (AudioFileExtractor.isMp3()) f_size.setText(String.format("%.2f", AudioFileExtractor.getMP3Length()));
+            else f_size.setText(String.format("%.2f", AudioFileExtractor.getwavLength()));
             if (audioData != null) {
                 boolean is_stereo = audioData[1] != null;
                 float[] left_ch = AudioFileExtractor.downsample(audioData[0], (int) canvas.getWidth());
@@ -175,5 +174,4 @@ public class FileUI extends Pane {
         }
         gc.stroke();
     }
-
 }

@@ -5,20 +5,27 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.*;
 
 public class AudioFileExtractor {
     private static AudioInputStream ais;
     private static AudioFormat format;
+    private static AudioFileFormat fileFormat;
+    private static boolean file_type;
+
+    public static boolean isMp3() {
+        return file_type;
+    }
 
     public static float[][] readFile(File file) throws Exception {
-        if (file.getName().toLowerCase().endsWith(".mp3")) {
-            return readMp3(file);
-        } else if (file.getName().toLowerCase().endsWith(".wav")) {
+        String name = file.getName().toLowerCase();
+        if (name.endsWith(".mp3")) {
+            return null;
+//            file_type = true;
+//            return readMp3(file);
+        } else if (name.endsWith(".wav")) {
+            file_type = false;
             return readWavFile(file);
         } else {
             throw new IllegalArgumentException("Unsupported file format");
@@ -32,43 +39,42 @@ public class AudioFileExtractor {
 
         int sampleSize = format.getSampleSizeInBits();
         int channels = format.getChannels();
-        byte[] pcmData = ais.readAllBytes();
         int bytesPerSample = sampleSize / 8;
+
+        byte[] pcmData = ais.readAllBytes();
         int totalSamples = pcmData.length / (bytesPerSample * channels);
 
-        float[] leftChannel = new float[totalSamples];
-        float[] rightChannel = (channels == 2) ? new float[totalSamples] : null;
+        float[] left = new float[totalSamples];
+        float[] right = (channels == 2) ? new float[totalSamples] : null;
 
         for (int i = 0; i < totalSamples; i++) {
-            int sampleIndex = i * channels * bytesPerSample;
-
-            leftChannel[i] = SampleExtractor.extractSample(pcmData, sampleIndex, sampleSize);
-
+            int index = i * bytesPerSample * channels;
+            left[i] = SampleExtractor.extractSample(pcmData, index, sampleSize);
             if (channels == 2) {
-                rightChannel[i] = SampleExtractor.extractSample(pcmData, sampleIndex + bytesPerSample, sampleSize);
+                right[i] = SampleExtractor.extractSample(pcmData, index + bytesPerSample, sampleSize);
             }
         }
 
-        return new float[][]{leftChannel, rightChannel};
+        return new float[][]{left, right};
     }
 
-    public static double getLength() {
-        return ais.getFrameLength() / format.getSampleRate();
+    public static double getwavLength() {
+        return ais != null && format != null
+                ? ais.getFrameLength() / format.getSampleRate()
+                : -1;
     }
 
     public static int getSampleRate() {
-        return (int) format.getSampleRate();
+        return format != null ? (int) format.getSampleRate() : -1;
     }
 
     public static float[] downsample(float[] samples, int targetSize) {
-        float[] downsampled = new float[targetSize];
+        float[] result = new float[targetSize];
         int step = samples.length / targetSize;
-
         for (int i = 0; i < targetSize; i++) {
-            downsampled[i] = samples[i * step];
+            result[i] = samples[i * step];
         }
-
-        return downsampled;
+        return result;
     }
     //end of wav section
 
@@ -77,25 +83,32 @@ public class AudioFileExtractor {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);
         Decoder decoder = new Decoder();
-        float[] leftChannel = new float[10000000];
-        float[] rightChannel = new float[10000000];
 
+        ais = AudioSystem.getAudioInputStream(file);
+        fileFormat = AudioSystem.getAudioFileFormat(file);
+        format = ais.getFormat();
+
+        float[] left = new float[8_000_000];
+        float[] right = new float[8_000_000];
         int index = 0;
-        boolean isStereo = false;
+        boolean stereo = false;
 
-        while (true) {
-            Header frameHeader = bitstream.readFrame();
-            if (frameHeader == null) break;
+        Header header;
+        while ((header = bitstream.readFrame()) != null) {
+            SampleBuffer output = (SampleBuffer) decoder.decodeFrame(header, bitstream);
+            stereo = output.getChannelCount() == 2;
 
-            SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frameHeader, bitstream);
-            isStereo = output.getChannelCount() == 2;
+            short[] buffer = output.getBuffer();
+            int length = output.getBufferLength();
 
-            for (int i = 0; i < output.getBufferLength(); i++) {
-                if (isStereo) {
-                    if (i % 2 == 0) leftChannel[index] = output.getBuffer()[i] / 32768.0f;
-                    else rightChannel[index] = output.getBuffer()[i] / 32768.0f;
+            for (int i = 0; i < length; i++) {
+                if (stereo) {
+                    if ((i & 1) == 0)
+                        left[index] = buffer[i] / 32768f;
+                    else
+                        right[index] = buffer[i] / 32768f;
                 } else {
-                    leftChannel[index] = output.getBuffer()[i] / 32768.0f;
+                    left[index] = buffer[i] / 32768f;
                 }
                 index++;
             }
@@ -103,13 +116,28 @@ public class AudioFileExtractor {
             bitstream.closeFrame();
         }
 
-        return new float[][]{trimArray(leftChannel, index), isStereo ? trimArray(rightChannel, index) : null};
+        return new float[][]{
+                trimArray(left, index),
+                stereo ? trimArray(right, index) : null
+        };
     }
 
-    private static float[] trimArray(float[] array, int size) {
-        float[] trimmed = new float[size];
-        System.arraycopy(array, 0, trimmed, 0, size);
-        return trimmed;
+    public static double getMP3Length() {
+        if (fileFormat != null && fileFormat.properties().containsKey("duration")) {
+            long micro = (Long) fileFormat.properties().get("duration");
+            return micro / 1_000_000.0;
+        }
+        return -1;
+    }
+
+    public static int getMP3SampleRate() {
+        return format != null ? (int) format.getSampleRate() : -1;
+    }
+
+    private static float[] trimArray(float[] array, int length) {
+        float[] result = new float[length];
+        System.arraycopy(array, 0, result, 0, length);
+        return result;
     }
     //end of mp3 section
 }

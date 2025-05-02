@@ -132,8 +132,6 @@ public class UIController {
 
     public static BooleanProperty snap = new SimpleBooleanProperty(true);
 
-    //testing params
-    private String curUser;
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     //part of test params, but this should its own thing
@@ -424,7 +422,6 @@ public class UIController {
 
         //Test functions
         timeline_canvas.setWidth(Song.bpm.get() * 32);
-        curUser = System.getProperty("user.name");
 //        System.out.println(curUser);
 
         channel_rack.getChildren().add(0, new MixerUI()); //test
@@ -485,85 +482,6 @@ public class UIController {
         if (rootStage != null) {
             rootStage.setWidth(initialWidth);
             rootStage.setHeight(initialHeight);
-        }
-    }
-
-    //test function
-    public void display_nodes(Track track) {
-        plugin_pane.getChildren().clear();
-
-        if (track == null) {
-            Label message = new Label("No Track Selected: Plugins Unavailable");
-            message.setLayoutX(plugin_pane.getWidth() / 2);
-            message.setLayoutY(plugin_pane.getHeight() / 2);
-            plugin_pane.getChildren().add(message);
-            return;
-        }
-
-        ArrayList<PipelineNode> plugins = new ArrayList<>();
-
-        double startX = 50;
-        double startY = 100;
-
-        PipelineNode inputNode = new PipelineNode(track);
-        inputNode.setLayoutX(startX);
-        inputNode.setLayoutY(startY);
-        plugin_pane.getChildren().add(inputNode);
-
-        startX += 200;
-
-        PipelineNode firstNode = null;
-
-        for (Object plugin : track.getPlugins()) {
-            PipelineNode node = new PipelineNode(plugin);
-            node.setLayoutX(startX);
-            node.setLayoutY(startY);
-
-            plugin_pane.getChildren().add(node);
-            plugins.add(node);
-
-            if (firstNode == null) firstNode = node;
-
-            startX += 200;
-        }
-
-        PipelineNode outputNode = new PipelineNode("OUTPUT_NODE");
-        outputNode.setLayoutX(startX);
-        outputNode.setLayoutY(startY);
-        plugin_pane.getChildren().add(outputNode);
-
-        if (firstNode != null) {
-            Circle firstInput = firstNode.getInputPort();
-            Circle inputOut = inputNode.getOutputPort();
-            ConnectionUI connection = new ConnectionUI(inputOut, firstInput);
-            plugin_pane.getChildren().add(connection);
-
-            Platform.runLater(connection::update);
-
-            Circle lastOutput = plugins.get(plugins.size() - 1).getOutputPort();
-            Circle outputIn = outputNode.getInputPort();
-            ConnectionUI outConnection = new ConnectionUI(lastOutput, outputIn);
-            plugin_pane.getChildren().add(outConnection);
-
-            Platform.runLater(outConnection::update);
-        } else {
-            // No plugins: connect input directly to output
-            Circle inputOut = inputNode.getOutputPort();
-            Circle outputIn = outputNode.getInputPort();
-            ConnectionUI directConnection = new ConnectionUI(inputOut, outputIn);
-            plugin_pane.getChildren().add(directConnection);
-
-            Platform.runLater(directConnection::update);
-        }
-
-        for (int i = 0; i < plugins.size() - 1; i++) {
-            Circle from = plugins.get(i).getOutputPort();
-            Circle to = plugins.get(i + 1).getInputPort();
-
-            ConnectionUI connection = new ConnectionUI(from, to);
-            plugin_pane.getChildren().add(connection);
-
-            Platform.runLater(connection::update);
         }
     }
 

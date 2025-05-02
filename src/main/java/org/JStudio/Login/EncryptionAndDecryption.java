@@ -1,12 +1,8 @@
 package org.JStudio.Login;
 
 /**
- * 
- * @author Theodore. Ahmet
- *
- * Encryption encryption = new Encryption("Heart", 7, 20);
- * Encryption decryption = new Encryption("Rwujx", 7,20);
- * System.out.println(decryption.decryption());
+ * Affine encryption and decryption calculator class
+ * @author Theodore. Ahmet;
  */
 public class EncryptionAndDecryption {
     private String toEncrypt_toDecrypt;
@@ -17,7 +13,7 @@ public class EncryptionAndDecryption {
     private int[] affineCalculation;
     private int[] finalOutput;
 
-
+    // Constructor that creates an object with a word to decrypt and its keys
     public EncryptionAndDecryption(String toEncrypt_toDecrypt, int key1, int key2) {
         this.toEncrypt_toDecrypt = toEncrypt_toDecrypt;
         this.key1 = key1;
@@ -25,17 +21,27 @@ public class EncryptionAndDecryption {
 
     }
 
+    /**
+     * Calculates the multiplicative inverse of a number
+     */
     private void multiplicativeInverse() {
         while ((key1*inverse)%26 != 1) {
             inverse++;
         }
     }
 
+    /**
+     * Converts all characters of a string to uppercase
+     */
     private void toUpper() {
         letterIndex = new int[toEncrypt_toDecrypt.length()];
         toEncrypt_toDecrypt = toEncrypt_toDecrypt.toUpperCase();
     }
 
+    /**
+     * Calculates the index of the character used for encrypting/decrypting
+     * based on ASCII codes
+     */
     private void characterIndex(){
         char input;
         for (int i = 0; i < toEncrypt_toDecrypt.length(); i++) {
@@ -44,6 +50,9 @@ public class EncryptionAndDecryption {
         }
     }
 
+    /**
+     * Calculates the new letter index of the encrypted text
+     */
     private void affineCalc() {
         affineCalculation = new int[toEncrypt_toDecrypt.length()];
         for (int i = 0; i < toEncrypt_toDecrypt.length(); i++) {
@@ -51,6 +60,9 @@ public class EncryptionAndDecryption {
         }
     }
 
+    /**
+     * Converts the letter index back to ASCII code
+     */
     private void asciiConverter() {
         finalOutput = new int[toEncrypt_toDecrypt.length()];
         for (int i = 0; i < toEncrypt_toDecrypt.length(); i++) {
@@ -58,6 +70,10 @@ public class EncryptionAndDecryption {
         }
     }
 
+    /**
+     * Adds all encrypted/decrypted characters into a string
+     * @return the encrypted/decrypted text
+     */
     private String encryptedText() {
         String encryptedText = "";
         for (int i = 0; i < finalOutput.length; i++) {
@@ -66,6 +82,9 @@ public class EncryptionAndDecryption {
         return encryptedText;
     }
 
+    /**
+     * Calculates the new letter index of the decrypted text
+     */
     public void reverseAffineCalc(){
         affineCalculation = new int[toEncrypt_toDecrypt.length()];
         int temp;
@@ -82,6 +101,10 @@ public class EncryptionAndDecryption {
         }
     }
 
+    /**
+     * Full affine encryption calculations
+     * @return the encrypted text
+     */
     public String encryption() {
         multiplicativeInverse();
         toUpper();
@@ -91,6 +114,10 @@ public class EncryptionAndDecryption {
         return encryptedText();
     }
 
+    /**
+     * Full affine decryption calculations
+     * @return the decrypted text
+     */
     public String decryption() {
         multiplicativeInverse();
         toUpper();
@@ -101,4 +128,3 @@ public class EncryptionAndDecryption {
     }
 
 }
-

@@ -16,7 +16,6 @@ public class UserDataController {
     public HashMap<String, User> users = new HashMap<>();
     private final String filePath = "src/main/resources/UserData/loginInfo.csv";
     private String finalLine;
-    private boolean emptyFinalLine;
 
     /**
      * Creates a file used for storing all user login data
@@ -128,6 +127,9 @@ public class UserDataController {
         return (user != null) ? user.getPassword() : null;
     }
 
+    /**
+     * Gets all the saved users
+     */
     public HashMap<String, User> getUsers() {
         return users;
     }

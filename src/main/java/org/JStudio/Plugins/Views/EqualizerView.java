@@ -45,8 +45,8 @@ public class EqualizerView extends Pane {
             //disable the play button, enable the stop button, and create a controller to modify and play the audio
             playButton.setDisable(true);
             eqController = new EqualizerController(file);
-            eqController.setStage(stage);
-            eqController.setEqView(this);
+            eqController.getEqualizer().setStage(stage);
+            eqController.getEqualizer().setEqView(this);
             eqController.start(); //start a new thread that plays the audio
             stopButton.setDisable(false);
         });
@@ -63,7 +63,7 @@ public class EqualizerView extends Pane {
             //disable the stop button, enable the play button, and stop the audio
             stopButton.setDisable(true);
             playButton.setDisable(true);
-            eqController.export();
+            //eqController.export();
         });
 
         HBox hbButtons = new HBox();

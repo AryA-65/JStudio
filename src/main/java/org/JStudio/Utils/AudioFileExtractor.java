@@ -34,7 +34,7 @@ public class AudioFileExtractor {
     }
 
     // WAV section
-    private static float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException {
+    public static float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException {
         ais = AudioSystem.getAudioInputStream(file);
         format = ais.getFormat();
 

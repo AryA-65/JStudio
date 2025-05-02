@@ -20,7 +20,7 @@ public class SynthController_Piano {
     @FXML
     private MenuButton functionChooser1, functionChooser2, functionChooser3;
     @FXML
-    private Slider tone1, tone2, tone3, volume1, volume2, volume3;//, playSpeed;
+    private Slider tone1, tone2, tone3, volume1, volume2, volume3;
     @FXML
     private Canvas waveformCanvas;
     @FXML

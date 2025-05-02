@@ -1,5 +1,7 @@
 package org.JStudio.Plugins.Models;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.JStudio.Utils.AlertBox;
@@ -11,16 +13,23 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
+import org.JStudio.Utils.AudioFileExtractor;
 
 /**
- * Abstract plugin class that handles basic use (playing, stopping, array conversions)
+ * Abstract plugin class that handles basic use (playing, stopping, array
+ * conversions)
+ *
  * @author Theo, Ahmet
  */
 public abstract class Plugin {
+
     protected String filePathName;
     protected String fileName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
+    protected float[][] audioFloatInput2D;
+    protected byte[][] audioByteInput2D;
+    protected float[][] audioOutput2D;
     protected SourceDataLine line;
     private Stage stage;
     private Thread playingThread;
@@ -32,19 +41,70 @@ public abstract class Plugin {
         try {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
-                new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
-                new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
+                    new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
+                    new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
+
             filePathName = file.getAbsolutePath();
             fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
+
+            AudioFileExtractor afe = new AudioFileExtractor();
+            audioFloatInput2D = afe.readWavFile(file);
+            audioByteInput2D = convert2DFloatTo2DByte(audioFloatInput2D);
+        } catch (IOException | UnsupportedAudioFileException e) {
             System.out.println(e);
         }
     }
 
     public String getFileName() {
         return fileName;
+    }
+    private byte[][] convert2DFloatTo2DByte(float[][] audioData) {
+        byte[][] byteArray = new byte[2][audioData[0].length*4];
+        for (int i = 0; i < 2; i++) {
+            ByteBuffer buffer = ByteBuffer.allocate(audioData[i].length * 4);
+            for (float floatData : audioData[i]) {
+                buffer.putFloat(floatData);
+            }
+            byteArray[i] = buffer.array();
+        }
+
+//        for (int i = 0; i < byteArray.length; i++) {
+//            for (int j = 0; j < byteArray[i].length; j++) {
+//                System.out.print(byteArray[i][j] + ",");
+//            }
+//            System.out.println();
+//        }
+
+        return byteArray;
+    }
+    
+    public float[][] convert2DByteTo2DFloat(byte[][] audioData) {
+        float[][] floatArray = new float[2][audioData[0].length/4];
+        try {
+            
+        for (int i = 0; i < floatArray.length; i++) {
+            ByteArrayInputStream bos = new ByteArrayInputStream(audioData[i]);
+            DataInputStream dis = new DataInputStream(bos);
+            
+            for (int j = 0; j < floatArray[i].length; j++) {
+                floatArray[i][j] = dis.readFloat();
+            }
+        }
+
+//        for (int i = 0; i < floatArray.length; i++) {
+//            for (int j = 0; j < floatArray[i].length; j++) {
+//                System.out.print(floatArray[i][j] + ",");
+//            }
+//            System.out.println();
+//        }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return floatArray;
     }
 
     public String getFilePathName() {
@@ -62,22 +122,23 @@ public abstract class Plugin {
     public void clearFinalAudio() {
         finalAudio = null;
     }
-    
+
     public void play() {
         playAudio(finalAudio);
     }
-    
+
     /**
      * Plays audio data stored in a byte array
+     *
      * @param audioData the audio data to be played
      */
     protected void playAudio(byte[] audioData) {
         // Stops any previous audio playing
-        if (line!=null && playingThread!=null) {
+        if (line != null && playingThread != null) {
             playingThread.interrupt();
             line.close();
         }
-        
+
         playingThread = new Thread(() -> {
             try {
                 File file = new File(filePathName);
@@ -99,10 +160,10 @@ public abstract class Plugin {
                 System.out.println(e);
             }
         });
-        
+
         playingThread.start();
     }
-    
+
     /**
      * Stops audio playback
      */
@@ -113,9 +174,11 @@ public abstract class Plugin {
             line.close(); // close resources
         }
     }
-    
+
     /**
-     * Converts the original audio data to a short array to allow for modifications
+     * Converts the original audio data to a short array to allow for
+     * modifications
+     *
      * @return the short[] audio data array
      */
     protected short[] convertToShortArray() {
@@ -128,34 +191,54 @@ public abstract class Plugin {
         for (int i = 0; i < audioToModulate.length; i++) {
             audioToModulate[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
-        
+
         return audioToModulate;
+    }
+
+    protected short[] convertToShortArray(byte[] audioData) {
+        byte[] noHeaderByteAudioData = new byte[audioData.length - 44];
+        // The audio to add flanging to has same audio data as the original audio for now (no header)
+        System.arraycopy(audioData, 44, noHeaderByteAudioData, 0, audioData.length - 44);
+
+        // Convert audio data to short type to avoid audio warping
+        short[] shortAudio = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < shortAudio.length; i++) {
+            shortAudio[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+
+        return shortAudio;
     }
     
     /**
-     * Revert short[] audio data back to byte array to have playback functionality
+     * Revert short[] audio data back to byte array to have playback
+     * functionality
+     *
      * @param audioData the audio data to be converted to a byte array
      * @param sizeOfByteArray the size of the array to save
      */
-    protected void convertToByteArray(short[] audioData, int sizeOfByteArray) {
+    protected byte[] convertToByteArray(short[] audioData, int sizeOfByteArray) {
         // Revert back to byte array to have playback functionality
         byte[] modifiedAudio = new byte[sizeOfByteArray];
         for (int i = 0; i < audioData.length; i++) {
             ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
         }
-        
-        finalAudio = new byte[sizeOfByteArray];
-        System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
+
+        byte[] byteArray = new byte[sizeOfByteArray];
+//        finalAudio = new byte[sizeOfByteArray];
+        System.arraycopy(modifiedAudio, 0, byteArray, 0, sizeOfByteArray); // Add the audio data
+        return byteArray;
     }
-    
+
     /**
-     * Caps the amplitude of a sample from exceeding the maximum value of a short
+     * Caps the amplitude of a sample from exceeding the maximum value of a
+     * short
+     *
      * @param sample the sample to be capped
      * @return the capped sample
      */
     protected short capMaxAmplitude(short sample) {
         if (sample > Short.MAX_VALUE) {
-                sample = Short.MAX_VALUE;
+            sample = Short.MAX_VALUE;
         } else if (sample < Short.MIN_VALUE) {
             sample = Short.MIN_VALUE;
         }
@@ -164,6 +247,7 @@ public abstract class Plugin {
 
     /**
      * Method to transform a double array into a byte array
+     *
      * @param doubleArray the array to be transformed
      * @return the byte array
      */
@@ -175,15 +259,13 @@ public abstract class Plugin {
         return byteBuffer.array();
     }
 
-    public byte[] shortToByte(short [] input)
-    {
+    public byte[] shortToByte(short[] input) {
         int index;
         int iterations = input.length;
 
         ByteBuffer bb = ByteBuffer.allocate(input.length * 2);
 
-        for(index = 0; index != iterations; ++index)
-        {
+        for (index = 0; index != iterations; ++index) {
             bb.putShort(input[index]);
         }
 
@@ -224,10 +306,12 @@ public abstract class Plugin {
     /**
      * Method to be used in conversion
      *
-     * @param <T> the method to be used to transform a type of array into another
+     * @param <T> the method to be used to transform a type of array into
+     * another
      */
     @FunctionalInterface
     interface TypeConverter<T> {
+
         T process(T input);
     }
 
@@ -241,6 +325,7 @@ public abstract class Plugin {
         }
         return placeHolder;
     }
+
     public SourceDataLine getAudioLine() {
         return line;
     }

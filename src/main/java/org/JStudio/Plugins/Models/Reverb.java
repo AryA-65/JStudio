@@ -30,44 +30,49 @@ public class Reverb extends Plugin {
      * Applies the reverb effect to the audio data array
      */
     private void applyReverbEffect() {
-        delayLines = new ArrayList<>();
+        byte[][] byteReverb = new byte[2][audioByteInput2D[0].length*4];
+        for (int i = 0; i < audioByteInput2D.length; i++) {
+            delayLines = new ArrayList<>();
        
-        short[] audioToReverb = convertToShortArray();
-        int numOfDelayLines = 0;
-        if (originalAudio.length < 200000) {
-            numOfDelayLines =  5;
-        } else {
-            numOfDelayLines =  20;
-        }
-        
-        
-        double decayNumber;
-        double initialDecay = decay/35000;
-        // Loop repeats for the number of delay lines
-        for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
-            decayNumber = initialDecay*Math.pow(Math.E, - (decay/100000));
-            initialDecay = decayNumber;
-            
-            // Decay the audio
-            short[] decayedAudio = decayAudio(audioToReverb, decayNumber);
-            
-            delayLines.add(decayedAudio);
-        }
-        
-        // Add delay lines with diffusion spacing
-        short[] delayLineAudio = new short[audioToReverb.length+numOfDelayLines*diffusion];
-        int delayLineCounter = 0;
-        for (int i = 0; i < delayLines.size(); i++) {
-            for (int j = 0; j < delayLines.get(i).length; j++) {
-                delayLineAudio[j+(delayLineCounter*diffusion)] += delayLines.get(i)[j];
-                delayLineAudio[j+(delayLineCounter*diffusion)] = capMaxAmplitude(delayLineAudio[j+(delayLineCounter*diffusion)]);
+            short[] audioToReverb = convertToShortArray(audioByteInput2D[i]);
+            int numOfDelayLines = 0;
+            if (audioByteInput2D[i].length < 200000) {
+                numOfDelayLines =  5;
+            } else {
+                numOfDelayLines =  20;
             }
-            delayLineCounter++;
+
+
+            double decayNumber;
+            double initialDecay = decay/35000;
+            // Loop repeats for the number of delay lines
+            for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
+                decayNumber = initialDecay*Math.pow(Math.E, - (decay/100000));
+                initialDecay = decayNumber;
+
+                // Decay the audio
+                short[] decayedAudio = decayAudio(audioToReverb, decayNumber);
+
+                delayLines.add(decayedAudio);
+            }
+
+            // Add delay lines with diffusion spacing
+            short[] delayLineAudio = new short[audioToReverb.length+numOfDelayLines*diffusion];
+            int delayLineCounter = 0;
+            for (int k = 0; k < delayLines.size(); k++) {
+                for (int j = 0; j < delayLines.get(k).length; j++) {
+                    delayLineAudio[j+(delayLineCounter*diffusion)] += delayLines.get(k)[j];
+                    delayLineAudio[j+(delayLineCounter*diffusion)] = capMaxAmplitude(delayLineAudio[j+(delayLineCounter*diffusion)]);
+                }
+                delayLineCounter++;
+            }
+
+            short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
+            byte[] byteData = convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
+            byteReverb[i] = byteData;
         }
         
-        short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
-        
-        convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
+        audioOutput2D = convert2DByteTo2DFloat(byteReverb);
     }
     
     /**

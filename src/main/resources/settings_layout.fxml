@@ -116,7 +116,7 @@
             </ImageView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="helpButton" mnemonicParsing="false" text="HOW?" />
+                  <Button fx:id="helpButton" mnemonicParsing="false" text="HELP GUIDE" />
                </children>
             </HBox>
          </children>

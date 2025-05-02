@@ -72,7 +72,11 @@ public class SettingsController {
 
                 Parent root = fxmlLoader.load();
                 helpScene = new Scene(root, 640, 480);
-
+                if (SettingsController.getStyle()) {
+                    helpScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+                } else {
+                    helpScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+                }
                 childStage.setScene(helpScene);
                 childStage.setTitle("Help Menu");
                 childStage.sizeToScene();

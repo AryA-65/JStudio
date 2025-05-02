@@ -29,7 +29,7 @@ public class MainEqualizer{
         //stop any audio when the equalizer closes
         stage.setOnCloseRequest(e ->{
             try{
-            eqView.getEqualizerController().getLine().close();
+            eqView.getEqualizerController().getEqualizer().getLine().close();
             } catch(Exception ex){
                 System.out.println(ex.getMessage());
             }

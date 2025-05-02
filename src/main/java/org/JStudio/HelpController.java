@@ -16,34 +16,46 @@ public class HelpController {
 
     Descriptions[] tools = {
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Plugin: Reverb",
+                    "Creates a roomy environment where sound waves are reflected close together",
+                    new String[]{"Pre-Delay: The time it takes for the sound to "
+                            + "first reflect", "Decay: The time it takes for the reflected audio to decay",
+                            "Diffusion: The spacing of the reflected sound waves",
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                    "Reverberated Audio"
             ),
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Plugin: Echo",
+                    "Creates reflected audio waves spaced far apart",
+                    new String[]{"Pre-Delay: The time it takes for the sound to "
+                            + "first reflect", "Decay: The time it takes for the reflected audio to decay",
+                            "Diffusion: The spacing of the reflected sound waves", "Number of Echos: The number of echos heard",
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                    "Echoed audio"
             ),
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Plugin: Flanger",
+                    "Creates wooshing effect by copying the audio, and delaying it with modulated delays",
+                    new String[]{"Frequency: The rate at which the delays are modulated",
+                        "Deviation: The ampliytude of the oscillating modulation function",
+                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                    "Flanged audio"
             ),
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Plugin: Chorus",
+                    "Creates multiple instrument/voice effect by copying the audio, and delaying it with modulated delays",
+                    new String[]{"Frequency: The rate at which the delays are modulated",
+                        "Deviation: The ampliytude of the oscillating modulation function",
+                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                    "Chorus results"
             ),
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Plugin: Phaser",
+                    "Creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts",
+                    new String[]{"Frequency: The rate at which the delays are modulated",
+                        "Deviation: The ampliytude of the oscillating modulation function",
+                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                    "Phased Audio"
             ),
             new Descriptions(
                     "Text Analyzer",

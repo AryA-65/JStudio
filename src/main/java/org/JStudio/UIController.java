@@ -23,6 +23,7 @@ import org.JStudio.Utils.SystemMonitor;
 import java.util.*;
 
 import javafx.scene.Scene;
+import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.TimeConverter;
 
 /*
@@ -103,6 +104,8 @@ public class UIController {
     private VBox tab_vbox;
     @FXML
     private Stage rootStage;
+    @FXML
+    private Button reverbBtn;
 
     private SystemMonitor sm; //make this a static class that runs
 
@@ -154,6 +157,11 @@ public class UIController {
     
     @FXML
     public void initialize() throws Exception {
+        reverbBtn.setOnMouseClicked(e -> {
+            ReverbStage reverb = new ReverbStage();
+            reverb.show();
+        });
+        
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
             SettingsController.setWindow(settings);

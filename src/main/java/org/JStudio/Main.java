@@ -1,46 +1,64 @@
 package org.JStudio;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.JStudio.Utils.Descriptions;
 
 public class Main extends Application {
 //    public String currentUser;
 
-    private UIController controller;
+    private UIController uiController;
+    private UnitTestingController testController;
+
+    private boolean isTesting = true;
+
+    private Scene scene;
 
     @Override
     public void start(Stage stage) throws Exception {
+        if (isTesting) {
+            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
+            Parent root = testLoader.load();
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-        Parent root = loader.load();
+            testController = testLoader.getController();
+            testController.setStage(stage);
 
-        controller = loader.getController();
-        controller.setStage(stage);
-        controller.setScreenSize();
+            scene = new Scene(root);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            testController.setScene(scene);
+            stage.getIcons().add(new Image("/JS_ico.png"));
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setResizable(true);
+            stage.show();
 
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-        controller.setScene(scene);
-        stage.getIcons().add(new Image("/JS_ico.png"));
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setResizable(true);
-        stage.show();
-//
-        controller.setSplitRatio();
-//        // For alternating styles
+        } else {
+            FXMLLoader uiLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+            Parent root = uiLoader.load();
 
-        SettingsController.setController(controller);
+            uiController = uiLoader.getController();
+            uiController.setStage(stage);
+            uiController.setScreenSize();
+
+            scene = new Scene(root);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            uiController.setScene(scene);
+            stage.getIcons().add(new Image("/JS_ico.png"));
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setResizable(true);
+            stage.show();
+
+            uiController.setSplitRatio();
+            // For alternating styles
+            SettingsController.setController(uiController);
+        }
+
+
         /**
          * to initialize the login page
          */

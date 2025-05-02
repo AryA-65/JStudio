@@ -122,40 +122,6 @@
                         </VBox>
                      </content>
                   </Tab>
-                  <Tab fx:id="instruments_tab" text="Instruments">
-                     <content>
-                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
-                           <children>
-                              <TextField promptText="Search" styleClass="search">
-                                 <VBox.margin>
-                                    <Insets left="30.0" right="30.0" />
-                                 </VBox.margin>
-                              </TextField>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="940.0" prefWidth="256.0" />
-                           </children>
-                           <padding>
-                              <Insets bottom="15.0" top="15.0" />
-                           </padding>
-                        </VBox>
-                     </content>
-                  </Tab>
-                  <Tab fx:id="synths_tab" text="Synths">
-                     <content>
-                        <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0" spacing="15.0">
-                           <children>
-                              <TextField styleClass="search">
-                                 <VBox.margin>
-                                    <Insets left="30.0" right="30.0" />
-                                 </VBox.margin>
-                              </TextField>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="940.0" prefWidth="256.0" />
-                           </children>
-                           <padding>
-                              <Insets bottom="15.0" top="15.0" />
-                           </padding>
-                        </VBox>
-                     </content>
-                  </Tab>
                   <Tab fx:id="plugins_tab" text="Plugins">
                      <content>
                         <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="256.0">

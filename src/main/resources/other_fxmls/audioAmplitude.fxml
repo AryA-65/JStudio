@@ -3,12 +3,11 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -18,13 +17,12 @@
       </ToolBar>
    </top>
    <center>
-      <Canvas fx:id="waveformCanvas" height="100.0" layoutX="10.0" layoutY="20.0" style="-fx-border-color: #000; -fx-background-color: white;" width="580.0" />
+      <Canvas fx:id="waveformCanvas" height="300.0" layoutX="10.0" layoutY="20.0" style="-fx-border-color: #000; -fx-background-color: white;" width="580.0" />
    </center>
    <bottom>
       <VBox fx:id="vbox" alignment="CENTER" prefHeight="50.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <Label layoutX="260.0" layoutY="225.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Amplitude" />
-            <Slider fx:id="amplitudeSlider" layoutX="150.0" layoutY="250.0" max="1" min="0" prefWidth="300.0" value="0.5" />
          </children>
       </VBox>
    </bottom>

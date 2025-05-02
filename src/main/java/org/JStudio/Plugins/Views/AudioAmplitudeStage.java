@@ -26,10 +26,9 @@ public class AudioAmplitudeStage extends Stage {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/audioAmplitude.fxml"));
             AudioAmplitudeFXMLController controller = new AudioAmplitudeFXMLController();
             controller.setStage(this);
-
             fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 600, 200);
+            scene = new Scene(root, 600, 450);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

@@ -16,6 +16,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
+import org.JStudio.Plugins.Views.AudioAmplitudeStage;
 import org.JStudio.UI.*;
 import org.JStudio.Utils.FileLoader;
 import org.JStudio.Utils.SystemMonitor;
@@ -158,8 +159,10 @@ public class UIController {
     @FXML
     public void initialize() throws Exception {
         reverbBtn.setOnMouseClicked(e -> {
-            ReverbStage reverb = new ReverbStage();
-            reverb.show();
+//            ReverbStage reverb = new ReverbStage();
+//            reverb.show();
+            AudioAmplitudeStage audioAmplitudeStage = new AudioAmplitudeStage();
+            audioAmplitudeStage.show();
         });
         
         settings_btn.setOnMouseClicked(e -> {

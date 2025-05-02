@@ -30,9 +30,8 @@ public class AudioAmplitudeFXMLController {
     Button exportButton, playButton;
     @FXML
     Canvas waveformCanvas;
-    @FXML
-    Slider amplitudeSlider;
-    private final Knob knob = new Knob(100, false, 0, REG);
+
+    private final Knob knob = new Knob(50, false, 0, REG);
 
     private double[] audioData;
 
@@ -46,11 +45,12 @@ public class AudioAmplitudeFXMLController {
 
     private SourceDataLine line;
     @FXML
-    VBox vBox;
+    VBox vbox;
 
     public void initialize() {
         knob.setValues(-5, 5);
-        vBox.getChildren().add(knob);
+        knob.setValue(1);
+        vbox.getChildren().add(knob);
 
         knob.valueProperty().addListener((obs, oldVal, newVal) -> {
 
@@ -61,25 +61,7 @@ public class AudioAmplitudeFXMLController {
             applyAmplitudeChange();
         });
 
-        amplitudeSlider.setValue(0);
-        amplitudeSlider.setMax(5);
-        amplitudeSlider.setMin(-5);
-        amplitudeSlider.setBlockIncrement(0.1);
-        amplitudeSlider.setMajorTickUnit(1.0);
-        amplitudeSlider.setMinorTickCount(10);
-
-        amplitudeSlider.setShowTickMarks(true);
-        amplitudeSlider.setShowTickLabels(true);
-
-
         handleImportAudio();
-
-//        amplitudeSlider.valueChangingProperty().addListener((obs, oldVal, newVal) -> {
-//            if (!newVal) {
-//                amp = amplitudeSlider.getValue();
-//                applyAmplitudeChange();
-//            }
-//        });
 
         playButton.setOnAction(event -> {
             if (audioFile == null || processedAudioData.length == 0) {
@@ -127,7 +109,7 @@ public class AudioAmplitudeFXMLController {
             audioFile = selectedFile;
             try {
                 loadAudioData(audioFile);
-                drawWaveform(waveformCanvas, amplitudeSlider.getValue());
+                drawWaveform(waveformCanvas, knob.getValue());
             } catch (Exception e) {
                 AlertBox.display("Import Error", "Failed to load audio: " + e.getMessage());
             }

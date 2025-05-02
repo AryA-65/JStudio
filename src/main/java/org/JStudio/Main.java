@@ -14,7 +14,7 @@ public class Main extends Application {
     private UIController uiController;
     private UnitTestingController testController;
 
-    private boolean isTesting = false;
+    private boolean isTesting = true;
 
     private Scene scene;
 

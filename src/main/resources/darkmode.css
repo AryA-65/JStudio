@@ -231,7 +231,7 @@
 }
 
 #file_ui {
-    -fx-background-color: #282E33;
+    -fx-background-color: #8C9BAB;
     -fx-background-radius: 5px;
     -fx-effect: innershadow(gaussian, rgba(115, 132, 150, 0.5), 5, 0.25, 3, 3);
 }

@@ -68,7 +68,7 @@ public class AudioAmplitudeFXMLController {
             }
             if (audioData != null) {
                 playButton.setDisable(true);
-                playAudio(amplitudeSlider.getValue());
+                playAudio();
 
                 PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(3));
                 delay.setOnFinished(e -> playButton.setDisable(false));
@@ -181,7 +181,7 @@ public class AudioAmplitudeFXMLController {
         gc.stroke();
     }
 
-    private void playAudio(double amplitudeFactor) {
+    private void playAudio() {
         if (processedAudioData == null || processedAudioData.length == 0) {
             AlertBox.display("Playback Error", "No processed audio data available.");
             return;

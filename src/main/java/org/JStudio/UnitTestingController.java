@@ -6,8 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.shape.MeshView;
 
 public class UnitTestingController {
-    @FXML
-    private Button loadButton;
 
     @FXML
     private Label fileNameLabel;
@@ -15,41 +13,20 @@ public class UnitTestingController {
     private TabPane leftTabPane;
 
     @FXML
-    private Canvas leftSpectrographCanvas;
+    private Canvas leftSpectrographCanvas, rightSpectrographCanvas;
 
     @FXML
-    private MeshView leftMeshView;
+    private MeshView leftMeshView, rightMeshView;
 
     @FXML
-    private Slider leftSlider;
+    private Slider leftSlider, rightSlider;
 
     @FXML
-    private ProgressBar leftProgressBar;
-
-    // Middle column (GridPane columnIndex=1)
-    @FXML
-    private Button computeButton;
+    private ProgressBar leftProgressBar, rightProgressBar;
 
     @FXML
-    private Button playButton, rightTabPane;
+    private Button loadButton,playButton, rightTabPane, pauseButton, computeButton;
 
-    @FXML
-    private Button pauseButton;
-    
-
-    @FXML
-    private Canvas rightSpectrographCanvas;
-
-    @FXML
-    private MeshView rightMeshView;
-
-    @FXML
-    private Slider rightSlider;
-
-    @FXML
-    private ProgressBar rightProgressBar;
-
-    // Initialization method if needed
     @FXML
     private void initialize() {
         // Initialization logic here (optional)

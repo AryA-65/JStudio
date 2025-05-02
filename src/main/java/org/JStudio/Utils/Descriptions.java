@@ -5,14 +5,12 @@ public class Descriptions {
     private String description; // what is the tool
     private String[] inputs;
     private String output;
-    private String process; // what happens
 
-    public Descriptions(String name, String description, String[] inputs, String output, String process) {
+    public Descriptions(String name, String description, String[] inputs, String output) {
         this.name = name;
         this.description = description;
         this.inputs = inputs;
         this.output = output;
-        this.process = process;
     }
 
     public String getName() {
@@ -45,13 +43,5 @@ public class Descriptions {
 
     public void setOutput(String output) {
         this.output = output;
-    }
-
-    public String getProcess() {
-        return process;
-    }
-
-    public void setProcess(String process) {
-        this.process = process;
     }
 }

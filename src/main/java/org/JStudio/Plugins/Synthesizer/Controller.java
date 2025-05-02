@@ -109,7 +109,7 @@ public class Controller {
                 isRecording = false;
                 recordButton.setText("Record");
                 saveRecordingAsWav(recordingBuffer, "/Users/ahmetyusufyildirim/Music/JStudio/audio_Files");
-                recordingBuffer = null;  
+                recordingBuffer = null;
             }
         });
 

@@ -5,9 +5,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.JStudio.Utils.Descriptions;
 
 public class Main extends Application {
 //    public String currentUser;
@@ -16,31 +20,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
-//
-//        ButterworthFXMLController butterworthFxmlController = new ButterworthFXMLController();
-//        loader.setController(butterworthFxmlController);
-//
-//        Parent root = loader.load();
-//
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
-
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
-//
-//        ButterworthFxmlController butterworthFxmlController = new ButterworthFxmlController();
-//        loader.setController(butterworthFxmlController);
-//
-//        Parent root = loader.load();
-//
-//        Scene scene = new Scene(root);
-//        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-//        stage.setScene(scene);
-//        stage.show();
-
-
 
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
         Parent root = loader.load();
@@ -57,11 +36,11 @@ public class Main extends Application {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(true);
         stage.show();
-
-        // For alternating styles
-        controller.setSplitRatio();
-        SettingsController sc = new SettingsController();
-        sc.setController(controller);
+//
+//        // For alternating styles
+//        controller.setSplitRatio();
+//        SettingsController sc = new SettingsController();
+//        sc.setController(controller);
         /**
          * to initialize the login page
          */

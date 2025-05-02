@@ -26,6 +26,8 @@ public class ChorusFXMLController {
     @FXML
     private Button playButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
     private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
@@ -108,11 +110,13 @@ public class ChorusFXMLController {
         // Play the audio
         playButton.setOnAction(e -> {
             chorus.setModulationEffect();
+            chorus.play();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
             chorus.stopAudio();
+            chorus.clearFinalAudio();
             chorus = new Modulation(20000, 200, 0.5);
             frequencyKnob.setValue(0.2);
             deviationKnob.setValue(0.2);
@@ -122,9 +126,16 @@ public class ChorusFXMLController {
 //            wetDrySlider.setValue(5);
         });
         
+        saveButton.setOnAction(e -> {
+            chorus.setModulationEffect();
+            chorus.stopAudio();
+            ChorusFXMLController.window.close();
+        });
+        
         ChorusFXMLController.window.setOnCloseRequest(e ->{
             if (chorus.getAudioLine() != null) {
                 chorus.getAudioLine().close();
+                chorus.clearFinalAudio();
             }
         });
     }

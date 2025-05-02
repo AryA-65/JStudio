@@ -1,5 +1,6 @@
 package org.JStudio.Plugins.Controllers;
 
+import java.util.Arrays;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -28,6 +29,8 @@ public class ReverbFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
+    @FXML
+    private Button saveButton;
 //    @FXML
 //    private Slider preDelaySlider;
 //    @FXML
@@ -143,11 +146,13 @@ public class ReverbFXMLController {
         // Play the audio
         playButton.setOnAction(e -> {
             reverb.setReverbEffect();
+            reverb.play();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
             reverb.stopAudio();
+            reverb.clearFinalAudio();
             reverb = new Reverb(1000, 10000, 2000, 0.5);
             preDelayKnob.setValue(0.1);
             decayTimeKnob.setValue(0.1);
@@ -159,9 +164,16 @@ public class ReverbFXMLController {
 //            wetDrySlider.setValue(5);
         });
         
+        saveButton.setOnAction(e -> {
+            reverb.setReverbEffect();
+            reverb.stopAudio();
+            ReverbFXMLController.window.close();
+        });
+        
         ReverbFXMLController.window.setOnCloseRequest(e ->{
             if (reverb.getAudioLine() != null) {
                 reverb.getAudioLine().close();
+                reverb.clearFinalAudio();
             }
         });
     }

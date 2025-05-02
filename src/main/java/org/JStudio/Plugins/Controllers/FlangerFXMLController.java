@@ -26,6 +26,8 @@ public class FlangerFXMLController {
     @FXML
     private Button playButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
     private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
@@ -109,11 +111,13 @@ public class FlangerFXMLController {
         // Play the audio
         playButton.setOnAction(e -> {
             flanger.setModulationEffect();
+            flanger.play();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
             flanger.stopAudio();
+            flanger.clearFinalAudio();
             flanger = new Modulation(100000, 100, 0.5);
             frequencyKnob.setValue(0.2);
             deviationKnob.setValue(0.2);
@@ -121,12 +125,18 @@ public class FlangerFXMLController {
 //            frequencySlider.setValue(2);
 //            deviationSlider.setValue(2);
 //            wetDrySlider.setValue(5);
-
+        });
+        
+        saveButton.setOnAction(e -> {
+            flanger.setModulationEffect();
+            flanger.stopAudio();
+            FlangerFXMLController.window.close();
         });
         
         FlangerFXMLController.window.setOnCloseRequest(e ->{
             if (flanger.getAudioLine() != null) {
                 flanger.getAudioLine().close();
+                flanger.clearFinalAudio();
             }
         });
     }

@@ -15,6 +15,8 @@ public class EchoFXMLController {
     private Button resetButton;
     @FXML
     private Button playButton;
+    @FXML
+    private Button saveButton;
 //    @FXML
 //    private Slider echoNumSlider;
 //    @FXML
@@ -154,11 +156,13 @@ public class EchoFXMLController {
         // Play the audio
         playButton.setOnAction(e -> {
             echo.setEchoEffect();
+            echo.play();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
             echo.stopAudio();
+            echo.clearFinalAudio();
             echo = new Echo(1000, 1/11, 10000, 5, 0.5);
             preDelayKnob.setValue(0.1);
             decayTimeKnob.setValue(0.1);
@@ -172,9 +176,16 @@ public class EchoFXMLController {
 //            wetDrySlider.setValue(5);
         });
         
+        saveButton.setOnAction(e -> {
+            echo.setEchoEffect();
+            echo.stopAudio();
+            EchoFXMLController.window.close();
+        });
+        
         EchoFXMLController.window.setOnCloseRequest(e ->{
             if (echo.getAudioLine() != null) {
                 echo.getAudioLine().close();
+                echo.clearFinalAudio();
             }
         });
     }

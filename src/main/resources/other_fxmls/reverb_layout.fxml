@@ -61,16 +61,30 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
+            <HBox prefHeight="100.0" prefWidth="120.0">
+               <children>
+                  <Button fx:id="playButton" mnemonicParsing="false" text="Play" />
+                  <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" translateX="28.8" />
+               </children>
+               <padding>
+                  <Insets left="5.0" right="5.0" top="20.0" />
+               </padding>
+            </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="playButton" mnemonicParsing="false" text="Play" translateY="54.0" />
-                  <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" translateX="37.2" translateY="54.0" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" text="Save" translateX="39.6" />
                </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
             </HBox>
          </children>
          <GridPane.margin>
-            <Insets top="15.0" />
+            <Insets />
          </GridPane.margin>
+         <padding>
+            <Insets top="15.0" />
+         </padding>
       </VBox>
    </children>
 </GridPane>

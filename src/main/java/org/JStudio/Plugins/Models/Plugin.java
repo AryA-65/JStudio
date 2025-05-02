@@ -49,6 +49,18 @@ public abstract class Plugin {
         this.filePathName = filePathName;
     }
 
+    public byte[] getFinalAudio() {
+        return finalAudio;
+    }
+
+    public void clearFinalAudio() {
+        finalAudio = null;
+    }
+    
+    public void play() {
+        playAudio(finalAudio);
+    }
+    
     /**
      * Plays audio data stored in a byte array
      * @param audioData the audio data to be played
@@ -128,7 +140,6 @@ public abstract class Plugin {
         
         finalAudio = new byte[sizeOfByteArray];
         System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
-        playAudio(finalAudio);
     }
     
     /**
@@ -182,10 +193,6 @@ public abstract class Plugin {
             doubleArray[i] = (double) shortArray[i];
         }
         return doubleArray;
-    }
-
-    public byte[] getFinalAudio() {
-        return finalAudio;
     }
 
     /**

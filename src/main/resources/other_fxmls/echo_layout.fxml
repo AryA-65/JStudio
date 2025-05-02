@@ -72,9 +72,20 @@
             </Label>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="playButton" mnemonicParsing="false" text="Play" translateX="5.0" translateY="54.0" />
-                  <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" translateX="20.0" translateY="54.0" />
+                  <Button fx:id="playButton" mnemonicParsing="false" text="Play" translateX="5.0" />
+                  <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" translateX="20.0" />
                </children>
+               <padding>
+                  <Insets top="30.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="saveButton" mnemonicParsing="false" text="Save" translateX="33.6" />
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
             </HBox>
          </children>
          <padding>

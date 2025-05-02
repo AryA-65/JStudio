@@ -26,6 +26,8 @@ public class PhaserFXMLController {
     @FXML
     private Button playButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
     private final Knob deviationKnob = new Knob(100, false, 0, REG);
@@ -110,11 +112,13 @@ public class PhaserFXMLController {
         // Play the audio
         playButton.setOnAction(e -> {
             phaser.setPhaserEffect();
+            phaser.play();
         });
         
         // Reset to initial values
         resetButton.setOnAction(e -> {
             phaser.stopAudio();
+            phaser.clearFinalAudio();
             phaser = new PhaserPlugin(100000, 8, 0.5);
             frequencyKnob.setValue(0.2);
             deviationKnob.setValue(0.8);
@@ -124,9 +128,16 @@ public class PhaserFXMLController {
 //            wetDrySlider.setValue(5);
         });
         
+        saveButton.setOnAction(e -> {
+            phaser.setPhaserEffect();
+            phaser.stopAudio();
+            PhaserFXMLController.window.close();
+        });
+        
         PhaserFXMLController.window.setOnCloseRequest(e ->{
             if (phaser.getAudioLine() != null) {
                 phaser.getAudioLine().close();
+                phaser.clearFinalAudio();
             }
         });
     }

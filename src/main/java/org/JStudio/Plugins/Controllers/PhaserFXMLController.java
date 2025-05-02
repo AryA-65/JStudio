@@ -28,7 +28,7 @@ public class PhaserFXMLController {
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
-    private final Knob deviationKnob = new Knob(100, true, 0.2, REG);
+    private final Knob deviationKnob = new Knob(100, false, 0, REG);
     private final Knob wetDryKnob = new Knob(100, false, 0, REG);
     private static PhaserStage window;
     private PhaserPlugin phaser;

@@ -37,6 +37,7 @@ public class AudioVisualizer {
         }
     }
 
+
     public synchronized void addSamples(Float left, Float right) {
         float l = (left != null) ? left : 0f;
         float r = (right != null) ? right : 0f;

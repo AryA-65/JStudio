@@ -1,16 +1,18 @@
 package org.JStudio.Plugins.Controllers;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.JStudio.Plugins.Models.Plugin;
+import org.JStudio.UI.Knob;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.AudioFormat;
@@ -20,6 +22,8 @@ import javax.sound.sampled.SourceDataLine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+import static org.JStudio.UI.Knob.Type.REG;
+
 public class AudioAmplitudeFXMLController {
     private Stage stage;
     @FXML
@@ -28,6 +32,7 @@ public class AudioAmplitudeFXMLController {
     Canvas waveformCanvas;
     @FXML
     Slider amplitudeSlider;
+    private final Knob knob = new Knob(100, false, 0, REG);
 
     private double[] audioData;
 
@@ -40,7 +45,22 @@ public class AudioAmplitudeFXMLController {
     private double amp;
 
     private SourceDataLine line;
+    @FXML
+    VBox vBox;
+
     public void initialize() {
+        knob.setValues(-5, 5);
+        vBox.getChildren().add(knob);
+
+        knob.valueProperty().addListener((obs, oldVal, newVal) -> {
+
+        });
+
+        knob.valueProperty().addListener((ObservableValue<? extends Number> obs, Number oldVal, Number newVal) -> {
+            amp = knob.getValue();
+            applyAmplitudeChange();
+        });
+
         amplitudeSlider.setValue(0);
         amplitudeSlider.setMax(5);
         amplitudeSlider.setMin(-5);
@@ -54,12 +74,12 @@ public class AudioAmplitudeFXMLController {
 
         handleImportAudio();
 
-        amplitudeSlider.valueChangingProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                amp = amplitudeSlider.getValue();
-                applyAmplitudeChange();
-            }
-        });
+//        amplitudeSlider.valueChangingProperty().addListener((obs, oldVal, newVal) -> {
+//            if (!newVal) {
+//                amp = amplitudeSlider.getValue();
+//                applyAmplitudeChange();
+//            }
+//        });
 
         playButton.setOnAction(event -> {
             if (audioFile == null || processedAudioData.length == 0) {

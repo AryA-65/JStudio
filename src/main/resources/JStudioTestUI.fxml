@@ -60,7 +60,7 @@
                                             <content>
                                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                                     <children>
-                                                        <Canvas height="273.0" width="333.0" />
+                                                        <Canvas fx:id="normalCanvas" height="275.0" width="335.0" />
                                                     </children>
                                                 </VBox>
                                             </content>
@@ -91,7 +91,7 @@
                                             <content>
                                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                                     <children>
-                                                        <Canvas height="273.0" width="333.0" />
+                                                        <Canvas fx:id="effectCanvas" height="275.0" width="335.0" />
                                                     </children>
                                                 </VBox>
                                             </content>

@@ -18,6 +18,7 @@ import java.nio.file.Files;
  */
 public abstract class Plugin {
     protected String filePathName;
+    protected String fileName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
     protected SourceDataLine line;
@@ -35,10 +36,15 @@ public abstract class Plugin {
                 new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
             filePathName = file.getAbsolutePath();
+            fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public String getFilePathName() {

@@ -7,13 +7,13 @@ public abstract class Clip {
         this.position = position;
     }
 
-    Clip(double position, int length) {}
+    Clip(double position, double length) {}
 
     public void setPosition(double position) {
         this.position = position;
     }
 
-    public void setLength(int length) {
+    public void setLength(double length) {
         this.length = length;
     }
 

@@ -7,6 +7,8 @@ import javazoom.jl.decoder.SampleBuffer;
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioFileExtractor {
     private static AudioInputStream ais;
@@ -21,9 +23,8 @@ public class AudioFileExtractor {
     public static float[][] readFile(File file) throws Exception {
         String name = file.getName().toLowerCase();
         if (name.endsWith(".mp3")) {
-            return null;
-//            file_type = true;
-//            return readMp3(file);
+            file_type = true;
+            return readMp3(file);
         } else if (name.endsWith(".wav")) {
             file_type = false;
             return readWavFile(file);
@@ -32,7 +33,7 @@ public class AudioFileExtractor {
         }
     }
 
-    //wav section
+    // WAV section
     private static float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException {
         ais = AudioSystem.getAudioInputStream(file);
         format = ais.getFormat();
@@ -76,21 +77,18 @@ public class AudioFileExtractor {
         }
         return result;
     }
-    //end of wav section
 
-    //mp3 section
+    // MP3 section
     private static float[][] readMp3(File file) throws Exception {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);
         Decoder decoder = new Decoder();
 
-        ais = AudioSystem.getAudioInputStream(file);
         fileFormat = AudioSystem.getAudioFileFormat(file);
-        format = ais.getFormat();
+        format = AudioSystem.getAudioInputStream(file).getFormat();
 
-        float[] left = new float[8_000_000];
-        float[] right = new float[8_000_000];
-        int index = 0;
+        List<Float> leftList = new ArrayList<>();
+        List<Float> rightList = new ArrayList<>();
         boolean stereo = false;
 
         Header header;
@@ -104,22 +102,21 @@ public class AudioFileExtractor {
             for (int i = 0; i < length; i++) {
                 if (stereo) {
                     if ((i & 1) == 0)
-                        left[index] = buffer[i] / 32768f;
+                        leftList.add(buffer[i] / 32768f);
                     else
-                        right[index] = buffer[i] / 32768f;
+                        rightList.add(buffer[i] / 32768f);
                 } else {
-                    left[index] = buffer[i] / 32768f;
+                    leftList.add(buffer[i] / 32768f);
                 }
-                index++;
             }
 
             bitstream.closeFrame();
         }
 
-        return new float[][]{
-                trimArray(left, index),
-                stereo ? trimArray(right, index) : null
-        };
+        float[] left = toFloatArray(leftList);
+        float[] right = stereo ? toFloatArray(rightList) : null;
+
+        return new float[][]{left, right};
     }
 
     public static double getMP3Length() {
@@ -134,10 +131,11 @@ public class AudioFileExtractor {
         return format != null ? (int) format.getSampleRate() : -1;
     }
 
-    private static float[] trimArray(float[] array, int length) {
-        float[] result = new float[length];
-        System.arraycopy(array, 0, result, 0, length);
+    private static float[] toFloatArray(List<Float> list) {
+        float[] result = new float[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
         return result;
     }
-    //end of mp3 section
 }

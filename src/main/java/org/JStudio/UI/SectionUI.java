@@ -60,7 +60,7 @@ public class SectionUI extends VBox {
 
         for (File f : Objects.requireNonNull(file.listFiles())) {
             if (f.exists() && f.isFile()) {
-                if (f.getName().endsWith(".mp3")) {continue;} //remove this line of code when mp3 support is added
+//                if (f.getName().endsWith(".mp3")) {continue;} //remove this line of code when mp3 support is added
                 section_content.getChildren().add(new FileUI(f));
             }
         }

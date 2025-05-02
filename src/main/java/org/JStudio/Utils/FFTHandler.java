@@ -21,9 +21,18 @@ public class FFTHandler {
        fft = new DoubleFFT_1D(fftSize);
    }
 
-   public void processFFT(ArrayList<Short> inputData) {
+   public void processFFT(ArrayList<Float> inputData) {
        for (int i = 0; i < fftSize * 2; i++) {
            fftData[i * 2] = inputData.get(i);
+           fftData[i * 2 + 1] = 0;
+       }
+
+       fft.realForward(fftData);
+   }
+
+   public void processFFT(short[] inputData) {
+       for (int i = 0; i < fftSize * 2; i++) {
+           fftData[i * 2] = inputData[i];
            fftData[i * 2 + 1] = 0;
        }
 

@@ -14,6 +14,8 @@ import org.JStudio.Core.Track;
 import org.JStudio.UIController;
 import org.JStudio.Utils.AudioFileExtractor;
 
+import java.io.File;
+
 public class TrackUI extends StackPane {
 //    private ArrayList<ClipUI> clips = new ArrayList<ClipUI>();
 
@@ -96,10 +98,13 @@ public class TrackUI extends StackPane {
                 try {
                     float[][] audio_data = AudioFileExtractor.readFile(db.getFiles().get(db.getFiles().size() - 1));
 
-                    AudioClip audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+                    AudioClip audioClip = null;
 
-//                    if (AudioFileExtractor.isMp3()) audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getMP3SampleRate());
-//                    else audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+                    if (AudioFileExtractor.isMp3()) {
+                        audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getMP3SampleRate());
+                        System.out.println(AudioFileExtractor.getMP3SampleRate());
+                    }
+                    else audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
 
                     ClipUI clip = new ClipUI(audioClip);
 

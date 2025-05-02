@@ -16,7 +16,7 @@ public class AudioClip extends Clip {
     AudioClip(double position) {
         super(position);
         this.buffer = new float[2][1024];
-        super.setLength(1024 / 44100);
+        super.setLength((double) 1024 / 44100);
     }
 
     //test init class
@@ -24,7 +24,8 @@ public class AudioClip extends Clip {
         super(position);
         this.buffer = buff;
         this.sampleRate = sampleRate;
-        super.setLength(Math.max(buff[0].length, buff[1] == null ? 0 : buff[1].length) / this.sampleRate);
+        super.setLength((double) Math.max(buff[0].length, buff[1] == null ? 0 : buff[1].length) / this.sampleRate);
+        System.out.println(super.getLength());
     }
 
     public void setS_pos(double s_pos) {

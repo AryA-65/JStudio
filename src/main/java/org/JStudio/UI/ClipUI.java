@@ -1,5 +1,6 @@
 package org.JStudio.UI;
 
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -23,6 +24,7 @@ public class ClipUI extends Canvas {
 
     public ClipUI(Clip clip) {
         super(clip.getLength() * ((double) bpm.get() / 60) * 32, 64);
+        System.out.println(clip.getLength() * ((double) bpm.get() / 60) * 32);
         this.clip = clip;
         gc = getGraphicsContext2D();
 
@@ -34,7 +36,7 @@ public class ClipUI extends Canvas {
         redraw();
 
         //small test
-        setOnMouseClicked(e -> {
+        setOnMousePressed(e -> {
             selected = !selected;
             redraw();
         });
@@ -48,16 +50,29 @@ public class ClipUI extends Canvas {
         AtomicBoolean isDragged = new AtomicBoolean(false);
 
         setOnMouseDragged(e -> {
-           double newX = getLayoutX() + e.getX();
-           newX = Math.max(0, Math.min(newX, ((Pane) getParent()).getWidth() - getWidth()));
+            double newX = getLayoutX() + e.getX();
+            newX = Math.max(0, Math.min(newX, ((Pane) getParent()).getWidth() - getWidth()));
 
-           if (UIController.snap.get()) newX = Math.round(newX / 8) * 8;
+            if (UIController.snap.get()) newX = Math.round(newX / 8) * 8;
 
-           setLayoutX(newX);
+            boolean overlap = false;
+            for (Node node : ((Pane) getParent()).getChildren()) {
+                if (node instanceof ClipUI other && node != this) {
+                    double otherX = other.getLayoutX();
+                    double otherWidth = other.getWidth();
 
-           if (!isDragged.get()) {
-               isDragged.set(true);
-           }
+                    if (newX < otherX + otherWidth && newX + getWidth() > otherX) {
+                        overlap = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!overlap) setLayoutX(newX);
+
+            if (!isDragged.get()) {
+                isDragged.set(true);
+            }
         });
 
         setOnMouseReleased(e -> {
@@ -67,8 +82,6 @@ public class ClipUI extends Canvas {
                 System.out.println(clip.getPosition());
             }
         });
-
-
     }
 
     public void setSelected(boolean selected) {

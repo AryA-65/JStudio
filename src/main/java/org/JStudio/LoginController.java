@@ -80,13 +80,17 @@ public class LoginController {
             controller.setScreenSize();
 
             Scene scene = new Scene(root);
-//            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
-
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            controller.setScene(scene);
             mainStage.setScene(scene);
             mainStage.initStyle(StageStyle.TRANSPARENT);
             mainStage.setResizable(true);
             mainStage.show();
+
+            // For alternating styles
+            controller.setSplitRatio();
+            SettingsController sc = new SettingsController();
+            sc.setController(controller);
 
             controller.setSplitRatio();
 
@@ -138,11 +142,11 @@ public class LoginController {
 
     public void setRootStage(Stage stage) {
         rootStage = stage;
+        rootStage.setResizable(false);
     }
 
     public void setRootScene(Scene rootScene) {
         this.rootScene = rootScene;
-        //        scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-        rootScene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        rootScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
     }
 }

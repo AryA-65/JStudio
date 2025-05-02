@@ -208,7 +208,7 @@
 
 .slider .thumb {
     /*-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #ffffff, #d9d9d9);*/
-    -fx-background-color: #738496;
+    -fx-background-color: #d9d9d9;
     -fx-background-image: url("icons/line.png");
     -fx-background-size: 10px 10px;
     -fx-background-position: center;
@@ -228,4 +228,55 @@
     -fx-border-width: 2px;
     -fx-border-insets: 2px;
     -fx-border-radius: 5px;
+}
+
+#file_canvas {
+    -fx-effect: dropshadow(gaussian, rgba(140,155,171,0.5), 5, 0, 3, 3);
+    -fx-background-color: rgba(140,155,171,0.1);
+    -fx-text-fill: #000000;
+}
+
+#hover_file {
+    -fx-background-color: rgba(140,155,171,0.1);
+    -fx-background-radius: 5px;
+}
+
+#channel_container {
+    -fx-background-color: #404040; -fx-background-radius: 5px;
+}
+
+#vis_background {
+    -fx-background-color: #808080; -fx-background-radius: 5px
+}
+
+#vis_container {
+    -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px
+}
+
+#mixer {
+    -fx-background-color: #282E33;
+    -fx-background-radius: 5px;
+}
+
+#pipeline_node {
+    -fx-background-color: #38414A;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+}
+
+#output_port, #input_port {
+    -fx-fill: #00FD11;
+    -fx-stroke: black; -fx-stroke-width: 1;
+}
+
+#track_channel {
+    -fx-background-color: #c1c1c1;
+    -fx-background-radius: 5px;
+}
+
+#masterVis {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+    -fx-border-radius: 5px;
+    -fx-background-color: #c1c1c1;
 }

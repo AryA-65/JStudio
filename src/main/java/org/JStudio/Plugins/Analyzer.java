@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class Analyzer {
     private FFTHandler fftHandler = new FFTHandler();
     private boolean paused = false;
-    private ArrayList<Short> buffer = new ArrayList<>(1024);
+    private ArrayList<Float> buffer = new ArrayList<>(1024);
 
-    public boolean put(short data) {
+    public boolean put(float data) {
         if (buffer.size() >= 1024) return true;
         buffer.add(data);
         return false;

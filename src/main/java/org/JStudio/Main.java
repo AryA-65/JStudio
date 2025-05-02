@@ -37,10 +37,10 @@ public class Main extends Application {
         stage.setResizable(true);
         stage.show();
 //
+        controller.setSplitRatio();
 //        // For alternating styles
-//        controller.setSplitRatio();
-//        SettingsController sc = new SettingsController();
-//        sc.setController(controller);
+
+        SettingsController.setController(controller);
         /**
          * to initialize the login page
          */

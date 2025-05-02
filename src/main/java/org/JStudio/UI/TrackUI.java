@@ -14,8 +14,6 @@ import org.JStudio.Core.Track;
 import org.JStudio.UIController;
 import org.JStudio.Utils.AudioFileExtractor;
 
-import java.io.File;
-
 public class TrackUI extends StackPane {
 //    private ArrayList<ClipUI> clips = new ArrayList<ClipUI>();
 

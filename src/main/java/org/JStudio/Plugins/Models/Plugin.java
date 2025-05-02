@@ -44,14 +44,16 @@ public abstract class Plugin {
                     new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
                     new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
-
-            filePathName = file.getAbsolutePath();
-            fileName = file.getName();
-            originalAudio = Files.readAllBytes(file.toPath());
-
+            
             AudioFileExtractor afe = new AudioFileExtractor();
             audioFloatInput2D = afe.readWavFile(file);
             audioByteInput2D = convert2DFloatTo2DByte(audioFloatInput2D);
+            
+            
+//            float[][] floatArray = {{1, 2, 3, 11, 75}, {4, 5, 6, 17, 90}};
+//            convert2DByteTo2DFloat(convert2DFloatTo2DByte(floatArray));
+//            filePathName = file.getAbsolutePath();
+//            originalAudio = Files.readAllBytes(file.toPath());
         } catch (IOException | UnsupportedAudioFileException e) {
             System.out.println(e);
         }

@@ -193,6 +193,20 @@ public abstract class Plugin {
         return audioToModulate;
     }
 
+    protected short[] convertToShortArray(byte[] audioData) {
+        byte[] noHeaderByteAudioData = new byte[audioData.length - 44];
+        // The audio to add flanging to has same audio data as the original audio for now (no header)
+        System.arraycopy(audioData, 44, noHeaderByteAudioData, 0, audioData.length - 44);
+
+        // Convert audio data to short type to avoid audio warping
+        short[] shortAudio = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < shortAudio.length; i++) {
+            shortAudio[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        }
+
+        return shortAudio;
+    }
+    
     /**
      * Revert short[] audio data back to byte array to have playback
      * functionality

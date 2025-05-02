@@ -34,7 +34,7 @@ public class Reverb extends Plugin {
         for (int i = 0; i < audioByteInput2D.length; i++) {
             delayLines = new ArrayList<>();
        
-            short[] audioToReverb = convertToShortArray();
+            short[] audioToReverb = convertToShortArray(audioByteInput2D[i]);
             int numOfDelayLines = 0;
             if (audioByteInput2D[i].length < 200000) {
                 numOfDelayLines =  5;

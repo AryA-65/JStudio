@@ -95,7 +95,7 @@ public class UnitTestingController extends Plugin{
 
     public void setStage(Stage stage) {
         rootStage = stage;
-        rootStage.setMaximized(true);
+//        rootStage.setMaximized(true);
     }
 
     public void setScene(Scene scene)  {

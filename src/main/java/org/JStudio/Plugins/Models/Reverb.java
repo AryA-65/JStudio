@@ -18,11 +18,12 @@ public class Reverb extends Plugin {
 
     // Creates a reverb
     public Reverb(int preDelay, int decay, int diffusion, double wetDryFactor) {
+        super.convertAudioFileToByteArray();
+
         this.preDelay = preDelay;
         this.decay = decay;
         this.diffusion = diffusion;
         this.wetDryFactor = wetDryFactor;
-        convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
     }
 

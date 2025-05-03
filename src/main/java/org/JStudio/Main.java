@@ -7,55 +7,53 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.JStudio.Plugins.Models.Reverb;
+import org.JStudio.Plugins.Views.FlangerStage;
+import org.JStudio.Plugins.Views.ReverbStage;
 
 public class Main extends Application {
-//    public String currentUser;
-
-    private UIController uiController;
-    private UnitTestingController testController;
-
-    private boolean isTesting = true;
+    private UIController controller;
 
     private Scene scene;
 
     @Override
     public void start(Stage stage) throws Exception {
+        boolean isTesting = false;
         if (isTesting) {
             FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
             Parent root = testLoader.load();
 
-            testController = testLoader.getController();
+            UnitTestingController testController = testLoader.getController();
             testController.setStage(stage);
 
             scene = new Scene(root);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
             testController.setScene(scene);
-            stage.getIcons().add(new Image("/JS_ico.png"));
+//            stage.getIcons().add(new Image("/JS_ico.png"));
             stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setResizable(true);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//            stage.setResizable(true);
             stage.show();
 
         } else {
-            FXMLLoader uiLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-            Parent root = uiLoader.load();
+            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+            Parent root = loader.load();
 
-            uiController = uiLoader.getController();
-            uiController.setStage(stage);
-            uiController.setScreenSize();
+            controller = loader.getController();
+            controller.setStage(stage);
+            controller.setScreenSize();
 
             scene = new Scene(root);
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            uiController.setScene(scene);
+            controller.setScene(scene);
             stage.getIcons().add(new Image("/JS_ico.png"));
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.setResizable(true);
             stage.show();
 
-            uiController.setSplitRatio();
-            // For alternating styles
-            SettingsController.setController(uiController);
+            controller.setSplitRatio();
+            SettingsController.setController(controller);
         }
 
 

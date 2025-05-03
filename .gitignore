@@ -36,6 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
-src/main/resources/UserData/loginInfo.csv
-src/main/resources/UserData/loginInfo.csv
+#src/main/resources/UserData/loginInfo.csv
 /nbproject/

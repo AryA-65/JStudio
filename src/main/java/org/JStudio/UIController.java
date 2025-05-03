@@ -16,7 +16,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
-import org.JStudio.Plugins.Views.AudioAmplitudeStage;
 import org.JStudio.UI.*;
 import org.JStudio.Utils.FileLoader;
 import org.JStudio.Utils.SystemMonitor;
@@ -32,11 +31,13 @@ MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPE
  */
 
 public class UIController {
+
+    private Scene scene;
+
     @FXML
     private VBox plugin_btn_pane;
     @FXML
     private Tab plugins_tab;
-    private Scene scene;
     @FXML
     public Pane plugin_pane;
     @FXML
@@ -105,8 +106,6 @@ public class UIController {
     private VBox tab_vbox;
     @FXML
     private Stage rootStage;
-    @FXML
-    private Button reverbBtn;
 
     private SystemMonitor sm; //make this a static class that runs
 
@@ -158,13 +157,6 @@ public class UIController {
     
     @FXML
     public void initialize() throws Exception {
-        reverbBtn.setOnMouseClicked(e -> {
-//            ReverbStage reverb = new ReverbStage();
-//            reverb.show();
-            AudioAmplitudeStage audioAmplitudeStage = new AudioAmplitudeStage();
-            audioAmplitudeStage.show();
-        });
-        
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
             SettingsController.setWindow(settings);

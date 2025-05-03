@@ -57,7 +57,7 @@ public class UnitTestingController extends Plugin{
         });
 
         computeBtn.setOnMouseClicked(event -> {
-            spectrograph.computeFFTFrames(originalAudio);
+            spectrograph.computeFFTFrames(originalAudio, leftProgressBar);
             leftProgressBar.setVisible(true);
             rightProgressBar.setVisible(true);
             playBtn.setDisable(false);

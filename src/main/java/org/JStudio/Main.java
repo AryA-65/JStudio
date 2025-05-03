@@ -17,7 +17,7 @@ public class Main extends Application {
 
     private Scene scene;
 
-    boolean isTesting = false;
+    boolean isTesting = true;
 
     @Override
     public void start(Stage stage) throws Exception {

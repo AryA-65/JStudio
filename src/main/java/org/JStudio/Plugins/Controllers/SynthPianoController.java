@@ -1,5 +1,11 @@
-package SynthPiano;
+package org.JStudio.Plugins.Controllers;
 
+import org.JStudio.Plugins.Models.SynthPianoNote;
+import org.JStudio.Plugins.Views.SynthPianoNoteView;
+import org.JStudio.Plugins.Models.SynthPianoTrack;
+import org.JStudio.Plugins.Models.SynthPiano;
+import org.JStudio.Plugins.SynthMain_Piano;
+import org.JStudio.Plugins.Controllers.SynthController_Piano;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -118,8 +124,8 @@ public class SynthPianoController {
 
         //if the are not intersection issues then add a note to the pane
         if (!synthPiano.isOverlaps()) {
-            Note newNote = new Note(synthPiano.getCurrentTrack());
-            NoteView noteView = new NoteView(newNote, synthPiano.getNoteBaseWidth(), synthPiano.getNoteHeight(), x - synthPiano.getNoteBaseWidth() / 2);
+            SynthPianoNote newNote = new SynthPianoNote(synthPiano.getCurrentTrack());
+            SynthPianoNoteView noteView = new SynthPianoNoteView(newNote, synthPiano.getNoteBaseWidth(), synthPiano.getNoteHeight(), x - synthPiano.getNoteBaseWidth() / 2);
             dragNote(noteView); //make the rectangle draggable
             noteView.setOnMousePressed(event -> {
                 if (event.getButton() == MouseButton.SECONDARY) {
@@ -144,7 +150,7 @@ public class SynthPianoController {
     }
 
     //alows a note to be draggable and resizable
-    private void dragNote(NoteView noteView) {
+    private void dragNote(SynthPianoNoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
@@ -211,7 +217,7 @@ public class SynthPianoController {
     }
 
     //detects if a note will overlap with another note
-    private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
+    private void detectOverlap(SynthPianoNoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
         tempRect.setLayoutX(nextPosX);
@@ -260,7 +266,7 @@ public class SynthPianoController {
         labelVBox.getChildren().add(label);
 
         //setup the track itself
-        PianoTrack track = new PianoTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
+        SynthPianoTrack track = new SynthPianoTrack(frequency, txt1, txt2, txt3, tone1Value, tone2Value, tone3Value, volume1Value, volume2Value, volume3Value);
         track.setId("pane" + noteTracks.getChildren().size());
         track.setPrefSize(1820.0, 27.0);
         track.setMaxWidth(synthPiano.getNotesTrackWidth());
@@ -330,12 +336,12 @@ public class SynthPianoController {
                 double currentTime = (double) i / sampleRate; // current time in seconds
                 double mixedSample = 0;
 
-                for (NoteView noteView : synthPiano.getAllNoteViews()) { //for all notes placed
-                    Note note = noteView.getNote();
+                for (SynthPianoNoteView noteView : synthPiano.getAllNoteViews()) { //for all notes placed
+                    SynthPianoNote note = noteView.getNote();
                     if (note.isActive(currentTime)) { // Check if this note should be playing
                         //calculate the sample
                         int NORMALIZER = 6;
-                        PianoTrack track = note.getTrack();
+                        SynthPianoTrack track = note.getTrack();
                         if (track.getTone1Value() != 0) {
                             mixedSample += (generateWaveSample(track.getText1(), Utility.Math.offsetTone(track.getFrequency(), track.getTone1Value()), wavePos) * track.getVolume1Value()) / NORMALIZER;
                         }
@@ -395,10 +401,10 @@ public class SynthPianoController {
     }
 
     //returns an array list of all notes in the pane
-    private ArrayList<NoteView> getNotes() {
-        ArrayList<NoteView> currentNoteViews = new ArrayList<>();
+    private ArrayList<SynthPianoNoteView> getNotes() {
+        ArrayList<SynthPianoNoteView> currentNoteViews = new ArrayList<>();
         for (Node n : synthPiano.getCurrentTrack().getChildren()) {
-            currentNoteViews.add((NoteView) n);
+            currentNoteViews.add((SynthPianoNoteView) n);
         }
         return currentNoteViews;
     }

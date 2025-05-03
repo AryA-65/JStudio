@@ -1,5 +1,6 @@
-package SynthPiano;
+package org.JStudio.Plugins.Models;
 
+import org.JStudio.Plugins.Controllers.SynthPianoController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -17,14 +18,14 @@ public class Synth {
     private boolean shouldGenerate;
     private Random random = new Random();
     private String txt1 = "Sine", txt2 = "Sine", txt3 = "Sine";
-    private AudioThread auTh;
+    private SynthPianoAudioThread auTh;
     private Stage tempStage;
     private SynthPianoController notesController;
     private PopUpController popUpController;
     private GraphicsContext gc;
 
     //getters and setters
-    public AudioThread getAuTh() {
+    public SynthPianoAudioThread getAuTh() {
         return auTh;
     }
 
@@ -84,7 +85,7 @@ public class Synth {
         return shouldGenerate;
     }
 
-    public void setAuTh(AudioThread auTh) {
+    public void setAuTh(SynthPianoAudioThread auTh) {
         this.auTh = auTh;
     }
 

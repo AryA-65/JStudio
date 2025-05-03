@@ -1,5 +1,7 @@
-package SynthPiano;
+package org.JStudio.Plugins.Models;
 
+import org.JStudio.Plugins.Views.SynthPianoNoteView;
+import org.JStudio.Plugins.Controllers.SynthController_Piano;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,9 +18,9 @@ public class SynthPiano {
     private double newMousePos;
     private double playbackLineStartPos;
 
-    private PianoTrack currentTrack;
-    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
-    private List<NoteView> currentNoteViews = new ArrayList<>();
+    private SynthPianoTrack currentTrack;
+    private ArrayList<SynthPianoNoteView> allNoteViews = new ArrayList<>();
+    private List<SynthPianoNoteView> currentNoteViews = new ArrayList<>();
 
     private SynthController_Piano synthController;
 
@@ -44,15 +46,15 @@ public class SynthPiano {
     private StringProperty name = new SimpleStringProperty("Synth Piano");
     
     //getters and setters
-    public ArrayList<NoteView> getAllNoteViews() {
+    public ArrayList<SynthPianoNoteView> getAllNoteViews() {
         return allNoteViews;
     }
 
-    public List<NoteView> getCurrentNoteViews() {
+    public List<SynthPianoNoteView> getCurrentNoteViews() {
         return currentNoteViews;
     }
 
-    public PianoTrack getCurrentTrack() {
+    public SynthPianoTrack getCurrentTrack() {
         return currentTrack;
     }
 
@@ -188,15 +190,15 @@ public class SynthPiano {
         this.trackThread = trackThread;
     }
 
-    public void setAllNoteViews(ArrayList<NoteView> allNoteViews) {
+    public void setAllNoteViews(ArrayList<SynthPianoNoteView> allNoteViews) {
         this.allNoteViews = allNoteViews;
     }
 
-    public void setCurrentNoteViews(List<NoteView> currentNoteViews) {
+    public void setCurrentNoteViews(List<SynthPianoNoteView> currentNoteViews) {
         this.currentNoteViews = currentNoteViews;
     }
 
-    public void setCurrentTrack(PianoTrack currentTrack) {
+    public void setCurrentTrack(SynthPianoTrack currentTrack) {
         this.currentTrack = currentTrack;
     }
 

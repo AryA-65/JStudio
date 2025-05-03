@@ -1,13 +1,14 @@
-package SynthPiano;
+package org.JStudio.Plugins.Views;
 
+import org.JStudio.Plugins.Models.SynthPianoNote;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class NoteView extends Rectangle {
-    private Note note;
+public class SynthPianoNoteView extends Rectangle {
+    private SynthPianoNote note;
 
     //creates a rectangle to represent the note on the track
-    public NoteView(Note note, double width, double height, double positionX) {
+    public SynthPianoNoteView(SynthPianoNote note, double width, double height, double positionX) {
         super(width, height);
         note.setNoteView(this);
         this.note = note;
@@ -20,7 +21,7 @@ public class NoteView extends Rectangle {
     }
 
     //getter
-    public Note getNote() {
+    public SynthPianoNote getNote() {
         return note;
     }
 }

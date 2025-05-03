@@ -1,5 +1,8 @@
-package PianoSection;
+package org.JStudio.Plugins.Controllers;
 
+import org.JStudio.Plugins.Models.PianoNote;
+import org.JStudio.Plugins.Views.PianoNoteView;
+import org.JStudio.Plugins.Models.Piano;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
@@ -102,8 +105,8 @@ public class PianoController {
         }
         //if the are not intersection issues then add a note to the pane
         if (!piano.isOverlaps()) {
-            Note newNote = new Note(noteNum, piano.getNoteHeight(), x - piano.getNoteBaseWidth() / 2, piano.getNoteBaseWidth());
-            NoteView noteView = new NoteView(newNote, piano.getNoteHeight());
+            PianoNote newNote = new PianoNote(noteNum, piano.getNoteHeight(), x - piano.getNoteBaseWidth() / 2, piano.getNoteBaseWidth());
+            PianoNoteView noteView = new PianoNoteView(newNote, piano.getNoteHeight());
             noteView.setLayoutX(x - piano.getNoteBaseWidth() / 2);
             noteView.getNote().setNoteNum(piano.getNoteNumStart() + Integer.parseInt(piano.getCurrentPane().getId().replace("pane", ""))); //set the note number of the note to the corresponding synth note number
             dragNote(noteView); //make the rectangle draggable
@@ -136,7 +139,7 @@ public class PianoController {
     }
 
     //makes notes draggable and resizable
-    private void dragNote(NoteView noteView) {
+    private void dragNote(PianoNoteView noteView) {
 
         //add Event Handler on mouse dragged that allows the notes to be dragged along the pane and be resized if the borders are dragged
         noteView.setOnMouseDragged(mouseEvent -> {
@@ -203,7 +206,7 @@ public class PianoController {
     }
 
     //detect if a note will overlap with another note
-    private void detectOverlap(NoteView noteView, double nextPosX, double nextWidth) {
+    private void detectOverlap(PianoNoteView noteView, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other notes once moved
         Rectangle tempRect = new Rectangle(nextWidth, noteView.getHeight());
         tempRect.setLayoutX(nextPosX);
@@ -239,7 +242,7 @@ public class PianoController {
             @Override
             //detect if the playback line is touching each note and play/stop the note
             public void handle(long now) {
-                for (NoteView noteView : piano.getAllNoteViews()) {
+                for (PianoNoteView noteView : piano.getAllNoteViews()) {
                     Shape intersection = Shape.intersect(playbackLine, noteView);
                     
                     //if the playback line is touching a note and the note is not playing, then play the note
@@ -281,10 +284,10 @@ public class PianoController {
     }
 
     //returns an array list of all notes in the pane
-    private ArrayList<NoteView> getNotes() {
-        ArrayList<NoteView> currentNoteViews = new ArrayList<>();
+    private ArrayList<PianoNoteView> getNotes() {
+        ArrayList<PianoNoteView> currentNoteViews = new ArrayList<>();
         for (Node n : piano.getCurrentPane().getChildren()) {
-            currentNoteViews.add((NoteView) n);
+            currentNoteViews.add((PianoNoteView) n);
         }
         return currentNoteViews;
     }

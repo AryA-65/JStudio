@@ -1,7 +1,7 @@
 package org.JStudio;
 
-import PianoSection.PianoRun;
-import SynthPiano.SynthPianoRun;
+import org.JStudio.Plugins.PianoRun;
+import org.JStudio.Plugins.SynthPianoRun;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;

@@ -1,14 +1,14 @@
-package PianoSection;
+package org.JStudio.Plugins.Views;
 
-import PianoSection.Note;
+import org.JStudio.Plugins.Models.PianoNote;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class NoteView extends Rectangle {
-    private Note note;
+public class PianoNoteView extends Rectangle {
+    private PianoNote note;
 
     //creates a rectangle to represent the note on the track
-    public NoteView(Note note, double height) {
+    public PianoNoteView(PianoNote note, double height) {
         super(note.getWidth(), height);
         this.note = note;
         setLayoutX(note.getPositionX());
@@ -20,7 +20,7 @@ public class NoteView extends Rectangle {
     }
 
     //getter
-    public Note getNote() {
+    public PianoNote getNote() {
         return note;
     }
 }

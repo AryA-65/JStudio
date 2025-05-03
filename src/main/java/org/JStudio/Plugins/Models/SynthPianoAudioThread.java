@@ -1,16 +1,14 @@
-package SynthPiano;
+package org.JStudio.Plugins.Models;
 
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.JStudio.Plugins.Synthesizer.OpenALException;
 import org.JStudio.Plugins.Synthesizer.Utility;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 
-class AudioThread extends Thread {
+public class SynthPianoAudioThread extends Thread {
     static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
     static final int BUFFER_COUNT = 8; // how many buffers will be in queue
     private final int[] buffers = new int[BUFFER_COUNT];
@@ -25,12 +23,16 @@ class AudioThread extends Thread {
 
     private final Supplier<short[]> bufferSupplier;
     
+    public static int getBufferSize(){
+        return BUFFER_SIZE;
+    }
+    
     public boolean isClosed(){
         return closed;
     }
 
     //adds samples to a buffer, queues the buffer, and starts playing the audio
-    public AudioThread(Supplier<short[]> bufferSupplier) {
+    public SynthPianoAudioThread(Supplier<short[]> bufferSupplier) {
         this.bufferSupplier = bufferSupplier;
         alcMakeContextCurrent(context);
         AL.createCapabilities(ALC.createCapabilities(device));
@@ -74,7 +76,7 @@ class AudioThread extends Thread {
     }
 
     //breaks out of the loop and "runs" the thread
-    synchronized void triggerPlayback() {
+    public synchronized void triggerPlayback() {
         running = true;
         notify();
     }

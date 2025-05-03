@@ -1,28 +1,30 @@
-package SynthPiano;
+package org.JStudio.Plugins.Models;
 
-public class Note {
+import org.JStudio.Plugins.Views.SynthPianoNoteView;
 
-    private PianoTrack track;
-    private NoteView noteView;
+public class SynthPianoNote {
+
+    private SynthPianoTrack track;
+    private SynthPianoNoteView noteView;
     private boolean isPlaying;
     private double startTime;
     private double endTime;
 
     //sets the track that the note is on
-    public Note(PianoTrack track) {
+    public SynthPianoNote(SynthPianoTrack track) {
         this.track = track;
     }
 
     //getters and setters
-    public NoteView getNoteView() {
+    public SynthPianoNoteView getNoteView() {
         return noteView;
     }
 
-    public void setNoteView(NoteView noteView) {
+    public void setNoteView(SynthPianoNoteView noteView) {
         this.noteView = noteView;
     }
 
-    public PianoTrack getTrack() {
+    public SynthPianoTrack getTrack() {
         return track;
     }
 
@@ -39,7 +41,7 @@ public class Note {
     }
 
     //returns whether a note should be playing at a specific moment in time
-    boolean isActive(double currentTime) {
+    public boolean isActive(double currentTime) {
         int trackLengthSeconds = 30;
         startTime = noteView.getLayoutX() / track.getPrefWidth() * trackLengthSeconds;
         endTime = (noteView.getLayoutX() + noteView.getWidth())/ track.getPrefWidth() * trackLengthSeconds;

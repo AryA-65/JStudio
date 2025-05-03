@@ -1,5 +1,6 @@
-package PianoSection;
+package org.JStudio.Plugins.Models;
 
+import org.JStudio.Plugins.Views.PianoNoteView;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,8 +16,8 @@ public class Piano {
     private final double noteMinWidth = 50;
 
     private Pane currentPane;
-    private ArrayList<NoteView> allNoteViews = new ArrayList<>();
-    private List<NoteView> currentNoteViews = new ArrayList<>();
+    private ArrayList<PianoNoteView> allNoteViews = new ArrayList<>();
+    private List<PianoNoteView> currentNoteViews = new ArrayList<>();
 
     private double oldMousePos;
     private double newMousePos;
@@ -34,7 +35,7 @@ public class Piano {
     private double playbackLineStartPos;
 
     //getters and setters
-    public ArrayList<NoteView> getAllNoteViews() {
+    public ArrayList<PianoNoteView> getAllNoteViews() {
         return allNoteViews;
     }
 
@@ -42,7 +43,7 @@ public class Piano {
         return channel;
     }
 
-    public List<NoteView> getCurrentNoteViews() {
+    public List<PianoNoteView> getCurrentNoteViews() {
         return currentNoteViews;
     }
 
@@ -102,7 +103,7 @@ public class Piano {
         return overlaps;
     }
 
-    public void setAllNoteViews(ArrayList<NoteView> allNoteViews) {
+    public void setAllNoteViews(ArrayList<PianoNoteView> allNoteViews) {
         this.allNoteViews = allNoteViews;
     }
 
@@ -110,7 +111,7 @@ public class Piano {
         this.channel = channel;
     }
 
-    public void setCurrentNoteViews(List<NoteView> currentNoteViews) {
+    public void setCurrentNoteViews(List<PianoNoteView> currentNoteViews) {
         this.currentNoteViews = currentNoteViews;
     }
 

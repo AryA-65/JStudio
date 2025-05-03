@@ -1,6 +1,6 @@
-package PianoSection;
+package org.JStudio.Plugins.Models;
 
-public class Note {
+public class PianoNote {
     private int noteNum;
     private int velocity = 90;
     private boolean isPlaying;
@@ -10,7 +10,7 @@ public class Note {
     private double width;
     
     //sets note parameters in the constructor
-    public Note(int noteNum, double length, double positionX, double width) {
+    public PianoNote(int noteNum, double length, double positionX, double width) {
         this.noteNum = noteNum;
         this.length = length;
         this.positionX = positionX;

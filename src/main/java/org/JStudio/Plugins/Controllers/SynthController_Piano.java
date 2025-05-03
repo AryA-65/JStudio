@@ -1,5 +1,7 @@
-package SynthPiano;
+package org.JStudio.Plugins.Controllers;
 
+import org.JStudio.Plugins.Models.Synth;
+import org.JStudio.Plugins.Models.SynthPianoAudioThread;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -108,13 +110,13 @@ public class SynthController_Piano {
         });
 
         //creates a new thread that draws the waveform while playing the synth audio
-        synth.setAuTh(new AudioThread(() -> {
+        synth.setAuTh(new SynthPianoAudioThread(() -> {
             if (!synth.isShouldGenerate()) {
                 return null;
             }
-            short[] s = new short[AudioThread.BUFFER_SIZE];
+            short[] s = new short[SynthPianoAudioThread.getBufferSize()];
 
-            for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
+            for (int i = 0; i < SynthPianoAudioThread.getBufferSize(); i++) {
                 double mixedSample = 0;
 
                 if (tone1.getValue() != 0) {
@@ -157,14 +159,14 @@ public class SynthController_Piano {
     }
     
     //plays the synth audio
-    public void playAudio(AudioThread auTh) {
+    public void playAudio(SynthPianoAudioThread auTh) {
         synth.setGc(waveformCanvas.getGraphicsContext2D());
         synth.setShouldGenerate(true);
         auTh.triggerPlayback();
     }
 
     //stops the synth audio and clears the canvas that draws the waveform
-    public void stopAudio(AudioThread auTh) {
+    public void stopAudio(SynthPianoAudioThread auTh) {
         synth.getGc().clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight());
         auTh.pause();
     }

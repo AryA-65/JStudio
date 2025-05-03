@@ -1,5 +1,7 @@
-package SynthPiano;
+package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Controllers.SynthPianoController;
+import org.JStudio.Plugins.Controllers.SynthController_Piano;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

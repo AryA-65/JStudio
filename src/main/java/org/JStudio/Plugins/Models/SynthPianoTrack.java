@@ -1,8 +1,8 @@
-package SynthPiano;
+package org.JStudio.Plugins.Models;
 
 import javafx.scene.layout.Pane;
 
-public class PianoTrack extends Pane{
+public class SynthPianoTrack extends Pane{
     private double frequency;
     private double tone1Value;
     private double tone2Value;
@@ -56,7 +56,7 @@ public class PianoTrack extends Pane{
     }
 
     //stores all parameters relating to the sound of the notes on the track
-    public PianoTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
+    public SynthPianoTrack(double frequency, String txt1, String txt2, String txt3, double tone1Value, double tone2Value, double tone3Value, double volume1Value, double volume2Value, double volume3Value) {
         this.frequency = frequency;
         this.txt1 = txt1;
         this.txt2 = txt2;

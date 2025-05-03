@@ -30,13 +30,11 @@ public class Reverb extends Plugin {
      * Applies the reverb effect to the audio data array
      */
     private void applyReverbEffect() {
-        byte[][] byteReverb = new byte[2][audioByteInput2D[0].length*4];
-        for (int i = 0; i < audioByteInput2D.length; i++) {
             delayLines = new ArrayList<>();
        
-            short[] audioToReverb = convertToShortArray(audioByteInput2D[i]);
+            short[] audioToReverb = convertToShortArray();
             int numOfDelayLines = 0;
-            if (audioByteInput2D[i].length < 200000) {
+            if (audioToReverb.length < 200000) {
                 numOfDelayLines =  5;
             } else {
                 numOfDelayLines =  20;
@@ -68,11 +66,7 @@ public class Reverb extends Plugin {
             }
 
             short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
-            byte[] byteData = convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
-            byteReverb[i] = byteData;
-        }
-        
-        audioOutput2D = convert2DByteTo2DFloat(byteReverb);
+            convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
     }
     
     /**

@@ -51,8 +51,8 @@ public abstract class Plugin {
 
             filePathName = file.getAbsolutePath();
             originalAudio = Files.readAllBytes(file.toPath());
-            audioFloatInput = convertByteToFloatArray(originalAudio);
-            audioByteInput = convertFloatToByteArray(audioFloatInput);
+//            audioFloatInput = convertByteToFloatArray(originalAudio);
+//            audioByteInput = convertFloatToByteArray(audioFloatInput);
 
 //            float[][] floatArray = {{1, 2, 3, 11, 75}, {4, 5, 6, 17, 90}};
 //            convert2DByteTo2DFloat(convert2DFloatTo2DByte(floatArray));
@@ -193,20 +193,6 @@ public abstract class Plugin {
         return audioToModulate;
     }
 
-    protected short[] convertToShortArray(byte[] audioData) {
-        byte[] noHeaderByteAudioData = new byte[audioData.length - 44];
-        // The audio to add flanging to has same audio data as the original audio for now (no header)
-        System.arraycopy(audioData, 44, noHeaderByteAudioData, 0, audioData.length - 44);
-
-        // Convert audio data to short type to avoid audio warping
-        short[] shortAudio = new short[noHeaderByteAudioData.length / 2];
-        for (int i = 0; i < shortAudio.length; i++) {
-            shortAudio[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
-        }
-
-        return shortAudio;
-    }
-
     /**
      * Revert short[] audio data back to byte array to have playback
      * functionality
@@ -221,10 +207,10 @@ public abstract class Plugin {
             ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
         }
 
-        byte[] byteArray = new byte[sizeOfByteArray];
+        finalAudio = new byte[sizeOfByteArray];
 //        finalAudio = new byte[sizeOfByteArray];
-        System.arraycopy(modifiedAudio, 0, byteArray, 0, sizeOfByteArray); // Add the audio data
-        return byteArray;
+        System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
+        return finalAudio;
     }
 
     /**

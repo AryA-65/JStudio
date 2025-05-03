@@ -145,22 +145,7 @@ public abstract class Plugin {
 
         playingThread = new Thread(() -> {
             try {
-//                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
-//                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-//                line = (SourceDataLine) AudioSystem.getLine(info);
-//                line.open(audioFormat);
-//                line.start();
-//
-//                int frameSize = audioFormat.getFrameSize();
-//                int lengthToWrite = audioData.length - (audioData.length % frameSize);
-//
-//                line.write(audioData, 0, lengthToWrite);
-//
-//                line.drain();
-//                line.close();
-File file = new File(filePathName);
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-                AudioFormat audioFormat = audioInputStream.getFormat();
+                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
                 line = (SourceDataLine) AudioSystem.getLine(info);
                 line.open(audioFormat);
@@ -173,7 +158,6 @@ File file = new File(filePathName);
 
                 line.drain();
                 line.close();
-
             } catch (LineUnavailableException e) {
                 System.out.println(e);
             }
@@ -236,10 +220,10 @@ File file = new File(filePathName);
      * @return the capped sample
      */
     protected short capMaxAmplitude(short sample) {
-        if (sample > Short.MAX_VALUE/4) {
-            sample = Short.MAX_VALUE/4;
-        } else if (sample < Short.MIN_VALUE/4) {
-            sample = Short.MIN_VALUE/4;
+        if (sample > Short.MAX_VALUE) {
+            sample = Short.MAX_VALUE;
+        } else if (sample < Short.MIN_VALUE) {
+            sample = Short.MIN_VALUE;
         }
         return sample;
     }

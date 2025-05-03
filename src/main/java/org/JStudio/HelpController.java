@@ -73,11 +73,10 @@ public class HelpController {
 
     public void initialize() {
         toolBox.setSpacing(20);
-        toolBox.setStyle("-fx-padding: 20; -fx-background-color: #f0f0f0;");
 
         for (Descriptions tool : tools) {
             VBox toolVBox = new VBox(8);
-            toolVBox.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5;");
+            toolVBox.setStyle("-fx-padding: 15; -fx-border-color: #ccc; -fx-border-radius: 5;");
 
             Label nameLabel = new Label("Tool: " + tool.getName());
             nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");

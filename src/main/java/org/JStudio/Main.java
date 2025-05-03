@@ -17,9 +17,10 @@ public class Main extends Application {
 
     private Scene scene;
 
+    boolean isTesting = true;
+
     @Override
     public void start(Stage stage) throws Exception {
-        boolean isTesting = false;
         if (isTesting) {
             FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
             Parent root = testLoader.load();

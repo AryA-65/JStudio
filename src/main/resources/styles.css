@@ -334,6 +334,16 @@
     /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*/
 }
 
+#plugin_ui {
+    /*-fx-background-color: #d9d9d9;*/
+    -fx-background-color: red;
+    -fx-background-radius: 5px;
+}
+
+#plugin_content {
+    -fx-background-color: rgba(0,0,0,0.1);
+}
+
 /*.slider {*/
 /*    -fx-background-color: transparent;*/
 /*}*/

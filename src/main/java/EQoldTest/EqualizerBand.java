@@ -1,4 +1,4 @@
-package org.JStudio.Plugins.Models;
+package EQoldTest;
 
 import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;

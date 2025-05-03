@@ -1,7 +1,5 @@
-package org.JStudio.Plugins.Views;
+package EQoldTest;
 
-import org.JStudio.Plugins.Models.EqualizerBand;
-import org.JStudio.Plugins.Controllers.EqualizerController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;

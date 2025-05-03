@@ -1,9 +1,8 @@
-package org.JStudio.Plugins.Controllers;
+package EQoldTest;
 
-import javafx.stage.FileChooser;
-import org.JStudio.FileChooserController;
-import org.JStudio.Plugins.Models.EqualizerBand;
-import org.JStudio.Plugins.Views.EqualizerView;
+
+import EQoldTest.EqualizerBand;
+
 import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,10 +21,10 @@ public class EqualizerController extends Thread {
     private byte[] processedBytes;
     private short[] samples;
     private double[] fftData;
-    private EqualizerView eqView;
+    private EQoldTest.EqualizerView eqView;
     private SourceDataLine line;
 
-    public void setEqView(EqualizerView eqView) {
+    public void setEqView(EQoldTest.EqualizerView eqView) {
         this.eqView = eqView;
     }
 

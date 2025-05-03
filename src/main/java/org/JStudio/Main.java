@@ -1,6 +1,7 @@
 package org.JStudio;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.Plugins.Views.ReverbStage;
+import org.JStudio.TESTING.UnitTestingController;
 
 public class Main extends Application {
     private UIController controller;
@@ -54,7 +56,7 @@ public class Main extends Application {
             stage.setResizable(true);
             stage.show();
 
-            controller.setSplitRatio();
+            Platform.runLater(() -> {controller.setSplitRatio();});
             SettingsController.setController(controller);
         }
 

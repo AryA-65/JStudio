@@ -34,8 +34,8 @@ public class EqualizerController extends Plugin {
             //convert the byte array into a short array since a short is 16 bits
             //now every element in the short array is the amplitude of a data point
 
-                equalizer.setSamples(new short[audioByteInput.length / 2]);
-                ByteBuffer.wrap(audioByteInput).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(equalizer.getSamples());
+//                equalizer.setSamples(new short[audioByteInput.length / 2]);
+//                ByteBuffer.wrap(audioByteInput).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(equalizer.getSamples());
                 //equalizer.setSamples(new short[equalizer.getAudioBytes().length / 2]);
                 //ByteBuffer.wrap(equalizer.getAudioBytes()).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(equalizer.getSamples());
 
@@ -85,9 +85,9 @@ public class EqualizerController extends Plugin {
                     buffer.putShort(sample);
                 }
                 equalizer.setProcessedBytes(buffer.array());
-                equalizer.setProcessedFloat(convertByteToFloatArray(equalizer.getProcessedBytes()));
+//                equalizer.setProcessedFloat(convertByteToFloatArray(equalizer.getProcessedBytes()));
 
-            setFinalAudio(equalizer.getProcessedBytes());
+//            setFinalAudio(equalizer.getProcessedBytes());
 
 //        } catch (Exception e) {
 //            System.out.println(e.getMessage());

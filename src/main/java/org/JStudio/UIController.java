@@ -1,5 +1,6 @@
 package org.JStudio;
 
+import javafx.application.Platform;
 import org.JStudio.Plugins.PianoRun;
 import org.JStudio.Plugins.SynthPianoRun;
 import javafx.beans.property.BooleanProperty;
@@ -18,6 +19,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
+import org.JStudio.Plugins.Views.*;
 import org.JStudio.UI.*;
 import org.JStudio.Utils.FileLoader;
 import org.JStudio.Utils.SystemMonitor;
@@ -26,109 +28,47 @@ import java.util.*;
 
 import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
-import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.TimeConverter;
-import org.JStudio.Plugins.Views.*;
-
-/*
-MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
- */
 
 public class UIController {
 
     private Scene scene;
 
+    //implement later
     @FXML
     private VBox plugin_btn_pane;
     @FXML
     private Tab plugins_tab;
+    //
+
     @FXML
     public Pane plugin_pane;
     @FXML
     public TabPane channel_pipeline; //make this private but have a return function for it
     @FXML
-    private ImageView snap_btn;
-    
-    @FXML
     private TextField search_samples;
     @FXML
-    private Canvas audio_vis_top;
-    @FXML
-    private Canvas amp_audio_top;
-    @FXML
-    private Canvas pc_stats;
-    @FXML
-    private ImageView settings_btn;
-    //place each node in its own group
-    @FXML
-    private ImageView metronome_control;
+    private Canvas audio_vis_top, amp_audio_top, pc_stats, timeline_canvas;
     @FXML
     private SplitPane splitpane;
     @FXML
-    private ImageView maxim_btn;
-    @FXML
     private GridPane grid_root;
     @FXML
-    private ScrollPane track_id_scrollpane;
+    private ScrollPane track_id_scrollpane, timeline_scrollpane, tracks_scrollpane;
     @FXML
-    private HBox tracks_channels;
+    private VBox track_id_vbox, track_vbox, tab_vbox;
     @FXML
-    private ScrollPane timeline_scrollpane;
-    @FXML
-    private Canvas timeline_canvas;
-    @FXML
-    private ScrollPane tracks_scrollpane;
-    @FXML
-    private VBox track_id_vbox;
-    @FXML
-    private VBox track_vbox;
-    @FXML
-    private ImageView record_control;
-    @FXML
-    private HBox info_panel;
-    @FXML
-    private HBox channel_rack;
+    private HBox info_panel, channel_rack;
     @FXML
     private Label playback_pos;
     @FXML
-    private TextField bpm_control;
+    private TextField bpm_control, song_name;
     @FXML
-    private TextField song_name;
-    @FXML
-    private ImageView open_song_btn;
-    @FXML
-    private ImageView save_song_btn;
-    @FXML
-    private ImageView export_song_btn;
-    @FXML
-    private ImageView minim_btn;
-    @FXML
-    private ImageView close_btn;
-    @FXML
-    private ScrollPane tab_scroll;
-    @FXML
-    private VBox tab_vbox;
+    private ImageView open_song_btn, save_song_btn, export_song_btn, minim_btn, close_btn, record_control, settings_btn, snap_btn, metronome_control, maxim_btn;
     @FXML
     private Stage rootStage;
     @FXML
-    private Button reverbBtn;
-    @FXML
-    private Button flangerBtn;
-    @FXML
-    private Button chorusBtn;
-    @FXML
-    private Button echoBtn;
-    @FXML
-    private Button phaserBtn;
-    @FXML
-    private Button equalizerBtn;
-    @FXML
-    private Button pianoBtn;
-    @FXML
-    private Button synthPianoBtn;
-
-    @FXML
-    private Button stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
+    private Button reverbBtn, flangerBtn, chorusBtn, echoBtn, phaserBtn, equalizerBtn, pianoBtn, synthPianoBtn, stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
 
     private SystemMonitor sm; //make this a static class that runs
 
@@ -139,25 +79,24 @@ public class UIController {
 
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
-    //part of test params, but this should its own thing
     private Song song = new Song("New Song");
 
-    //stage controller functions
     public void setStage(Stage stage) {
         rootStage = stage;
-        rootStage.setMaximized(true);
+        rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+        rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
     }
 
     public Stage getStage() {return rootStage;}
 
     /**
      * Sets the main scene
-     * @param scene 
+     * @param scene
      */
     public void setScene(Scene scene)  {
         this.scene = scene;
     }
-    
+
     /**
      * Gets the main scene
      * @return the main scene
@@ -165,7 +104,7 @@ public class UIController {
     public Scene getScene() {
         return scene;
     }
-    
+
     /**
      * Updates style of main scene (light or dark)
      */
@@ -177,60 +116,60 @@ public class UIController {
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         }
     }
-    
+
     @FXML
     public void initialize() throws Exception {
         reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
             reverb.show();
         });
-        
+
         flangerBtn.setOnAction(e -> {
             FlangerStage flanger = new FlangerStage();
             flanger.show();
         });
-        
+
         chorusBtn.setOnAction(e -> {
             ChorusStage chorus = new ChorusStage();
             chorus.show();
         });
-        
+
         echoBtn.setOnAction(e -> {
             EchoStage echo = new EchoStage();
             echo.show();
         });
-        
+
         phaserBtn.setOnAction(e -> {
             PhaserStage phaser = new PhaserStage();
             phaser.show();
         });
-        
+
         equalizerBtn.setOnAction(e -> {
             MainEqualizer mainEQ = new MainEqualizer();
             mainEQ.openEQ();
         });
-        
+
         equalizerBtn.setOnAction(e -> {
             MainEqualizer mainEQ = new MainEqualizer();
             mainEQ.openEQ();
         });
-        
+
         pianoBtn.setOnAction(e -> {
             PianoRun piano = new PianoRun();
             piano.openPiano();
         });
-        
+
         synthPianoBtn.setOnAction(e -> {
             SynthPianoRun synthPiano = new SynthPianoRun();
             synthPiano.openSynthPiano();
         });
-        
+
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
             SettingsController.setWindow(settings);
             settings.show();
         });
-        
+
         stereoBtn.setOnMouseClicked(e -> {
             StereoStage stereo = new StereoStage();
             stereo.show();
@@ -299,10 +238,9 @@ public class UIController {
         snap_btn.getParent().getStyleClass().add("iactive");
         song_name.setText("New Song");
 
-        initialHeight = Screen.getPrimary().getVisualBounds().getHeight();
-        initialWidth = Screen.getPrimary().getVisualBounds().getWidth();
+        initialHeight = Screen.getPrimary().getVisualBounds().getHeight() * .75;
+        initialWidth = Screen.getPrimary().getVisualBounds().getWidth() * .75;
 
-        //more testing
         metronome_control.getParent().setOnMousePressed(e -> {
             if (metronome_control.getParent().getStyleClass().contains("iactive")) {
                 metronome_control.getParent().getStyleClass().remove("iactive");
@@ -329,10 +267,6 @@ public class UIController {
             }
         });
 
-        //adding different code for nodes
-        tab_vbox.setSpacing(15);
-        tab_vbox.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
         info_panel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             xOffset = rootStage.getX() - event.getScreenX();
             yOffset = rootStage.getY() - event.getScreenY();
@@ -344,7 +278,7 @@ public class UIController {
         });
 
         bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-
+            //to resize the playback
         });
 
         grid_root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
@@ -379,13 +313,13 @@ public class UIController {
         });
 
         maxim_btn.setOnMouseClicked(event -> {
-            if (!rootStage.isMaximized()) {
+            if (rootStage.getHeight() != Screen.getPrimary().getVisualBounds().getHeight() || rootStage.getWidth() != Screen.getPrimary().getVisualBounds().getWidth()) {
                 rootStage.setX(0);
                 rootStage.setY(0);
-                rootStage.setMaximized(true);
+                rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+                rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
                 maxim_btn.setImage(new Image("/icons/minimize.png"));
             } else {
-                rootStage.setMaximized(false);
                 rootStage.setWidth(initialWidth);
                 rootStage.setHeight(initialHeight);
                 maxim_btn.setImage(new Image("/icons/maximize.png"));
@@ -478,6 +412,7 @@ public class UIController {
     }
 
     protected void setSplitRatio() {
+        System.out.println("Set ratio");
         double ratio = ((splitpane.getHeight() - 285) / splitpane.getHeight());
         splitpane.setDividerPosition(0, ratio);
     }

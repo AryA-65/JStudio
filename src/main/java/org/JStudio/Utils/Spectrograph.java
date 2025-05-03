@@ -62,7 +62,6 @@ public class Spectrograph {
         thread = new Thread(() -> {
             fftFrames.clear();
             short[] audioData = bytesToShorts(audioBytes);
-            int totalFrames = audioData.length / (FFT_SIZE / 2);
 
             for (int i = 0; i < audioData.length - FFT_SIZE; i += FFT_SIZE / 2) {
                 double[] chunk = new double[FFT_SIZE];
@@ -99,66 +98,126 @@ public class Spectrograph {
         return 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1));
     }
 
-    public void update(double[] fftData) {
+    public void update(double[] fftData, int frameIndex) {
+        double smoothingFactor = 0.3;
+
         for (int band = 0; band < BANDS; band++) {
             double startFreq = Math.pow(2, band * 10.0 / BANDS) - 1;
             double endFreq = Math.pow(2, (band + 1) * 10.0 / BANDS) - 1;
 
-            int startBin = (int)(startFreq * (FFT_SIZE/2) / 10);
-            int endBin = (int)(endFreq * (FFT_SIZE/2) / 10);
-            endBin = Math.min(endBin, FFT_SIZE/2 - 1);
+            int startBin = (int)(startFreq * (FFT_SIZE / 2.0) / 10);
+            int endBin = (int)(endFreq * (FFT_SIZE / 2.0) / 10);
+            endBin = Math.min(endBin, FFT_SIZE / 2 - 1);
 
             double sum = 0;
             int count = 0;
 
             for (int bin = startBin; bin <= endBin; bin++) {
                 double re, im;
-                if (bin == 0 || bin == FFT_SIZE/2) {
+                if (bin == 0 || bin == FFT_SIZE / 2) {
                     re = fftData[bin];
                     im = 0;
                 } else {
-                    re = fftData[2*bin];
-                    im = fftData[2*bin + 1];
+                    re = fftData[2 * bin];
+                    im = fftData[2 * bin + 1];
                 }
 
-                double magnitude = 20 * Math.log10(Math.sqrt(re*re + im*im) + 1e-12);
+                double magnitude = 20 * Math.log10(Math.sqrt(re * re + im * im) + 1e-12);
                 sum += magnitude;
                 count++;
             }
 
-            double avgMagnitude = (count > 0) ? sum/count : MIN_DB;
-            magnitudes[band] = Math.max(MIN_DB, 0.5 * avgMagnitude + 0.5 * previousMagnitudes[band]);
+            double avgMagnitude = (count > 0) ? sum / count : MIN_DB;
+            avgMagnitude = Math.max(MIN_DB, avgMagnitude);
+
+            // Exponential smoothing
+            magnitudes[band] = smoothingFactor * avgMagnitude + (1 - smoothingFactor) * previousMagnitudes[band];
             previousMagnitudes[band] = magnitudes[band];
         }
 
-        drawSpectrogram();
+        drawSpectrogram(frameIndex);
     }
 
-    private void drawSpectrogram() {
+    private void drawSpectrogram(int frameIndex) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         double width = canvas.getWidth();
         double height = canvas.getHeight();
-        double bandWidth = width / BANDS;
 
-        gc.setFill(new Color(0, 0, 0, 0.1));
+        gc.clearRect(0, 0, width, height);
+        gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, width, height);
 
+        // Draw dB lines
+        drawDBLines(gc, height);
+
+        double[] xPoints = new double[BANDS + 2];
+        double[] yPoints = new double[BANDS + 2];
+
         for (int band = 0; band < BANDS; band++) {
+            double x = (double) band / (BANDS - 1) * width;
             double magnitude = magnitudes[band];
             double normalized = (magnitude - MIN_DB) / (-MIN_DB);
             normalized = Math.min(1.0, Math.max(0.0, normalized));
+            double y = height - (normalized * height);
 
-            double bandHeight = normalized * height;
+            xPoints[band + 1] = x;
+            yPoints[band + 1] = y;
+        }
 
-            gc.setFill(gradient);
-            gc.fillRect(band * bandWidth, height - bandHeight,
-                    bandWidth, bandHeight);
+        // Close polygon: bottom-left and bottom-right corners
+        xPoints[0] = 0;
+        yPoints[0] = height;
+        xPoints[BANDS + 1] = width;
+        yPoints[BANDS + 1] = height;
 
-            gc.setStroke(Color.BLACK);
-            gc.strokeRect(band * bandWidth, height - bandHeight,
-                    bandWidth, bandHeight);
+        gc.setFill(gradient);
+        gc.fillPolygon(xPoints, yPoints, BANDS + 2);
+
+        gc.setStroke(Color.LIMEGREEN);
+        gc.setLineWidth(1.5);
+        for (int i = 1; i < BANDS; i++) {
+            gc.strokeLine(xPoints[i], yPoints[i], xPoints[i + 1], yPoints[i + 1]);
+        }
+
+        gc.setFill(Color.WHITE);
+        gc.fillText(String.format("Frame %d", frameIndex), canvas.getWidth() -100, 20);
+    }
+
+    private void drawDBLines(GraphicsContext gc, double height) {
+        double[] dBLevels = {-20, -40, -60}; // Add or modify levels as needed
+        gc.setStroke(Color.GRAY);
+        gc.setLineWidth(1);
+
+        for (double dB : dBLevels) {
+            double y = height - (dB - MIN_DB) / (-MIN_DB) * height;
+            gc.strokeLine(0, y, canvas.getWidth(), y); // Draw horizontal line across the canvas
         }
     }
+
+//    private void drawSpectrogram() {
+//        GraphicsContext gc = canvas.getGraphicsContext2D();
+//        double width = canvas.getWidth();
+//        double height = canvas.getHeight();
+//
+//        gc.clearRect(0, 0, width, height);
+//        gc.setFill(Color.BLACK);
+//        gc.fillRect(0, 0, width, height);
+//
+//        for (int band = 0; band < BANDS; band++) {
+//            double x1 = (double) band / BANDS * width;
+//            double x2 = (double) (band + 1) / BANDS * width;
+//            double barWidth = x2 - x1;
+//
+//            double magnitude = magnitudes[band];
+//            double normalized = (magnitude - MIN_DB) / (-MIN_DB);
+//            normalized = Math.min(1.0, Math.max(0.0, normalized));
+//
+//            double bandHeight = normalized * height;
+//
+//            gc.setFill(gradient);
+//            gc.fillRect(x1, height - bandHeight, barWidth, bandHeight);
+//        }
+//    }
 
     public void startAnimation() {
         if (animationTimer != null) animationTimer.stop();
@@ -170,7 +229,7 @@ public class Spectrograph {
                     stop();
                     return;
                 }
-                update(fftFrames.get(currentFrame));
+                update(fftFrames.get(currentFrame), currentFrame);
                 currentFrame++;
             }
         };

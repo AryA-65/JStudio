@@ -35,6 +35,7 @@ public class UnitTestingController extends Plugin{
     private Stage rootStage;
     private Scene rootScene;
 
+    //todo fix the reset button
 
     @FXML
     private void initialize() {

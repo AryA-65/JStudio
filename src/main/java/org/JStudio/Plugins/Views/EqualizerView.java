@@ -48,6 +48,7 @@ public class EqualizerView extends Pane {
             eqController.getEqualizer().setStage(stage);
             eqController.getEqualizer().setEqView(this);
             eqController.processAudio(eqController.getAudioFloatInput());
+            eqController.play();
             stopButton.setDisable(false);
         });
 

@@ -29,6 +29,7 @@ public class EqualizerController extends Plugin {
             //equalizer.setSampleRate(equalizer.getAudioFormat().getSampleRate()); //get the sample rate
             //equalizer.setAudioBytes(ais.readAllBytes()); //get array of all bytes from the stream
             //ais.close();
+            
             //wav files use 16 bit audio format so each data point takes 2 bytes
             //convert the byte array into a short array since a short is 16 bits
             //now every element in the short array is the amplitude of a data point
@@ -84,10 +85,9 @@ public class EqualizerController extends Plugin {
                     buffer.putShort(sample);
                 }
                 equalizer.setProcessedBytes(buffer.array());
+                equalizer.setProcessedFloat(convertByteToFloatArray(equalizer.getProcessedBytes()));
 
             setFinalAudio(equalizer.getProcessedBytes());
-
-            play();
 
 //        } catch (Exception e) {
 //            System.out.println(e.getMessage());

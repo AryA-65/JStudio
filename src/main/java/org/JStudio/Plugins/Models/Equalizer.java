@@ -16,8 +16,8 @@ public class Equalizer {
     private DoubleFFT_1D fft;
     private byte[] audioBytes;
     private byte[] processedBytes;
-    private byte[][] processedBytes2D = new byte[2][0];
     private short[] samples;
+    private float[] processedFloat;
     private double[] fftData;
     private EqualizerView eqView;
     private SourceDataLine line;
@@ -82,12 +82,12 @@ public class Equalizer {
         return audioThread;
     }
 
-    public byte[][] getProcessedBytes2D() {
-        return processedBytes2D;
+    public float[] getProcessedFloat() {
+        return processedFloat;
     }
 
-    public void setProcessedBytes2D(byte[][] processedBytes2D) {
-        this.processedBytes2D = processedBytes2D;
+    public void setProcessedFloat(float[] processedFloat) {
+        this.processedFloat = processedFloat;
     }
 
     public void setAudioThread(Thread audioThread) {

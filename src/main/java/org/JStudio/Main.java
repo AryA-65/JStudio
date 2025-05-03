@@ -37,27 +37,24 @@ public class Main extends Application {
             stage.show();
 
         } else {
-//            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-//            Parent root = loader.load();
-//
-//            controller = loader.getController();
-//            controller.setStage(stage);
-//            controller.setScreenSize();
-//
-//            scene = new Scene(root);
-//            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-//            controller.setScene(scene);
-//            stage.getIcons().add(new Image("/JS_ico.png"));
-//            stage.setScene(scene);
-//            stage.initStyle(StageStyle.TRANSPARENT);
-//            stage.setResizable(true);
-//            stage.show();
-//
-//            controller.setSplitRatio();
-//            SettingsController.setController(controller);
+            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+            Parent root = loader.load();
 
-EchoStage flanger = new EchoStage();
-flanger.show();
+            controller = loader.getController();
+            controller.setStage(stage);
+            controller.setScreenSize();
+
+            scene = new Scene(root);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            controller.setScene(scene);
+            stage.getIcons().add(new Image("/JS_ico.png"));
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setResizable(true);
+            stage.show();
+
+            controller.setSplitRatio();
+            SettingsController.setController(controller);
         }
 
 

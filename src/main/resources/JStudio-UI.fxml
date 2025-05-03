@@ -118,7 +118,10 @@
                               <ScrollPane hbarPolicy="NEVER" prefHeight="651.0" prefWidth="256.0" vbarPolicy="NEVER">
                                  <content>
                                     <VBox fx:id="plugin_btn_pane" prefHeight="200.0" prefWidth="256.0">
-                                    </VBox>
+                                       <children>
+                                          <Button fx:id="reverbBtn" mnemonicParsing="false" text="Reverb" />
+                                          <Button fx:id="equalizerBtn" mnemonicParsing="false" text="Equalizer" />
+                                       </children></VBox>
                                  </content>
                               </ScrollPane>
                            </children>

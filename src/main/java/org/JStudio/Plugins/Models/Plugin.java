@@ -3,7 +3,6 @@ package org.JStudio.Plugins.Models;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
@@ -27,13 +26,18 @@ public abstract class Plugin {
     protected String fileName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
-    protected float[][] audioFloatInput2D;
-    protected byte[][] audioByteInput2D;
-    protected float[][] audioOutput2D;
+    protected float[] audioFloatInput;
+    protected byte[] audioByteInput;
     protected SourceDataLine line;
-    private Stage stage;
     private Thread playingThread;
 
+    public void setFinalAudio(byte[] finalAudio) {
+        this.finalAudio = finalAudio;
+    }
+    
+    public float[] getAudioFloatInput(){
+        return audioFloatInput;
+    }
     /**
      * Converts audio data from a wav file to a byte array
      */
@@ -44,33 +48,31 @@ public abstract class Plugin {
                     new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
                     new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
-            
-            AudioFileExtractor afe = new AudioFileExtractor();
-            audioFloatInput2D = afe.readWavFile(file);
-            audioByteInput2D = convert2DFloatTo2DByte(audioFloatInput2D);
-            
-            
+
+            filePathName = file.getAbsolutePath();
+            originalAudio = Files.readAllBytes(file.toPath());
+            audioFloatInput = convertByteToFloatArray(originalAudio);
+            audioByteInput = convertFloatToByteArray(audioFloatInput);
+
 //            float[][] floatArray = {{1, 2, 3, 11, 75}, {4, 5, 6, 17, 90}};
 //            convert2DByteTo2DFloat(convert2DFloatTo2DByte(floatArray));
 //            filePathName = file.getAbsolutePath();
 //            originalAudio = Files.readAllBytes(file.toPath());
-        } catch (IOException | UnsupportedAudioFileException e) {
+        } catch (IOException e) {
             System.out.println(e);
         }
     }
-
     public String getFileName() {
         return fileName;
     }
-    private byte[][] convert2DFloatTo2DByte(float[][] audioData) {
-        byte[][] byteArray = new byte[2][audioData[0].length*4];
-        for (int i = 0; i < 2; i++) {
-            ByteBuffer buffer = ByteBuffer.allocate(audioData[i].length * 4);
-            for (float floatData : audioData[i]) {
+    
+    private byte[] convertFloatToByteArray(float[] audioData) {
+        byte[] byteArray = new byte[audioData.length * 4];
+            ByteBuffer buffer = ByteBuffer.allocate(audioData.length * 4);
+            for (float floatData : audioData) {
                 buffer.putFloat(floatData);
             }
-            byteArray[i] = buffer.array();
-        }
+            byteArray = buffer.array();
 
 //        for (int i = 0; i < byteArray.length; i++) {
 //            for (int j = 0; j < byteArray[i].length; j++) {
@@ -78,22 +80,19 @@ public abstract class Plugin {
 //            }
 //            System.out.println();
 //        }
-
         return byteArray;
     }
-    
-    public float[][] convert2DByteTo2DFloat(byte[][] audioData) {
-        float[][] floatArray = new float[2][audioData[0].length/4];
+
+    public float[] convertByteToFloatArray(byte[] audioData) {
+        float[] floatArray = new float[audioData.length / 4];
         try {
-            
-        for (int i = 0; i < floatArray.length; i++) {
-            ByteArrayInputStream bos = new ByteArrayInputStream(audioData[i]);
-            DataInputStream dis = new DataInputStream(bos);
-            
-            for (int j = 0; j < floatArray[i].length; j++) {
-                floatArray[i][j] = dis.readFloat();
-            }
-        }
+
+                ByteArrayInputStream bos = new ByteArrayInputStream(audioData);
+                DataInputStream dis = new DataInputStream(bos);
+
+                for (int i = 0; i < floatArray.length; i++) {
+                    floatArray[i] = dis.readFloat();
+                }
 
 //        for (int i = 0; i < floatArray.length; i++) {
 //            for (int j = 0; j < floatArray[i].length; j++) {
@@ -101,11 +100,10 @@ public abstract class Plugin {
 //            }
 //            System.out.println();
 //        }
-
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return floatArray;
     }
 
@@ -143,9 +141,7 @@ public abstract class Plugin {
 
         playingThread = new Thread(() -> {
             try {
-                File file = new File(filePathName);
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-                AudioFormat audioFormat = audioInputStream.getFormat();
+                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
                 line = (SourceDataLine) AudioSystem.getLine(info);
                 line.open(audioFormat);
@@ -158,7 +154,7 @@ public abstract class Plugin {
 
                 line.drain();
                 line.close();
-            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            } catch (LineUnavailableException e) {
                 System.out.println(e);
             }
         });
@@ -210,7 +206,7 @@ public abstract class Plugin {
 
         return shortAudio;
     }
-    
+
     /**
      * Revert short[] audio data back to byte array to have playback
      * functionality

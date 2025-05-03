@@ -32,7 +32,7 @@ public class EqualizerView extends Pane {
 
     public EqualizerView() {
         //get audio file
-        File file = new FileChooser().showOpenDialog(null);
+        //File file = new FileChooser().showOpenDialog(null);
         
         //create equalizer UI
         VBox vb = new VBox();
@@ -44,10 +44,10 @@ public class EqualizerView extends Pane {
         playButton.setOnAction(e -> {
             //disable the play button, enable the stop button, and create a controller to modify and play the audio
             playButton.setDisable(true);
-            eqController = new EqualizerController(file);
+            eqController = new EqualizerController();
             eqController.getEqualizer().setStage(stage);
             eqController.getEqualizer().setEqView(this);
-            eqController.start(); //start a new thread that plays the audio
+            eqController.processAudio(eqController.getAudioFloatInput());
             stopButton.setDisable(false);
         });
 
@@ -55,7 +55,7 @@ public class EqualizerView extends Pane {
         stopButton.setOnAction(e -> {
             //disable the stop button, enable the play button, and stop the audio
             stopButton.setDisable(true);
-            eqController.stopPlaying();
+            eqController.stopAudio();
             playButton.setDisable(false);
         });
         

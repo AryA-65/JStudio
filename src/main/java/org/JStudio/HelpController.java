@@ -51,7 +51,7 @@ public class HelpController {
                             "Deviation: The ampliytude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
-                    "Chorus results"
+                    "Chorus audio"
             ),
             new Descriptions(
                     "Plugin: Phaser",

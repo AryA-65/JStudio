@@ -145,7 +145,22 @@ public abstract class Plugin {
 
         playingThread = new Thread(() -> {
             try {
-                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
+//                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
+//                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+//                line = (SourceDataLine) AudioSystem.getLine(info);
+//                line.open(audioFormat);
+//                line.start();
+//
+//                int frameSize = audioFormat.getFrameSize();
+//                int lengthToWrite = audioData.length - (audioData.length % frameSize);
+//
+//                line.write(audioData, 0, lengthToWrite);
+//
+//                line.drain();
+//                line.close();
+File file = new File(filePathName);
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                AudioFormat audioFormat = audioInputStream.getFormat();
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
                 line = (SourceDataLine) AudioSystem.getLine(info);
                 line.open(audioFormat);
@@ -158,6 +173,7 @@ public abstract class Plugin {
 
                 line.drain();
                 line.close();
+
             } catch (LineUnavailableException e) {
                 System.out.println(e);
             }

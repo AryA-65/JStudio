@@ -117,10 +117,6 @@
     -fx-background-color: #282E33
 }
 
-VBox{
-    -fx-background-color: #282E33
-}
-
 .text-field:selected {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;

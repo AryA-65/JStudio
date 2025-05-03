@@ -41,11 +41,12 @@ public class UnitTestingController extends Plugin{
         leftSlider.valueProperty().bindBidirectional(rightSlider.valueProperty());
         spectrograph = new Spectrograph(normalCanvas);
 
+        leftProgressBar.setVisible(false);
+        rightProgressBar.setVisible(false);
         computeBtn.setDisable(true);
         playBtn.setDisable(true);
         pauseBtn.setDisable(true);
         resetBtn.setDisable(true);
-
 
 
         loadBtn.setOnMouseClicked(event -> {
@@ -56,6 +57,8 @@ public class UnitTestingController extends Plugin{
 
         computeBtn.setOnMouseClicked(event -> {
             spectrograph.computeFFTFrames(originalAudio);
+            leftProgressBar.setVisible(true);
+            rightProgressBar.setVisible(true);
             playBtn.setDisable(false);
             pauseBtn.setDisable(false);
             resetBtn.setDisable(false);

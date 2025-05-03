@@ -50,6 +50,7 @@ public abstract class Plugin {
             File file = fileChooser.showOpenDialog(null);
 
             filePathName = file.getAbsolutePath();
+            fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
 //            audioFloatInput = convertByteToFloatArray(originalAudio);
 //            audioByteInput = convertFloatToByteArray(audioFloatInput);

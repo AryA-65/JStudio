@@ -3,11 +3,15 @@ package org.JStudio.Utils;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Spectrograph {
     private static final int FFT_SIZE = 1024;
@@ -23,7 +27,10 @@ public class Spectrograph {
     private AnimationTimer animationTimer;
     private List<double[]> fftFrames;
     private int currentFrame;
-    private boolean isComputing;
+    private final AtomicBoolean shouldStop = new AtomicBoolean(false);
+    private final AtomicBoolean isComputationComplete = new AtomicBoolean(false);
+    private Thread computationThread;
+
 
     public Spectrograph(Canvas canvas) {
         this.canvas = canvas;
@@ -33,13 +40,8 @@ public class Spectrograph {
         this.previousMagnitudes = new double[BANDS];
         this.fftFrames = new ArrayList<>();
 
-        // Initialize with empty data
-        for (int i = 0; i < BANDS; i++) {
-            magnitudes[i] = MIN_DB;
-            previousMagnitudes[i] = MIN_DB;
-        }
+        initializeMagnitudes();
     }
-
     private LinearGradient createColorGradient() {
         return new LinearGradient(
                 0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
@@ -53,30 +55,49 @@ public class Spectrograph {
     }
 
     public void computeFFTFrames(byte[] audioBytes) {
-        if (isComputing) return;
-        isComputing = true;
+        stopComputation();
+        shouldStop.set(false);
+        isComputationComplete.set(false);
+        fftFrames.clear();
 
-        new Thread(() -> {
-            fftFrames.clear();
+        computationThread = new Thread(() -> {
             short[] audioData = bytesToShorts(audioBytes);
-            int totalFrames = audioData.length / (FFT_SIZE / 2); // 50% overlap
 
-            for (int i = 0; i < audioData.length - FFT_SIZE; i += FFT_SIZE / 2) {
+            for (int i = 0; i < audioData.length - FFT_SIZE && !shouldStop.get(); i += FFT_SIZE / 2) {
                 double[] chunk = new double[FFT_SIZE];
 
-                // Convert to double and apply window
+                // Convert and window
                 for (int j = 0; j < FFT_SIZE; j++) {
                     chunk[j] = audioData[i + j] / 32768.0 * hammingWindow(j, FFT_SIZE);
                 }
 
-                // Compute FFT (in-place)
+                // Compute FFT
                 fft.realForward(chunk);
-                fftFrames.add(chunk.clone());
+
+                synchronized (fftFrames) {
+                    fftFrames.add(chunk.clone());
+                }
             }
 
-            isComputing = false;
-            currentFrame = 0;
-        }).start();
+            if (!shouldStop.get()) {
+                currentFrame = 0;
+            }
+        });
+
+        computationThread.setDaemon(true);
+        computationThread.start();
+    }
+
+    public void stopComputation() {
+        shouldStop.set(true);
+        if (computationThread != null && computationThread.isAlive()) {
+            computationThread.interrupt();
+            try {
+                computationThread.join(100); // Wait a bit for clean termination
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     private short[] bytesToShorts(byte[] bytes) {
@@ -154,7 +175,9 @@ public class Spectrograph {
     }
 
     public void startAnimation() {
-        if (animationTimer != null) animationTimer.stop();
+        if (animationTimer != null) {
+            animationTimer.stop();
+        }
 
         animationTimer = new AnimationTimer() {
             @Override
@@ -178,8 +201,14 @@ public class Spectrograph {
 
     public void reset() {
         stopAnimation();
+        stopComputation();
         currentFrame = 0;
+        synchronized (fftFrames) {
+            fftFrames.clear();
+        }
         clear();
+        initializeMagnitudes();
+        isComputationComplete.set(false);
     }
 
     public void clear() {
@@ -188,6 +217,18 @@ public class Spectrograph {
     }
 
     public boolean isComputing() {
-        return isComputing;
+        return computationThread != null && computationThread.isAlive();
+    }
+
+    public boolean isComputationComplete() {
+        return isComputationComplete.get() && !isComputing();
+    }
+
+
+    private void initializeMagnitudes() {
+        for (int i = 0; i < BANDS; i++) {
+            magnitudes[i] = MIN_DB;
+            previousMagnitudes[i] = MIN_DB;
+        }
     }
 }

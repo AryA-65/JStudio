@@ -32,7 +32,7 @@ public class AudioAmplitudeFXMLController {
 
     private final Knob knob = new Knob(50, false, 0, REG);
 
-    private double[] audioData;
+    private double[] audioData; // original audio file
 
     private File audioFile;
     private double[] processedAudioData;
@@ -78,7 +78,6 @@ public class AudioAmplitudeFXMLController {
             stopAudio();
             getProcessedAudio();
         });
-
     }
 
     private void applyAmplitudeChange() {

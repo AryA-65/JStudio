@@ -32,6 +32,7 @@ public class FlangerFXMLController {
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
     private final Knob deviationKnob = new Knob(100, true, 0.1, REG);
     private final Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static FlangerStage window;
     private Modulation flanger;
     
@@ -46,13 +47,16 @@ public class FlangerFXMLController {
         frequencyKnob.setValue(0.2);
         deviationKnob.setValue(0.2);
         wetDryKnob.setValue(0.5);
-        frequencyKnob.setTranslateX(25);
-        deviationKnob.setTranslateX(25);
-        wetDryKnob.setTranslateX(25);
+        outputGainKnob.setValue(1);
+        frequencyKnob.setTranslateX(15);
+        deviationKnob.setTranslateX(15);
+        wetDryKnob.setTranslateX(15);
+        outputGainKnob.setTranslateX(15);
         
         grid.add(frequencyKnob, 0, 0);
         grid.add(deviationKnob, 1, 0);
         grid.add(wetDryKnob, 2, 0);
+        grid.add(outputGainKnob, 3, 0);
 
         frequencyKnob.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
             newFrequency = frequencyKnob.getValue() * 10 * 50000;
@@ -67,6 +71,11 @@ public class FlangerFXMLController {
         wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
             newWetDryFactor = wetDryKnob.getValue();
             flanger.setWetDryFactor(newWetDryFactor.doubleValue());
+        });
+        
+        outputGainKnob.valueProperty().addListener((ObservableValue<? extends Number> outputGain, Number oldOutputGain, Number newOutputGain) -> {
+            newOutputGain = outputGainKnob.getValue();
+            flanger.setOutputGain(newOutputGain.doubleValue());
         });
         
 //        frequencySlider.setMin(1);
@@ -122,6 +131,7 @@ public class FlangerFXMLController {
             frequencyKnob.setValue(0.2);
             deviationKnob.setValue(0.2);
             wetDryKnob.setValue(0.5);
+            outputGainKnob.setValue(1);
 //            frequencySlider.setValue(2);
 //            deviationSlider.setValue(2);
 //            wetDrySlider.setValue(5);

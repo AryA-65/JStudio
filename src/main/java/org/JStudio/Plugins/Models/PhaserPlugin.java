@@ -46,6 +46,7 @@ public class PhaserPlugin extends Plugin {
         }
        
         phasedAudio = dryWetMixing(phasedAudio, filteredAudio);
+        phasedAudio = outputGainAudio(phasedAudio);
         convertToByteArray(phasedAudio, phasedAudio.length * 2);
     }
     

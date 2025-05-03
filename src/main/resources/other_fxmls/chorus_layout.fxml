@@ -16,6 +16,7 @@
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -23,7 +24,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Label text="Frequency" translateX="47.6" />
+            <Label text="Frequency" translateX="32.4" />
          </children>
          <padding>
             <Insets top="25.0" />
@@ -31,7 +32,7 @@
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
          <children>
-            <Label text="Deviation" translateX="50.0" />
+            <Label text="Deviation" translateX="34.8" />
          </children>
          <padding>
             <Insets top="25.0" />
@@ -39,31 +40,39 @@
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
          <children>
-            <Label text="Wet/Dry" translateX="52.8" />
+            <Label text="Wet/Dry" translateX="37.6" />
          </children>
          <padding>
             <Insets top="25.0" />
          </padding>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+         <padding>
+            <Insets top="25.0" />
+         </padding>
          <children>
-            <Label text="CHORUS" translateX="26.0">
+            <Label text="Output Gain" translateX="26.0" />
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
+         <children>
+            <Label text="CHORUS" translateX="10.8">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="18.0">
                <children>
                   <Button fx:id="playButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="50.0" text="Play" />
                   <Button fx:id="resetButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="50.0" text="Reset" />
                </children>
                <padding>
-                  <Insets left="5.0" top="30.0" />
+                  <Insets left="5.0" right="5.0" top="30.0" />
                </padding>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="saveButton" mnemonicParsing="false" text="Save" translateX="54.8" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" text="Save" translateX="39.6" />
                </children>
                <padding>
                   <Insets top="20.0" />

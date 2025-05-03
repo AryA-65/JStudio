@@ -34,6 +34,7 @@ public class EchoFXMLController {
     private final Knob diffusionKnob = new Knob(100, true, 0.1, REG);
     private final Knob echoNumKnob = new Knob(100, true, 0.1, REG);
     private final Knob wetDryKnob = new Knob(100, false, 0, REG);
+    private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static EchoStage window;
     private Echo echo;
     
@@ -49,17 +50,20 @@ public class EchoFXMLController {
         diffusionKnob.setValue(0.2);
         echoNumKnob.setValue(0.5);
         wetDryKnob.setValue(0.5);
+        outputGainKnob.setValue(1);
         preDelayKnob.setTranslateX(5);
         decayTimeKnob.setTranslateX(5);
         diffusionKnob.setTranslateX(5);
         echoNumKnob.setTranslateX(5);
         wetDryKnob.setTranslateX(5);
+        outputGainKnob.setTranslateX(5);
         
         grid.add(preDelayKnob, 0, 0);
         grid.add(decayTimeKnob, 1, 0);
         grid.add(diffusionKnob, 2, 0);
         grid.add(echoNumKnob, 3, 0);
         grid.add(wetDryKnob, 4, 0);
+        grid.add(outputGainKnob, 5, 0);
         
         preDelayKnob.valueProperty().addListener((ObservableValue<? extends Number> preDelay, Number oldPredelay, Number newPreDelay) -> {
             newPreDelay = preDelayKnob.getValue() * 10 * 1000;
@@ -84,6 +88,11 @@ public class EchoFXMLController {
         wetDryKnob.valueProperty().addListener((ObservableValue<? extends Number> wetDryFactor, Number oldWetDryFactor, Number newWetDryFactor) -> {
             newWetDryFactor = wetDryKnob.getValue();
             echo.setWetDryFactor(newWetDryFactor.doubleValue());
+        });
+        
+        outputGainKnob.valueProperty().addListener((ObservableValue<? extends Number> outputGain, Number oldOutputGain, Number newOutputGain) -> {
+            newOutputGain = outputGainKnob.getValue();
+            echo.setOutputGain(newOutputGain.doubleValue());
         });
         
 //        // Set the visual components/max and min values of the sliders
@@ -169,6 +178,7 @@ public class EchoFXMLController {
             diffusionKnob.setValue(0.2);
             echoNumKnob.setValue(0.5);
             wetDryKnob.setValue(0.5);
+            outputGainKnob.setValue(1);
 //            preDelaySlider.setValue(1);
 //            decayTimeSlider.setValue(1);
 //            diffusionSlider.setValue(2);

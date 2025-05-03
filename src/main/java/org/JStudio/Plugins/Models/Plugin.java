@@ -28,16 +28,35 @@ public abstract class Plugin {
     protected byte[] finalAudio;
     protected float[] audioFloatInput;
     protected byte[] audioByteInput;
+    protected double outputGain;
     protected SourceDataLine line;
     private Thread playingThread;
 
-    public void setFinalAudio(byte[] finalAudio) {
-        this.finalAudio = finalAudio;
+    public Plugin() {
+        outputGain = 1;
+    }
+    
+    
+    
+    /**
+     * Applies output gain to audio data
+     * @param audioData the audio to apply output gain to
+     * @return the audio data with output gain
+     */
+    protected short[] outputGainAudio(short[] audioData) {
+        short[] outputGainedAudio = new short[audioData.length];
+        System.arraycopy(audioData, 0, outputGainedAudio, 0, audioData.length);
+        
+        for (int i = 0; i < outputGainedAudio.length; i++) {
+           outputGainedAudio[i] = (short) (outputGainedAudio[i] * outputGain);
+        }
+        return outputGainedAudio;
     }
     
     public float[] getAudioFloatInput(){
         return audioFloatInput;
     }
+    
     /**
      * Converts audio data from a wav file to a byte array
      */
@@ -52,8 +71,8 @@ public abstract class Plugin {
             filePathName = file.getAbsolutePath();
             fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
-//            audioFloatInput = convertByteToFloatArray(originalAudio);
-//            audioByteInput = convertFloatToByteArray(audioFloatInput);
+            audioFloatInput = convertByteToFloatArray(originalAudio);
+            audioByteInput = convertFloatToByteArray(audioFloatInput);
 
 //            float[][] floatArray = {{1, 2, 3, 11, 75}, {4, 5, 6, 17, 90}};
 //            convert2DByteTo2DFloat(convert2DFloatTo2DByte(floatArray));
@@ -63,9 +82,7 @@ public abstract class Plugin {
             System.out.println(e);
         }
     }
-    public String getFileName() {
-        return fileName;
-    }
+    
     
     private byte[] convertFloatToByteArray(float[] audioData) {
         byte[] byteArray = new byte[audioData.length * 4];
@@ -108,29 +125,15 @@ public abstract class Plugin {
         return floatArray;
     }
 
-    public String getFilePathName() {
-        return filePathName;
-    }
-
-    public void setFilePathName(String filePathName) {
-        this.filePathName = filePathName;
-    }
-
-    public byte[] getFinalAudio() {
-        return finalAudio;
-    }
-
-    public void clearFinalAudio() {
-        finalAudio = null;
-    }
-
+    /**
+     * Wrapper class for playing method
+     */
     public void play() {
         playAudio(finalAudio);
     }
 
     /**
      * Plays audio data stored in a byte array
-     *
      * @param audioData the audio data to be played
      */
     protected void playAudio(byte[] audioData) {
@@ -177,7 +180,6 @@ public abstract class Plugin {
     /**
      * Converts the original audio data to a short array to allow for
      * modifications
-     *
      * @return the short[] audio data array
      */
     protected short[] convertToShortArray() {
@@ -186,22 +188,21 @@ public abstract class Plugin {
         System.arraycopy(originalAudio, 44, noHeaderByteAudioData, 0, originalAudio.length - 44);
 
         // Convert audio data to short type to avoid audio warping
-        short[] audioToModulate = new short[noHeaderByteAudioData.length / 2];
-        for (int i = 0; i < audioToModulate.length; i++) {
-            audioToModulate[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
+        short[] shortArrayData = new short[noHeaderByteAudioData.length / 2];
+        for (int i = 0; i < shortArrayData.length; i++) {
+            shortArrayData[i] = ByteBuffer.wrap(noHeaderByteAudioData, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // // i*2 since each short is 2 bytes long
         }
 
-        return audioToModulate;
+        return shortArrayData;
     }
 
     /**
      * Revert short[] audio data back to byte array to have playback
      * functionality
-     *
      * @param audioData the audio data to be converted to a byte array
      * @param sizeOfByteArray the size of the array to save
      */
-    protected byte[] convertToByteArray(short[] audioData, int sizeOfByteArray) {
+    protected void convertToByteArray(short[] audioData, int sizeOfByteArray) {
         // Revert back to byte array to have playback functionality
         byte[] modifiedAudio = new byte[sizeOfByteArray];
         for (int i = 0; i < audioData.length; i++) {
@@ -209,23 +210,20 @@ public abstract class Plugin {
         }
 
         finalAudio = new byte[sizeOfByteArray];
-//        finalAudio = new byte[sizeOfByteArray];
         System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
-        return finalAudio;
     }
 
     /**
      * Caps the amplitude of a sample from exceeding the maximum value of a
      * short
-     *
      * @param sample the sample to be capped
      * @return the capped sample
      */
     protected short capMaxAmplitude(short sample) {
-        if (sample > Short.MAX_VALUE) {
-            sample = Short.MAX_VALUE;
-        } else if (sample < Short.MIN_VALUE) {
-            sample = Short.MIN_VALUE;
+        if (sample > Short.MAX_VALUE/4) {
+            sample = Short.MAX_VALUE/4;
+        } else if (sample < Short.MIN_VALUE/4) {
+            sample = Short.MIN_VALUE/4;
         }
         return sample;
     }
@@ -338,5 +336,33 @@ public abstract class Plugin {
             floats[i] = shorts[i] / 32768f;
         }
         return floats;
+    }
+    
+    public byte[] getFinalAudio() {
+        return finalAudio;
+    }
+    
+    public String getFileName() {
+            return fileName;
+    }
+    
+    public void setFinalAudio(byte[] finalAudio) {
+        this.finalAudio = finalAudio;
+    }
+
+    public void setOutputGain(double outputGain) {
+        this.outputGain = outputGain;
+    }
+    
+    public String getFilePathName() {
+        return filePathName;
+    }
+
+    public void setFilePathName(String filePathName) {
+        this.filePathName = filePathName;
+    }
+
+    public void clearFinalAudio() {
+        finalAudio = null;
     }
 }

@@ -45,7 +45,7 @@ public class Modulation extends Plugin{
                 modulatedAudio[i] = capMaxAmplitude(modulatedAudio[i]);
             }
         }
-
+        modulatedAudio = outputGainAudio(modulatedAudio);
         convertToByteArray(modulatedAudio, modulatedAudio.length * 2);
     }
     

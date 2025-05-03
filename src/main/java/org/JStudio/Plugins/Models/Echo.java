@@ -59,7 +59,7 @@ public class Echo extends Plugin {
         }
         
         short[] mixedAudio = dryWetMixing(audioToEcho, echoAudio, audioToEcho.length, echoAudio.length);
-        
+        mixedAudio = outputGainAudio(mixedAudio);
         convertToByteArray(mixedAudio,((echoAudio.length+preDelay) * 2) + 44);
     }
     

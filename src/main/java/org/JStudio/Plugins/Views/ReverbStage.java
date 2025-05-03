@@ -39,7 +39,7 @@ public class ReverbStage extends Stage{
             fxmlLoader.setController(controller);
             controller.setWindow(this);
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 600, 200);
+            scene = new Scene(root, 700, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

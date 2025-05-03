@@ -66,6 +66,7 @@ public class Reverb extends Plugin {
             }
 
             short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
+            mixedAudio = outputGainAudio(mixedAudio);
             convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
     }
     
@@ -129,7 +130,9 @@ public class Reverb extends Plugin {
         return volumeControlledAudio;
     }
     
-    // Wrapper class to set reverb effect
+    /** 
+     * Wrapper class to set reverb effect
+     */
     public void setReverbEffect() {
         applyReverbEffect();
     }

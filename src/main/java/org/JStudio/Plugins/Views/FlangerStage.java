@@ -35,12 +35,11 @@ public class FlangerStage extends Stage{
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/flanger_layout.fxml"));
-            Parent root = fxmlLoader.load();
-
             controller = new FlangerFXMLController();
             fxmlLoader.setController(controller);
             controller.setWindow(this);
 
+            Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());

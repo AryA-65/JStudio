@@ -31,6 +31,7 @@ public abstract class Plugin {
     protected byte[][] audioByteInput2D;
     protected float[][] audioOutput2D;
     protected SourceDataLine line;
+    private Stage stage;
     private Thread playingThread;
 
     /**
@@ -39,13 +40,13 @@ public abstract class Plugin {
     protected void convertAudioFileToByteArray() {
         try {
             FileChooser fileChooser = new FileChooser();
-            System.out.println(fileChooser);
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
                     new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
                     new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
-
-            audioFloatInput2D = AudioFileExtractor.readWavFile(file);
+            
+            AudioFileExtractor afe = new AudioFileExtractor();
+            audioFloatInput2D = afe.readWavFile(file);
             audioByteInput2D = convert2DFloatTo2DByte(audioFloatInput2D);
             
             

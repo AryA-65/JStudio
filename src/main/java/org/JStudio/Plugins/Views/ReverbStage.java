@@ -14,7 +14,7 @@ import org.JStudio.SettingsController;
  * Reverb Window
  * @author Theodore Georgiou
  */
-public class ReverbStage extends Stage {
+public class ReverbStage extends Stage{
     public static Scene scene;
     public static ReverbFXMLController controller;
     
@@ -35,10 +35,10 @@ public class ReverbStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/reverb_layout.fxml"));
-            Parent root = fxmlLoader.load();
             controller = new ReverbFXMLController();
             fxmlLoader.setController(controller);
             controller.setWindow(this);
+            Parent root = fxmlLoader.load();
             scene = new Scene(root, 600, 200);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());

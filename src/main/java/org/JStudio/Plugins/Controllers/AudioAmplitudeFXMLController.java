@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -51,10 +50,6 @@ public class AudioAmplitudeFXMLController {
         knob.setValues(-5, 5);
         knob.setValue(1);
         vbox.getChildren().add(knob);
-
-        knob.valueProperty().addListener((obs, oldVal, newVal) -> {
-
-        });
 
         knob.valueProperty().addListener((ObservableValue<? extends Number> obs, Number oldVal, Number newVal) -> {
             amp = knob.getValue();

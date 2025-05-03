@@ -32,10 +32,10 @@ public class UnitTestingController extends Plugin{
 
     // Audio Processing
     private Spectrograph spectrograph;
+
+    public String chosenEffect;
     private Stage rootStage;
     private Scene rootScene;
-
-    //todo fix the reset button
 
     @FXML
     private void initialize() {
@@ -48,6 +48,10 @@ public class UnitTestingController extends Plugin{
         playBtn.setDisable(true);
         pauseBtn.setDisable(true);
         resetBtn.setDisable(true);
+
+        pluginsChooser.valueProperty().addListener((observable, oldValue, newValue) -> {
+            chosenEffect = newValue;
+        });
 
 
         loadBtn.setOnMouseClicked(event -> {
@@ -76,5 +80,4 @@ public class UnitTestingController extends Plugin{
     public void setScene(Scene scene)  {
         this.rootScene = scene;
     }
-
 }

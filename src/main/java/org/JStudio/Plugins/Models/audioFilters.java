@@ -98,23 +98,6 @@ public class audioFilters {
         return audioBytes;
     }
 
-    // Save byte[] to WAV file
-    public static void saveWavFile(String filename, byte[] audioBytes, AudioFormat format) throws IOException {
-        File file = new File(filename);
-        ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
-        AudioInputStream audioStream = new AudioInputStream(bais, format, audioBytes.length / format.getFrameSize());
-        AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, file);
-    }
-
-    // Play audio from byte[]
-    public static void playAudio(byte[] audioBytes, AudioFormat format) throws LineUnavailableException {
-        SourceDataLine line = AudioSystem.getSourceDataLine(format);
-        line.open(format);
-        line.start();
-        line.write(audioBytes, 0, audioBytes.length);
-        line.drain();
-        line.close();
-    }
 
     public class BiquadFilter {
 

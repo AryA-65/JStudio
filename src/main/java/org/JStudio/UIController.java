@@ -1,5 +1,7 @@
 package org.JStudio;
 
+import PianoSection.PianoRun;
+import SynthPiano.SynthPianoRun;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -26,6 +28,7 @@ import javafx.scene.Scene;
 import org.JStudio.Plugins.MainEqualizer;
 import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.TimeConverter;
+import org.JStudio.Plugins.Views.*;
 
 /*
 MAKE A INTERFACE CONTROLLER CLASS TO IMPLEMENT ALL DIFFERENT UIs AND THEIR RESPECTIVE CONTROLLERS
@@ -110,7 +113,22 @@ public class UIController {
     @FXML
     private Button reverbBtn;
     @FXML
+    private Button flangerBtn;
+    @FXML
+    private Button chorusBtn;
+    @FXML
+    private Button echoBtn;
+    @FXML
+    private Button phaserBtn;
+    @FXML
     private Button equalizerBtn;
+    @FXML
+    private Button pianoBtn;
+    @FXML
+    private Button synthPianoBtn;
+
+    @FXML
+    private Button stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
 
     private SystemMonitor sm; //make this a static class that runs
 
@@ -162,20 +180,80 @@ public class UIController {
     
     @FXML
     public void initialize() throws Exception {
-        equalizerBtn.setOnMouseClicked(e -> {
-            MainEqualizer equalizer = new MainEqualizer();
-            equalizer.openEQ();
-        });
-        
-        reverbBtn.setOnMouseClicked(e -> {
+        reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
             reverb.show();
+        });
+        
+        flangerBtn.setOnAction(e -> {
+            FlangerStage flanger = new FlangerStage();
+            flanger.show();
+        });
+        
+        chorusBtn.setOnAction(e -> {
+            ChorusStage chorus = new ChorusStage();
+            chorus.show();
+        });
+        
+        echoBtn.setOnAction(e -> {
+            EchoStage echo = new EchoStage();
+            echo.show();
+        });
+        
+        phaserBtn.setOnAction(e -> {
+            PhaserStage phaser = new PhaserStage();
+            phaser.show();
+        });
+        
+        equalizerBtn.setOnAction(e -> {
+            MainEqualizer mainEQ = new MainEqualizer();
+            mainEQ.openEQ();
+        });
+        
+        equalizerBtn.setOnAction(e -> {
+            MainEqualizer mainEQ = new MainEqualizer();
+            mainEQ.openEQ();
+        });
+        
+        pianoBtn.setOnAction(e -> {
+            PianoRun piano = new PianoRun();
+            piano.openPiano();
+        });
+        
+        synthPianoBtn.setOnAction(e -> {
+            SynthPianoRun synthPiano = new SynthPianoRun();
+            synthPiano.openSynthPiano();
         });
         
         settings_btn.setOnMouseClicked(e -> {
             SettingsWindow settings = new SettingsWindow();
             SettingsController.setWindow(settings);
             settings.show();
+        });
+        
+        stereoBtn.setOnMouseClicked(e -> {
+            StereoStage stereo = new StereoStage();
+            stereo.show();
+        });
+
+        butterworthBtn.setOnMouseClicked(e -> {
+            ButterWorthStage butterWorth = new ButterWorthStage();
+            butterWorth.show();
+        });
+
+        basicFilterBtn.setOnMouseClicked(e -> {
+            BaseFiltersStage baseFilters = new BaseFiltersStage();
+            baseFilters.show();
+        });
+
+        amplitudeBtn.setOnMouseClicked(e -> {
+            AudioAmplitudeStage audioAmplitude = new AudioAmplitudeStage();
+            audioAmplitude.show();
+        });
+
+        synthesizerBtn.setOnMouseClicked(e -> {
+            SynthesizerStage synthesizerStage = new SynthesizerStage();
+            synthesizerStage.synth();
         });
 
         //initializing nodes (loading images and other stuff)

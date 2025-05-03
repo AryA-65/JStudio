@@ -19,6 +19,7 @@ public class SettingsWindow extends Stage{
     public SettingsWindow() {
         setTitle("Settings");
         initModality(Modality.APPLICATION_MODAL);
+        setResizable(false);
         openSettings();
     }
     

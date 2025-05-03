@@ -21,7 +21,8 @@ public class HelpController {
                     new String[]{"Pre-Delay: The time it takes for the sound to "
                             + "first reflect", "Decay: The time it takes for the reflected audio to decay",
                             "Diffusion: The spacing of the reflected sound waves",
-                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
+                            "Output Gain: The volume of the modified audio"},
                     "Reverberated Audio"
             ),
             new Descriptions(
@@ -30,31 +31,35 @@ public class HelpController {
                     new String[]{"Pre-Delay: The time it takes for the sound to "
                             + "first reflect", "Decay: The time it takes for the reflected audio to decay",
                             "Diffusion: The spacing of the reflected sound waves", "Number of Echos: The number of echos heard",
-                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
+                            "Output Gain: The volume of the modified audio"},
                     "Echoed audio"
             ),
             new Descriptions(
                     "Plugin: Flanger",
                     "Creates wooshing effect by copying the audio, and delaying it with modulated delays",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                        "Deviation: The ampliytude of the oscillating modulation function",
-                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
+                            "Output Gain: The volume of the modified audio"},
                     "Flanged audio"
             ),
             new Descriptions(
                     "Plugin: Chorus",
                     "Creates multiple instrument/voice effect by copying the audio, and delaying it with modulated delays",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                        "Deviation: The ampliytude of the oscillating modulation function",
-                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
+                            "Output Gain: The volume of the modified audio"},
                     "Chorus results"
             ),
             new Descriptions(
                     "Plugin: Phaser",
                     "Creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                        "Deviation: The ampliytude of the oscillating modulation function",
-                        "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio"},
+                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
+                            "Output Gain: The volume of the modified audio"},
                     "Phased Audio"
             ),
             new Descriptions(

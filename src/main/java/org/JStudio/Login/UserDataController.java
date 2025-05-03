@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class UserDataController {
     public HashMap<String, User> users = new HashMap<>();
-    private final String filePath = "src/main/resources/UserData/loginInfo.csv";
+    private final String filePath = "src/main/resources/loginInfo.csv";
     private String finalLine;
 
     /**

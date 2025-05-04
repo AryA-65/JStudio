@@ -12,6 +12,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 
 public class SettingsController {
     private static boolean style; // false means light, true means dark
@@ -22,7 +24,13 @@ public class SettingsController {
     private static RadioButton selected;
     private static UIController controller;
     private static SettingsWindow window;
-
+    @FXML
+    private static MenuButton noteColourSelector;
+    @FXML
+    private static MenuButton waveColourSelector;
+    @FXML
+    private MenuItem blueNote, greenNote, redNote, blueWave, greenWave, redWave;
+    
     @FXML
     private Button helpButton;
 
@@ -60,7 +68,7 @@ public class SettingsController {
             updateMainUIStyle();
             updateSettingsUIStyle();
         });
-
+        
         helpButton.setOnMouseClicked(event -> {
             helpButton.setDisable(true);
             Stage childStage = new Stage();

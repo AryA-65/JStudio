@@ -82,25 +82,25 @@ public class HelpController {
                     "Custom Song With Custom Sounds"
             ),
             new Descriptions(
-                    "Audio Amplitude",
+                    "Plugin: Audio Amplitude",
                     "Modifies the amplitude of an audio file",
                     new String[]{"An audio file (type) wav", "A double value with the knob"},
                     "Audio with modified amplitude levels"
             ),
             new Descriptions(
-                    "Basic Audio Filters",
+                    "Plugin: Basic Audio Filters",
                     "Uses basic math methods to cut-off certain frequencies",
                     new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off"},
                     "Audio file with frequencies above or below certain level cut off"
             ),
             new Descriptions(
-                    "Synthesizer",
+                    "Tool: Synthesizer",
                     "Generates sound waves based on keyboard inputs with set frequencies with the ability to add an glide effect and speed modifier",
                     new String[]{"3 different oscillators with individual waveform selection ", "Tone and Volume of each oscillator", ""},
                     "Audio file (type) wav that contains the played synth"
             ),
             new Descriptions(
-                    "Butterworth filter",
+                    "Plugin: Butterworth filter",
                     "Uses advanced math logic to apply different types of audio filters",
                     new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off", "Type of filter to be applied"},
                     "Audio file with an applied audio filter"

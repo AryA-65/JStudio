@@ -1,4 +1,4 @@
-package org.JStudio;
+package org.JStudio.TESTING;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -6,10 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Models.Plugin;
-import org.JStudio.Utils.FFTHandler;
 import org.JStudio.Utils.Spectrograph;
-
-import java.util.Arrays;
 
 public class UnitTestingController extends Plugin{
 

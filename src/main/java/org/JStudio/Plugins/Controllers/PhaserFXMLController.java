@@ -3,7 +3,6 @@ package org.JStudio.Plugins.Controllers;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.PhaserPlugin;
 import org.JStudio.Plugins.Views.PhaserStage;

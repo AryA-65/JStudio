@@ -1,11 +1,8 @@
 package org.JStudio.Plugins.Controllers;
 
-import java.util.Arrays;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.ReverbStage;

@@ -39,13 +39,6 @@ public class FileUI extends Pane {
         setMaxWidth(200);
         setCursor(Cursor.HAND);
         setId("file_ui");
-//        InnerShadow innerShadow = new InnerShadow();
-//        innerShadow.setColor(Color.WHITE);
-//        innerShadow.setRadius(0);
-//        innerShadow.setOffsetX(3);
-//        innerShadow.setOffsetY(3);
-
-//        canvas.setEffect(innerShadow);
 
         canvas.setWidth(200);
         canvas.setHeight(48);

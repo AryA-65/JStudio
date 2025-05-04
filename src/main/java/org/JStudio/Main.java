@@ -19,7 +19,7 @@ public class Main extends Application {
 
     private Scene scene;
 
-    boolean isTesting = true;
+    boolean isTesting = false;
 
     @Override
     public void start(Stage stage) throws Exception {

@@ -1,4 +1,4 @@
-package org.JStudio.Plugins.Synthesizer;
+package org.JStudio.Plugins.Controllers;
 
 
 import javafx.beans.property.SimpleStringProperty;
@@ -22,10 +22,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import org.JStudio.Plugins.SynthUtil.AudioThread;
+import org.JStudio.Plugins.SynthUtil.Utility;
 import org.JStudio.SettingsController;
 
 
-public class Controller {
+public class SynthController {
     private final StringProperty name = new SimpleStringProperty("Synthesizer");
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
     private final Map<MenuButton, String> waveformSelection = new HashMap<>();
@@ -260,7 +263,6 @@ public class Controller {
                 }
             }
         });
-
 
         tempScene.setOnKeyReleased(event -> {
             char key = event.getText().isEmpty() ? '\0' : event.getText().charAt(0);

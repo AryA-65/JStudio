@@ -11,8 +11,7 @@ import javafx.scene.control.Slider;
 import javafx.event.Event;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
-import org.JStudio.Plugins.Controllers.PopUpController;
-import org.JStudio.Plugins.Synthesizer.Utility;
+import org.JStudio.Plugins.SynthUtil.Utility;
 import org.JStudio.SettingsController;
 
 

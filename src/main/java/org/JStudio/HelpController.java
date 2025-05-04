@@ -82,16 +82,28 @@ public class HelpController {
                     "Custom Song With Custom Sounds"
             ),
             new Descriptions(
-                    "Text Analyzer",
-                    "Analyzes text for word count, character count, and other metrics",
-                    new String[]{"Input text"},
-                    "Analysis results"
+                    "Audio Amplitude",
+                    "Modifies the amplitude of an audio file",
+                    new String[]{"An audio file (type) wav", "A double value with the knob"},
+                    "Audio with modified amplitude levels"
             ),
             new Descriptions(
-                    "Image Resizer",
-                    "Resizes images to specified dimensions",
-                    new String[]{"Image file", "Width", "Height"},
-                    "Resized image"
+                    "Basic Audio Filters",
+                    "Uses basic math methods to cut-off certain frequencies",
+                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off"},
+                    "Audio file with frequencies above or below certain level cut off"
+            ),
+            new Descriptions(
+                    "Synthesizer",
+                    "Generates sound waves based on keyboard inputs with set frequencies with the ability to add an glide effect and speed modifier",
+                    new String[]{"3 different oscillators with individual waveform selection ", "Tone and Volume of each oscillator", ""},
+                    "Audio file (type) wav that contains the played synth"
+            ),
+            new Descriptions(
+                    "Butterworth filter",
+                    "Uses advanced math logic to apply different types of audio filters",
+                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off", "Type of filter to be applied"},
+                    "Audio file with an applied audio filter"
             )
     };
 
@@ -103,7 +115,7 @@ public class HelpController {
             toolVBox.setStyle("-fx-padding: 15; -fx-border-color: #ccc; -fx-border-radius: 5;");
 
             Label nameLabel = new Label("Tool: " + tool.getName());
-            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
 
             Label descLabel = new Label("Description: " + tool.getDescription());
             descLabel.setWrapText(true);

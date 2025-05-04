@@ -1,4 +1,4 @@
-package org.JStudio.Plugins.Synthesizer;
+package org.JStudio.Plugins.SynthUtil;
 
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
@@ -9,9 +9,9 @@ import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 
 
-class AudioThread extends Thread {
+public class AudioThread extends Thread {
     public static final int SAMPLE_RATE = 44100; // or whatever sample rate you use
-    static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
+    public static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
     static final int BUFFER_COUNT = 8; // how many buffers will be in queue
     private final int[] buffers = new int[BUFFER_COUNT];
     private final long device = alcOpenDevice(alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
@@ -25,7 +25,7 @@ class AudioThread extends Thread {
 
     private final Supplier<short[]> bufferSupplier;
 
-    boolean isRunning() {
+    public boolean isRunning() {
         return running;
     }
 
@@ -72,12 +72,12 @@ class AudioThread extends Thread {
         alcCloseDevice(device);
     }
 
-    synchronized void triggerPlayback() {
+    public synchronized void triggerPlayback() {
         running = true;
         notify();
     }
 
-    void close() {
+    public void close() {
         closed = true; // break out of the loop
         triggerPlayback();
 

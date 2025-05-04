@@ -1,4 +1,4 @@
-package org.JStudio.Plugins.Synthesizer;
+package org.JStudio.Plugins.SynthUtil;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.AL10.AL_INVALID_OPERATION;

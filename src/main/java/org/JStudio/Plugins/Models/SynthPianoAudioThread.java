@@ -3,8 +3,8 @@ package org.JStudio.Plugins.Models;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import java.util.function.Supplier;
-import org.JStudio.Plugins.Synthesizer.OpenALException;
-import org.JStudio.Plugins.Synthesizer.Utility;
+import org.JStudio.Plugins.SynthUtil.OpenALException;
+import org.JStudio.Plugins.SynthUtil.Utility;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 

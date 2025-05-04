@@ -38,3 +38,6 @@ build/
 .DS_Store
 #src/main/resources/UserData/loginInfo.csv
 /nbproject/
+
+#logincsb
+/src/main/resources/loginInfo.csv

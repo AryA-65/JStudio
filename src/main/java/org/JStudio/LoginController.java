@@ -116,30 +116,40 @@ public class LoginController {
         });
 
         userPasswordField.textProperty().addListener((obs, oldText, newText) -> {
-            String cleanedText = newText.replaceAll("[^a-zA-Z]", "").replaceAll(" ", ""); // all text that is not a character
-
+            String cleanedText = newText.replaceAll("[^a-zA-Z]", "").replaceAll(" ", "");
             userPasswordField.setText(cleanedText);
             userPass = newText;
         });
 
-        // Allow only digits in key1 and key2 fields
         key1Field.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 key1Field.setText(newText.replaceAll("[^\\d]", ""));
-            }
-            try {
-                key1 = Integer.parseInt(newText);
-            } catch (Exception ignored) {
+            } else if (!newText.isEmpty()) {
+                try {
+                    int value = Integer.parseInt(newText);
+                    if (value > 20) {
+                        key1Field.setText("20");
+                        key1 = 20;
+                    } else {
+                        key1 = value;
+                    }
+                } catch (NumberFormatException ignored) {}
             }
         });
 
         key2Field.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 key2Field.setText(newText.replaceAll("[^\\d]", ""));
-            }
-            try {
-                key2 = Integer.parseInt(newText);
-            } catch (Exception ignored) {
+            } else if (!newText.isEmpty()) {
+                try {
+                    int value = Integer.parseInt(newText);
+                    if (value > 20) {
+                        key2Field.setText("20");
+                        key2 = 20;
+                    } else {
+                        key2 = value;
+                    }
+                } catch (NumberFormatException ignored) {}
             }
         });
     }

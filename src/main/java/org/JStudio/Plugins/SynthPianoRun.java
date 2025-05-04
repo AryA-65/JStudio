@@ -18,8 +18,7 @@ public class SynthPianoRun {
             //creates a new stage
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setFullScreen(true);
-            stage.setResizable(false);
+            stage.setMaximized(true);
 
             //loads the fxml file
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/SynthPiano.fxml"));

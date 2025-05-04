@@ -218,12 +218,18 @@ public class SynthController_Piano {
     //Draws the synth audio waveform depending on the user's set parameters
     private void drawWaveform(short[] audioBuffer) {
         synth.getGc().clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
-
-        //change color of the wave depending on dark/light mode
-        if (SettingsController.getStyle()) {
-            synth.getGc().setStroke(javafx.scene.paint.Color.WHITE);
-        } else {
-            synth.getGc().setStroke(javafx.scene.paint.Color.BLACK);
+        
+        //set color of the wave depending on the settings
+        switch (SettingsController.getWaveColor()) {
+            case "Blue":
+                synth.getGc().setStroke(javafx.scene.paint.Color.BLUE);
+                break;
+            case "Green":
+                synth.getGc().setStroke(javafx.scene.paint.Color.GREEN);
+                break;
+            case "Red":
+                synth.getGc().setStroke(javafx.scene.paint.Color.RED);
+                break;
         }
 
         synth.getGc().setLineWidth(1);

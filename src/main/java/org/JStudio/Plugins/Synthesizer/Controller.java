@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import org.JStudio.SettingsController;
 
 
 public class Controller {
@@ -368,7 +369,19 @@ public class Controller {
         gc = waveformCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
 
-        gc.setStroke(javafx.scene.paint.Color.BLACK);
+        //set color of the wave depending on the settings
+        switch (SettingsController.getWaveColor()) {
+            case "Blue":
+                gc.setStroke(javafx.scene.paint.Color.BLUE);
+                break;
+            case "Green":
+                gc.setStroke(javafx.scene.paint.Color.GREEN);
+                break;
+            case "Red":
+                gc.setStroke(javafx.scene.paint.Color.RED);
+                break;
+        }
+        
         gc.setLineWidth(1);
 
         double centerY = waveformCanvas.getHeight() / 2;

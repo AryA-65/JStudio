@@ -25,6 +25,7 @@ public class SettingsController {
     private static UIController controller;
     private static SettingsWindow window;
     private static String noteColor = "Blue";
+    private static String waveColor = "Blue";
     @FXML
     private static MenuButton noteColourSelector;
     @FXML
@@ -80,6 +81,17 @@ public class SettingsController {
         });
         redNote.setOnAction(event -> {
             noteColor = "Red";
+        });
+        
+        // Wave colouring
+        blueWave.setOnAction(event -> {
+            waveColor = "Blue";
+        });
+        greenWave.setOnAction(event -> {
+            waveColor = "Green";
+        });
+        redWave.setOnAction(event -> {
+            waveColor = "Red";
         });
         
         // Help menu
@@ -141,5 +153,9 @@ public class SettingsController {
 
     public static String getNoteColor() {
         return noteColor;
+    }
+    
+    public static String getWaveColor(){
+        return waveColor;
     }
 }

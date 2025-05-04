@@ -45,7 +45,6 @@ public class Main extends Application {
 
             controller = loader.getController();
             controller.setStage(stage);
-            controller.setScreenSize();
 
             scene = new Scene(root);
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
@@ -56,7 +55,6 @@ public class Main extends Application {
             stage.setResizable(true);
             stage.show();
 
-            Platform.runLater(() -> {controller.setSplitRatio();});
             SettingsController.setController(controller);
         }
 

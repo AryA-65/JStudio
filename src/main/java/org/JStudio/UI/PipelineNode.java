@@ -3,6 +3,7 @@ package org.JStudio.UI;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -69,7 +70,19 @@ public class PipelineNode extends StackPane {
 
         setOnMouseDragged(e -> {
             Point2D localPoint = getParent().sceneToLocal(e.getSceneX(), e.getSceneY());
-            relocate(localPoint.getX() - offsetX, localPoint.getY() - offsetY);
+            double newX = localPoint.getX() - offsetX;
+            double newY = localPoint.getY() - offsetY;
+
+            double parentWidth = ((Region) getParent()).getWidth();
+            double parentHeight = ((Region) getParent()).getHeight();
+
+            double nodeWidth = getBoundsInParent().getWidth();
+            double nodeHeight = getBoundsInParent().getHeight();
+
+            newX = Math.max(0, Math.min(newX, parentWidth - nodeWidth));
+            newY = Math.max(0, Math.min(newY, parentHeight - nodeHeight));
+
+            relocate(newX, newY);
             e.consume();
         });
     }

@@ -81,7 +81,6 @@ public class LoginController {
 
             Stage mainStage = new Stage();
             controller.setStage(mainStage);
-            controller.setScreenSize();
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
@@ -91,12 +90,7 @@ public class LoginController {
             mainStage.setResizable(true);
             mainStage.show();
 
-            // For alternating styles
-            controller.setSplitRatio();
-            SettingsController sc = new SettingsController();
-            sc.setController(controller);
-
-            controller.setSplitRatio();
+            SettingsController.setController(controller);
 
             rootStage.close();
 

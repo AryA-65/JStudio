@@ -2,10 +2,12 @@ package org.JStudio.UI;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.JStudio.Core.Track;
@@ -62,11 +64,7 @@ public class TrackIDUI extends Pane {
         getChildren().addAll(trackName, mutedBtn);
 
         setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
-//                reference.display_nodes(this.track);
-                renderer.renderGraph(track);
-                reference.channel_pipeline.getSelectionModel().select(1);
-            } else if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 1) {
+            if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 1) {
                 for (Node node : getParent().getChildrenUnmodifiable()) {
                     if (!node.equals(this)) {
                         node.getStyleClass().remove("selected_track");
@@ -74,9 +72,14 @@ public class TrackIDUI extends Pane {
                 }
 
                 getStyleClass().add("selected_track");
+
+                renderer.renderGraph(track);
+                reference.channel_pipeline.getSelectionModel().select(1);
             } else if (e.getButton() == MouseButton.SECONDARY) {
                 getStyleClass().remove("selected_track");
+
                 reference.plugin_pane.getChildren().clear();
+
                 Label message = new Label("No Track Selected: Plugins Unavailable");
                 message.setLayoutX(reference.plugin_pane.getWidth() / 2);
                 message.setLayoutY(reference.plugin_pane.getHeight() / 2);

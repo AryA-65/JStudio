@@ -16,25 +16,21 @@ public class SynthPianoNoteView extends Rectangle {
         setLayoutX(positionX);
         switch (SettingsController.getNoteColor()) {
             case "Blue":
-                setFill(Color.BLUE);
-                setOnMouseEntered(mouseEvent -> setFill(Color.MEDIUMBLUE));
-                setOnMouseExited(mouseEvent -> setFill(Color.BLUE));
+                setFill(Color.web("#118AB2"));
+                setOnMouseEntered(mouseEvent -> setFill(Color.web("#0F749B")));
+                setOnMouseExited(mouseEvent -> setFill(Color.web("#118AB2")));
                 break;
             case "Green":
-                setFill(Color.GREEN);
-                setOnMouseEntered(mouseEvent -> setFill(Color.SEAGREEN));
-                setOnMouseExited(mouseEvent -> setFill(Color.GREEN));
+                setFill(Color.web("#06D6A0"));
+                setOnMouseEntered(mouseEvent -> setFill(Color.web("#05BD8E")));
+                setOnMouseExited(mouseEvent -> setFill(Color.web("#06D6A0")));
                 break;
             case "Red":
-                setFill(Color.RED);
-                setOnMouseEntered(mouseEvent -> setFill(Color.CRIMSON));
-                setOnMouseExited(mouseEvent -> setFill(Color.RED));
+                setFill(Color.web("#FF6B6B"));
+                setOnMouseEntered(mouseEvent -> setFill(Color.web("#E05555")));
+                setOnMouseExited(mouseEvent -> setFill(Color.web("#FF6B6B")));
                 break;
-        }
-        
-
-        //changes the color of note if the user has mouse over note
-        
+        }        
     }
 
     //getter

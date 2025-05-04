@@ -12,6 +12,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 
@@ -24,18 +25,18 @@ public class SettingsController {
     private static RadioButton selected;
     private static UIController controller;
     private static SettingsWindow window;
-    private static String noteColor = "Blue";
-    private static String waveColor = "Blue";
+    private static String noteColour = "Blue";
+    private static String waveColour = "Blue";
     @FXML
     private static MenuButton noteColourSelector;
     @FXML
     private static MenuButton waveColourSelector;
     @FXML
     private MenuItem blueNote, greenNote, redNote, blueWave, greenWave, redWave;
-    
+    @FXML
+    private Label noteColourLabel, waveColourLabel;
     @FXML
     private Button helpButton;
-
     @FXML
     RadioButton lightRadio, darkRadio;
 
@@ -72,26 +73,56 @@ public class SettingsController {
             updateSettingsUIStyle();
         });
         
-        // Note colouring
+        // Wave and note colouring
+        switch (noteColour) {
+            case "Blue":
+                noteColourLabel.setText("Selected: Blue");
+                break;
+            case "Green":
+                noteColourLabel.setText("Selected: Green");
+                break;
+            case "Red":
+                noteColourLabel.setText("Selected: Red");
+                break;
+        }
+        
+        switch (waveColour) {
+            case "Blue":
+                waveColourLabel.setText("Selected: Blue");
+                break;
+            case "Green":
+                waveColourLabel.setText("Selected: Green");
+                break;
+            case "Red":
+                waveColourLabel.setText("Selected: Red");
+                break;
+        }    
+        
         blueNote.setOnAction(event -> {
-            noteColor = "Blue";
+            noteColour = "Blue";
+            noteColourLabel.setText("Selected: Blue");
         });
         greenNote.setOnAction(event -> {
-            noteColor = "Green";
+            noteColour = "Green";
+            noteColourLabel.setText("Selected: Green");
         });
         redNote.setOnAction(event -> {
-            noteColor = "Red";
+            noteColour = "Red";
+            noteColourLabel.setText("Selected: Red");
         });
         
         // Wave colouring
         blueWave.setOnAction(event -> {
-            waveColor = "Blue";
+            waveColour = "Blue";
+            waveColourLabel.setText("Selected: Blue");
         });
         greenWave.setOnAction(event -> {
-            waveColor = "Green";
+            waveColour = "Green";
+            waveColourLabel.setText("Selected: Green");
         });
         redWave.setOnAction(event -> {
-            waveColor = "Red";
+            waveColour = "Red";
+            waveColourLabel.setText("Selected: Red");
         });
         
         // Help menu
@@ -152,10 +183,10 @@ public class SettingsController {
     }
 
     public static String getNoteColor() {
-        return noteColor;
+        return noteColour;
     }
     
     public static String getWaveColor(){
-        return waveColor;
+        return waveColour;
     }
 }

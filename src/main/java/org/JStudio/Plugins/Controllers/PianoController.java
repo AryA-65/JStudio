@@ -110,12 +110,12 @@ public class PianoController {
             noteView.setLayoutX(x - piano.getNoteBaseWidth() / 2);
             noteView.getNote().setNoteNum(piano.getNoteNumStart() + Integer.parseInt(piano.getCurrentPane().getId().replace("pane", ""))); //set the note number of the note to the corresponding synth note number
             dragNote(noteView); //make the rectangle draggable
-            noteView.setOnMouseEntered(mouseEvent -> {
-                noteView.setFill(Color.GREY);
-            });
-            noteView.setOnMouseExited(mouseEvent -> {
-                noteView.setFill(Color.BLACK);
-            });
+//            noteView.setOnMouseEntered(mouseEvent -> {
+//                noteView.setFill(Color.GREY);
+//            });
+//            noteView.setOnMouseExited(mouseEvent -> {
+//                noteView.setFill(Color.BLACK);
+//            });
             noteView.setOnMousePressed(event -> {
                 if (event.getButton() == MouseButton.SECONDARY) {
                     removeNote(event);

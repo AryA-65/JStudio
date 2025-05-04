@@ -18,7 +18,7 @@
          <children>
             <Label text="Settings" wrapText="true">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="System Bold" size="35.0" />
                </font>
             </Label>
             <HBox alignment="TOP_RIGHT" prefWidth="200.0" HBox.hgrow="ALWAYS">
@@ -59,16 +59,20 @@
                   <Font name="Inter 24pt Regular" size="18.0" />
                </font>
             </Label>
-            <RadioButton fx:id="lightRadio" mnemonicParsing="false" selected="true" text="Light Mode">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </RadioButton>
-            <RadioButton fx:id="darkRadio" mnemonicParsing="false" text="Dark Mode">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </RadioButton>
+            <VBox prefHeight="31.0" prefWidth="590.0" spacing="5.0">
+               <children>
+                  <RadioButton fx:id="lightRadio" mnemonicParsing="false" selected="true" text="Light Mode">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="darkRadio" mnemonicParsing="false" text="Dark Mode">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </RadioButton>
+               </children>
+            </VBox>
             <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="5.0">
                <VBox.margin>
                   <Insets left="5.0" right="5.0" />
@@ -76,20 +80,30 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <MenuButton fx:id="noteColourSelector" mnemonicParsing="false" text="Note Colour">
-                    <items>
-                      <MenuItem fx:id="blueNote" mnemonicParsing="false" text="Blue" />
-                      <MenuItem fx:id="greenNote" mnemonicParsing="false" text="Green" />
-                        <MenuItem fx:id="redNote" mnemonicParsing="false" text="Red" />
-                    </items>
-                  </MenuButton>
-                  <MenuButton fx:id="waveColourSelector" mnemonicParsing="false" text="Wave Colour">
-                    <items>
-                      <MenuItem fx:id="blueWave" mnemonicParsing="false" text="Blue" />
-                      <MenuItem fx:id="greenWave" mnemonicParsing="false" text="Green" />
-                        <MenuItem fx:id="redWave" mnemonicParsing="false" text="Red" />
-                    </items>
-                  </MenuButton>
+                  <VBox spacing="5.0">
+                     <children>
+                        <MenuButton fx:id="noteColourSelector" mnemonicParsing="false" text="Note Colour">
+                          <items>
+                            <MenuItem fx:id="blueNote" mnemonicParsing="false" text="Blue" />
+                            <MenuItem fx:id="greenNote" mnemonicParsing="false" text="Green" />
+                              <MenuItem fx:id="redNote" mnemonicParsing="false" text="Red" />
+                          </items>
+                        </MenuButton>
+                        <Label fx:id="noteColourLabel" text="Selected: Blue" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0">
+                     <children>
+                        <MenuButton fx:id="waveColourSelector" mnemonicParsing="false" text="Wave Colour">
+                          <items>
+                            <MenuItem fx:id="blueWave" mnemonicParsing="false" text="Blue" />
+                            <MenuItem fx:id="greenWave" mnemonicParsing="false" text="Green" />
+                              <MenuItem fx:id="redWave" mnemonicParsing="false" text="Red" />
+                          </items>
+                        </MenuButton>
+                        <Label fx:id="waveColourLabel" text="Selected: Blue" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
          </children>

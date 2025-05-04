@@ -7,12 +7,21 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import org.JStudio.SettingsController;
 
 public class PopUpController {
     //show a popup with a text field for the user to input text
     public String showTextInputPopup() {
         //creates a new dialog
         Dialog<String> dialog = new Dialog<>();
+        
+        //set dark/light mode
+        if (SettingsController.getStyle()) {
+            dialog.getDialogPane().getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else {
+            dialog.getDialogPane().getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        }
+        
         dialog.setTitle("Add Track");
         dialog.setHeaderText(null);
 
@@ -43,6 +52,14 @@ public class PopUpController {
     public void showWarningPopup(String message) {
         //creates a new dialog
         Dialog<String> dialog = new Dialog<>();
+        
+        //set dark/light mode
+        if (SettingsController.getStyle()) {
+            dialog.getDialogPane().getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+        } else {
+            dialog.getDialogPane().getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+        }
+        
         dialog.setTitle("Warning");
         dialog.setHeaderText(null);
 

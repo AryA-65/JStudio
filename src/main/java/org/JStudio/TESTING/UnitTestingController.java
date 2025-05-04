@@ -6,9 +6,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Models.Plugin;
+import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.Spectrograph;
 
-public class UnitTestingController extends Plugin{
+public class UnitTestingController extends Plugin {
 
     @FXML
     private Label fileNameLabel;

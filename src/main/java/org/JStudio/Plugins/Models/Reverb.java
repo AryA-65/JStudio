@@ -13,7 +13,7 @@ public class Reverb extends Plugin {
     private double wetDryFactor;
     private int preDelay;
     private int diffusion;
-    private ArrayList<short[]> delayLines = new ArrayList<>();
+    private ArrayList<short[]> delayLines;
     private StringProperty name = new SimpleStringProperty("Reverb");
 
     // Creates a reverb

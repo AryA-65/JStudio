@@ -12,6 +12,7 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Abstract plugin class that handles basic use (playing, stopping, array
@@ -33,6 +34,21 @@ public abstract class Plugin {
 
     public Plugin() {
         outputGain = 1;
+    }
+    
+    /**
+     * Method that works without fields to allow for JUnit testing
+     * @param filePathName the file path of the wav file
+     * @return the byte array of a wav file
+     */
+    protected byte[] convertFileToByteTestingMethod(String filePathName) {
+        byte[] byteOutput = null;
+        try {
+            byteOutput = Files.readAllBytes(Paths.get(filePathName)); //get array of all bytes from the stream
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        return byteOutput;
     }
     
     public byte[] getAudioByteInput(){

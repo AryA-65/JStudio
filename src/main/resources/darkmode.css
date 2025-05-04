@@ -277,6 +277,10 @@
     -fx-background-radius: 5px;
 }
 
+#mixer .label {
+    -fx-text-fill: #000000 !important;
+}
+
 #pipeline_node {
     -fx-background-color: #38414A;
     -fx-background-radius: 5px;
@@ -291,6 +295,10 @@
 #track_channel {
     -fx-background-color: #c1c1c1;
     -fx-background-radius: 5px;
+}
+
+#track_channel .label {
+    -fx-text-fill: #000000 !important;
 }
 
 #masterVis {

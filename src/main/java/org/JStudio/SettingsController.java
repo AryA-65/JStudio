@@ -24,6 +24,7 @@ public class SettingsController {
     private static RadioButton selected;
     private static UIController controller;
     private static SettingsWindow window;
+    private static String noteColor = "Blue";
     @FXML
     private static MenuButton noteColourSelector;
     @FXML
@@ -38,6 +39,7 @@ public class SettingsController {
     RadioButton lightRadio, darkRadio;
 
     public void initialize() {
+        // Style mode toggling
         group = new ToggleGroup();
         lightRadio.setToggleGroup(group);
         darkRadio.setToggleGroup(group);
@@ -69,6 +71,18 @@ public class SettingsController {
             updateSettingsUIStyle();
         });
         
+        // Note colouring
+        blueNote.setOnAction(event -> {
+            noteColor = "Blue";
+        });
+        greenNote.setOnAction(event -> {
+            noteColor = "Green";
+        });
+        redNote.setOnAction(event -> {
+            noteColor = "Red";
+        });
+        
+        // Help menu
         helpButton.setOnMouseClicked(event -> {
             helpButton.setDisable(true);
             Stage childStage = new Stage();
@@ -95,8 +109,6 @@ public class SettingsController {
                 helpButton.setDisable(false);
             }
         });
-
-        //todo implement the other funcitons
     }
 
     public static boolean getStyle() {
@@ -127,4 +139,7 @@ public class SettingsController {
         mainStage = stage;
     }
 
+    public static String getNoteColor() {
+        return noteColor;
+    }
 }

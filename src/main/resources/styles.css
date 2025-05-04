@@ -320,6 +320,14 @@
     -fx-text-fill: #626F86;
 }
 
+#userIdField, #userPasswordField, #key1Field, #key2Field {
+    -fx-background-color: #d9d9d9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
+    /*-fx-text-fill: #262626;*/
+    -fx-text-fill: #5e5e5e;
+    -fx-prompt-text-fill: #9c9c9c;
+}
+
 #createAccount, #enterBtn {
     -fx-background-color: #626F86;
     -fx-text-fill: #ffffff;

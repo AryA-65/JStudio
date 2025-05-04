@@ -10,6 +10,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.event.Event;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
 import org.JStudio.Plugins.SynthUtil.Utility;
 import org.JStudio.SettingsController;
@@ -221,7 +222,7 @@ public class SynthController_Piano {
         //set color of the wave depending on the settings
         switch (SettingsController.getWaveColor()) {
             case "Blue":
-                synth.getGc().setStroke(javafx.scene.paint.Color.BLUE);
+                synth.getGc().setStroke(Color.web("#118AB2"));
                 break;
             case "Green":
                 synth.getGc().setStroke(javafx.scene.paint.Color.GREEN);

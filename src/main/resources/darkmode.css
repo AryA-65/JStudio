@@ -65,6 +65,7 @@
 }
 
 #trackIDtext {
+    -fx-text-fill: #000000;
     -fx-background-color: transparent !important;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -122,13 +123,24 @@
     -fx-background-color: #2C333A !important;
 }
 
+.scroll-pane {
+    -fx-background-color: #282E33
+}
+
 .scroll-pane .viewport {
+    -fx-background-color: #282E33 !important;
     -fx-border-width: 0px;
     -fx-border-color: transparent;
 }
 
-.scroll-pane{
-    -fx-background-color: #282E33
+.scroll-pane .track {
+    -fx-background-color: #282E33 !important;
+}
+
+.text-field {
+    -fx-background-color: #596773 !important;
+    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
+    -fx-text-fill: #B6C2CF;
 }
 
 .text-field:selected {
@@ -162,14 +174,6 @@
 
 .active {
     -fx-background-color: #00FD11; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 4px; -fx-background-radius: 4px
-}
-
-.scroll-pane .viewport {
-    -fx-background-color: #282E33 !important;
-}
-
-.scroll-pane .track {
-    -fx-background-color: #282E33 !important;
 }
 
 #hbox_WAVE1, #hbox_WAVE2, #hbox_WAVE3, #recordExportBox, #waveHbox {
@@ -222,11 +226,6 @@
 .tool-bar {
     -fx-background-color: #1D2125 !important;
     -fx-border-color: #454F59;
-}
-
-.text-field {
-    -fx-background-color: #596773 !important;
-    -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3);
 }
 
 .slider .thumb {

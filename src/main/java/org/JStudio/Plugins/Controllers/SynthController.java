@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import javafx.scene.paint.Color;
 
 import org.JStudio.Plugins.SynthUtil.AudioThread;
 import org.JStudio.Plugins.SynthUtil.Utility;
@@ -374,7 +375,7 @@ public class SynthController {
         //set color of the wave depending on the settings
         switch (SettingsController.getWaveColor()) {
             case "Blue":
-                gc.setStroke(javafx.scene.paint.Color.BLUE);
+                gc.setStroke(Color.web("#118AB2"));
                 break;
             case "Green":
                 gc.setStroke(javafx.scene.paint.Color.GREEN);

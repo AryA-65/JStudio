@@ -49,6 +49,10 @@ public class LoginController {
                 AlertBox.display("Credentials do not meet expectations","The username / password is too short ( minimum of 6 characters).");
                 return;
             }
+            if (userId.length() >= 20 || userPass.length() >= 20) {
+                AlertBox.display("Credentials do not meet expectations","The username / password is too long ( maximum of 10 characters).");
+                return;
+            }
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
             user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
             userDataController.writeToFile(user);
@@ -81,7 +85,7 @@ public class LoginController {
 
             Stage mainStage = new Stage();
             controller.setStage(mainStage);
-
+            mainStage.getIcons().add(new Image("/JS_ico.png"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
             controller.setScene(scene);

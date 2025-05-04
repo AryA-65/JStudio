@@ -42,6 +42,7 @@ public class TrackUI extends StackPane {
                     if (e.getTarget().equals(n)) {
                         track.removeClip(((ClipUI) n).getNodeClip());
                         clipLayer.getChildren().remove(n);
+                        System.gc();
                         break;
                     }
                 }

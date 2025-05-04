@@ -9,7 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import org.JStudio.Utils.AudioFileExtractor;
 
 import java.io.File;
 import java.util.Objects;
@@ -21,9 +20,12 @@ public class SectionUI extends VBox {
     private final Timeline expand_anim = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(section_content.prefHeightProperty(), 0)), new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE, Interpolator.EASE_IN)));
     private final Timeline collapse_anim = new Timeline(new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), Region.USE_COMPUTED_SIZE)), new KeyFrame(Duration.millis(150), new KeyValue(section_content.prefHeightProperty(), 0, Interpolator.EASE_IN)));
     private final RotateTransition rotate = new RotateTransition(Duration.millis(150), expand_img);
+    private final String sectionName;
 
     public SectionUI(File file) {
         setAlignment(Pos.TOP_CENTER);
+
+        sectionName = file.getName();
 
         expand_img.setSmooth(true);
         expand_img.setFitWidth(16);
@@ -65,6 +67,10 @@ public class SectionUI extends VBox {
                 section_content.getChildren().add(new FileUI(f));
             }
         }
+    }
+
+    public String getSectionName() {
+        return sectionName;
     }
 
     //test code for animation

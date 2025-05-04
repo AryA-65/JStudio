@@ -167,4 +167,8 @@ public class FileUI extends Pane {
         }
         gc.stroke();
     }
+
+    public String getFileName() {
+        return f_name.getText();
+    }
 }

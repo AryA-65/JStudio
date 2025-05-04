@@ -12,7 +12,6 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import org.JStudio.Utils.AudioFileExtractor;
 
 /**
  * Abstract plugin class that handles basic use (playing, stopping, array
@@ -36,14 +35,19 @@ public abstract class Plugin {
         outputGain = 1;
     }
     
+    public byte[] getAudioByteInput(){
+        return audioByteInput;
+    }
     
-    
+    public void setAudioByteInput(byte[] audioByteInput){
+        this.audioByteInput = audioByteInput;
+    }
     /**
      * Applies output gain to audio data
      * @param audioData the audio to apply output gain to
      * @return the audio data with output gain
      */
-    protected short[] outputGainAudio(short[] audioData) {
+    public short[] outputGainAudio(short[] audioData) {
         short[] outputGainedAudio = new short[audioData.length];
         System.arraycopy(audioData, 0, outputGainedAudio, 0, audioData.length);
         
@@ -84,7 +88,7 @@ public abstract class Plugin {
     }
     
     
-    private byte[] convertFloatToByteArray(float[] audioData) {
+    public byte[] convertFloatToByteArray(float[] audioData) {
         byte[] byteArray = new byte[audioData.length * 4];
             ByteBuffer buffer = ByteBuffer.allocate(audioData.length * 4);
             for (float floatData : audioData) {

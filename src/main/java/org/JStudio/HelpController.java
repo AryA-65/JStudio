@@ -65,7 +65,7 @@ public class HelpController {
             new Descriptions(
                     "Plugin: Equalizer",
                     "Modifies the volume of certain frequencies by using FFT algorithm to get the amplitude of all frequencies in the audio and adjusting the amplitudes",
-                    new String[]{"Center Frequency Multiple: The multiplication factor on the range around the center frequencies of each slider"},
+                    new String[]{"Center Frequency Factor: The factor multiple on the range around the center frequencies of each slider"},
                     "Equalized Audio"
             ),
             new Descriptions(

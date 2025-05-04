@@ -9,7 +9,7 @@ import javax.sound.sampled.SourceDataLine;
 import org.JStudio.Plugins.Views.EqualizerView;
 import org.jtransforms.fft.DoubleFFT_1D;
 
-public class Equalizer {
+public class Equalizer extends Plugin{
     private AudioFormat audioFormat;
     private float sampleRate;
     private int fftSize;
@@ -25,6 +25,10 @@ public class Equalizer {
     private Stage stage;
     private StringProperty name = new SimpleStringProperty("Equalizer");
     private Thread audioThread;
+
+    public Equalizer() {
+        convertAudioFileToByteArray();
+    }
 
     public byte[] getAudioBytes() {
         return audioBytes;
@@ -56,10 +60,6 @@ public class Equalizer {
 
     public SourceDataLine getLine() {
         return line;
-    }
-
-    public StringProperty getName() {
-        return name;
     }
 
     public byte[] getProcessedBytes() {
@@ -124,10 +124,6 @@ public class Equalizer {
 
     public void setLine(SourceDataLine line) {
         this.line = line;
-    }
-
-    public void setName(StringProperty name) {
-        this.name = name;
     }
 
     public void setProcessedBytes(byte[] processedBytes) {

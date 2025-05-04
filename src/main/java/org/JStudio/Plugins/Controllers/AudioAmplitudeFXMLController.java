@@ -234,7 +234,7 @@ public class AudioAmplitudeFXMLController {
         return placeHolder;
     }
 
-    public void stopAudio() {
+    public void stopAudio() { //
         if (line != null && line.isOpen()) {
             line.flush(); // discard non called data
             line.stop(); // stop

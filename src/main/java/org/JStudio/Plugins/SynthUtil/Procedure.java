@@ -1,4 +1,4 @@
-package org.JStudio.Plugins.Synthesizer;
+package org.JStudio.Plugins.SynthUtil;
 
 public interface Procedure {
     void invoke() throws Exception;

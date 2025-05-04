@@ -23,57 +23,56 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        if (isTesting) {
-            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
-            Parent root = testLoader.load();
-
-            UnitTestingController testController = testLoader.getController();
-            testController.setStage(stage);
-
-            scene = new Scene(root);
+//        if (isTesting) {
+//            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
+//            Parent root = testLoader.load();
+//
+//            UnitTestingController testController = testLoader.getController();
+//            testController.setStage(stage);
+//
+//            scene = new Scene(root);
+////            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//            testController.setScene(scene);
+////            stage.getIcons().add(new Image("/JS_ico.png"));
+//            stage.setScene(scene);
+////            stage.initStyle(StageStyle.TRANSPARENT);
+////            stage.setResizable(true);
+//            stage.show();
+//
+//        } else {
+//            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+//            Parent root = loader.load();
+//
+//            controller = loader.getController();
+//            controller.setStage(stage);
+//
+//            scene = new Scene(root);
 //            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            testController.setScene(scene);
+//            controller.setScene(scene);
 //            stage.getIcons().add(new Image("/JS_ico.png"));
-            stage.setScene(scene);
+//            stage.setScene(scene);
 //            stage.initStyle(StageStyle.TRANSPARENT);
 //            stage.setResizable(true);
-            stage.show();
-
-            System.out.println("3429034802");
-        } else {
-            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-            Parent root = loader.load();
-
-            controller = loader.getController();
-            controller.setStage(stage);
-
-            scene = new Scene(root);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            controller.setScene(scene);
-            stage.getIcons().add(new Image("/JS_ico.png"));
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setResizable(true);
-            stage.show();
-
-            SettingsController.setController(controller);
-        }
+//            stage.show();
+//
+//            SettingsController.setController(controller);
+//        }
 
 
         /**
          * to initialize the login page
          */
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
-//        Parent root = loader.load();
-//
-//        LoginController loginController = loader.getController();
-//        loginController.setRootStage(stage);
-//
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        loginController.setRootScene(scene);
-//        stage.setResizable(false);
-//        stage.show();
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
+        Parent root = loader.load();
+
+        LoginController loginController = loader.getController();
+        loginController.setRootStage(stage);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        loginController.setRootScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     public static void main(String[] args) {

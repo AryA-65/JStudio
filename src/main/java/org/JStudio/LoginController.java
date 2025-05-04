@@ -124,17 +124,23 @@ public class LoginController {
 
         // Allow only digits in key1 and key2 fields
         key1Field.textProperty().addListener((obs, oldText, newText) -> {
-            if (!newText.matches("\\d*")) { // if all chacacters are digits 0-9
+            if (!newText.matches("\\d*")) {
                 key1Field.setText(newText.replaceAll("[^\\d]", ""));
             }
-            key1 = Integer.parseInt(newText);
+            try {
+                key1 = Integer.parseInt(newText);
+            } catch (Exception ignored) {
+            }
         });
 
         key2Field.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 key2Field.setText(newText.replaceAll("[^\\d]", ""));
             }
-            key2 = Integer.parseInt(newText);
+            try {
+                key2 = Integer.parseInt(newText);
+            } catch (Exception ignored) {
+            }
         });
     }
 

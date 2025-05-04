@@ -34,7 +34,7 @@ public class EqualizerBand extends Slider {
         //set slider options
         this.setOrientation(Orientation.VERTICAL);
         this.setMin(0);
-        this.setMax(20);
+        this.setMax(5);
         this.setPrefWidth(60);
         this.setMajorTickUnit(0.5);
         this.setShowTickLabels(true);

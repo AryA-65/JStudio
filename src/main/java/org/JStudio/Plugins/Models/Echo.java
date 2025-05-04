@@ -17,7 +17,14 @@ public class Echo extends Plugin {
     private ArrayList<short[]> echos = new ArrayList<>();
     private StringProperty name = new SimpleStringProperty("Echo");
 
-    // Creates an echo
+    /**
+     * Creates an echo plugin
+     * @param preDelay the time it takes for the echo to be heard
+     * @param decay the time it takes for a reflected wave to be inaudible
+     * @param diffusion the spacing of the reflected waves
+     * @param echoNum the number of echos
+     * @param wetDryFactor the ratio of wet and dry audio
+     */
     public Echo(int preDelay, double decay, int diffusion, int echoNum, double wetDryFactor) {
         this.preDelay = preDelay;
         this.decay = decay;
@@ -40,7 +47,7 @@ public class Echo extends Plugin {
         for (int echo = 0; echo < numOfEchos; echo++) {
             short[] loweredAudio = new short[audioToEcho.length];
             
-            // lower the audio
+            // Lower the audio
             loweredAudio = lowerAudio(audioToEcho, decayValue);
 
             echos.add(loweredAudio);

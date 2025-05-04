@@ -7,14 +7,19 @@ import javafx.beans.property.StringProperty;
  * Phaser plugin that takes in audio data and applies a phasing effect on it
  * @author Theodore Georgiou
  */
-public class PhaserPlugin extends Plugin {
+public class Phaser extends Plugin {
     private double frequency;
     private double wetDryFactor;
     private int deviation;
     private StringProperty name = new SimpleStringProperty("Phaser");
 
-    // Creates a phaser
-    public PhaserPlugin(double frequency, int deviation, double wetDryFactor) {
+    /**
+     * Creates a phaser plugin
+     * @param frequency the frequency of the phase shifts
+     * @param deviation the amplitude of the oscillating modulation function
+     * @param wetDryFactor the ratio of wet and dry audio
+     */
+    public Phaser(double frequency, int deviation, double wetDryFactor) {
         convertAudioFileToByteArray();
         this.frequency = frequency;
         this.deviation = deviation;
@@ -51,7 +56,7 @@ public class PhaserPlugin extends Plugin {
     }
     
     /**
-     * All pass filtering of the audio  data
+     * All pass filtering of the audio data
      * @param audioData the audio data to be filtered
      * @return the filtered audio data
      */
@@ -98,7 +103,7 @@ public class PhaserPlugin extends Plugin {
     }
 
     /**
-    * Assigns a value for frequency
+    * Assigns a value for deviation
     * @param deviation the value of deviation to be assigned
     */
     public void setDeviation(int deviation) {
@@ -106,8 +111,8 @@ public class PhaserPlugin extends Plugin {
     }
     
     /**
-    * Assigns a value for frequency
-    * @param wetDryFactor the value of wet/dry ratio to be assigned
+    * Assigns a value for the wet/dry audio ratio
+    * @param wetDryFactor the ratio of wet/dry to be assigned
     */
     public void setWetDryFactor(double wetDryFactor) {
         this.wetDryFactor = wetDryFactor;

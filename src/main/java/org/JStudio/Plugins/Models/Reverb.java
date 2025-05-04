@@ -16,7 +16,13 @@ public class Reverb extends Plugin {
     private ArrayList<short[]> delayLines;
     private StringProperty name = new SimpleStringProperty("Reverb");
 
-    // Creates a reverb
+    /**
+     * Creates a reverb plugin
+     * @param preDelay the time it takes for reverb to be heard
+     * @param decay the time it takes for a reflected wave to be inaudible
+     * @param diffusion the spacing of the reflected waves
+     * @param wetDryFactor the ratio of wet and dry audio
+     */
     public Reverb(int preDelay, int decay, int diffusion, double wetDryFactor) {
         this.preDelay = preDelay;
         this.decay = decay;

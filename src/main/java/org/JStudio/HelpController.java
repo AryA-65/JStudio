@@ -39,7 +39,7 @@ public class HelpController {
                     "Plugin: Flanger",
                     "Creates wooshing effect by copying the audio, and delaying it with modulated delays",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Deviation: The amplitude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
                     "Flanged Audio"
@@ -48,7 +48,7 @@ public class HelpController {
                     "Plugin: Chorus",
                     "Creates multiple instrument/voice effect by copying the audio, and delaying it with modulated delays",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Deviation: The amplitude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
                     "Chorus Audio"
@@ -57,7 +57,7 @@ public class HelpController {
                     "Plugin: Phaser",
                     "Creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts",
                     new String[]{"Frequency: The rate at which the delays are modulated",
-                            "Deviation: The ampliytude of the oscillating modulation function",
+                            "Deviation: The amplitude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
                     "Phased Audio"

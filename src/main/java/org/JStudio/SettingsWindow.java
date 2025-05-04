@@ -33,7 +33,7 @@ public class SettingsWindow extends Stage{
             SettingsController.setMainStage(this);
 
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 640, 480);
+            scene = new Scene(root, 600, 400);
             updateStyle();
             sizeToScene();
             setScene(scene);

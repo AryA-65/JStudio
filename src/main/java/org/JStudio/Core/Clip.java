@@ -1,6 +1,8 @@
 package org.JStudio.Core;
 
-public abstract class Clip {
+import java.io.Serializable;
+
+public abstract class Clip implements Serializable {
     private double position, length;
 
     Clip(double position) {

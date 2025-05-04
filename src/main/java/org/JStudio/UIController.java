@@ -70,9 +70,9 @@ public class UIController {
     @FXML
     private Button reverbBtn, flangerBtn, chorusBtn, echoBtn, phaserBtn, equalizerBtn, pianoBtn, synthPianoBtn, stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
 
-    private SystemMonitor sm; //make this a static class that runs
+    private SystemMonitor sm; //make this a static class that runs in the background and closes
 
-    private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, secondaryWidth, secondaryHeight;
+    private double xOffset = 0, yOffset = 0, xResize = 0, yResize = 0, secondaryWidth, secondaryHeight;
     private boolean resizing = false;
 
     public static BooleanProperty snap = new SimpleBooleanProperty(true);

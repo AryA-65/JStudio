@@ -5,9 +5,10 @@ import org.JStudio.Plugins.AliasingDistortion;
 import org.JStudio.Plugins.Distortion;
 import org.JStudio.Plugins.HarmonicDistortion;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Song {
+public class Song implements Serializable {
     private StringProperty songName = new SimpleStringProperty();
     public static FloatProperty bpm = new SimpleFloatProperty(120f);
     private final byte MIN_TRACKS = 16, MAX_TRACKS = 64;

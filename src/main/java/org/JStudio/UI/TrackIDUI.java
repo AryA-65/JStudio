@@ -19,7 +19,6 @@ public class TrackIDUI extends Pane {
     private final Track track;
     private final TextField trackName = new TextField();
     private final MutedBTN mutedBtn;
-//    private final UIController reference;
     private PluginRenderer renderer;
 
     public static final List<String> MATTE_COLORS = List.of(

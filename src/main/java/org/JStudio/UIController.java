@@ -70,9 +70,9 @@ public class UIController {
     @FXML
     private Button reverbBtn, flangerBtn, chorusBtn, echoBtn, phaserBtn, equalizerBtn, pianoBtn, synthPianoBtn, stereoBtn, butterworthBtn, basicFilterBtn, amplitudeBtn, synthesizerBtn;
 
-    private SystemMonitor sm; //make this a static class that runs
+    private SystemMonitor sm; //make this a static class that runs in the background and closes
 
-    private double xOffset = 0, yOffset = 0, startX = 0, xResize = 0, yResize = 0, initialWidth, initialHeight;
+    private double xOffset = 0, yOffset = 0, xResize = 0, yResize = 0, secondaryWidth, secondaryHeight;
     private boolean resizing = false;
 
     public static BooleanProperty snap = new SimpleBooleanProperty(true);
@@ -83,8 +83,18 @@ public class UIController {
 
     public void setStage(Stage stage) {
         rootStage = stage;
-        rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
-        rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+
+        rootStage.setOnShown(e -> {
+            rootStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+            rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+            rootStage.setX(0);
+            rootStage.setY(0);
+
+            secondaryHeight = Screen.getPrimary().getVisualBounds().getHeight();
+            secondaryWidth = Screen.getPrimary().getVisualBounds().getWidth();
+
+            setSplitRatio();
+        });
     }
 
     public Stage getStage() {return rootStage;}
@@ -238,9 +248,6 @@ public class UIController {
         snap_btn.getParent().getStyleClass().add("iactive");
         song_name.setText("New Song");
 
-        initialHeight = Screen.getPrimary().getVisualBounds().getHeight() * .75;
-        initialWidth = Screen.getPrimary().getVisualBounds().getWidth() * .75;
-
         metronome_control.getParent().setOnMousePressed(e -> {
             if (metronome_control.getParent().getStyleClass().contains("iactive")) {
                 metronome_control.getParent().getStyleClass().remove("iactive");
@@ -293,15 +300,15 @@ public class UIController {
 
         grid_root.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
             if (resizing) {
-                rootStage.setWidth(initialWidth + (event.getSceneX() - xResize));
-                rootStage.setHeight(initialHeight + (event.getSceneY() - yResize));
+                rootStage.setWidth(secondaryWidth + (event.getSceneX() - xResize));
+                rootStage.setHeight(secondaryHeight + (event.getSceneY() - yResize));
             }
         });
 
         grid_root.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
             if (resizing) {
-                initialWidth = rootStage.getWidth();
-                initialHeight = rootStage.getHeight();
+                secondaryWidth = rootStage.getWidth();
+                secondaryHeight = rootStage.getHeight();
                 setSplitRatio();
                 resizing = false;
                 rootStage.getScene().setCursor(Cursor.DEFAULT);
@@ -320,8 +327,12 @@ public class UIController {
                 rootStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
                 maxim_btn.setImage(new Image("/icons/minimize.png"));
             } else {
-                rootStage.setWidth(initialWidth);
-                rootStage.setHeight(initialHeight);
+                rootStage.setX(0);
+                rootStage.setY(0);
+                secondaryWidth = Screen.getPrimary().getVisualBounds().getWidth() * .75;
+                secondaryHeight = Screen.getPrimary().getVisualBounds().getHeight() * .75;
+                rootStage.setWidth(secondaryWidth);
+                rootStage.setHeight(secondaryHeight);
                 maxim_btn.setImage(new Image("/icons/maximize.png"));
             }
             setSplitRatio();
@@ -349,7 +360,6 @@ public class UIController {
         });
 
         tracks_scrollpane.vvalueProperty().bindBidirectional(track_id_scrollpane.vvalueProperty());
-
         tracks_scrollpane.hvalueProperty().bindBidirectional(timeline_scrollpane.hvalueProperty());
 
         for (Track track : song.getTracks()) {
@@ -358,11 +368,9 @@ public class UIController {
             channel_rack.getChildren().add(new ChannelUI(track));
         }
 
-        //Test functions
         timeline_canvas.setWidth(Song.bpm.get() * 32);
-//        System.out.println(curUser);
 
-        channel_rack.getChildren().add(0, new MixerUI()); //test
+        channel_rack.getChildren().add(0, new MixerUI());
 
         song_name.textProperty().unbindBidirectional(song.getSongName());
 
@@ -411,23 +419,19 @@ public class UIController {
         audio_vis_top.setClip(clipWave);
     }
 
-    protected void setSplitRatio() {
-        System.out.println("Set ratio");
-        double ratio = ((splitpane.getHeight() - 285) / splitpane.getHeight());
-        splitpane.setDividerPosition(0, ratio);
+    private void setSplitRatio() {
+        Platform.runLater(() -> {
+            double totalHeight = splitpane.getHeight();
+            if (totalHeight <= 0) return;
+            double ratio = (totalHeight - 285) / totalHeight;
+            splitpane.setDividerPosition(0, Math.max(0.0, Math.min(1.0, ratio)));
+        });
     }
 
-    public void setScreenSize() {
-        if (rootStage != null) {
-            rootStage.setWidth(initialWidth);
-            rootStage.setHeight(initialHeight);
-        }
-    }
-
-    public void filterAudioSections(String searchText) {
+    private void filterAudioSections(String searchText) {
         if (searchText == null || searchText.trim().isEmpty()) {
             for (Node node : tab_vbox.getChildren()) {
-                if (node instanceof VBox section) {
+                if (node instanceof SectionUI section) {
                     section.setVisible(true);
                     section.setManaged(true);
 
@@ -448,22 +452,23 @@ public class UIController {
 
         searchText = searchText.toLowerCase().replaceFirst("[?]", ""); // Remove prefix for comparison
 
-        for (Node node : tab_vbox.getChildren()) {
-            if (node instanceof VBox section) {
-                String sectionName = section.getId().toLowerCase();
+        for (var node : tab_vbox.getChildren()) {
+
+            if (node instanceof SectionUI section) {
+                String sectionName = section.getSectionName().toLowerCase();
                 VBox fileSectionList = (VBox) section.getChildren().get(1);
 
                 boolean sectionMatches = sectionName.contains(searchText);
                 boolean fileMatches = false;
 
                 for (Node fileNode : fileSectionList.getChildren()) {
-                    if (fileNode instanceof VBox fileVBox) {
-                        String fileName = fileVBox.getId().toLowerCase();
+                    if (fileNode instanceof FileUI file) {
+                        String fileName = file.getFileName().toLowerCase();
                         boolean match = fileName.contains(searchText);
 
                         if (!specificSearch) {
-                            fileVBox.setVisible(match);
-                            fileVBox.setManaged(match);
+                            file.setVisible(match);
+                            file.setManaged(match);
                         }
 
                         if (match) fileMatches = true;

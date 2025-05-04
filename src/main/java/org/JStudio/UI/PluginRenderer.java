@@ -2,6 +2,7 @@ package org.JStudio.UI;
 
 import javafx.application.Platform;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import org.JStudio.Core.Track;
@@ -38,7 +39,7 @@ public class PluginRenderer {
         }
 
         double startX = 50;
-        double startY = 100;
+        double startY = pluginPane.getHeight() / 2 - 16;
 
         PipelineNode inputNode = new PipelineNode(track);
         inputNode.setLayoutX(startX);

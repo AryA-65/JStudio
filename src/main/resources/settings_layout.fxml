@@ -18,7 +18,7 @@
          <children>
             <Label text="Settings" wrapText="true">
                <font>
-                  <Font name="Inter 24pt ExtraBold" size="24.0" />
+                  <Font name="System Bold" size="35.0" />
                </font>
             </Label>
             <HBox alignment="TOP_RIGHT" prefWidth="200.0" HBox.hgrow="ALWAYS">
@@ -59,33 +59,52 @@
                   <Font name="Inter 24pt Regular" size="18.0" />
                </font>
             </Label>
-            <RadioButton fx:id="lightRadio" mnemonicParsing="false" selected="true" text="Light Mode">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </RadioButton>
-            <RadioButton fx:id="darkRadio" mnemonicParsing="false" text="Dark Mode">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </RadioButton>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="5.0">
+            <VBox prefHeight="31.0" prefWidth="590.0" spacing="5.0">
                <children>
-                  <MenuButton mnemonicParsing="false" text="Font">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                     </items>
-                  </MenuButton>
-                  <Label text="*This style does not support custom mode and font">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Label>
+                  <RadioButton fx:id="lightRadio" mnemonicParsing="false" selected="true" text="Light Mode">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="darkRadio" mnemonicParsing="false" text="Dark Mode">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </RadioButton>
                </children>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="5.0">
                <VBox.margin>
                   <Insets left="5.0" right="5.0" />
                </VBox.margin>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <VBox spacing="5.0">
+                     <children>
+                        <MenuButton fx:id="noteColourSelector" mnemonicParsing="false" text="Note Colour">
+                          <items>
+                            <MenuItem fx:id="blueNote" mnemonicParsing="false" text="Blue" />
+                            <MenuItem fx:id="greenNote" mnemonicParsing="false" text="Green" />
+                              <MenuItem fx:id="redNote" mnemonicParsing="false" text="Red" />
+                          </items>
+                        </MenuButton>
+                        <Label fx:id="noteColourLabel" text="Selected: Blue" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0">
+                     <children>
+                        <MenuButton fx:id="waveColourSelector" mnemonicParsing="false" text="Wave Colour">
+                          <items>
+                            <MenuItem fx:id="blueWave" mnemonicParsing="false" text="Blue" />
+                            <MenuItem fx:id="greenWave" mnemonicParsing="false" text="Green" />
+                              <MenuItem fx:id="redWave" mnemonicParsing="false" text="Red" />
+                          </items>
+                        </MenuButton>
+                        <Label fx:id="waveColourLabel" text="Selected: Blue" />
+                     </children>
+                  </VBox>
+               </children>
             </HBox>
          </children>
          <VBox.margin>
@@ -99,6 +118,7 @@
                   <Font name="Inter 24pt Regular" size="18.0" />
                </font>
             </Label>
+            <Button fx:id="helpButton" mnemonicParsing="false" text="User Guide" />
             <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets left="5.0" right="5.0" />
@@ -109,16 +129,12 @@
                   <Insets left="5.0" right="5.0" />
                </VBox.margin>
             </Label>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
             <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets left="5.0" right="5.0" />
                </VBox.margin>
             </ImageView>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Button fx:id="helpButton" mnemonicParsing="false" text="HELP GUIDE" />
-               </children>
-            </HBox>
          </children>
          <VBox.margin>
             <Insets left="5.0" right="5.0" />

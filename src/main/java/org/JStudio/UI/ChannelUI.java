@@ -15,7 +15,6 @@ import org.JStudio.Core.Mixer;
 import org.JStudio.Core.Track;
 
 public class ChannelUI extends VBox {
-    private final Object input;
     private final Slider vol = new Slider(0,100,100);
 //    private final Node activeBtn = createActiveBTN();
     private final Knob pitch = new Knob(24, false, 0, Knob.Type.BIP), pan = new Knob(32, false, 0, Knob.Type.BIP);
@@ -29,7 +28,6 @@ public class ChannelUI extends VBox {
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
     public ChannelUI(Object input) {
-        this.input = input;
 
         setPrefSize(32, 256);
         setId("track_channel");

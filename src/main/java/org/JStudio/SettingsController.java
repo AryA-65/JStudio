@@ -12,6 +12,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 
 public class SettingsController {
     private static boolean style; // false means light, true means dark
@@ -22,14 +25,23 @@ public class SettingsController {
     private static RadioButton selected;
     private static UIController controller;
     private static SettingsWindow window;
-
+    private static String noteColour = "Blue";
+    private static String waveColour = "Blue";
+    @FXML
+    private static MenuButton noteColourSelector;
+    @FXML
+    private static MenuButton waveColourSelector;
+    @FXML
+    private MenuItem blueNote, greenNote, redNote, blueWave, greenWave, redWave;
+    @FXML
+    private Label noteColourLabel, waveColourLabel;
     @FXML
     private Button helpButton;
-
     @FXML
     RadioButton lightRadio, darkRadio;
 
     public void initialize() {
+        // Style mode toggling
         group = new ToggleGroup();
         lightRadio.setToggleGroup(group);
         darkRadio.setToggleGroup(group);
@@ -60,7 +72,60 @@ public class SettingsController {
             updateMainUIStyle();
             updateSettingsUIStyle();
         });
-
+        
+        // Wave and note colouring
+        switch (noteColour) {
+            case "Blue":
+                noteColourLabel.setText("Selected: Blue");
+                break;
+            case "Green":
+                noteColourLabel.setText("Selected: Green");
+                break;
+            case "Red":
+                noteColourLabel.setText("Selected: Red");
+                break;
+        }
+        
+        switch (waveColour) {
+            case "Blue":
+                waveColourLabel.setText("Selected: Blue");
+                break;
+            case "Green":
+                waveColourLabel.setText("Selected: Green");
+                break;
+            case "Red":
+                waveColourLabel.setText("Selected: Red");
+                break;
+        }    
+        
+        blueNote.setOnAction(event -> {
+            noteColour = "Blue";
+            noteColourLabel.setText("Selected: Blue");
+        });
+        greenNote.setOnAction(event -> {
+            noteColour = "Green";
+            noteColourLabel.setText("Selected: Green");
+        });
+        redNote.setOnAction(event -> {
+            noteColour = "Red";
+            noteColourLabel.setText("Selected: Red");
+        });
+        
+        // Wave colouring
+        blueWave.setOnAction(event -> {
+            waveColour = "Blue";
+            waveColourLabel.setText("Selected: Blue");
+        });
+        greenWave.setOnAction(event -> {
+            waveColour = "Green";
+            waveColourLabel.setText("Selected: Green");
+        });
+        redWave.setOnAction(event -> {
+            waveColour = "Red";
+            waveColourLabel.setText("Selected: Red");
+        });
+        
+        // Help menu
         helpButton.setOnMouseClicked(event -> {
             helpButton.setDisable(true);
             Stage childStage = new Stage();
@@ -87,8 +152,6 @@ public class SettingsController {
                 helpButton.setDisable(false);
             }
         });
-
-        //todo implement the other funcitons
     }
 
     public static boolean getStyle() {
@@ -119,4 +182,11 @@ public class SettingsController {
         mainStage = stage;
     }
 
+    public static String getNoteColor() {
+        return noteColour;
+    }
+    
+    public static String getWaveColor(){
+        return waveColour;
+    }
 }

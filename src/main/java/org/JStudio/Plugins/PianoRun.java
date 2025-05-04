@@ -16,8 +16,7 @@ public class PianoRun {
             //creates a new stage
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setFullScreen(true);
-            stage.setResizable(false);
+            stage.setMaximized(true);
             
             //loads the fxml file
             Parent root = FXMLLoader.load(ClassLoader.getSystemResource("other_fxmls/Piano.fxml"));

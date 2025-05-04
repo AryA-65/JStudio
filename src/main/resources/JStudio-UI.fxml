@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
+<GridPane fx:id="grid_root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.JStudio.UIController">
   <columnConstraints>
     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -110,7 +110,7 @@
                               </TextField>
                               <ScrollPane hbarPolicy="NEVER" prefHeight="940.0" prefWidth="256.0" vbarPolicy="NEVER">
                                  <content>
-                                    <VBox fx:id="tab_vbox" prefWidth="254.0">
+                                    <VBox fx:id="tab_vbox" prefWidth="254.0" spacing="15.0">
                                        <padding>
                                           <Insets bottom="15.0" />
                                        </padding>
@@ -153,7 +153,7 @@
                   </Tab>
               </tabs>
             </TabPane>
-            <SplitPane fx:id="splitpane" dividerPositions="0.57" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0">
+            <SplitPane fx:id="splitpane" dividerPositions="0.7312138728323699" orientation="VERTICAL" prefHeight="1038.0" prefWidth="1664.0" HBox.hgrow="ALWAYS">
                <items>
                   <HBox id="track_section" fx:id="tracks_channels" prefHeight="100.0" prefWidth="200.0">
                      <children>
@@ -182,7 +182,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <TabPane fx:id="channel_pipeline" prefHeight="128.0" prefWidth="1662.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="channel_pipeline" maxHeight="281.0" prefHeight="281.0" prefWidth="1662.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Channels">
                            <content>

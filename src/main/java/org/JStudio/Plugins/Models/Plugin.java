@@ -31,6 +31,7 @@ public abstract class Plugin {
     protected double outputGain;
     protected SourceDataLine line;
     private Thread playingThread;
+    private int numOfChannels;
 
     public Plugin() {
         outputGain = 1;
@@ -95,6 +96,10 @@ public abstract class Plugin {
             filePathName = file.getAbsolutePath();
             fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+            AudioFormat audioFormat = audioInputStream.getFormat();
+            numOfChannels = audioFormat.getChannels();
+
             audioFloatInput = convertByteToFloatArray(originalAudio);
             audioByteInput = convertFloatToByteArray(audioFloatInput);
 
@@ -102,7 +107,7 @@ public abstract class Plugin {
 //            convert2DByteTo2DFloat(convert2DFloatTo2DByte(floatArray));
 //            filePathName = file.getAbsolutePath();
 //            originalAudio = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
+        } catch (IOException | UnsupportedAudioFileException e) {
             System.out.println(e);
         }
     }
@@ -169,7 +174,7 @@ public abstract class Plugin {
 
         playingThread = new Thread(() -> {
             try {
-                AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
+                AudioFormat audioFormat = new AudioFormat(44100, 16, numOfChannels, true, false);
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
                 line = (SourceDataLine) AudioSystem.getLine(info);
                 line.open(audioFormat);

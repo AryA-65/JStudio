@@ -38,8 +38,7 @@ public class Main extends Application {
 //            stage.initStyle(StageStyle.TRANSPARENT);
 //            stage.setResizable(true);
             stage.show();
-
-            System.out.println("app lunched");
+            
         } else {
             FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
             Parent root = loader.load();

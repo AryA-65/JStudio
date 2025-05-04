@@ -139,6 +139,7 @@ public class FlangerFXMLController {
         saveButton.setOnAction(e -> {
             flanger.setModulationEffect();
             flanger.stopAudio();
+            flanger.setFloatOutput(flanger.convertByteToFloatArray(flanger.getFinalAudio()));
             FlangerFXMLController.window.close();
         });
         

@@ -33,7 +33,7 @@ public class HelpController {
                             "Diffusion: The spacing of the reflected sound waves", "Number of Echos: The number of echos heard",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
-                    "Echoed audio"
+                    "Echoed Audio"
             ),
             new Descriptions(
                     "Plugin: Flanger",
@@ -42,7 +42,7 @@ public class HelpController {
                             "Deviation: The ampliytude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
-                    "Flanged audio"
+                    "Flanged Audio"
             ),
             new Descriptions(
                     "Plugin: Chorus",
@@ -51,7 +51,7 @@ public class HelpController {
                             "Deviation: The ampliytude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
-                    "Chorus audio"
+                    "Chorus Audio"
             ),
             new Descriptions(
                     "Plugin: Phaser",

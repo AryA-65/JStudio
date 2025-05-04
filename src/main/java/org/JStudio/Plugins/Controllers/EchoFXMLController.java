@@ -188,6 +188,7 @@ public class EchoFXMLController {
         saveButton.setOnAction(e -> {
             echo.setEchoEffect();
             echo.stopAudio();
+            echo.setFloatOutput(echo.convertByteToFloatArray(echo.getFinalAudio()));
             EchoFXMLController.window.close();
         });
         

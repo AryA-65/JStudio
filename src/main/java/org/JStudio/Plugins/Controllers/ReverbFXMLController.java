@@ -165,6 +165,7 @@ public class ReverbFXMLController {
             diffusionKnob.setValue(0.2);
             wetDryKnob.setValue(0.5);
             outputGainKnob.setValue(1);
+            
 //            preDelaySlider.setValue(1);
 //            decayTimeSlider.setValue(1);
 //            diffusionSlider.setValue(2);
@@ -174,6 +175,7 @@ public class ReverbFXMLController {
         saveButton.setOnAction(e -> {
             reverb.setReverbEffect();
             reverb.stopAudio();
+            reverb.setFloatOutput(reverb.convertByteToFloatArray(reverb.getFinalAudio()));
             ReverbFXMLController.window.close();
         });
         

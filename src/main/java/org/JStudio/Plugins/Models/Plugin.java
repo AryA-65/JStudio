@@ -17,16 +17,16 @@ import java.nio.file.Files;
  * Abstract plugin class that handles basic use (playing, stopping, array
  * conversions)
  *
- * @author Theo, Ahmet
+ * @author Theo, Ahmet, Alex
  */
 public abstract class Plugin {
-
     protected String filePathName;
     protected String fileName;
     protected byte[] originalAudio;
     protected byte[] finalAudio;
     protected float[] audioFloatInput;
     protected byte[] audioByteInput;
+    protected float[] floatOutput;
     protected double outputGain;
     protected SourceDataLine line;
     private Thread playingThread;
@@ -37,6 +37,10 @@ public abstract class Plugin {
     
     public byte[] getAudioByteInput(){
         return audioByteInput;
+    }
+
+    public void setFloatOutput(float[] floatOutput) {
+        this.floatOutput = floatOutput;
     }
     
     public void setAudioByteInput(byte[] audioByteInput){

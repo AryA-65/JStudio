@@ -140,6 +140,7 @@ public class PhaserFXMLController {
         saveButton.setOnAction(e -> {
             phaser.setPhaserEffect();
             phaser.stopAudio();
+            phaser.setFloatOutput(phaser.convertByteToFloatArray(phaser.getFinalAudio()));
             PhaserFXMLController.window.close();
         });
         

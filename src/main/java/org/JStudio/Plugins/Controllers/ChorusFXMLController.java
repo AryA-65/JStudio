@@ -139,6 +139,7 @@ public class ChorusFXMLController {
         saveButton.setOnAction(e -> {
             chorus.setModulationEffect();
             chorus.stopAudio();
+            chorus.setFloatOutput(chorus.convertByteToFloatArray(chorus.getFinalAudio()));
             ChorusFXMLController.window.close();
         });
         

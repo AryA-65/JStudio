@@ -1,6 +1,5 @@
 package org.JStudio.Plugins.Models;
 
-import org.JStudio.TESTING.PluginTesting;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

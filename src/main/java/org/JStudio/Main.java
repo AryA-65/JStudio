@@ -70,6 +70,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(new Image("/JS_ico.png"));
         loginController.setRootScene(scene);
         stage.setResizable(false);
         stage.show();

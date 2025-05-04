@@ -15,7 +15,12 @@ public class Modulation extends Plugin{
     private int deviation;
     private StringProperty name = new SimpleStringProperty();
 
-    // Creates a modulator
+    /**
+     * Creates a modulator plugin (flanger or chorus)
+     * @param frequency the frequency of the delays
+     * @param deviation the amplitude of the oscillating modulation function
+     * @param wetDryFactor the ratio of wet and dry audio
+     */
     public Modulation(double frequency, int deviation, double wetDryFactor) {
         convertAudioFileToByteArray();
         this.frequency = frequency;
@@ -77,7 +82,7 @@ public class Modulation extends Plugin{
     }
 
     /**
-    * Assigns a value for frequency
+    * Assigns a value for deviation
     * @param deviation the value of deviation to be assigned
     */
     public void setDeviation(int deviation) {
@@ -85,8 +90,8 @@ public class Modulation extends Plugin{
     }
     
     /**
-    * Assigns a value for frequency
-    * @param wetDryFactor the value of wet/dry ratio to be assigned
+    * Assigns a value for the wet/dry audio ratio
+    * @param wetDryFactor the ratio of wet/dry to be assigned
     */
     public void setWetDryFactor(double wetDryFactor) {
         this.wetDryFactor = wetDryFactor;

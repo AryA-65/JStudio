@@ -129,6 +129,7 @@ public class UserDataController {
 
     /**
      * Gets all the saved users
+     * @return the list of all users
      */
     public HashMap<String, User> getUsers() {
         return users;

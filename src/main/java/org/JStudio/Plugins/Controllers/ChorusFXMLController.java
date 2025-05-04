@@ -3,7 +3,6 @@ package org.JStudio.Plugins.Controllers;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
 import org.JStudio.Plugins.Views.ChorusStage;
@@ -15,18 +14,8 @@ import static org.JStudio.UI.Knob.Type.REG;
  * @author Theodore Georgiou
  */
 public class ChorusFXMLController {
-//    @FXML
-//    private Slider frequencySlider;
-//    @FXML
-//    private Slider deviationSlider;
-//    @FXML
-//    private Slider wetDrySlider;
     @FXML
-    private Button resetButton;
-    @FXML
-    private Button playButton;
-    @FXML
-    private Button saveButton;
+    private Button resetButton, playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
@@ -78,44 +67,6 @@ public class ChorusFXMLController {
             chorus.setOutputGain(newOutputGain.doubleValue());
         });
         
-//        frequencySlider.setMin(1);
-//        frequencySlider.setMax(10);
-//        frequencySlider.setShowTickMarks(true);
-//        frequencySlider.setMajorTickUnit(1);
-//        frequencySlider.setMinorTickCount(0);
-//        frequencySlider.setShowTickLabels(true);
-//        frequencySlider.setValue(2);
-//        
-//        deviationSlider.setMin(1);
-//        deviationSlider.setMax(10);
-//        deviationSlider.setShowTickMarks(true);
-//        deviationSlider.setMajorTickUnit(1);
-//        deviationSlider.setMinorTickCount(0);
-//        deviationSlider.setShowTickLabels(true);
-//        deviationSlider.setSnapToTicks(true);
-//        deviationSlider.setValue(2);
-//        
-//        wetDrySlider.setMin(1);
-//        wetDrySlider.setMax(10);
-//        wetDrySlider.setShowTickMarks(true);
-//        wetDrySlider.setMajorTickUnit(1);
-//        wetDrySlider.setMinorTickCount(0);
-//        wetDrySlider.setShowTickLabels(true);
-//        wetDrySlider.setValue(5);
-//        
-//        // Set listeners and actions for sliders and buttons
-//        frequencySlider.valueProperty().addListener((ObservableValue<? extends Number> frequency, Number oldFrequency, Number newFrequency) -> {
-//            chorus.setFrequency(newFrequency.intValue()*10000);
-//        });
-//        
-//        deviationSlider.valueProperty().addListener((ObservableValue<? extends Number> deviation, Number oldDeviation, Number newDeviation) -> {
-//            chorus.setDeviation(newDeviation.intValue()*100);
-//        });
-//        
-//        wetDrySlider.valueProperty().addListener((ObservableValue<? extends Number> decayTime, Number oldWetDryFactor, Number newWetDryFactor) -> {
-//            chorus.setWetDryFactor(newWetDryFactor.doubleValue()/10);
-//        });
-        
         // Play the audio
         playButton.setOnAction(e -> {
             chorus.setModulationEffect();
@@ -131,11 +82,9 @@ public class ChorusFXMLController {
             deviationKnob.setValue(0.2);
             wetDryKnob.setValue(0.5);
             outputGainKnob.setValue(1);
-//            frequencySlider.setValue(2);
-//            deviationSlider.setValue(2);
-//            wetDrySlider.setValue(5);
         });
         
+        // Saving
         saveButton.setOnAction(e -> {
             chorus.setModulationEffect();
             chorus.stopAudio();
@@ -143,6 +92,7 @@ public class ChorusFXMLController {
             ChorusFXMLController.window.close();
         });
         
+        // Closing the plugin
         ChorusFXMLController.window.setOnCloseRequest(e ->{
             if (chorus.getAudioLine() != null) {
                 chorus.getAudioLine().close();

@@ -30,6 +30,7 @@ public class PopUpController {
         dialog.getDialogPane().getButtonTypes().addAll(addButton);
 
         TextField inputNameField = new TextField();
+        inputNameField.setId("popupTextField");
         inputNameField.setPromptText("Name");
 
         VBox content = new VBox(inputNameField);

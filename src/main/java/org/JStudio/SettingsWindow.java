@@ -13,6 +13,7 @@ import javafx.stage.Stage;
  */
 public class SettingsWindow extends Stage{
     private Scene scene;
+    
     /**
      * Creates the stage
      */

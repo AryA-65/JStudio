@@ -1,5 +1,6 @@
 package org.JStudio.Plugins.Models;
 
+import org.JStudio.TESTING.PluginTesting;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ public class PluginTest {
         String filePathName9 = "\\src\\main\\resources\\JUnitAudioTestFiles\\white-noise-sweep-up-85276.wav";
         String filePathName10 = "\\src\\main\\resources\\JUnitAudioTestFiles\\woosh-13225.wav";
         
-        Reverb plugin = new Reverb(1,1,1,1);
+        PluginTesting plugin = new PluginTesting();
         assertEquals(plugin.convertFileToByteTestingMethod(filePathName1),plugin.convertFileToByteTestingMethod(filePathName1));
         assertEquals(plugin.convertFileToByteTestingMethod(filePathName2),plugin.convertFileToByteTestingMethod(filePathName2));
         assertEquals(plugin.convertFileToByteTestingMethod(filePathName3),plugin.convertFileToByteTestingMethod(filePathName3));

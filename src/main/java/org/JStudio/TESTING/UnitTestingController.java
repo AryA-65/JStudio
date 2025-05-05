@@ -6,17 +6,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Models.Plugin;
-import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.Spectrograph;
 
 public class UnitTestingController extends Plugin {
 
     @FXML
     private Label fileNameLabel;
-    @FXML
-    private Tab SpectrographBtn1, SpectrographBtn2;
-    @FXML
-    private Tab dimBtn1, dimBtn2;
     @FXML
     private Slider leftSlider, rightSlider;
     @FXML
@@ -29,16 +24,27 @@ public class UnitTestingController extends Plugin {
     private Canvas effectCanvas, normalCanvas;
 
     // Audio Processing
-    private Spectrograph spectrograph;
-
+    private Spectrograph originalSpectrograph;
+    private Spectrograph modifiedSpectrograph;
     public String chosenEffect;
     private Stage rootStage;
     private Scene rootScene;
 
+
+
+    public byte[] originalArray;
+    public byte[] modifiedArray;
+
+    public void setArrays(byte[] originalArray, byte[] modifiedArray) {
+        this.originalArray = originalArray;
+        this.modifiedArray = modifiedArray;
+    }
+
     @FXML
     private void initialize() {
         leftSlider.valueProperty().bindBidirectional(rightSlider.valueProperty());
-        spectrograph = new Spectrograph(normalCanvas);
+        originalSpectrograph = new Spectrograph();
+        modifiedSpectrograph = new Spectrograph();
 
         leftProgressBar.setVisible(false);
         rightProgressBar.setVisible(false);
@@ -51,24 +57,34 @@ public class UnitTestingController extends Plugin {
             chosenEffect = newValue;
         });
 
-
-        loadBtn.setOnMouseClicked(event -> {
-            convertAudioFileToByteArray();
-            fileNameLabel.setText("File Name: " + getFileName());
-            computeBtn.setDisable(false);
-        });
-
         computeBtn.setOnMouseClicked(event -> {
-            spectrograph.computeFFTFrames(originalAudio, leftProgressBar);
             leftProgressBar.setVisible(true);
             rightProgressBar.setVisible(true);
+
+            originalSpectrograph.computeFFTFrames(originalArray, leftProgressBar);
+            modifiedSpectrograph.computeFFTFrames(modifiedArray, rightProgressBar);
+
             playBtn.setDisable(false);
             pauseBtn.setDisable(false);
             resetBtn.setDisable(false);
         });
-        playBtn.setOnAction(event -> spectrograph.startAnimation());
-        pauseBtn.setOnAction(event -> spectrograph.stopAnimation());
-        resetBtn.setOnAction(event -> spectrograph.reset());
+
+
+        playBtn.setOnAction(event -> {
+            originalSpectrograph.startAnimation(normalCanvas);
+            modifiedSpectrograph.startAnimation(effectCanvas);
+        });
+
+        pauseBtn.setOnAction(event -> {
+            originalSpectrograph.stopAnimation();
+            modifiedSpectrograph.stopAnimation();
+        });
+
+        resetBtn.setOnAction(event -> {
+            originalSpectrograph.reset(normalCanvas);
+            modifiedSpectrograph.reset(effectCanvas);
+        });
+
     }
 
     public void setStage(Stage stage) {
@@ -78,4 +94,5 @@ public class UnitTestingController extends Plugin {
     public void setScene(Scene scene)  {
         this.rootScene = scene;
     }
+
 }

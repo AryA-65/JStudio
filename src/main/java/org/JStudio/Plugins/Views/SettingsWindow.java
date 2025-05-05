@@ -1,4 +1,4 @@
-package org.JStudio;
+package org.JStudio.Plugins.Views;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.JStudio.SettingsController;
 
 /**
  * Settings window

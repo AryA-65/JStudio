@@ -11,14 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.JStudio.Plugins.Views.SpectrographStage;
+import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import org.JStudio.Utils.AlertBox;
-import org.JStudio.Utils.Spectrograph;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -30,24 +28,17 @@ public class AudioAmplitudeFXMLController {
     Button exportButton, playButton;
     @FXML
     Canvas waveformCanvas;
-
-    private final Knob knob = new Knob(50, false, 0, REG);
-
-    private double[] audioData; // original audio file
-
-    private File audioFile;
-    private double[] processedAudioData;
-
-    public byte[] buffer;
-    public byte[] outputArray;
-
-    private double amp;
-
-    private SourceDataLine line;
     @FXML
     VBox vbox;
 
-    private Spectrograph spectrograph;
+    private final Knob knob = new Knob(50, false, 0, REG);
+
+    private File audioFile;
+    private byte[] audioBytesOriginal;   // Raw input bytes
+    private byte[] audioBytesProcessed;  // Processed bytes
+    private double amp;
+
+    private SourceDataLine line;
 
     public void initialize() {
         knob.setValues(-5, 5);
@@ -62,33 +53,46 @@ public class AudioAmplitudeFXMLController {
         handleImportAudio();
 
         playButton.setOnAction(event -> {
-            if (audioFile == null || processedAudioData.length == 0) {
+            if (audioFile == null || audioBytesProcessed == null || audioBytesProcessed.length == 0) {
                 AlertBox.display("Playback Error", "No audio file loaded.");
                 return;
             }
-            if (audioData != null) {
-                playButton.setDisable(true);
-                playAudio();
 
-                PauseTransition delay = new javafx.animation.PauseTransition(Duration.seconds(3));
-                delay.setOnFinished(e -> playButton.setDisable(false));
-                delay.play();
-            }
+            playButton.setDisable(true);
+            playAudio();
+
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            delay.setOnFinished(e -> playButton.setDisable(false));
+            delay.play();
         });
-
 
         exportButton.setOnAction(event -> {
             stopAudio();
             getProcessedAudio();
+
+            if (SettingsController.isTesting()) {
+                stage.close();
+                SpectrographStage spectrographStage = new SpectrographStage(audioBytesOriginal, audioBytesProcessed);
+                SettingsController.setTesting(false);
+                spectrographStage.show();
+            }
         });
     }
 
     private void applyAmplitudeChange() {
-        if (audioData == null) return;
+        if (audioBytesOriginal == null) return;
 
-        processedAudioData = new double[audioData.length];
-        for (int i = 0; i < audioData.length; i++) {
-            processedAudioData[i] = audioData[i] * amp;
+        audioBytesProcessed = new byte[audioBytesOriginal.length];
+
+        for (int i = 0; i < audioBytesOriginal.length; i += 2) {
+            int low = audioBytesOriginal[i] & 0xFF;
+            int high = audioBytesOriginal[i + 1];
+            short sample = (short) ((high << 8) | low);
+
+            sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, sample * amp));
+
+            audioBytesProcessed[i] = (byte) (sample & 0xFF);
+            audioBytesProcessed[i + 1] = (byte) ((sample >> 8) & 0xFF);
         }
 
         drawWaveform(waveformCanvas, amp);
@@ -97,7 +101,7 @@ public class AudioAmplitudeFXMLController {
     private void handleImportAudio() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Audio File");
-        fileChooser.getExtensionFilters().addAll(
+        fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("WAV Files", "*.wav")
         );
 
@@ -106,7 +110,7 @@ public class AudioAmplitudeFXMLController {
             audioFile = selectedFile;
             try {
                 loadAudioData(audioFile);
-                drawWaveform(waveformCanvas, knob.getValue());
+                applyAmplitudeChange();
             } catch (Exception e) {
                 AlertBox.display("Import Error", "Failed to load audio: " + e.getMessage());
             }
@@ -140,40 +144,32 @@ public class AudioAmplitudeFXMLController {
                 out.write(buffer, 0, bytesRead);
             }
 
-            byte[] audioBytes = out.toByteArray();
-            if (audioBytes.length == 0) {
-                AlertBox.display("Load Error", "The selected file contains no audio data.");
-                return;
-            }
-
-            int sampleCount = audioBytes.length / 2;
-            audioData = new double[sampleCount];
-
-            for (int i = 0; i < sampleCount; i++) {
-                int low = audioBytes[i * 2] & 0xFF;
-                int high = audioBytes[i * 2 + 1];
-                short sample = (short) ((high << 8) | low);
-                audioData[i] = sample / 32768.0; // Normalize
-            }
-
+            audioBytesOriginal = out.toByteArray();
+            audioBytesProcessed = audioBytesOriginal.clone();
         } catch (Exception e) {
             AlertBox.display("Audio Load Error", "Failed to load audio file: " + e.getMessage());
         }
     }
 
     private void drawWaveform(Canvas canvas, double amplitudeFactor) {
+        if (audioBytesOriginal == null || audioBytesOriginal.length == 0) return;
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.BLUE);
 
         double midY = canvas.getHeight() / 2;
-        double scaleX = canvas.getWidth() / (double) audioData.length;
+        double scaleX = canvas.getWidth() / (audioBytesOriginal.length / 2.0);
         double scaleY = midY * amplitudeFactor;
 
         gc.beginPath();
-        for (int i = 0; i < audioData.length; i++) {
-            double x = i * scaleX;
-            double y = midY - (audioData[i] * scaleY);
+        for (int i = 0; i < audioBytesOriginal.length; i += 2) {
+            int low = audioBytesOriginal[i] & 0xFF;
+            int high = audioBytesOriginal[i + 1];
+            short sample = (short) ((high << 8) | low);
+            double x = (i / 2) * scaleX;
+            double y = midY - (sample / 32768.0) * scaleY;
+
             if (i == 0) gc.moveTo(x, y);
             else gc.lineTo(x, y);
         }
@@ -181,7 +177,7 @@ public class AudioAmplitudeFXMLController {
     }
 
     private void playAudio() {
-        if (processedAudioData == null || processedAudioData.length == 0) {
+        if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
             AlertBox.display("Playback Error", "No processed audio data available.");
             return;
         }
@@ -197,9 +193,7 @@ public class AudioAmplitudeFXMLController {
                 line.open(format);
                 line.start();
 
-                buffer = creatingByteArray(processedAudioData);
-
-                line.write(buffer, 0, buffer.length);
+                line.write(audioBytesProcessed, 0, audioBytesProcessed.length);
                 line.drain();
                 line.close();
                 stream.close();
@@ -208,40 +202,25 @@ public class AudioAmplitudeFXMLController {
             }
         }).start();
     }
+
     public void setStage(Stage stage) {
         this.stage = stage;
-
-        this.stage.setOnCloseRequest(event -> {
-            stopAudio();
-        });
+        this.stage.setOnCloseRequest(event -> stopAudio());
     }
 
     public byte[] getProcessedAudio() {
-        if (processedAudioData == null || processedAudioData.length == 0) {
+        if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
             AlertBox.display("Export Error", "No processed audio to export.");
             return null;
         }
-
-        outputArray = creatingByteArray(processedAudioData);
-        return outputArray;
+        return audioBytesProcessed;
     }
 
-    public byte[] creatingByteArray(double[] array) {
-        byte[] placeHolder = new byte[array.length * 2];
-
-        for (int i = 0; i < array.length; i++) {
-            short sample = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, array[i] * 32768));
-            placeHolder[i * 2] = (byte) (sample & 0xFF);
-            placeHolder[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
-        }
-        return placeHolder;
-    }
-
-    public void stopAudio() { //
+    public void stopAudio() {
         if (line != null && line.isOpen()) {
-            line.flush(); // discard non called data
-            line.stop(); // stop
-            line.close(); // close resources
+            line.flush();
+            line.stop();
+            line.close();
         }
     }
 }

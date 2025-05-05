@@ -36,7 +36,7 @@ public class SettingsController {
     @FXML
     private CheckBox testingBox;
 
-    public boolean isTesting = false;
+    public static boolean isTesting = false;
 
     @FXML
     RadioButton lightRadio, darkRadio;
@@ -199,7 +199,11 @@ public class SettingsController {
         return waveColour;
     }
 
-    public boolean isTesting() {return isTesting;}
+    public static boolean isTesting() {
+        return isTesting;
+    }
 
-    public void setTesting(boolean testing) {isTesting = testing;}
+    public static void setTesting(boolean isTesting) {
+        SettingsController.isTesting = isTesting;
+    }
 }

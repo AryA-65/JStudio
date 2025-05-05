@@ -20,8 +20,9 @@ public class SpectrographStage extends Stage {
     /**
      * Creates the stage
      */
-    public SpectrographStage() {
-        setTitle("SpectrographS");
+    public SpectrographStage(byte[] original, byte[]output) {
+        controller = new UnitTestingController(original, output);
+        setTitle("Spectrograph");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
         setResizable(false);

@@ -31,9 +31,16 @@ public class UnitTestingController extends Plugin {
     private Stage rootStage;
     private Scene rootScene;
 
-    public static byte[] originalArray;
 
-    public static byte[] modifiedArray;
+
+    public byte[] originalArray;
+
+    public byte[] modifiedArray;
+
+    public UnitTestingController(byte[] originalArray, byte[] modifiedArray) {
+        this.originalArray = originalArray;
+        this.modifiedArray = modifiedArray;
+    }
 
     @FXML
     private void initialize() {
@@ -90,11 +97,4 @@ public class UnitTestingController extends Plugin {
         this.rootScene = scene;
     }
 
-    public void setOriginalArray(byte[] originalArray) {
-        UnitTestingController.originalArray = originalArray;
-    }
-
-    public void setModifiedArray(byte[] modifiedArray) {
-        UnitTestingController.modifiedArray = modifiedArray;
-    }
 }

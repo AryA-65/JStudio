@@ -5,16 +5,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.JStudio.Plugins.Views.SettingsWindow;
 
 import java.io.IOException;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 
 public class SettingsController {
     private static boolean style; // false means light, true means dark
@@ -37,6 +32,12 @@ public class SettingsController {
     private Label noteColourLabel, waveColourLabel;
     @FXML
     private Button helpButton;
+
+    @FXML
+    private CheckBox testingBox;
+
+    public boolean isTesting = false;
+
     @FXML
     RadioButton lightRadio, darkRadio;
 
@@ -152,6 +153,14 @@ public class SettingsController {
                 helpButton.setDisable(false);
             }
         });
+
+        if (!isTesting) {
+            testingBox.setSelected(false);
+        }
+
+        testingBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+            isTesting = isNowSelected;
+        });
     }
 
     public static boolean getStyle() {
@@ -189,4 +198,8 @@ public class SettingsController {
     public static String getWaveColor(){
         return waveColour;
     }
+
+    public boolean isTesting() {return isTesting;}
+
+    public void setTesting(boolean testing) {isTesting = testing;}
 }

@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.JStudio.UI.Knob;
 import org.JStudio.Utils.AlertBox;
+import org.JStudio.Utils.Spectrograph;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -45,6 +46,8 @@ public class AudioAmplitudeFXMLController {
     private SourceDataLine line;
     @FXML
     VBox vbox;
+
+    private Spectrograph spectrograph;
 
     public void initialize() {
         knob.setValues(-5, 5);

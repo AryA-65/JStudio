@@ -14,8 +14,6 @@ public class Spectrograph {
     private static final int FFT_SIZE = 1024;
     private static final int BANDS = 128;
     private static final double MIN_DB = -60;
-
-    private final Canvas canvas;
     private final DoubleFFT_1D fft;
     private final LinearGradient gradient;
 
@@ -28,8 +26,7 @@ public class Spectrograph {
 
     private Thread thread;
 
-    public Spectrograph(Canvas canvas) {
-        this.canvas = canvas;
+    public Spectrograph() {
         this.fft = new DoubleFFT_1D(FFT_SIZE);
         this.gradient = createColorGradient();
         this.magnitudes = new double[BANDS];
@@ -98,7 +95,7 @@ public class Spectrograph {
         return 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1));
     }
 
-    public void update(double[] fftData, int frameIndex) {
+    public void update(double[] fftData, int frameIndex, Canvas canvas) {
         double smoothingFactor = 0.3;
 
         for (int band = 0; band < BANDS; band++) {
@@ -135,10 +132,10 @@ public class Spectrograph {
             previousMagnitudes[band] = magnitudes[band];
         }
 
-        drawSpectrogram(frameIndex);
+        drawSpectrogram(frameIndex, canvas);
     }
 
-    private void drawSpectrogram(int frameIndex) {
+    private void drawSpectrogram(int frameIndex, Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         double width = canvas.getWidth();
         double height = canvas.getHeight();
@@ -148,7 +145,7 @@ public class Spectrograph {
         gc.fillRect(0, 0, width, height);
 
         // Draw dB lines
-        drawDBLines(gc, height);
+        drawDBLines(gc, height, canvas);
 
         double[] xPoints = new double[BANDS + 2];
         double[] yPoints = new double[BANDS + 2];
@@ -183,7 +180,7 @@ public class Spectrograph {
         gc.fillText(String.format("Frame %d", frameIndex), canvas.getWidth() -100, 20);
     }
 
-    private void drawDBLines(GraphicsContext gc, double height) {
+    private void drawDBLines(GraphicsContext gc, double height, Canvas canvas) {
         double[] dBLevels = {-20, -40, -60}; // Add or modify levels as needed
         gc.setStroke(Color.GRAY);
         gc.setLineWidth(1);
@@ -194,32 +191,8 @@ public class Spectrograph {
         }
     }
 
-//    private void drawSpectrogram() {
-//        GraphicsContext gc = canvas.getGraphicsContext2D();
-//        double width = canvas.getWidth();
-//        double height = canvas.getHeight();
-//
-//        gc.clearRect(0, 0, width, height);
-//        gc.setFill(Color.BLACK);
-//        gc.fillRect(0, 0, width, height);
-//
-//        for (int band = 0; band < BANDS; band++) {
-//            double x1 = (double) band / BANDS * width;
-//            double x2 = (double) (band + 1) / BANDS * width;
-//            double barWidth = x2 - x1;
-//
-//            double magnitude = magnitudes[band];
-//            double normalized = (magnitude - MIN_DB) / (-MIN_DB);
-//            normalized = Math.min(1.0, Math.max(0.0, normalized));
-//
-//            double bandHeight = normalized * height;
-//
-//            gc.setFill(gradient);
-//            gc.fillRect(x1, height - bandHeight, barWidth, bandHeight);
-//        }
-//    }
 
-    public void startAnimation() {
+    public void startAnimation(Canvas canvas) {
         if (animationTimer != null) animationTimer.stop();
 
         animationTimer = new AnimationTimer() {
@@ -229,7 +202,7 @@ public class Spectrograph {
                     stop();
                     return;
                 }
-                update(fftFrames.get(currentFrame), currentFrame);
+                update(fftFrames.get(currentFrame), currentFrame, canvas);
                 currentFrame++;
             }
         };
@@ -242,13 +215,13 @@ public class Spectrograph {
         }
     }
 
-    public void reset() {
+    public void reset(Canvas canvas) {
         stopAnimation();
         currentFrame = 0;
-        clear();
+        clear(canvas);
     }
 
-    public void clear() {
+    public void clear(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }

@@ -1,11 +1,6 @@
 package org.JStudio;
 
-import java.io.File;
-import java.nio.file.Files;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.SimpleStringProperty;
 import org.JStudio.Core.Mixer;
 import org.JStudio.Plugins.PianoRun;
 import org.JStudio.Plugins.SynthPianoRun;

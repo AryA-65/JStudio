@@ -17,11 +17,13 @@ public class SpectrographStage extends Stage {
     public static Scene scene;
     public static UnitTestingController controller;
 
+    public byte[] input;
+    public byte[] output;
+
     /**
      * Creates the stage
      */
-    public SpectrographStage(byte[] original, byte[]output) {
-        controller = new UnitTestingController(original, output);
+    public SpectrographStage() {
         setTitle("Spectrograph");
         initModality(Modality.APPLICATION_MODAL);
         initStyle(StageStyle.UTILITY);
@@ -34,21 +36,22 @@ public class SpectrographStage extends Stage {
      */
     private void initPlugin() {
         try {
-            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/JStudioTestUI.fxml"));
-            controller = testLoader.getController();
+            FXMLLoader testLoader = new FXMLLoader(getClass().getResource("/JStudioTestUI.fxml"));
+            controller = new UnitTestingController();
             testLoader.setController(controller);
-            Parent root = testLoader.load();
+            Parent root = testLoader.load(); // Must load first
 
             scene = new Scene(root);
             if (SettingsController.getStyle()) {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
+                scene.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
             } else {
-                scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+                scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             }
+
             sizeToScene();
             setScene(scene);
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

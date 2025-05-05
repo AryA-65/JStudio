@@ -16,7 +16,10 @@ import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import org.JStudio.Utils.AlertBox;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.SourceDataLine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -72,7 +75,14 @@ public class AudioAmplitudeFXMLController {
 
             if (SettingsController.isTesting()) {
                 stage.close();
-                SpectrographStage spectrographStage = new SpectrographStage(audioBytesOriginal, audioBytesProcessed);
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(audioBytesOriginal, audioBytesProcessed);
+                    }
+                } catch (Exception e) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
                 SettingsController.setTesting(false);
                 spectrographStage.show();
             }

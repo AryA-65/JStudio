@@ -6,7 +6,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.JStudio.Plugins.Models.Plugin;
-import org.JStudio.Plugins.Views.ReverbStage;
 import org.JStudio.Utils.Spectrograph;
 
 public class UnitTestingController extends Plugin {
@@ -34,10 +33,9 @@ public class UnitTestingController extends Plugin {
 
 
     public byte[] originalArray;
-
     public byte[] modifiedArray;
 
-    public UnitTestingController(byte[] originalArray, byte[] modifiedArray) {
+    public void setArrays(byte[] originalArray, byte[] modifiedArray) {
         this.originalArray = originalArray;
         this.modifiedArray = modifiedArray;
     }

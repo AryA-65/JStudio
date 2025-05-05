@@ -30,13 +30,9 @@ public class LoginController {
     @FXML
     private ImageView logo;
     private String userId, userPass;
-
     private int key1, key2;
-
     private User user;
 
-    public LoginController() {
-    }
 
     @FXML
     public void initialize() {
@@ -51,6 +47,10 @@ public class LoginController {
             }
             if (userId.length() >= 20 || userPass.length() >= 20) {
                 AlertBox.display("Credentials do not meet expectations","The username / password is too long ( maximum of 10 characters).");
+                return;
+            }
+            if (key1 == 0 && key2 == 0) {
+                AlertBox.display("Credentials do not meet expectations","Both keys cannot be zero.");
                 return;
             }
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
@@ -103,13 +103,10 @@ public class LoginController {
         }
     }
 
-
-
     private void csvSetUp() {
         userDataController.createFile();
         userDataController.readFile();
     }
-
 
     private void entryLimiters() {
         userIdField.textProperty().addListener((obs, oldText, newText) -> {
@@ -131,9 +128,9 @@ public class LoginController {
             } else if (!newText.isEmpty()) {
                 try {
                     int value = Integer.parseInt(newText);
-                    if (value > 20) {
+                    if (value > 15) {
                         key1Field.setText("20");
-                        key1 = 20;
+                        key1 = 15;
                     } else {
                         key1 = value;
                     }
@@ -147,9 +144,9 @@ public class LoginController {
             } else if (!newText.isEmpty()) {
                 try {
                     int value = Integer.parseInt(newText);
-                    if (value > 20) {
+                    if (value > 15) {
                         key2Field.setText("20");
-                        key2 = 20;
+                        key2 = 15;
                     } else {
                         key2 = value;
                     }

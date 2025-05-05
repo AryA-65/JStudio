@@ -154,9 +154,8 @@ public class SettingsController {
             }
         });
 
-        if (!isTesting) {
-            testingBox.setSelected(false);
-        }
+        testingBox.setSelected(isTesting);
+
 
         testingBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
             isTesting = isNowSelected;

@@ -17,9 +17,7 @@ public class UnitTestingController extends Plugin {
     @FXML
     private ProgressBar leftProgressBar, rightProgressBar;
     @FXML
-    private ComboBox<String> pluginsChooser;
-    @FXML
-    private Button loadBtn, computeBtn, playBtn, pauseBtn, resetBtn;
+    private Button computeBtn, playBtn, pauseBtn, resetBtn;
     @FXML
     private Canvas effectCanvas, normalCanvas;
 
@@ -29,7 +27,6 @@ public class UnitTestingController extends Plugin {
     public String chosenEffect;
     private Stage rootStage;
     private Scene rootScene;
-
 
 
     public byte[] originalArray;
@@ -48,14 +45,10 @@ public class UnitTestingController extends Plugin {
 
         leftProgressBar.setVisible(false);
         rightProgressBar.setVisible(false);
-        computeBtn.setDisable(true);
         playBtn.setDisable(true);
         pauseBtn.setDisable(true);
         resetBtn.setDisable(true);
 
-        pluginsChooser.valueProperty().addListener((observable, oldValue, newValue) -> {
-            chosenEffect = newValue;
-        });
 
         computeBtn.setOnMouseClicked(event -> {
             leftProgressBar.setVisible(true);

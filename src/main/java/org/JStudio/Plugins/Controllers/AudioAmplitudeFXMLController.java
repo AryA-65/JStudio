@@ -83,7 +83,6 @@ public class AudioAmplitudeFXMLController {
                 } catch (Exception e) {
                     AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
                 }
-                SettingsController.setTesting(false);
                 spectrographStage.show();
             }
         });

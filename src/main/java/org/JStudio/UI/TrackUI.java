@@ -1,6 +1,5 @@
 package org.JStudio.UI;
 
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.Dragboard;
@@ -15,10 +14,6 @@ import org.JStudio.UIController;
 import org.JStudio.Utils.AudioFileExtractor;
 
 public class TrackUI extends StackPane {
-//    private ArrayList<ClipUI> clips = new ArrayList<ClipUI>();
-
-//    private PluginRenderer pluginUI = new PluginRenderer();
-
     private final Track track;
     private final Canvas trackCanvas;
     private final GraphicsContext gc;
@@ -38,14 +33,17 @@ public class TrackUI extends StackPane {
 
         setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
-                for (Node n : clipLayer.getChildren()) {
-                    if (e.getTarget().equals(n)) {
-                        track.removeClip(((ClipUI) n).getNodeClip());
-                        clipLayer.getChildren().remove(n);
-                        System.gc();
-                        break;
-                    }
-                }
+                track.removeClip(e);
+                clipLayer.getChildren().remove(e.getTarget());
+                System.gc();
+//                for (Node n : clipLayer.getChildren()) {
+//                    if (e.getTarget().equals(n)) {
+//                        track.removeClip(((ClipUI) n).getNodeClip());
+//                        clipLayer.getChildren().remove(n);
+//                        System.gc();
+//                        break;
+//                    }
+//                }
             }
         });
 
@@ -83,10 +81,8 @@ public class TrackUI extends StackPane {
             boolean success = false;
 
             if (db.hasFiles()) {
-                System.out.println("Entered");
                 double dropX = e.getX();
                 if (UIController.snap.get()) dropX = Math.round(dropX / 8) * 8;
-                System.out.println(dropX);
 
                 double pixelsPerBeat = 32.0;
                 double bpm = 120;
@@ -101,9 +97,9 @@ public class TrackUI extends StackPane {
 
                     if (AudioFileExtractor.isMp3()) {
                         audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getMP3SampleRate());
-                        System.out.println(AudioFileExtractor.getMP3SampleRate());
-                    }
-                    else audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+                    } else audioClip = new AudioClip(seconds, audio_data, AudioFileExtractor.getSampleRate());
+
+                    track.addClip(audioClip);
 
                     ClipUI clip = new ClipUI(audioClip);
 

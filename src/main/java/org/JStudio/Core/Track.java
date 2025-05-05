@@ -7,15 +7,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.JStudio.Plugins.Plugin;
+import org.JStudio.UI.ClipUI;
 
 public class Track implements Serializable {
     private static short trackCounter = 0;
 
     private final StringProperty name = new SimpleStringProperty(), id = new SimpleStringProperty();
-    private final DoubleProperty amplitude = new SimpleDoubleProperty(100), pitch = new SimpleDoubleProperty(0), pan = new SimpleDoubleProperty(0);
+    private final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0), pan = new SimpleDoubleProperty(0);
     public final BooleanProperty muted = new SimpleBooleanProperty(false);
     private final ArrayList<Clip> clips = new ArrayList<>();
     private final ArrayList<Plugin> plugins = new ArrayList<>();
+    private final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
 
     public Track(String name) {
         this.name.set(name);
@@ -40,20 +42,58 @@ public class Track implements Serializable {
     }
 
     public void removeClip(Clip clip) {
-        System.out.println("Removing clip");
         clips.remove(clip);
-        System.out.println(clips.size());
     }
 
-    private void removeClip(Event e) {
-        clips.removeIf(clip -> e.getTarget() == clip);
+    public void removeClip(Event e) {
+        System.out.println("Removing clip: " + ((ClipUI) e.getTarget()).getNodeClip().getInfo());
+        clips.remove(((ClipUI) e.getTarget()).getNodeClip());
     }
 
-    public float[][] process(float[][] buff) { //1024 chucks
-        float[][] output = null;
+    public float[][] process(float[][] outBuff, int chunkStartSample, int chunkSize, int sampleRate) {
+        if (muted.get()) return new float[2][chunkSize];
 
+        for (Clip baseClip : clips) {
+            if (!(baseClip instanceof AudioClip clip)) continue;
 
-        return output;
+            int clipStartSample = (int) (clip.getPosition() * sampleRate);
+            float[][] buffer = clip.getBuffer();
+            int clipLength = buffer[0].length;
+            int clipEndSample = clipStartSample + clipLength;
+
+            if (clipEndSample <= chunkStartSample || clipStartSample >= chunkStartSample + chunkSize)
+                continue;
+
+            int overlapStart = Math.max(clipStartSample, chunkStartSample);
+            int overlapEnd = Math.min(clipEndSample, chunkStartSample + chunkSize);
+            int length = overlapEnd - overlapStart;
+
+            int clipOffset = overlapStart - clipStartSample;
+            int chunkOffset = overlapStart - chunkStartSample;
+
+            double amp = amplitude.get();
+            double panning = pan.get();
+            double leftGain = panning <= 0 ? 1.0 : 1.0 - panning;
+            double rightGain = panning >= 0 ? 1.0 : 1.0 + panning;
+
+            float sumLeft = 0, sumRight = 0;
+            for (int i = 0; i < length; i++) {
+                float tempL = buffer[0][clipOffset + i] * (float) (amp * leftGain);
+                float tempR = 0;
+                if (buffer[1] != null) {
+                    tempR += buffer[1][clipOffset + i] * (float) (amp * rightGain);
+                }
+                sumLeft += Math.abs(tempL);
+                sumRight += Math.abs(tempR);
+                outBuff[0][chunkOffset + i] += tempL;
+                outBuff[1][chunkOffset + i] += tempR;
+            }
+
+            leftAmp.set((float)(sumLeft / chunkSize));
+            rightAmp.set((float)(sumRight / chunkSize));
+        }
+
+        return outBuff;
     }
 
     public StringProperty getName() {
@@ -114,6 +154,14 @@ public class Track implements Serializable {
 
     public void removePlugin(Plugin plugin) {
         plugins.remove(plugin);
+    }
+
+    public FloatProperty getLeftAmp() {
+        return leftAmp;
+    }
+
+    public FloatProperty getRightAmp() {
+        return rightAmp;
     }
 }
 

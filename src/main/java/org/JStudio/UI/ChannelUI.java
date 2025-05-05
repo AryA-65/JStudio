@@ -1,5 +1,6 @@
 package org.JStudio.UI;
 
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -9,17 +10,19 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.JStudio.Core.Mixer;
 import org.JStudio.Core.Track;
 
+import java.util.function.Function;
+
 public class ChannelUI extends VBox {
-    private final Slider vol = new Slider(0,100,100);
-//    private final Node activeBtn = createActiveBTN();
+    private final Slider vol = new Slider(0,1,1);
     private final Knob pitch = new Knob(24, false, 0, Knob.Type.BIP), pan = new Knob(32, false, 0, Knob.Type.BIP);
     private final Label id = new Label();
-//    private final Pane container = new Pane(), visBackground = new Pane();
     private final Pane visBackground = new Pane();
     private final VBox container = new VBox();
     private final StackPane visContainer = new StackPane();
@@ -99,6 +102,4 @@ public class ChannelUI extends VBox {
         container.getChildren().addAll(visBackground, spacer, vol, mutedBtn, pitch);
         getChildren().addAll(id, container);
     }
-
-
 }

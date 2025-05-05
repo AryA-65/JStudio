@@ -10,21 +10,23 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.JStudio.Core.Mixer;
+import org.JStudio.UIController;
 
 public class MixerUI extends HBox {
-    private final Mixer mixer = new Mixer();
-    private final ChannelUI channel = new ChannelUI(mixer);
+    private final ChannelUI channel;
     private final VBox leftContainer = new VBox();
     private final Label masterLabel = new Label("Out");
     private final StackPane masterVisContainer = new StackPane();
     private final Canvas masterVis = new Canvas();
-    private final GraphicsContext gc = masterVis.getGraphicsContext2D();
+    private final GraphicsContext gc = masterVis.getGraphicsContext2D(); //add visualization of audio
 
-    public MixerUI() {
+    public MixerUI(Mixer mixer) {
         setPrefHeight(256);
         setPrefWidth(64);
         setId("mixer");
         setAlignment(Pos.TOP_CENTER);
+
+        channel = new ChannelUI(mixer);
 
         leftContainer.setPrefHeight(256);
         leftContainer.setPrefWidth(32);

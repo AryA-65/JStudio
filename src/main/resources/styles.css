@@ -214,11 +214,11 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);
 }
 
-#open_song_btn_parent:hover, #save_song_btn_parent:hover, #export_song_btn_parent:hover, #snap_btn_parent:hover, #metronome_control_parent:hover, #record_control_parent:hover {
+#open_song_btn_parent:hover, #save_song_btn_parent:hover, #export_song_btn_parent:hover, #snap_btn_parent:hover, #metronome_control_parent:hover, #record_control_parent:hover, #playback_btn_parent:hover {
     -fx-background-color: #c1c1c1;
 }
 
-#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed {
+#open_song_btn_parent:pressed, #save_song_btn_parent:pressed, #export_song_btn_parent:pressed, #record_control_parent:pressed, #metronome_control_parent:pressed, #snap_btn_parent:pressed, #playback_btn_parent:pressed {
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3);
 }
 
@@ -229,7 +229,7 @@
 /*    !*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3);*!*/
 /*}*/
 
-#record_control_parent, #bpm_control, #metronome_control_parent, #playback_pos, #audio_vis_top_parent, #amp_audio_top_parent, #pc_stats_parent, #snap_btn_parent {
+#record_control_parent, #bpm_control, #metronome_control_parent, #playback_pos, #audio_vis_top_parent, #amp_audio_top_parent, #pc_stats_parent, #snap_btn_parent, #playback_btn_parent {
     -fx-background-color: #d9d9d9; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 3, 3); -fx-background-radius: 5px;
 }
 
@@ -237,11 +237,11 @@
     -fx-background-radius: 100%;
 }
 
-#record_control_parent.iactive, #metronome_control_parent.iactive, #snap_btn_parent.iactive {
+#record_control_parent.iactive, #metronome_control_parent.iactive, #snap_btn_parent.iactive, #playback_btn_parent.iactive {
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.5), 5, .25, 3, 3);
 }
 
-#record_control_parent.iactive:hover, #metronome_control_parent.iactive:hover, #snap_btn_parent.iactive:hover {
+#record_control_parent.iactive:hover, #metronome_control_parent.iactive:hover, #snap_btn_parent.iactive:hover, #playback_btn_parent.iactive:hover {
     -fx-background-color: #c1c1c1;
 }
 

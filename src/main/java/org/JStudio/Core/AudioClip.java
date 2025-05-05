@@ -18,7 +18,6 @@ public class AudioClip extends Clip {
         this.buffer = buff;
         this.sampleRate = sampleRate;
         super.setLength((double) Math.max(buff[0].length, buff[1] == null ? 0 : buff[1].length) / this.sampleRate);
-        System.out.println(super.getLength());
     }
 
     public void setS_pos(double s_pos) {

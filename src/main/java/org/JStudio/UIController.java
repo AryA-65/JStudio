@@ -1,6 +1,10 @@
 package org.JStudio;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.SimpleStringProperty;
+import org.JStudio.Core.Mixer;
 import org.JStudio.Plugins.PianoRun;
 import org.JStudio.Plugins.SynthPianoRun;
 import javafx.beans.property.BooleanProperty;
@@ -31,7 +35,6 @@ import org.JStudio.Plugins.MainEqualizer;
 import org.JStudio.Utils.TimeConverter;
 
 public class UIController {
-
     private Scene scene;
 
     //implement later
@@ -39,7 +42,7 @@ public class UIController {
     private VBox plugin_btn_pane;
     @FXML
     private Tab plugins_tab;
-    //
+    //**
 
     @FXML
     public Pane plugin_pane;
@@ -64,7 +67,7 @@ public class UIController {
     @FXML
     private TextField bpm_control, song_name;
     @FXML
-    private ImageView open_song_btn, save_song_btn, export_song_btn, minim_btn, close_btn, record_control, settings_btn, snap_btn, metronome_control, maxim_btn;
+    private ImageView open_song_btn, save_song_btn, export_song_btn, minim_btn, close_btn, record_control, settings_btn, snap_btn, metronome_control, maxim_btn, playback_btn;
     @FXML
     private Stage rootStage;
     @FXML
@@ -80,6 +83,9 @@ public class UIController {
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     private Song song = new Song("New Song");
+    private Mixer mixer = new Mixer(song);
+
+    public Mixer getMixer() {return mixer;}
 
     public void setStage(Stage stage) {
         rootStage = stage;
@@ -205,6 +211,8 @@ public class UIController {
             synthesizerStage.synth();
         });
 
+        // TODO: make a method or something to load a song, either here or in the song class itself (the ladder most likely)
+
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/icons/load.png"));
         open_song_btn.setCursor(Cursor.HAND);
@@ -226,6 +234,8 @@ public class UIController {
         snap_btn.getParent().setCursor(Cursor.HAND);
         record_control.setImage(new Image("/icons/record.png"));
         record_control.getParent().setCursor(Cursor.HAND);
+        playback_btn.setImage(new Image("/icons/play.png"));
+        playback_btn.getParent().setCursor(Cursor.HAND);
 
         playback_pos.setText(TimeConverter.longToString(0));
 
@@ -244,6 +254,7 @@ public class UIController {
         pc_stats.getParent().setId("pc_stats_parent");
         tab_vbox.setId("tab_vbox");
         snap_btn.getParent().setId("snap_btn_parent");
+        playback_btn.getParent().setId("playback_btn_parent");
 
         snap_btn.getParent().getStyleClass().add("iactive");
         song_name.setText("New Song");
@@ -256,7 +267,21 @@ public class UIController {
             }
         });
 
+        playback_btn.getParent().setOnMousePressed(e -> {
+            if (playback_btn.getParent().getStyleClass().contains("iactive")) {
+                playback_btn.getParent().getStyleClass().remove("iactive");
+                mixer.getRunning().set(false);
+            } else {
+                playback_btn.getParent().getStyleClass().add("iactive");
+                mixer.getRunning().set(true);
+            }
+//            mixer.getRunning().set(mixer.getRunning().get());
+            System.out.println(mixer.getRunning().get());
+        });
+
         snap_btn.getParent().setOnMousePressed(e -> snap.set(!snap.get()));
+
+        playback_pos.textProperty().bind(mixer.getPlayBackPos());
 
         snap.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -370,7 +395,7 @@ public class UIController {
 
         timeline_canvas.setWidth(Song.bpm.get() * 32);
 
-        channel_rack.getChildren().add(0, new MixerUI());
+        channel_rack.getChildren().add(0, new MixerUI(mixer));
 
         song_name.textProperty().unbindBidirectional(song.getSongName());
 
@@ -392,6 +417,15 @@ public class UIController {
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.Q)) {
                 //get all the children in the track vbox and increase their width to the bpm * n (n being the increment -> default = 1, can increase in fractions or ints)
+            }
+            if (pressedKeys.contains(KeyCode.SPACE)) {
+                if (mixer.getRunning().get()) {
+                    playback_btn.getParent().getStyleClass().remove("iactive");
+                    mixer.getRunning().set(false);
+                } else {
+                    playback_btn.getParent().getStyleClass().add("iactive");
+                    mixer.getRunning().set(true);
+                }
             }
         });
 

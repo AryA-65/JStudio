@@ -115,7 +115,7 @@ public class SynthController {
                 recordButton.setText("Record");
 
                 String userHome = System.getProperty("user.home");
-                String outputDir = userHome + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files";
+                String outputDir = userHome + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files" + File.separator + "Synthesizer";
 
                 // Save the recording to a generic path
                 saveRecordingAsWav(recordingBuffer, outputDir);

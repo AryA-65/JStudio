@@ -35,10 +35,11 @@ public class Reverb extends Plugin {
     /**
      * Applies the reverb effect to the audio data array
      */
-    private void applyReverbEffect() {
+    private float[][] applyReverbEffect() {
+        byte[][] byteReverb = new byte[2][audioByteInput2D[0].length*4];
+        for (int i = 0; i < audioByteInput2D.length; i++) {
             delayLines = new ArrayList<>();
-       
-            short[] audioToReverb = convertToShortArray();
+            short[] audioToReverb = convertToShortArray(byteReverb[i]);
             int numOfDelayLines = 0;
             if (audioToReverb.length < 200000) {
                 numOfDelayLines =  5;
@@ -47,7 +48,7 @@ public class Reverb extends Plugin {
             }
 
 
-            double decayNumber;
+             double decayNumber;
             double initialDecay = decay/35000;
             // Loop repeats for the number of delay lines
             for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
@@ -72,8 +73,10 @@ public class Reverb extends Plugin {
             }
 
             short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
-            mixedAudio = outputGainAudio(mixedAudio);
-            convertToByteArray(mixedAudio, (delayLineAudio.length+preDelay) * 2);
+            byte[] byteData = convertToByteArrayGood(mixedAudio, (delayLineAudio.length+preDelay) * 2);
+            byteReverb[i] = byteData;
+        }
+        return convert2DByteTo2DFloat(byteReverb);
     }
     
     /**
@@ -139,8 +142,8 @@ public class Reverb extends Plugin {
     /** 
      * Wrapper class to set reverb effect
      */
-    public void setReverbEffect() {
-        applyReverbEffect();
+    public float[][] setReverbEffect() {
+        return applyReverbEffect();
     }
     
     /**

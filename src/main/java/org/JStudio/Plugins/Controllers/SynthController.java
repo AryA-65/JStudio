@@ -113,7 +113,13 @@ public class SynthController {
             } else {
                 isRecording = false;
                 recordButton.setText("Record");
-                saveRecordingAsWav(recordingBuffer, "/Users/ahmetyusufyildirim/Music/JStudio/audio_Files");
+
+                String userHome = System.getProperty("user.home");
+                String outputDir = userHome + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files";
+
+                // Save the recording to a generic path
+                saveRecordingAsWav(recordingBuffer, outputDir);
+
                 recordingBuffer = null;
             }
         });

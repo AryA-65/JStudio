@@ -16,23 +16,21 @@ import org.JStudio.Login.UserDataController;
 import org.JStudio.Utils.AlertBox;
 
 public class LoginController {
+    @FXML
+    private TextField userIdField, userPasswordField, key1Field, key2Field;
+    @FXML
+    private Button createAccount, enterBtn;
+    @FXML
+    private ImageView logo;
+
     private Stage rootStage;
     private Scene rootScene;
 
     private UserDataController userDataController;
     private EncryptionAndDecryption encryptionAndDecryption;
-
-    @FXML
-    private TextField userIdField, userPasswordField, key1Field, key2Field;
-
-    @FXML
-    private Button createAccount, enterBtn;
-    @FXML
-    private ImageView logo;
     private String userId, userPass;
     private int key1, key2;
     private User user;
-
 
     @FXML
     public void initialize() {
@@ -40,6 +38,8 @@ public class LoginController {
         userDataController = new UserDataController();
         csvSetUp();
         entryLimiters();
+
+        // Create an account
         createAccount.setOnAction(event -> {
             if (userId == null || userPass == null || userId.length() < 6 || userPass.length() < 6) {
                 AlertBox.display("Credentials do not meet expectations","The username / password is too short ( minimum of 6 characters).");
@@ -59,6 +59,7 @@ public class LoginController {
             lunchMainApp();
         });
 
+        // Validate an existing user
         enterBtn.setOnAction(event -> {
             userDataController.readFile();
             if (userDataController.isUserInFile(userId)) {
@@ -76,6 +77,9 @@ public class LoginController {
         });
     }
 
+    /**
+     * Method to lunch the main application once either an account has been created or the user has been validated.
+     */
     private void lunchMainApp() {
         try {
             FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
@@ -103,12 +107,19 @@ public class LoginController {
         }
     }
 
+    /**
+     * Method that sets up the csv file to store the users.
+     */
     private void csvSetUp() {
         userDataController.createFile();
         userDataController.readFile();
     }
 
+    /**
+     * Method that imposes restrictions to the text fields.
+     */
     private void entryLimiters() {
+        // Can't contain space
         userIdField.textProperty().addListener((obs, oldText, newText) -> {
             if (newText.contains(" ")) {
                 userIdField.setText(newText.replace(" ", ""));
@@ -116,12 +127,14 @@ public class LoginController {
             userId = newText;
         });
 
+        // Can only contain alphabetic characters
         userPasswordField.textProperty().addListener((obs, oldText, newText) -> {
             String cleanedText = newText.replaceAll("[^a-zA-Z]", "").replaceAll(" ", "");
             userPasswordField.setText(cleanedText);
             userPass = newText;
         });
 
+        // Can only contain integer numbers less than 15
         key1Field.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 key1Field.setText(newText.replaceAll("[^\\d]", ""));
@@ -138,6 +151,7 @@ public class LoginController {
             }
         });
 
+        // Can only contain integer numbers less than 15
         key2Field.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 key2Field.setText(newText.replaceAll("[^\\d]", ""));
@@ -155,11 +169,13 @@ public class LoginController {
         });
     }
 
+    // Set the stage
     public void setRootStage(Stage stage) {
         rootStage = stage;
         rootStage.setResizable(false);
     }
 
+    // Set the scene
     public void setRootScene(Scene rootScene) {
         this.rootScene = rootScene;
         rootScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());

@@ -74,7 +74,7 @@ public class SettingsController {
             updateSettingsUIStyle();
         });
         
-        // Wave and note colouring
+        // Wave and note coloring
         switch (noteColour) {
             case "Blue":
                 noteColourLabel.setText("Selected: Blue");
@@ -112,7 +112,7 @@ public class SettingsController {
             noteColourLabel.setText("Selected: Red");
         });
         
-        // Wave colouring
+        // Wave coloring
         blueWave.setOnAction(event -> {
             waveColour = "Blue";
             waveColourLabel.setText("Selected: Blue");

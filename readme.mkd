@@ -1,1 +1,70 @@
-Just add your gui elements to your own folders. What I'll do when stitching them together is to modify some parts of the gui if needed.
+JSTUDIO User Guide
+
+JSTUDIO is a digital audio workstation (DAW) that allows users to drag clips onto a track, apply effects, and create music.
+
+To get started, simply drag a sample from the left side onto the track. From there, double clicking on a track will allow the user to add effects in the form of plugins.
+
+*The following plugins are available:
+- Reverb
+- Echo
+- Flanger
+- Chorus
+- Phaser
+- Equalizer
+- Stereo
+- Basic Filter
+- Butterworth Filter
+- Amplitude Adjustor
+
+*Other available features are:
+- Piano
+- Custom Synth Piano
+- Synthesizer
+
+Plugin user guide:
+
+Adjust the knobs/sliders to set paramaters for the desired effects for the following plugins
+
+*Reverb:
+This plugin creates a roomy environment. Adjusting the knobs allows for different reverbs to be heard.
+- Pre Delay is the amount of time before the first reflection is heard
+- Decay is the amount of time for a reflected wave to decay
+- Diffusion is the spacing of the reflected waves
+- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+
+*Echo: This plugin creates reflected audio waves spaced far apart
+- Pre Delay is the amount of time before the first reflection is heard
+- Decay is the amount of time for a reflected wave to decay
+- Diffusion is the spacing of the reflected waves
+- The number of echos determines the amount of reflected waves
+- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+
+*Flanger: This plugin creates wooshing effect by copying the audio, and delaying it with modulated delays
+- Frequency is the rate at which the delays are modulated
+- Deviation is the amplitude of the oscillating modulation function
+- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+
+*Chorus: This plugin creates a multiple instrument/voice effect by copying the audio, and delaying it with modulated delays
+- Frequency is the rate at which the delays are modulated
+- Deviation is the amplitude of the oscillating modulation function
+- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+
+*Phaser: This plugin creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts
+- Frequency is the rate at which the delays are modulated
+- Deviation is the amplitude of the oscillating modulation function
+- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+
+*******AHMET DO FILTERS HERE*******
+
+*******ALEX/AHMET DO PIANO/SYNTH PIANO/SYNTH HERE*******
+
+
+
+
+
+
+
+
+
+
+

@@ -46,7 +46,7 @@ public class HelpController {
             ),
             new Descriptions(
                     "Plugin: Chorus",
-                    "Creates multiple instrument/voice effect by copying the audio, and delaying it with modulated delays",
+                    "Creates a multiple instrument/voice effect by copying the audio, and delaying it with modulated delays",
                     new String[]{"Frequency: The rate at which the delays are modulated",
                             "Deviation: The amplitude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
@@ -56,7 +56,7 @@ public class HelpController {
             new Descriptions(
                     "Plugin: Phaser",
                     "Creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts",
-                    new String[]{"Frequency: The rate at which the delays are modulated",
+                    new String[]{"Frequency: The rate at which the phase shifts are modulated",
                             "Deviation: The amplitude of the oscillating modulation function",
                             "Wet/Dry Mix: The amount of original (dry) and modified (wet) audio",
                             "Output Gain: The volume of the modified audio"},
@@ -67,6 +67,24 @@ public class HelpController {
                     "Modifies the volume of certain frequencies by using FFT algorithm to get the amplitude of all frequencies in the audio and adjusting the amplitudes",
                     new String[]{"Center Frequency Factor: The factor multiple on the range around the center frequencies of each slider"},
                     "Equalized Audio"
+            ),
+            new Descriptions(
+                    "Plugin: Audio Amplitude",
+                    "Modifies the amplitude of an audio file",
+                    new String[]{"An audio file (type) wav", "A double value with the knob"},
+                    "Audio with modified amplitude levels"
+            ),
+            new Descriptions(
+                    "Plugin: Basic Audio Filters",
+                    "Uses basic math methods to cut-off certain frequencies",
+                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off"},
+                    "Audio file with frequencies above or below certain level cut off"
+            ),
+            new Descriptions(
+                    "Plugin: Butterworth filter",
+                    "Uses advanced math logic to apply different types of audio filters",
+                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off", "Type of filter to be applied"},
+                    "Audio file with an applied audio filter"
             ),
             new Descriptions(
                     "Piano",
@@ -82,29 +100,11 @@ public class HelpController {
                     "Custom Song With Custom Sounds"
             ),
             new Descriptions(
-                    "Plugin: Audio Amplitude",
-                    "Modifies the amplitude of an audio file",
-                    new String[]{"An audio file (type) wav", "A double value with the knob"},
-                    "Audio with modified amplitude levels"
-            ),
-            new Descriptions(
-                    "Plugin: Basic Audio Filters",
-                    "Uses basic math methods to cut-off certain frequencies",
-                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off"},
-                    "Audio file with frequencies above or below certain level cut off"
-            ),
-            new Descriptions(
-                    "Tool: Synthesizer",
+                    "Synthesizer",
                     "Generates sound waves based on keyboard inputs with set frequencies with the ability to add an glide effect and speed modifier",
                     new String[]{"3 different oscillators with individual waveform selection ", "Tone and Volume of each oscillator", ""},
                     "Audio file (type) wav that contains the played synth"
             ),
-            new Descriptions(
-                    "Plugin: Butterworth filter",
-                    "Uses advanced math logic to apply different types of audio filters",
-                    new String[]{"An audio file (type) wav", "Frequency that is to be used to cut off", "Type of filter to be applied"},
-                    "Audio file with an applied audio filter"
-            )
     };
 
     public void initialize() {

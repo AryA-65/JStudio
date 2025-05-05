@@ -4,6 +4,7 @@ import javafx.scene.layout.VBox;
 import org.JStudio.UI.SectionUI;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 public class FileLoader {
@@ -18,15 +19,29 @@ public class FileLoader {
 
         if (os.contains("win")) {
             musicPath = userHome + "\\Music\\JStudio\\audio_Files";
-        } else if (os.contains("mac")) {
-            musicPath = userHome + "/Music/JStudio/audio_Files";
-        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+        } else if (os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) {
             musicPath = userHome + "/Music/JStudio/audio_Files";
         } else {
             throw new RuntimeException("Unsupported OS");
         }
 
-        createFolderIfNeeded(musicPath);
+        File targetDir = new File(musicPath);
+        File sourceDir = new File("src/main/resources/audio_Files");
+
+        // Only attempt to move if source exists and target doesn't
+        if (!targetDir.exists()) {
+            if (sourceDir.exists()) {
+                try {
+                    Files.createDirectories(targetDir.getParentFile().toPath()); // Ensure parent exists
+                    Files.move(sourceDir.toPath(), targetDir.toPath());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to move audio_Files directory", e);
+                }
+            } else {
+                System.err.println("Warning: Default audio_Files not found in resources. Creating empty folder instead.");
+                targetDir.mkdirs(); 
+            }
+        }
 
         try {
             loadFolders(musicPath);

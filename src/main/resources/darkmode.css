@@ -105,6 +105,10 @@
     -fx-background-color: #38414A; -fx-effect: dropshadow(gaussian, rgba(115,132,150,0.5), 5, 0, 3, 3); -fx-background-radius: 5px;
 }
 
+#record_control_parent.iactive:hover, #metronome_control_parent.iactive:hover, #snap_btn_parent.iactive:hover, #playback_btn_parent.iactive:hover {
+    -fx-background-color: #454F59;
+}
+
 #plugin_node {
     -fx-background-color: #38414A;
     -fx-background-radius: 5px;

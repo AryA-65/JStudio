@@ -1,5 +1,7 @@
 package org.JStudio;
 
+import java.io.File;
+import java.nio.file.Files;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -135,6 +137,14 @@ public class UIController {
 
     @FXML
     public void initialize() throws Exception {
+        String userHome = System.getProperty("user.home");
+        String outputDir = userHome + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files";
+        File dir = new File(outputDir);
+        if (!dir.exists()) {
+            Files.move(new File("src\\main\\resources\\audio_Files").toPath(), new File(outputDir).toPath());
+        }
+        
+        
         reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
             reverb.show();

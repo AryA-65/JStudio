@@ -3,7 +3,7 @@ package org.JStudio.Plugins.Models;
 public class BitCrush {
     private int depth;
 
-    BitCrush(int depth) {
+    public BitCrush(int depth) {
         this.depth = depth;
     }
 

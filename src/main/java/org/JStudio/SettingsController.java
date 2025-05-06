@@ -11,6 +11,9 @@ import org.JStudio.Plugins.Views.SettingsWindow;
 
 import java.io.IOException;
 
+/**
+ * Controller Class for the settings page
+ */
 public class SettingsController {
     private static boolean style; // false means light, true means dark
     private static Stage mainStage;
@@ -41,6 +44,9 @@ public class SettingsController {
     @FXML
     RadioButton lightRadio, darkRadio;
 
+    /**
+     * Method that initializes the UI elements
+     */
     public void initialize() {
         // Style mode toggling
         group = new ToggleGroup();
@@ -162,46 +168,99 @@ public class SettingsController {
         });
     }
 
+    /**
+     * Gets the current UI style.
+     *
+     * @return The current style, true if it is dark mode, false otherwise.
+     */
     public static boolean getStyle() {
         return style;
     }
 
+    /**
+     * Sets the UI style.
+     *
+     * @param style A boolean indicating whether to set the style to dark mode (true) or light mode (false).
+     */
     public static void setStyle(boolean style) {
         SettingsController.style = style;
     }
 
+    /**
+     * Sets the main UI controller for the application.
+     *
+     * @param controller The UIController object that manages the main UI.
+     */
     public static void setController(UIController controller) {
         SettingsController.controller = controller;
     }
 
+    /**
+     * Sets the settings window for the application.
+     *
+     * @param window The SettingsWindow object that handles the settings UI.
+     */
     public static void setWindow(SettingsWindow window) {
         SettingsController.window = window;
     }
 
+    /**
+     * Updates the UI style of the main application interface.
+     * Calls the updateStyle method of the main UI controller.
+     */
     public void updateMainUIStyle() {
         SettingsController.controller.updateStyle();
     }
 
+    /**
+     * Updates the UI style of the settings interface.
+     * Calls the updateStyle method of the settings window.
+     */
     public void updateSettingsUIStyle() {
         SettingsController.window.updateStyle();
     }
 
+    /**
+     * Sets the main stage for the application.
+     *
+     * @param stage The primary JavaFX Stage to display the application's main window.
+     */
     public static void setMainStage(Stage stage) {
         mainStage = stage;
     }
 
+    /**
+     * Gets the color used for notes in the UI.
+     *
+     * @return A string representing the color of notes.
+     */
     public static String getNoteColor() {
         return noteColour;
     }
-    
-    public static String getWaveColor(){
+
+    /**
+     * Gets the color used for the waveform in the UI.
+     *
+     * @return A string representing the color of the waveform.
+     */
+    public static String getWaveColor() {
         return waveColour;
     }
 
+    /**
+     * Checks if the application is in testing mode.
+     *
+     * @return true if the application is in testing mode, false otherwise.
+     */
     public static boolean isTesting() {
         return isTesting;
     }
 
+    /**
+     * Sets the testing mode flag for the application.
+     *
+     * @param isTesting A boolean indicating whether the application should enter testing mode.
+     */
     public static void setTesting(boolean isTesting) {
         SettingsController.isTesting = isTesting;
     }

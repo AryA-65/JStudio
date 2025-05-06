@@ -92,6 +92,7 @@ public class FlangerFXMLController {
             flanger.setModulationEffect();
             flanger.stopAudio();
             flanger.setFloatOutput(flanger.convertByteToFloatArray(flanger.getFinalAudio()));
+            flanger.export("Flanger");
             
             //runs visualizer if testing
             if (SettingsController.isTesting()) {

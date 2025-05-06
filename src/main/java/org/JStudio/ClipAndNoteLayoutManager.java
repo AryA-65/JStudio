@@ -12,6 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+/**
+ * Class that allows for clips and notes to be played and organized
+ */
 public class ClipAndNoteLayoutManager { //removed extends app since it will be its own class
 
     private final double rectangleBaseWidth = 50;
@@ -62,7 +65,10 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
         stage.show();
     }
 
-    //Makes a rectangle draggable
+    /**
+     * Method that allows to drag a rectangle
+     * @param dynRect the rectangle that is being dragged
+     */
     private void dragRectangle(Rectangle dynRect) {
         //add Event Hnadler on mouse pressed that saves the starting position of the rectangle
         dynRect.setOnMousePressed(mouseEvent -> {
@@ -140,7 +146,10 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
 
     }
 
-    //Adds a rectangle to the pane centered at the current mouse position
+    /**
+     * Method that allows a rectangle to be added to a pane centered at the current mouse position
+     * @param e the mouse event
+     */
     private void addRectangle(MouseEvent e) {
         //get array list of all rectangles in the pane
         rectangles = getRectangles();
@@ -173,6 +182,12 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
         }
     }
 
+    /**
+     * Method that checks if a rectangle is intersecting with any other node in the scene
+     * @param rectangle The original rectangle that is being moved or resized.
+     * @param nextPosX The proposed new X position of the rectangle.
+     * @param nextWidth The proposed new width of the rectangle.
+     *  */
     private void detectOverlap(Rectangle rectangle, double nextPosX, double nextWidth) {
         //Create a temporary rectangle to detect if it will intersect with any other rectangles once moved
         Rectangle tempRect = new Rectangle(nextWidth, rectangle.getHeight());
@@ -195,7 +210,10 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
         }
     }
 
-    //returns an array list of all rectangles in the pane
+    /**
+     * Method that returns an array of all rectangles in the pane
+     * @return an array of rectangles
+     */
     private List<Rectangle> getRectangles() {
         //create 
         rectangles = new ArrayList<>();
@@ -204,4 +222,5 @@ public class ClipAndNoteLayoutManager { //removed extends app since it will be i
         }
         return rectangles;
     }
+
 }

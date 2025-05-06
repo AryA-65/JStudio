@@ -15,6 +15,9 @@ import org.JStudio.Login.User;
 import org.JStudio.Login.UserDataController;
 import org.JStudio.Utils.AlertBox;
 
+/**
+ * Controller class for the login page
+ */
 public class LoginController {
     @FXML
     private TextField userIdField, userPasswordField, key1Field, key2Field;
@@ -32,6 +35,10 @@ public class LoginController {
     private int key1, key2;
     private User user;
 
+    /**
+     * Method that initializes UI elements
+     * Allows for user creation.
+     */
     @FXML
     public void initialize() {
         logo.setImage(new Image("JS_ico.png"));
@@ -169,15 +176,22 @@ public class LoginController {
         });
     }
 
-    // Set the stage
+    /**
+     * Method that allows to set a stage
+     * @param stage the current stage
+     */
     public void setRootStage(Stage stage) {
         rootStage = stage;
         rootStage.setResizable(false);
     }
 
-    // Set the scene
+    /**
+     * Method that allows to set a scene
+     * @param rootScene the current scene
+     */
     public void setRootScene(Scene rootScene) {
         this.rootScene = rootScene;
         rootScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
     }
+
 }

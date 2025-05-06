@@ -30,6 +30,9 @@ import java.util.*;
 import javafx.scene.Scene;
 import org.JStudio.Plugins.Views.MainEqualizer;
 
+/**
+ * Class that takes care of the logic of the main app.
+ */
 public class UIController {
     private Scene scene;
 

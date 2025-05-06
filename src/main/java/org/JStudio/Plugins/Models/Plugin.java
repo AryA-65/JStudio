@@ -33,66 +33,9 @@ public abstract class Plugin {
     private Thread playingThread;
     private int numOfChannels;
     
-    protected float[][] audioFloatInput2D;
-    protected byte[][] audioByteInput2D;
-    protected float[][] audioOutput2D;
-    
     public void export(){
         
     }
-
-    public void inputAudioData(float[][] audioData) {
-        audioByteInput2D = convert2DFloatTo2DByte(audioData);
-    }
-    
-    public byte[][] convert2DFloatTo2DByte(float[][] audioData) {
-        byte[][] byteArray = new byte[2][audioData[0].length*4];
-        for (int i = 0; i < 2; i++) {
-            ByteBuffer buffer = ByteBuffer.allocate(audioData[i].length * 4);
-            for (float floatData : audioData[i]) {
-                buffer.putFloat(floatData);
-            }
-            byteArray[i] = buffer.array();
-        }
-
-//        for (int i = 0; i < byteArray.length; i++) {
-//            for (int j = 0; j < byteArray[i].length; j++) {
-//                System.out.print(byteArray[i][j] + ",");
-//            }
-//            System.out.println();
-//        }
-
-        return byteArray;
-    }
-    
-    public float[][] convert2DByteTo2DFloat(byte[][] audioData) {
-        float[][] floatArray = new float[2][audioData[0].length/4];
-        try {
-            
-        for (int i = 0; i < floatArray.length; i++) {
-            ByteArrayInputStream bos = new ByteArrayInputStream(audioData[i]);
-            DataInputStream dis = new DataInputStream(bos);
-            
-            for (int j = 0; j < floatArray[i].length; j++) {
-                floatArray[i][j] = dis.readFloat();
-            }
-        }
-
-//        for (int i = 0; i < floatArray.length; i++) {
-//            for (int j = 0; j < floatArray[i].length; j++) {
-//                System.out.print(floatArray[i][j] + ",");
-//            }
-//            System.out.println();
-//        }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        
-        return floatArray;
-    }
-    
-    
     
     public Plugin() {
         outputGain = 1;
@@ -124,6 +67,7 @@ public abstract class Plugin {
     public void setAudioByteInput(byte[] audioByteInput){
         this.audioByteInput = audioByteInput;
     }
+    
     /**
      * Applies output gain to audio data
      * @param audioData the audio to apply output gain to
@@ -316,19 +260,6 @@ public abstract class Plugin {
 
         finalAudio = new byte[sizeOfByteArray];
         System.arraycopy(modifiedAudio, 0, finalAudio, 0, sizeOfByteArray); // Add the audio data
-    }
-    
-    protected byte[] convertToByteArrayGood(short[] audioData, int sizeOfByteArray) {
-        // Revert back to byte array to have playback functionality
-        byte[] modifiedAudio = new byte[sizeOfByteArray];
-        for (int i = 0; i < audioData.length; i++) {
-            ByteBuffer.wrap(modifiedAudio, i * 2, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(audioData[i]); // i*2 since each short is 2 bytes long
-        }
-
-        
-        byte[] byteData = new byte[sizeOfByteArray];
-        System.arraycopy(modifiedAudio, 0, byteData, 0, sizeOfByteArray); // Add the audio data
-        return byteData;
     }
 
     /**

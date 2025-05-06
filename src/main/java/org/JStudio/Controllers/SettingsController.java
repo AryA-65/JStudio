@@ -64,7 +64,6 @@ public class SettingsController {
         // Check which button selected and set style accordingly
         group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> styleChoice, Toggle oldStyleChoice, Toggle newStyleChoice) -> {
             selected = (RadioButton) group.getSelectedToggle();
-            System.out.println(selected.getId());
             switch (selected.getId()) {
                 case "lightRadio":
                     style = false;

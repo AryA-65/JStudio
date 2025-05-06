@@ -19,7 +19,7 @@ import org.JStudio.Utils.AlertBox;
  */
 public class ChorusFXMLController {
     @FXML
-    private Button resetButton, playButton, saveButton;
+    private Button playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
@@ -80,17 +80,6 @@ public class ChorusFXMLController {
         playButton.setOnAction(e -> {
             chorus.setModulationEffect();
             chorus.play();
-        });
-        
-        // Reset to initial values
-        resetButton.setOnAction(e -> {
-            chorus.stopAudio();
-            chorus.clearFinalAudio();
-            chorus = new Modulation(20000, 200, 0.5);
-            frequencyKnob.setValue(0.2);
-            deviationKnob.setValue(0.2);
-            wetDryKnob.setValue(0.5);
-            outputGainKnob.setValue(1);
         });
         
         // Saving

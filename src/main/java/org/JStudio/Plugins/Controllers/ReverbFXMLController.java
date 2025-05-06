@@ -18,7 +18,7 @@ import org.JStudio.Utils.AlertBox;
  */
 public class ReverbFXMLController {
     @FXML
-    private Button resetButton, playButton, saveButton;
+    private Button playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob preDelayKnob = new Knob(100, true, 0.1, REG);
@@ -87,18 +87,6 @@ public class ReverbFXMLController {
         playButton.setOnAction(e -> {
             reverb.setReverbEffect();
             reverb.play();
-        });
-        
-        // Reset to initial values
-        resetButton.setOnAction(e -> {
-            reverb.stopAudio();
-            reverb.clearFinalAudio();
-            reverb = new Reverb(1000, 10000, 2000, 0.5);
-            preDelayKnob.setValue(0.1);
-            decayTimeKnob.setValue(0.1);
-            diffusionKnob.setValue(0.2);
-            wetDryKnob.setValue(0.5);
-            outputGainKnob.setValue(1);
         });
         
         // Saving

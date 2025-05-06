@@ -63,7 +63,7 @@ public class LoginController {
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
             user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
             userDataController.writeToFile(user);
-            lunchMainApp();
+            launchMainApp();
         });
 
         // Validate an existing user
@@ -74,7 +74,7 @@ public class LoginController {
                 encryptionAndDecryption = new EncryptionAndDecryption(existingUser.getPassword(), existingUser.getKey1(), existingUser.getKey2());
                 String decryptedPassword = encryptionAndDecryption.decryption();
                 if (decryptedPassword.equalsIgnoreCase(userPass)) {
-                    lunchMainApp();
+                    launchMainApp();
                 } else {
                     AlertBox.display("Error", "The entered user password does not correspond to this user.");
                 }
@@ -87,7 +87,7 @@ public class LoginController {
     /**
      * Method to lunch the main application once either an account has been created or the user has been validated.
      */
-    private void lunchMainApp() {
+    private void launchMainApp() {
         try {
             FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
             Parent root = loader.load();
@@ -193,5 +193,4 @@ public class LoginController {
         this.rootScene = rootScene;
         rootScene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
     }
-
 }

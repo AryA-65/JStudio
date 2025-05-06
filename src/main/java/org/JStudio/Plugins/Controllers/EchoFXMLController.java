@@ -111,6 +111,7 @@ public class EchoFXMLController {
             echo.setEchoEffect();
             echo.stopAudio();
             echo.setFloatOutput(echo.convertByteToFloatArray(echo.getFinalAudio()));
+            echo.export("Echo");
             
             //runs visualizer if testing
             if (SettingsController.isTesting()) {

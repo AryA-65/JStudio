@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Views;
 
 import org.JStudio.Plugins.Controllers.SynthPianoController;
 import org.JStudio.Plugins.Controllers.SynthController_Piano;
@@ -10,7 +10,7 @@ import org.JStudio.SettingsController;
 
 import java.io.IOException;
 
-public class SynthMain_Piano {
+public class SynthMain_PianoStage {
     private SynthPianoController notesController;
     
     //setter

@@ -4,7 +4,7 @@ import org.JStudio.Plugins.Models.SynthPianoNote;
 import org.JStudio.Plugins.Views.SynthPianoNoteView;
 import org.JStudio.Plugins.Models.SynthPianoTrack;
 import org.JStudio.Plugins.Models.SynthPiano;
-import org.JStudio.Plugins.SynthMain_Piano;
+import org.JStudio.Plugins.Views.SynthMain_PianoStage;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -240,7 +240,7 @@ public class SynthPianoController {
 
     //opens the track settings/synthesizer for the user to make their own sounds
     public void openTrackOptions() {
-        SynthMain_Piano synth = new SynthMain_Piano();
+        SynthMain_PianoStage synth = new SynthMain_PianoStage();
         synth.setNotesController(this);
         try {
             synth.open();

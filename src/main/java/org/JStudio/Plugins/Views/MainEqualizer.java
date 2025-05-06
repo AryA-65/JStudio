@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Views;
 
 import org.JStudio.Plugins.Views.EqualizerView;
 import javafx.scene.Scene;

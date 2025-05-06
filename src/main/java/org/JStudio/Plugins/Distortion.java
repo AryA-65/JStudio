@@ -1,5 +1,7 @@
 package org.JStudio.Plugins;
 
+import org.JStudio.Plugins.Models.BitCrush;
+
 public abstract class Distortion implements Plugin {
     protected float gain, mix;
 

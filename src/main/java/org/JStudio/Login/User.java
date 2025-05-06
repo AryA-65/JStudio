@@ -10,8 +10,13 @@ public class User {
     private int key1;
     private int key2;
 
-    // Constructor that creates a user with a username, password, and
-    // encryption/decryption keys
+    /**
+     * Constructor that creates a user with a username, password, and encryption/decryption keys
+     * @param userName the username
+     * @param password the user password
+     * @param key1 the user key one
+     * @param key2 the user key two
+     */
     public User(String userName, String password, int key1, int key2) {
         this.userName = userName;
         this.password = password;

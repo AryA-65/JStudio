@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Models;
 
 import org.JStudio.Utils.FFTHandler;
 

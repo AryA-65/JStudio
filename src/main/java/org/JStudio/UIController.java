@@ -2,8 +2,8 @@ package org.JStudio;
 
 import javafx.application.Platform;
 import org.JStudio.Core.Mixer;
-import org.JStudio.Plugins.PianoRun;
-import org.JStudio.Plugins.SynthPianoRun;
+import org.JStudio.Plugins.Views.PianoRun;
+import org.JStudio.Plugins.Views.SynthPianoStage;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -28,7 +28,7 @@ import org.JStudio.Utils.SystemMonitor;
 import java.util.*;
 
 import javafx.scene.Scene;
-import org.JStudio.Plugins.MainEqualizer;
+import org.JStudio.Plugins.Views.MainEqualizer;
 import org.JStudio.Utils.TimeConverter;
 
 public class UIController {
@@ -174,7 +174,7 @@ public class UIController {
         });
 
         synthPianoBtn.setOnAction(e -> {
-            SynthPianoRun synthPiano = new SynthPianoRun();
+            SynthPianoStage synthPiano = new SynthPianoStage();
             synthPiano.openSynthPiano();
         });
 

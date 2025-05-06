@@ -1,4 +1,4 @@
-package org.JStudio.Plugins;
+package org.JStudio.Plugins.Models;
 
 public class BitCrush {
     private int depth;

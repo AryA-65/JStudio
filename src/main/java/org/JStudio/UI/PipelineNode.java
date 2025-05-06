@@ -38,17 +38,8 @@ public class PipelineNode extends StackPane {
         if (node instanceof Plugin plugin) {
             type = NodeType.PLUGIN;
 //            name.setText(plugin.getName());
-            name.setText("Test Plugin");
+            name.setText(plugin.getName().get());
             getChildren().addAll(name, inputPort, outputPort);
-            setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2) {
-                    if (e.getButton() == MouseButton.PRIMARY) {
-                        //open this plugin
-                    } else if (e.getButton() == MouseButton.SECONDARY) {
-                        //remove this plugin from the pipeline and from the track
-                    }
-                }
-            });
         } else if (node instanceof Track track) {
             type = NodeType.IN;
             name.textProperty().bind(track.getName());

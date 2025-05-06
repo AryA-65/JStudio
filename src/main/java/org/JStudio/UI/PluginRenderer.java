@@ -2,7 +2,6 @@ package org.JStudio.UI;
 
 import javafx.application.Platform;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import org.JStudio.Core.Track;

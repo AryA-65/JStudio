@@ -18,6 +18,7 @@ public class Mixer {
 
     private final FloatProperty masterGain = new SimpleFloatProperty(1), pitch = new SimpleFloatProperty(0f), pan = new SimpleFloatProperty(0f);
     private final BooleanProperty muted = new SimpleBooleanProperty(false);
+    private volatile FloatProperty leftAmp = new SimpleFloatProperty(0f), rightAmp = new SimpleFloatProperty(0f);
 
     private volatile StringProperty playBackPos = new SimpleStringProperty(TimeConverter.doubleToString((double) currentSample / sampleRate));
 
@@ -80,12 +81,16 @@ public class Mixer {
 //                System.out.println(track.getId());
             }
 
+//            float leftSum = 0, rightSum = 0;
             for (int i = 0; i < chunkSize; i++) {
                 float left = floatBuffer[0][i] * masterGain.get() * (1 - pan.get());
                 float right = floatBuffer[1][i] * masterGain.get() * (1 + pan.get());
 
-                int sampleL = (int)(left * 32767.0);
-                int sampleR = (int)(right * 32767.0);
+//                leftSum += left;
+//                rightSum += right;
+
+                int sampleL = (int) (left * 32767.0);
+                int sampleR = (int) (right * 32767.0);
 
                 sampleL = Math.max(-32768, Math.min(32767, sampleL));
                 sampleR = Math.max(-32768, Math.min(32767, sampleR));
@@ -96,6 +101,8 @@ public class Mixer {
                 byteBuffer[index + 2] = (byte)(sampleR & 0xFF);
                 byteBuffer[index + 3] = (byte)((sampleR >> 8) & 0xFF);
             }
+//            leftAmp.set(leftSum);
+//            rightAmp.set(rightSum);
 
             line.write(byteBuffer, 0, byteBuffer.length);
 
@@ -153,5 +160,13 @@ public class Mixer {
 
     public StringProperty getPlayBackPos() {
         return playBackPos;
+    }
+
+    public FloatProperty getLeftAmp() {
+        return leftAmp;
+    }
+
+    public FloatProperty getRightAmp() {
+        return rightAmp;
     }
 }

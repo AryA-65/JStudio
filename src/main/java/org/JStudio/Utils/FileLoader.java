@@ -19,10 +19,10 @@ public class FileLoader {
      * @param vbox to be used to store the audio files
      */
     public static void init(VBox vbox) {
-        if (tab_vbox != null) {
-            tab_vbox.getChildren().clear();
-        }
-        
+//        if (tab_vbox != null) {
+//            tab_vbox.getChildren().clear();
+//        }
+
         tab_vbox = vbox;
 
         String os = System.getProperty("os.name").toLowerCase();

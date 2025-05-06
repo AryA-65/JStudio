@@ -19,8 +19,7 @@ public class Track implements Serializable {
     private transient final StringProperty name = new SimpleStringProperty(), id = new SimpleStringProperty();
     private transient final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0), pan = new SimpleDoubleProperty(0);
     public transient final BooleanProperty muted = new SimpleBooleanProperty(false);
-    private transient final ArrayList<Clip> clips = new ArrayList<>();
-//    private final ArrayList<Plugin> plugins = new ArrayList<>();
+    private final ArrayList<Clip> clips = new ArrayList<>();
     private final ArrayList<Plugin> plugins = new ArrayList<>();
     private transient final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
 
@@ -55,6 +54,10 @@ public class Track implements Serializable {
         clips.remove(((ClipUI) e.getTarget()).getNodeClip());
     }
 
+    public ArrayList<Clip> getClips() {
+        return clips;
+    }
+
     public float[][] process(float[][] outBuff, int chunkStartSample, int chunkSize, int sampleRate) {
         if (muted.get()) return new float[2][chunkSize];
 
@@ -83,25 +86,24 @@ public class Track implements Serializable {
             double leftGain = panning <= 0 ? 1.0 : 1.0 - panning;
             double rightGain = panning >= 0 ? 1.0 : 1.0 + panning;
 
-//            float sumLeft = 0, sumRight = 0;
+            float sumLeft = 0, sumRight = 0;
             for (int i = 0; i < length; i++) {
                 float tempL = buffer[0][clipOffset + i] * (float) (amp * leftGain);
                 float tempR = 0;
                 if (buffer[1] != null) {
                     tempR += buffer[1][clipOffset + i] * (float) (amp * rightGain);
                 }
-//                sumLeft += Math.abs(tempL);
-//                sumRight += Math.abs(tempR);
+                sumLeft += Math.abs(tempL);
+                sumRight += Math.abs(tempR);
                 trackBuff[0][chunkOffset + i] += tempL;
                 trackBuff[1][chunkOffset + i] += tempR;
             }
 
-//            leftAmp.set((float)(sumLeft / chunkSize));
-//            rightAmp.set((float)(sumRight / chunkSize));
+            leftAmp.set((float)(sumLeft / chunkSize));
+            rightAmp.set((float)(sumRight / chunkSize));
         }
 
         for (Plugin plugin : plugins) {
-//            System.out.println(plugin.getPlugName().get());
             trackBuff = plugin.processStereo(trackBuff);
         }
 

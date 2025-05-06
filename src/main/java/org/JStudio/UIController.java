@@ -1,7 +1,8 @@
 package org.JStudio;
 
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import org.JStudio.Core.Mixer;
+import org.JStudio.Core.*;
 import org.JStudio.Plugins.Views.PianoRun;
 import org.JStudio.Plugins.Views.SynthPianoStage;
 import javafx.beans.property.BooleanProperty;
@@ -18,8 +19,6 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.JStudio.Core.Song;
-import org.JStudio.Core.Track;
 import org.JStudio.Plugins.Views.*;
 import org.JStudio.UI.*;
 import org.JStudio.Utils.*;
@@ -84,6 +83,8 @@ public class UIController {
     private Song song = new Song("New Song");
     private Mixer mixer = new Mixer(song);
 
+    private TimelineUI timelineUI;
+
     public Mixer getMixer() {return mixer;}
 
     public void setStage(Stage stage) {
@@ -134,10 +135,11 @@ public class UIController {
 
     @FXML
     public void initialize() throws Exception {
-        
-        plugins_tab.setOnSelectionChanged(e -> {
-            FileLoader.init(tab_vbox);
-        });
+        timelineUI = new TimelineUI(timeline_canvas);
+
+//        plugins_tab.setOnSelectionChanged(e -> {
+//            FileLoader.init(tab_vbox);
+//        });
         
         reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
@@ -218,15 +220,30 @@ public class UIController {
             synthesizerStage.synth();
         });
 
-        open_song_btn.setOnMouseClicked(e -> {
-            try {
-                this.song = ExporterImporter.loadSong();
-            } catch (IOException | ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
+        open_song_btn.getParent().setOnMouseClicked(e -> { //none functioning code
+//            try {
+//                this.song = ExporterImporter.loadSong();
+//                assert this.song != null;
+//                track_vbox.getChildren().clear();
+//                track_id_vbox.getChildren().clear();
+//                channel_rack.getChildren().clear();
+//                for (Track track : this.song.getTracks()) {
+//                    track_vbox.getChildren().addAll(new TrackUI((Song.bpm.get() * 32), track));
+//                    track_id_vbox.getChildren().add(new TrackIDUI(track, this));
+//                    channel_rack.getChildren().add(new ChannelUI(track, track.getLeftAmp(), track.getRightAmp()));
+//                    if (track.getClips() == null || track.getClips().isEmpty()) {continue;}
+//                    for (Clip clip : track.getClips()) {
+//                        track.addClip(clip);
+//                        ((Pane) track_vbox.getChildren()).getChildren().add(new ClipUI(clip));
+//                    }
+//                }
+//            } catch (IOException | ClassNotFoundException ex) {
+//                throw new RuntimeException(ex);
+//            }
+            System.out.println("Currently not working: " + e.getTarget());
         });
 
-        save_song_btn.setOnMouseClicked(e -> {
+        save_song_btn.getParent().setOnMouseClicked(e -> {
             try {
                 if (ExporterImporter.saveSong(this.song, this.song.getSongName().get())) AlertBox.display("Save Status", "Song Saved Successfully");
                 else AlertBox.display("Save Status", "Song Saved Failed");
@@ -235,7 +252,7 @@ public class UIController {
             }
         });
 
-        export_song_btn.setOnMouseClicked(e -> {
+        export_song_btn.getParent().setOnMouseClicked(e -> {
             try {
                 if (ExporterImporter.exportSong(this.song, this.song.getSongName().get(), this.mixer)) AlertBox.display("Export Status", "Song Exported Successfully");
                 else AlertBox.display("Export Status", "Song Exported Failed");
@@ -244,15 +261,21 @@ public class UIController {
             }
         });
 
+        mixer.getPlayBackPos().addListener((obs, oldPos, newPos) -> {
+            double positionSeconds = mixer.getCurrentSample() / 44100.0;
+            timelineUI.drawPlaybackMarker(positionSeconds * (Song.bpm.get() / 60) * 32);
+            timeline_scrollpane.setHvalue(positionSeconds / 60.0);
+        });
+
         // TODO: make a method or something to load a song, either here or in the song class itself (the ladder most likely)
 
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/icons/load.png"));
-        open_song_btn.setCursor(Cursor.HAND);
+        open_song_btn.getParent().setCursor(Cursor.HAND);
         save_song_btn.setImage(new Image("/icons/save.png"));
-        save_song_btn.setCursor(Cursor.HAND);
+        save_song_btn.getParent().setCursor(Cursor.HAND);
         export_song_btn.setImage(new Image("/icons/export.png"));
-        export_song_btn.setCursor(Cursor.HAND);
+        export_song_btn.getParent().setCursor(Cursor.HAND);
         close_btn.setImage(new Image("/icons/close.png"));
         close_btn.setCursor(Cursor.HAND);
         minim_btn.setImage(new Image("/icons/inconify.png"));
@@ -290,7 +313,7 @@ public class UIController {
         playback_btn.getParent().setId("playback_btn_parent");
 
         snap_btn.getParent().getStyleClass().add("iactive");
-        song_name.setText("New Song");
+//        song_name.setText("New Song");
 
 //        metronome_control.getParent().setOnMousePressed(e -> {
 //            if (metronome_control.getParent().getStyleClass().contains("iactive")) {
@@ -409,7 +432,7 @@ public class UIController {
             }
         });
 
-        song_name.setOnKeyPressed(e -> {
+        song_name.getParent().setOnKeyPressed(e -> {
             if (e.getCode().equals(KeyCode.ENTER)) {
                 if (song_name.getText() != null && !song_name.getText().trim().isEmpty()) {
                     song_name.getParent().requestFocus();
@@ -423,14 +446,14 @@ public class UIController {
         for (Track track : song.getTracks()) {
             track_vbox.getChildren().addAll(new TrackUI((Song.bpm.get() * 32), track));
             track_id_vbox.getChildren().add(new TrackIDUI(track, this));
-            channel_rack.getChildren().add(new ChannelUI(track));
+            channel_rack.getChildren().add(new ChannelUI(track, track.getLeftAmp(), track.getRightAmp()));
         }
 
         timeline_canvas.setWidth(Song.bpm.get() * 32);
 
         channel_rack.getChildren().add(0, new MixerUI(mixer));
 
-        song_name.textProperty().unbindBidirectional(song.getSongName());
+        song_name.textProperty().bindBidirectional(song.getSongName());
 
         search_samples.textProperty().addListener((observable, oldValue, newValue) -> {
             filterAudioSections(newValue);
@@ -438,7 +461,7 @@ public class UIController {
 
         FileLoader.init(tab_vbox);
 
-        new TimelineUI(timeline_canvas);
+
 
         grid_root.setOnKeyPressed(e -> {
             pressedKeys.add(e.getCode());
@@ -450,6 +473,11 @@ public class UIController {
             }
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.Q)) {
                 //get all the children in the track vbox and increase their width to the bpm * n (n being the increment -> default = 1, can increase in fractions or ints)
+            }
+            if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.R)) {
+                tab_vbox.getChildren().clear();
+                FileLoader.init(tab_vbox);
+                tab_vbox.requestFocus();
             }
             if (pressedKeys.contains(KeyCode.SPACE)) {
                 if (mixer.getRunning().get()) {

@@ -26,7 +26,7 @@ public class MixerUI extends HBox {
         setId("mixer");
         setAlignment(Pos.TOP_CENTER);
 
-        channel = new ChannelUI(mixer);
+        channel = new ChannelUI(mixer, mixer.getLeftAmp(), mixer.getRightAmp());
 
         leftContainer.setPrefHeight(256);
         leftContainer.setPrefWidth(32);

@@ -19,6 +19,8 @@ JSTUDIO is a **digital audio workstation (DAW)** that allows users to drag clips
 ## **Testing Functionality**
 Select the **checkbox** in the settings page. After, run any plugin, make your adjustments, and press **save/export**. This will open a **spectrometer visualizer** to test the effect.
 
+*Note: Running JSTUDIO in an IDE will require the JavaFX VM option path to be updated.
+
 ---
 
 ## **Available Plugins**

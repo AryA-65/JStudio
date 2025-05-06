@@ -13,15 +13,20 @@ import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
 import org.JStudio.Utils.AlertBox;
 
+import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Class that applies the butterworth audio filter effect
  */
 public class ButterworthFXMLController extends Plugin {
+
     private Stage stage;
 
     @FXML
@@ -127,7 +132,8 @@ public class ButterworthFXMLController extends Plugin {
 
         exportButton.setOnMouseClicked(event -> {
             stopAudio();
-            getProcessedAudio();
+//            getProcessedAudio();
+            export("ButterWorthFilter");
         });
     }
 
@@ -140,6 +146,7 @@ public class ButterworthFXMLController extends Plugin {
             inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
             setFilePathName(inputFile);
             File file = new File(inputFile);
+            fileName = file.getName();
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             format = audioStream.getFormat();
             byte[] audioBytes = audioStream.readAllBytes();
@@ -175,5 +182,40 @@ public class ButterworthFXMLController extends Plugin {
         this.stage.setOnCloseRequest(event -> {
             stopAudio();
         });
+    }
+
+    /**
+     * Method to export an audio file given a name
+     * @param pluginName the name of the exported audio file
+     */
+    public void export(String pluginName){
+        try {
+            //create AudioInputStream from the byte array
+            ByteArrayInputStream bais = new ByteArrayInputStream(filteredBytes);
+            AudioInputStream audioInputStream = new AudioInputStream(bais, format, filteredBytes.length / format.getFrameSize());
+
+            //make sure the file path exists
+            File dir = new File(System.getProperty("user.home") + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files" + File.separator + "Plugins");
+            if (!dir.exists()) {
+                Files.createDirectories(dir.toPath());
+            }
+
+            File wavFile;
+
+            //save to wav file
+            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav").exists()) {
+                int i = 1;
+                while(new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav").exists()){
+                    i++;
+                }
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav");
+            } else {
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav");
+            }
+
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }

@@ -1,6 +1,8 @@
 package org.JStudio.Plugins.Controllers;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -16,12 +18,12 @@ import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import org.JStudio.Utils.AlertBox;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.JStudio.UI.Knob.Type.REG;
 
@@ -29,6 +31,10 @@ import static org.JStudio.UI.Knob.Type.REG;
  * Class that applies the basic audio filters
  */
 public class AudioAmplitudeFXMLController {
+    private String fileName;
+
+    private StringProperty name = new SimpleStringProperty("BaseFilter");
+
     private Stage stage;
     @FXML
     Button exportButton, playButton;
@@ -44,6 +50,7 @@ public class AudioAmplitudeFXMLController {
     private byte[] audioBytesProcessed;  // Processed bytes
     private double amp;
     private SourceDataLine line;
+    private AudioFormat format;
 
     /**
      * Method that determines the logic of the basic audio filter plugin
@@ -75,7 +82,7 @@ public class AudioAmplitudeFXMLController {
 
         exportButton.setOnAction(event -> {
             stopAudio();
-            getProcessedAudio();
+//            getProcessedAudio();
 
             if (SettingsController.isTesting()) {
                 stage.close();
@@ -125,9 +132,12 @@ public class AudioAmplitudeFXMLController {
         );
 
         File selectedFile = fileChooser.showOpenDialog(stage);
+        fileName = selectedFile.getName();
+
         if (selectedFile != null) {
             audioFile = selectedFile;
-            try {
+            try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile)) {
+                format = audioInputStream.getFormat();
                 loadAudioData(audioFile);
                 applyAmplitudeChange();
             } catch (Exception e) {
@@ -263,6 +273,41 @@ public class AudioAmplitudeFXMLController {
             line.flush();
             line.stop();
             line.close();
+        }
+    }
+
+    /**
+     * Method to export an audio file given a name
+     * @param pluginName the name of the exported audio file
+     */
+    public void export(String pluginName){
+        try {
+            //create AudioInputStream from the byte array
+            ByteArrayInputStream bais = new ByteArrayInputStream(audioBytesProcessed);
+            AudioInputStream audioInputStream = new AudioInputStream(bais, format, audioBytesProcessed.length / format.getFrameSize());
+
+            //make sure the file path exists
+            File dir = new File(System.getProperty("user.home") + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files" + File.separator + "Plugins");
+            if (!dir.exists()) {
+                Files.createDirectories(dir.toPath());
+            }
+
+            File wavFile;
+
+            //save to wav file
+            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav").exists()) {
+                int i = 1;
+                while(new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav").exists()){
+                    i++;
+                }
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav");
+            } else {
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav");
+            }
+
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
         }
     }
 }

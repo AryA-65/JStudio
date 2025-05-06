@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Echo;
+import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
 import org.JStudio.SettingsController;
@@ -29,6 +30,11 @@ public class EchoFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static EchoStage window;
     private Echo echo;
+    
+    //gets echo plugin
+    public Echo getEcho(){
+        return echo;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons

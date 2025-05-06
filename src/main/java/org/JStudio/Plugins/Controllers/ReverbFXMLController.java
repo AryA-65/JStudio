@@ -29,6 +29,11 @@ public class ReverbFXMLController {
     private static ReverbStage window;
     private Reverb reverb;
     
+    //gets reverb plugin
+    public Reverb getReverb(){
+        return reverb;
+    }
+    
     /**
      * Initializes the UI and sets actions for the knobs and buttons
      */

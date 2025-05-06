@@ -3,12 +3,10 @@ package org.JStudio.Plugins.Models;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import javafx.stage.FileChooser;
-import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
@@ -33,6 +31,7 @@ public abstract class Plugin {
     private Thread playingThread;
     private int numOfChannels;
     private AudioFormat audioFormat;
+    private boolean fileSelected = false;
     
     //getters and setters
     public float[] getAudioFloatInput(){
@@ -68,6 +67,14 @@ public abstract class Plugin {
     
     public byte[] getAudioByteInput(){
         return audioByteInput;
+    }
+    
+    public boolean isFileSelected(){
+        return fileSelected;
+    }
+    
+    public void setIsFileSelected(boolean isFileSelected){
+        fileSelected = isFileSelected;
     }
     
     public void setFinalAudio(byte[] finalAudio) {
@@ -169,12 +176,18 @@ public abstract class Plugin {
      * Converts audio data from a wav file to a byte array
      */
     protected void convertAudioFileToByteArray() {
+        fileSelected = false;
         try {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("WAV Files", "*.wav"),
                     new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"),
                     new FileChooser.ExtensionFilter("All Audio Files", "*.wav", "*.mp3"));
             File file = fileChooser.showOpenDialog(null);
+            
+            if(file == null){
+                return;
+            }
+            fileSelected = true;
 
             filePathName = file.getAbsolutePath();
             fileName = file.getName();

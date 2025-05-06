@@ -51,6 +51,8 @@ public class AudioAmplitudeFXMLController {
     private double amp;
     private SourceDataLine line;
     private AudioFormat format;
+    
+    public static boolean isFileSelected = false;
 
     /**
      * Method that determines the logic of the basic audio filter plugin
@@ -124,6 +126,7 @@ public class AudioAmplitudeFXMLController {
      * Method that imports the audio file and analyzes it
      */
     private void handleImportAudio() {
+        isFileSelected = false;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Audio File");
         fileChooser.getExtensionFilters().add(
@@ -134,6 +137,7 @@ public class AudioAmplitudeFXMLController {
         fileName = selectedFile.getName();
 
         if (selectedFile != null) {
+            isFileSelected = true;
             audioFile = selectedFile;
             try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile)) {
                 format = audioInputStream.getFormat();

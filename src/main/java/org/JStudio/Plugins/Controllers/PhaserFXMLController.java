@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Phaser;
+import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
 import org.JStudio.SettingsController;
@@ -27,6 +28,11 @@ public class PhaserFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static PhaserStage window;
     private Phaser phaser;
+    
+    //gets phaser plugin
+    public Phaser getPhaser(){
+        return phaser;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons

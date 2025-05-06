@@ -1,6 +1,5 @@
 package org.JStudio.Plugins.Controllers;
 
-
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -23,6 +22,7 @@ import java.util.Map;
  * Controller class of the base audio filters
  */
 public class AudioFilterFXMLController extends Plugin {
+
     private Stage stage;
     private final Map<MenuButton, String> filterType = new HashMap<>();
     public String inputFile;
@@ -105,18 +105,17 @@ public class AudioFilterFXMLController extends Plugin {
      * Method to get the file
      */
     private void getFile() { // this
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(null);
-
-        if (selectedFile == null) {
-            AlertBox.display("Input Error", "No audio file selected.");
-            return;
-        }
-
-        inputFile = selectedFile.getAbsolutePath();
-        setFilePathName(inputFile);
         try {
-            File file = new File(inputFile);
+            setIsFileSelected(false);
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(null);
+            if (file == null) {
+                return;
+            }
+            setIsFileSelected(true);
+            inputFile = file.getAbsolutePath();
+            setFilePathName(inputFile);
+            fileName = file.getName();
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             format = audioStream.getFormat();
             audioBytes = audioStream.readAllBytes();
@@ -131,6 +130,7 @@ public class AudioFilterFXMLController extends Plugin {
 
     /**
      * Method to setup the menu button
+     *
      * @param menuButton the container for the choices
      */
     private void setupMenu(MenuButton menuButton) {
@@ -145,6 +145,7 @@ public class AudioFilterFXMLController extends Plugin {
 
     /**
      * Method to set the default option to low filter
+     *
      * @param menuButton the container of the choices
      */
     private void setDefaultMenuSelection(MenuButton menuButton) {
@@ -157,9 +158,9 @@ public class AudioFilterFXMLController extends Plugin {
         }
     }
 
-
     /**
      * Method that sets the stage
+     *
      * @param stage the stage of the controller
      */
     public void setStage(Stage stage) {
@@ -172,9 +173,10 @@ public class AudioFilterFXMLController extends Plugin {
 
     /**
      * Method to export an audio file given a name
+     *
      * @param pluginName the name of the exported audio file
      */
-    public void export(String pluginName){ // this
+    public void export(String pluginName) { // this
         try {
             //create AudioInputStream from the byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(finalAudio);
@@ -189,14 +191,14 @@ public class AudioFilterFXMLController extends Plugin {
             File wavFile;
 
             //save to wav file
-            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav").exists()) {
+            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + ".wav").exists()) {
                 int i = 1;
-                while(new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav").exists()){
+                while (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i + ".wav").exists()) {
                     i++;
                 }
-                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav");
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i + ".wav");
             } else {
-                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav");
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + ".wav");
             }
 
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);

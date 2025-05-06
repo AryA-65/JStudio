@@ -32,6 +32,7 @@ import org.JStudio.Plugins.Views.MainEqualizer;
  * Class that takes care of the logic of the main app.
  */
 public class UIController {
+
     private Scene scene;
 
     //implement later
@@ -84,7 +85,9 @@ public class UIController {
 
     private TimelineUI timelineUI;
 
-    public Mixer getMixer() {return mixer;}
+    public Mixer getMixer() {
+        return mixer;
+    }
 
     public void setStage(Stage stage) {
         rootStage = stage;
@@ -102,18 +105,22 @@ public class UIController {
         });
     }
 
-    public Stage getStage() {return rootStage;}
+    public Stage getStage() {
+        return rootStage;
+    }
 
     /**
      * Sets the main scene
+     *
      * @param scene
      */
-    public void setScene(Scene scene)  {
+    public void setScene(Scene scene) {
         this.scene = scene;
     }
 
     /**
      * Gets the main scene
+     *
      * @return the main scene
      */
     public Scene getScene() {
@@ -135,40 +142,47 @@ public class UIController {
     @FXML
     public void initialize() throws Exception {
         timelineUI = new TimelineUI(timeline_canvas);
-        
+
         reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
-            reverb.show();
+            if (reverb.controller.getReverb().isFileSelected()) {
+                reverb.show();
+            }
         });
 
         flangerBtn.setOnAction(e -> {
             FlangerStage flanger = new FlangerStage();
-            flanger.show();
+            if (flanger.controller.getFlanger().isFileSelected()) {
+                flanger.show();
+            }
         });
 
         chorusBtn.setOnAction(e -> {
             ChorusStage chorus = new ChorusStage();
+            if (chorus.controller.getChorus().isFileSelected()) {
             chorus.show();
+            }
         });
 
         echoBtn.setOnAction(e -> {
             EchoStage echo = new EchoStage();
-            echo.show();
+            if (echo.controller.getEcho().isFileSelected()) {
+                echo.show();
+            }
         });
 
         phaserBtn.setOnAction(e -> {
             PhaserStage phaser = new PhaserStage();
-            phaser.show();
+            if (phaser.controller.getPhaser().isFileSelected()) {
+                phaser.show();
+            }
         });
 
         equalizerBtn.setOnAction(e -> {
             MainEqualizer mainEQ = new MainEqualizer();
-            mainEQ.openEQ();
-        });
-
-        equalizerBtn.setOnAction(e -> {
-            MainEqualizer mainEQ = new MainEqualizer();
-            mainEQ.openEQ();
+            if (mainEQ.getEQView().getEqualizerController().getEqualizer().isFileSelected()) {
+                mainEQ.openEQ();
+            }
         });
 
         pianoBtn.setOnAction(e -> {
@@ -189,22 +203,30 @@ public class UIController {
 
         stereoBtn.setOnMouseClicked(e -> {
             StereoStage stereo = new StereoStage();
-            stereo.show();
+            if (stereo.controller.isFileSelected()) {
+                stereo.show();
+            }
         });
 
         butterworthBtn.setOnMouseClicked(e -> {
             ButterWorthStage butterWorth = new ButterWorthStage();
-            butterWorth.show();
+            if (butterWorth.controller.isFileSelected()) {
+                butterWorth.show();
+            }
         });
 
         basicFilterBtn.setOnMouseClicked(e -> {
             BaseFiltersStage baseFilters = new BaseFiltersStage();
-            baseFilters.show();
+            if (baseFilters.controller.isFileSelected()) {
+                baseFilters.show();
+            }
         });
 
         amplitudeBtn.setOnMouseClicked(e -> {
             AudioAmplitudeStage audioAmplitude = new AudioAmplitudeStage();
-            audioAmplitude.show();
+            if (audioAmplitude.controller.isFileSelected) {
+                audioAmplitude.show();
+            }
         });
 
         synthesizerBtn.setOnMouseClicked(e -> {
@@ -237,8 +259,11 @@ public class UIController {
 
         save_song_btn.getParent().setOnMouseClicked(e -> {
             try {
-                if (ExporterImporter.saveSong(this.song, this.song.getSongName().get())) AlertBox.display("Save Status", "Song Saved Successfully");
-                else AlertBox.display("Save Status", "Song Saved Failed");
+                if (ExporterImporter.saveSong(this.song, this.song.getSongName().get())) {
+                    AlertBox.display("Save Status", "Song Saved Successfully");
+                } else {
+                    AlertBox.display("Save Status", "Song Saved Failed");
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -246,8 +271,11 @@ public class UIController {
 
         export_song_btn.getParent().setOnMouseClicked(e -> {
             try {
-                if (ExporterImporter.exportSong(this.song, this.song.getSongName().get(), this.mixer)) AlertBox.display("Export Status", "Song Exported Successfully");
-                else AlertBox.display("Export Status", "Song Exported Failed");
+                if (ExporterImporter.exportSong(this.song, this.song.getSongName().get(), this.mixer)) {
+                    AlertBox.display("Export Status", "Song Exported Successfully");
+                } else {
+                    AlertBox.display("Export Status", "Song Exported Failed");
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -260,7 +288,6 @@ public class UIController {
         });
 
         // TODO: make a method or something to load a song, either here or in the song class itself (the ladder most likely)
-
         //initializing nodes (loading images and other stuff)
         open_song_btn.setImage(new Image("/icons/load.png"));
         open_song_btn.getParent().setCursor(Cursor.HAND);
@@ -314,7 +341,6 @@ public class UIController {
 //                metronome_control.getParent().getStyleClass().add("iactive");
 //            }
 //        });
-
         playback_btn.getParent().setOnMousePressed(e -> {
             if (playback_btn.getParent().getStyleClass().contains("iactive")) {
                 playback_btn.getParent().getStyleClass().remove("iactive");
@@ -333,7 +359,9 @@ public class UIController {
 
         snap.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                if (!snap_btn.getParent().getStyleClass().contains("iactive")) snap_btn.getParent().getStyleClass().add("iactive");
+                if (!snap_btn.getParent().getStyleClass().contains("iactive")) {
+                    snap_btn.getParent().getStyleClass().add("iactive");
+                }
             } else {
                 snap_btn.getParent().getStyleClass().remove("iactive");
             }
@@ -346,7 +374,6 @@ public class UIController {
 //                record_control.getParent().getStyleClass().add("iactive");
 //            }
 //        });
-
         info_panel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             xOffset = rootStage.getX() - event.getScreenX();
             yOffset = rootStage.getY() - event.getScreenY();
@@ -360,7 +387,6 @@ public class UIController {
 //        bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
 //            //to resize the playback
 //        });
-
         grid_root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             xResize = event.getSceneX();
             yResize = event.getSceneY();
@@ -453,8 +479,6 @@ public class UIController {
 
         FileLoader.init(tab_vbox);
 
-
-
         grid_root.setOnKeyPressed(e -> {
             pressedKeys.add(e.getCode());
             if (pressedKeys.contains(KeyCode.CONTROL) && pressedKeys.contains(KeyCode.A)) {
@@ -509,7 +533,9 @@ public class UIController {
     private void setSplitRatio() {
         Platform.runLater(() -> {
             double totalHeight = splitpane.getHeight();
-            if (totalHeight <= 0) return;
+            if (totalHeight <= 0) {
+                return;
+            }
             double ratio = (totalHeight - 285) / totalHeight;
             splitpane.setDividerPosition(0, Math.max(0.0, Math.min(1.0, ratio)));
         });
@@ -558,7 +584,9 @@ public class UIController {
                             file.setManaged(match);
                         }
 
-                        if (match) fileMatches = true;
+                        if (match) {
+                            fileMatches = true;
+                        }
                     }
                 }
 

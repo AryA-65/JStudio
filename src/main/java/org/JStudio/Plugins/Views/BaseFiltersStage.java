@@ -13,6 +13,7 @@ import org.JStudio.SettingsController;
 
 public class BaseFiltersStage extends Stage {
     public static Scene scene;
+    public static AudioFilterFXMLController controller = new AudioFilterFXMLController();
 
     /**
      * Creates the stage
@@ -30,7 +31,6 @@ public class BaseFiltersStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/low_highCutOffFilter.fxml"));
-            AudioFilterFXMLController controller = new AudioFilterFXMLController();
             controller.setStage(this);
 
             fxmlLoader.setController(controller);

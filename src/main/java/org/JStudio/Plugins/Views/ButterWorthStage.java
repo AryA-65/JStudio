@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class ButterWorthStage extends Stage {
     public static Scene scene;
+    public static ButterworthFXMLController controller = new ButterworthFXMLController();
 
     /**
      * Creates the stage
@@ -30,7 +31,6 @@ public class ButterWorthStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));
-            ButterworthFXMLController controller = new ButterworthFXMLController();
             controller.setStage(this);
 
             fxmlLoader.setController(controller);

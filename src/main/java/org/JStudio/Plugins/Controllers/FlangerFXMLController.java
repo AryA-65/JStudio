@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
+import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
 import org.JStudio.SettingsController;
@@ -27,6 +28,11 @@ public class FlangerFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static FlangerStage window;
     private Modulation flanger;
+    
+    //gets flanger plugin
+    public Modulation getFlanger(){
+        return flanger;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons

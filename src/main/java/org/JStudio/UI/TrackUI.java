@@ -13,12 +13,21 @@ import org.JStudio.Core.Track;
 import org.JStudio.UIController;
 import org.JStudio.Utils.AudioFileExtractor;
 
+/**
+ * Class that provides the user interface to display audio clips, handle drag-and-drop audio file import, and respond to user interactions such as right-click deletion.
+ */
 public class TrackUI extends StackPane {
     private final Track track;
     private final Canvas trackCanvas;
     private final GraphicsContext gc;
     private final Pane clipLayer = new Pane();
 
+    /**
+     * Constructs TrackUI object
+     *
+     * @param width the preferred width of the track UI
+     * @param track the backend track associated with this UI
+     */
     public TrackUI(double width, Track track) {
         this.track = track;
         setPrefSize(width, 64);
@@ -50,6 +59,12 @@ public class TrackUI extends StackPane {
         setupDragAndDrop();
     }
 
+    /**
+     * Draws the background canvas of the track, including grey background and vertical beat lines.
+     *
+     * @param gc the GraphicsContext to draw with
+     * @param width the width of the canvas
+     */
     private void drawTrackCanvas(GraphicsContext gc, double width) {
         gc.clearRect(0,0,width,64);
 
@@ -68,6 +83,9 @@ public class TrackUI extends StackPane {
         }
     }
 
+    /**
+     * Sets up drag-and-drop functionality for importing audio files
+     */
     private void setupDragAndDrop() {
         setOnDragOver(e -> {
             if (e.getGestureSource() != this && e.getDragboard().hasFiles()) {
@@ -124,6 +142,12 @@ public class TrackUI extends StackPane {
         });
     }
 
+    /**
+     * Checks if the given drop X-position overlaps with any existing audio clips on the track
+     *
+     * @param dropX the x-position of the drop
+     * @return true if the drop location overlaps an existing clip
+     */
     private boolean isOverlappingClip(double dropX) {
         for (var node : clipLayer.getChildren()) {
             if (node instanceof ClipUI clip) {

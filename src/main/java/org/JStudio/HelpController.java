@@ -1,19 +1,23 @@
 package org.JStudio;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import org.JStudio.Utils.Descriptions;
 
+/**
+ * Class to describe each of the tools to the user
+ */
 public class HelpController {
     @FXML
     VBox toolBox;
-
     @FXML
     ScrollPane scrollPane;
 
+    /**
+     * The array of all descriptions.
+     */
     Descriptions[] tools = {
             new Descriptions(
                     "Plugin: Reverb",
@@ -110,6 +114,7 @@ public class HelpController {
     public void initialize() {
         toolBox.setSpacing(20);
 
+        //Getting each element, creating a node with it then adding it to the scene.
         for (Descriptions tool : tools) {
             VBox toolVBox = new VBox(8);
             toolVBox.setStyle("-fx-padding: 15; -fx-border-color: #ccc; -fx-border-radius: 5;");

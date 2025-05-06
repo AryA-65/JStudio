@@ -1,21 +1,23 @@
 package org.JStudio.Utils;
 
+import com.sun.management.OperatingSystemMXBean;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SystemMonitor { //make into static class
+/**
+ * Class to show the user the CPU usage.
+ */
+public class SystemMonitor {
     private final int DUR = 60;
     private final LinkedList<Double> CPUBUFF = new LinkedList<>(), MEMBUFF = new LinkedList<>();
     private final OperatingSystemMXBean OS = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -25,6 +27,12 @@ public class SystemMonitor { //make into static class
     private Image cpuImg = new Image("/icons/cpu.png"), memImg = new Image("/icons/memory.png");
     private boolean hover = false;
 
+
+    /**
+     * Creates a new SystemMonitor and attaches mouse event listeners to the provided canvas.
+     *
+     * @param systemCanvas the JavaFX Canvas used to draw the CPU and memory graphs
+     */
     public SystemMonitor(Canvas systemCanvas) {
         this.C = systemCanvas;
         this.WIDTH = systemCanvas.getWidth();
@@ -40,6 +48,10 @@ public class SystemMonitor { //make into static class
         });
     }
 
+    /**
+     * Starts the system monitoring with a periodic updates and redraws.
+     * Updates occur every second on a background thread.
+     */
     public void start() {
         exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(() -> {
@@ -48,13 +60,18 @@ public class SystemMonitor { //make into static class
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Stops the monitoring and shuts down the scheduled executor service.
+     */
     public void stop() {
         exec.shutdownNow();
     }
 
+    /**
+     * Checks the current CPU and memory usage and records the results to their respective buffers.
+     */
     private void updateData() {
         double cpuUsage = OS.getCpuLoad();
-//        double norm = (OS.getTotalMemorySize() - OS.getFreeMemorySize()) / 1e9;
         double norm = (double) (OS.getTotalMemorySize() - OS.getFreeMemorySize()) / OS.getTotalMemorySize();
 
         synchronized (CPUBUFF) {
@@ -68,6 +85,9 @@ public class SystemMonitor { //make into static class
         }
     }
 
+    /**
+     * Clears and redraws the entire canvas with the current CPU and memory usage graphs
+     */
     private void draw() {
         GraphicsContext gc = C.getGraphicsContext2D();
         gc.clearRect(0, 0, C.getWidth(), C.getHeight());
@@ -76,13 +96,21 @@ public class SystemMonitor { //make into static class
 
         drawGraph(gc, MEMBUFF, halfH, (byte) 0, true);
         drawGraph(gc, CPUBUFF, (byte) C.getHeight(), halfH, false);
-//        drawCpuGraph(gc, CPUBUFF, (byte) C.getHeight(), halfH, false);
 
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
         gc.strokeLine(0, halfH, WIDTH, halfH);
     }
 
+    /**
+     * Draws an area graph based on a buffer of values.
+     *
+     * @param gc    the GraphicsContext used to draw
+     * @param buff  the buffer containing usage values (0.0 to 1.0)
+     * @param btm   the bottom Y coordinate of the graph
+     * @param tp    the top Y coordinate of the graph
+     * @param sl    true if drawing memory graph, false for CPU
+     */
     private void drawGraph(GraphicsContext gc, LinkedList<Double> buff, byte btm, byte tp, boolean sl) {
         byte h = (byte) (btm - tp);
         double stepX = WIDTH / DUR;

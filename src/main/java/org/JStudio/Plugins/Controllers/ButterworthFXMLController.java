@@ -18,6 +18,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
 
+/**
+ * Class that applies the butterworth audio filter effect
+ */
 public class ButterworthFXMLController extends Plugin {
     private Stage stage;
 
@@ -40,6 +43,9 @@ public class ButterworthFXMLController extends Plugin {
 
     public AudioFormat format;
 
+    /**
+     * Method that determines the logic of the plugin
+     */
     public void initialize() {
         group = new ToggleGroup();
         lowPassRadio.setToggleGroup(group);
@@ -124,6 +130,10 @@ public class ButterworthFXMLController extends Plugin {
             getProcessedAudio();
         });
     }
+
+    /**
+     * Method that gets the file and analyzes it
+     */
     public void getFile() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -143,6 +153,10 @@ public class ButterworthFXMLController extends Plugin {
         }
     }
 
+    /**
+     * Method that returns the processes audio
+     * @return the array with the applied plugin effect
+     */
     public byte[] getProcessedAudio() {
         if (filteredBytes == null || filteredBytes.length == 0) {
             AlertBox.display("Export Error", "No processed audio to export.");
@@ -151,6 +165,10 @@ public class ButterworthFXMLController extends Plugin {
         return filteredBytes;
     }
 
+    /**
+     * Method that sets the stage
+     * @param stage the current stage of the plugin
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
 

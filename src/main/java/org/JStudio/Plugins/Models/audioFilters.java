@@ -206,31 +206,74 @@ public class audioFilters {
             x1 = x2 = y1 = y2 = 0.0;
         }
 
+        /**
+         * Applies a biquad low-pass filter to the given audio sample array
+         * This filter removes high-frequency components above the specified cutoff frequency
+         *
+         * @param samples     The input/output array of 16-bit PCM audio samples.
+         * @param cutoffFreq  The cutoff frequency in Hz above which frequencies are attenuated.
+         * @param q           The quality factor (Q), which controls the filter's resonance.
+         * @param sampleRate  The sample rate of the audio data in Hz (e.g., 44100).
+         */
         public static void applyBiquadLowPassFilter(short[] samples, float cutoffFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter(); // Create an instance
             filter.lowPass(cutoffFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
+        /**
+         * Applies a biquad high-pass filter to the given audio sample array.
+         * This filter attenuates frequencies below the cutoff frequency and allows higher frequencies
+         *
+         * @param samples     The input/output array
+         * @param cutoffFreq  The cutoff frequency in Hz
+         * @param q           The quality factor (Q), which affects the sharpness of the cutoff slope
+         * @param sampleRate  The sample rate of the audio data in Hz
+         */
         public static void applyBiquadHighPassFilter(short[] samples, float cutoffFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
             filter.highPass(cutoffFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
+        /**
+         * Applies a biquad band-pass filter to the given audio sample array.
+         * This filter allows frequencies around the center frequency to pass through and reduces all the others
+         *
+         * @param samples     The input/output array
+         * @param centerFreq  The center frequency in Hz
+         * @param q           The quality factor (Q), which determines the bandwidth around the center frequency
+         * @param sampleRate  The sample rate of the audio data in Hz
+         */
         public static void applyBiquadBandPassFilter(short[] samples, float centerFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
             filter.bandPass(centerFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
+        /**
+         * Applies a biquad band-stop filter (notch filter) to the given audio sample array.
+         * This filter reduces frequencies around the specified center frequency, but leaves other frequencies unaffected.
+         *
+         * @param samples     The input/output array
+         * @param centerFreq  The center frequency in Hz
+         * @param q           The quality factor (Q), which determines the width of the notch
+         * @param sampleRate  The sample rate of the audio data in Hz
+         */
         public static void applyBiquadBandStopFilter(short[] samples, float centerFreq, float q, double sampleRate) {
             BiquadFilter filter = new audioFilters().new BiquadFilter();
             filter.bandStop(centerFreq, q, sampleRate);
             applyBiquad(samples, filter);
         }
 
-        // Shared utility method
+        /**
+         * Applies the given biquad filter to an array of 16-bit PCM audio samples.
+         * This method processes each sample through the provided filter instance and
+         * updates the samples in-place with the filtered output.
+         *
+         * @param samples The input/output array of audio samples to be filtered
+         * @param filter  The configured BiquadFilter instance to apply
+         */
         private static void applyBiquad(short[] samples, BiquadFilter filter) {
             filter.reset();
             for (int i = 0; i < samples.length; i++) {
@@ -240,8 +283,8 @@ public class audioFilters {
                 samples[i] = (short) output;
             }
         }
-    }
 
+    }
 }
 
 

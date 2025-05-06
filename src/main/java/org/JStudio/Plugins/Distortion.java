@@ -36,7 +36,7 @@ public abstract class Distortion implements Plugin {
     /**
      * Applies gain to stereo audio data
      *
-     * @param stereoInputData a 2D float array where inputData[0] is the left channel and inputData[1] is the right channel
+     * @param stereoInputData a 2D float array
      * @return a new 2D array with gain applied to both channels
      */
     protected float[][] applyGain(float[][] stereoInputData) {
@@ -80,5 +80,5 @@ public abstract class Distortion implements Plugin {
         }
         return outputData;
     }
-    
+
 }

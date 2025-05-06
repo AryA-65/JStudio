@@ -25,6 +25,9 @@ import java.io.File;
 
 import static org.JStudio.UI.Knob.Type.REG;
 
+/**
+ * Class that applies the basic audio filters
+ */
 public class AudioAmplitudeFXMLController {
     private Stage stage;
     @FXML
@@ -40,18 +43,19 @@ public class AudioAmplitudeFXMLController {
     private byte[] audioBytesOriginal;   // Raw input bytes
     private byte[] audioBytesProcessed;  // Processed bytes
     private double amp;
-
     private SourceDataLine line;
 
+    /**
+     * Method that determines the logic of the basic audio filter plugin
+     */
     public void initialize() {
         knob.setValues(-5, 5);
-        knob.setValue(1);
         vbox.getChildren().add(knob);
-
         knob.valueProperty().addListener((ObservableValue<? extends Number> obs, Number oldVal, Number newVal) -> {
             amp = knob.getValue();
             applyAmplitudeChange();
         });
+        knob.setValue(1);
 
         handleImportAudio();
 
@@ -88,6 +92,9 @@ public class AudioAmplitudeFXMLController {
         });
     }
 
+    /**
+     * Method that applies the amplitude change
+     */
     private void applyAmplitudeChange() {
         if (audioBytesOriginal == null) return;
 
@@ -107,6 +114,9 @@ public class AudioAmplitudeFXMLController {
         drawWaveform(waveformCanvas, amp);
     }
 
+    /**
+     * Method that imports the audio file and analyzes it
+     */
     private void handleImportAudio() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Audio File");
@@ -128,6 +138,10 @@ public class AudioAmplitudeFXMLController {
         }
     }
 
+    /**
+     * Method that creates an array of bytes that represent the audio file
+     * @param file the imported audio file
+     */
     private void loadAudioData(File file) {
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(file);
@@ -160,6 +174,11 @@ public class AudioAmplitudeFXMLController {
         }
     }
 
+    /**
+     * Method that draws the amplitude of the audio file
+     * @param canvas the canva that the wave of the file will be drawn to
+     * @param amplitudeFactor the amplitude factor that multiplies with the initial graph
+     */
     private void drawWaveform(Canvas canvas, double amplitudeFactor) {
         if (audioBytesOriginal == null || audioBytesOriginal.length == 0) return;
 
@@ -185,6 +204,9 @@ public class AudioAmplitudeFXMLController {
         gc.stroke();
     }
 
+    /**
+     * Method that plays the byte array
+     */
     private void playAudio() {
         if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
             AlertBox.display("Playback Error", "No processed audio data available.");
@@ -212,11 +234,19 @@ public class AudioAmplitudeFXMLController {
         }).start();
     }
 
+    /**
+     * Method that sets the stage
+     * @param stage
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
         this.stage.setOnCloseRequest(event -> stopAudio());
     }
 
+    /**
+     * Method that returns the array that contains the applied plugin effects
+     * @return the filtered array
+     */
     public byte[] getProcessedAudio() {
         if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
             AlertBox.display("Export Error", "No processed audio to export.");
@@ -225,6 +255,9 @@ public class AudioAmplitudeFXMLController {
         return audioBytesProcessed;
     }
 
+    /**
+     * Method that stops audio from playing
+     */
     public void stopAudio() {
         if (line != null && line.isOpen()) {
             line.flush();

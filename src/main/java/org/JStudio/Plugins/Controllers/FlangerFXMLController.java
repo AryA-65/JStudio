@@ -6,8 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
 import org.JStudio.Plugins.Views.FlangerStage;
+import org.JStudio.Plugins.Views.SpectrographStage;
+import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Utils.AlertBox;
 
 /**
  * FXML controller class for the Flanger UI
@@ -89,6 +92,20 @@ public class FlangerFXMLController {
             flanger.setModulationEffect();
             flanger.stopAudio();
             flanger.setFloatOutput(flanger.convertByteToFloatArray(flanger.getFinalAudio()));
+            
+            //runs visualizer if testing
+            if (SettingsController.isTesting()) {
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(flanger.getOriginalAudio(), flanger.getFinalAudio());
+                    }
+                } catch (Exception ex) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
+                spectrographStage.show();
+            }
+            
             FlangerFXMLController.window.close();
         });
         

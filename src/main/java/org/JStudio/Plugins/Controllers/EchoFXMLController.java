@@ -6,8 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Echo;
 import org.JStudio.Plugins.Views.EchoStage;
+import org.JStudio.Plugins.Views.SpectrographStage;
+import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Utils.AlertBox;
 
 /**
  * FXML controller class for the Echo UI
@@ -108,6 +111,20 @@ public class EchoFXMLController {
             echo.setEchoEffect();
             echo.stopAudio();
             echo.setFloatOutput(echo.convertByteToFloatArray(echo.getFinalAudio()));
+            
+            //runs visualizer if testing
+            if (SettingsController.isTesting()) {
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(echo.getOriginalAudio(), echo.getFinalAudio());
+                    }
+                } catch (Exception ex) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
+                spectrographStage.show();
+            }
+            
             EchoFXMLController.window.close();
         });
         

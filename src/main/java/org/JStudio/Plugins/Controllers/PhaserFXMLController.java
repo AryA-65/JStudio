@@ -6,8 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Phaser;
 import org.JStudio.Plugins.Views.PhaserStage;
+import org.JStudio.Plugins.Views.SpectrographStage;
+import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Utils.AlertBox;
 
 /**
  * FXML controller class for the Phaser UI
@@ -89,6 +92,20 @@ public class PhaserFXMLController {
             phaser.setPhaserEffect();
             phaser.stopAudio();
             phaser.setFloatOutput(phaser.convertByteToFloatArray(phaser.getFinalAudio()));
+            
+            //runs visualizer if testing
+            if (SettingsController.isTesting()) {
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(phaser.getOriginalAudio(), phaser.getFinalAudio());
+                    }
+                } catch (Exception ex) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
+                spectrographStage.show();
+            }
+            
             PhaserFXMLController.window.close();
         });
         

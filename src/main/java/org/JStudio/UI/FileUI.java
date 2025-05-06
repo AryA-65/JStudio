@@ -18,7 +18,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import org.JStudio.SettingsController;
 import org.JStudio.Utils.AudioFileExtractor;
 
 import java.io.*;
@@ -68,11 +67,11 @@ public class FileUI extends Pane {
         try {
             float[][] audioData = AudioFileExtractor.readFile(file);
             if (AudioFileExtractor.isMp3()) f_size.setText(String.format("%.2f", AudioFileExtractor.getMP3Length()));
-            else f_size.setText(String.format("%.2f", AudioFileExtractor.getwavLength()));
+            else f_size.setText(String.format("%.2f", AudioFileExtractor.getWavLength()));
             if (audioData != null) {
                 boolean is_stereo = audioData[1] != null;
-                float[] left_ch = AudioFileExtractor.downsample(audioData[0], (int) canvas.getWidth());
-                float[] right_ch = is_stereo ? AudioFileExtractor.downsample(audioData[0], (int) canvas.getWidth()) : null;
+                float[] left_ch = AudioFileExtractor.downSample(audioData[0], (int) canvas.getWidth());
+                float[] right_ch = is_stereo ? AudioFileExtractor.downSample(audioData[0], (int) canvas.getWidth()) : null;
                 draw_data(left_ch, right_ch);
             }
         } catch (Exception e) {

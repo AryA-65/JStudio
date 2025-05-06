@@ -4,12 +4,15 @@ import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
-
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that extracts audio files
+ * Allows MP3 functionality
+ */
 public class AudioFileExtractor {
     private static AudioInputStream ais;
     private static AudioFormat format;
@@ -20,6 +23,12 @@ public class AudioFileExtractor {
         return file_type;
     }
 
+    /**
+     * Method that reads an audio file
+     * @param file The path of the wav file to read
+     * @return the read file
+     * @throws Exception file not found
+     */
     public static float[][] readFile(File file) throws Exception {
         String name = file.getName().toLowerCase();
         if (name.endsWith(".mp3")) {
@@ -33,7 +42,13 @@ public class AudioFileExtractor {
         }
     }
 
-    // WAV section
+    /**
+     * Method that reads a wav type audio file
+     * @param file The path of the wav file to read
+     * @return a double float array of the audio file
+     * @throws UnsupportedAudioFileException audio file type is not supported
+     * @throws IOException file not found
+     */
     public static float[][] readWavFile(File file) throws UnsupportedAudioFileException, IOException {
         ais = AudioSystem.getAudioInputStream(file);
         format = ais.getFormat();
@@ -59,17 +74,32 @@ public class AudioFileExtractor {
         return new float[][]{left, right};
     }
 
-    public static double getwavLength() {
+    /**
+     * Method that gets the wav length
+     * @return The length of the wav file in seconds, or -1 if the file is not loaded or the format is invalid.
+     */
+    public static double getWavLength() {
         return ais != null && format != null
                 ? ais.getFrameLength() / format.getSampleRate()
                 : -1;
     }
 
+    /**
+     * Method that returns the sample rate of an audio file
+     * @return The sample rate in Hz, or -1 if the file is not loaded
+     */
     public static int getSampleRate() {
         return format != null ? (int) format.getSampleRate() : -1;
     }
 
-    public static float[] downsample(float[] samples, int targetSize) {
+    /**
+     * Down samples provided audio samples to the specified target size.
+     *
+     * @param samples    The audio samples to
+     * @param targetSize The target size of the array.
+     * @return A down sampled array of audio samples.
+     */
+    public static float[] downSample(float[] samples, int targetSize) {
         float[] result = new float[targetSize];
         int step = samples.length / targetSize;
         for (int i = 0; i < targetSize; i++) {
@@ -78,7 +108,13 @@ public class AudioFileExtractor {
         return result;
     }
 
-    //MP3 section
+    /**
+     * Reads an MP3 audio file and extracts stereo audio samples
+     *
+     * @param file The path of the MP3 file to read
+     * @return A 2D float array containing the left and right channel samples
+     * @throws Exception If there is an error while reading the file
+     */
     private static float[][] readMp3(File file) throws Exception {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         Bitstream bitstream = new Bitstream(inputStream);
@@ -119,6 +155,11 @@ public class AudioFileExtractor {
         return new float[][]{left, right};
     }
 
+    /**
+     * Returns the duration of the currently loaded MP3 file in seconds
+     *
+     * @return The length of the MP3 file in seconds, or -1 if the file is not loaded
+     */
     public static double getMP3Length() {
         if (fileFormat != null && fileFormat.properties().containsKey("duration")) {
             long micro = (Long) fileFormat.properties().get("duration");
@@ -127,10 +168,21 @@ public class AudioFileExtractor {
         return -1;
     }
 
+    /**
+     * Returns the sample rate of the currently loaded MP3 file
+     *
+     * @return The sample rate in Hz, or -1 if the file is not loaded
+     */
     public static int getMP3SampleRate() {
         return format != null ? (int) format.getSampleRate() : -1;
     }
 
+    /**
+     * Converts a list of float objects to a primitive float array
+     *
+     * @param list The list of float objects to convert.
+     * @return A primitive float array containing the values of the list
+     */
     private static float[] toFloatArray(List<Float> list) {
         float[] result = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {

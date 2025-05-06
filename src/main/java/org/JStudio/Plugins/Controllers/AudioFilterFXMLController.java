@@ -6,8 +6,10 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.JStudio.Controllers.SettingsController;
 import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
+import org.JStudio.Plugins.Views.SpectrographStage;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
@@ -98,6 +100,19 @@ public class AudioFilterFXMLController extends Plugin {
         saveBtn.setOnAction(event -> {
             stopAudio();
             export("Base Audio Filter");
+
+            if (SettingsController.isTesting()) {
+                stage.close();
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(shortsToBytes(samples), filteredBytes);
+                    }
+                } catch (Exception e) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
+                spectrographStage.show();
+            }
         });
     }
 

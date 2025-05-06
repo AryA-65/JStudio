@@ -24,7 +24,6 @@ public class Equalizer extends Plugin{
     private File file;
     private Stage stage;
     private StringProperty name = new SimpleStringProperty("Equalizer");
-    private Thread audioThread;
 
     public Equalizer() {
         convertAudioFileToByteArray();
@@ -78,20 +77,12 @@ public class Equalizer extends Plugin{
         return stage;
     }
 
-    public Thread getAudioThread() {
-        return audioThread;
-    }
-
     public float[] getProcessedFloat() {
         return processedFloat;
     }
 
     public void setProcessedFloat(float[] processedFloat) {
         this.processedFloat = processedFloat;
-    }
-
-    public void setAudioThread(Thread audioThread) {
-        this.audioThread = audioThread;
     }
 
     public void setAudioBytes(byte[] audioBytes) {

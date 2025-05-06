@@ -1,5 +1,6 @@
 package org.JStudio.Plugins.Views;
 
+import javafx.event.Event;
 import javafx.geometry.Orientation;
 import org.JStudio.Plugins.Models.EqualizerBand;
 import org.JStudio.Plugins.Controllers.EqualizerController;
@@ -10,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.JStudio.Plugins.Models.Equalizer;
 import org.JStudio.SettingsController;
 import org.JStudio.Utils.AlertBox;
@@ -85,7 +87,7 @@ public class EqualizerView extends Pane {
             eqController.processAudio(eqController.getEqualizer().getAudioFloatInput());
             
             //export teh audio to a wav file
-            equalizer.export();
+            equalizer.export("Equalizer");
             
             //runs visualizer if testing
             if (SettingsController.isTesting()) {
@@ -100,6 +102,10 @@ public class EqualizerView extends Pane {
                 }
                 spectrographStage.show();
             }
+            
+            //close the stage/window
+            WindowEvent closeEvent = new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST);
+            Event.fireEvent(stage, closeEvent);
         });
 
         HBox hbButtons = new HBox();

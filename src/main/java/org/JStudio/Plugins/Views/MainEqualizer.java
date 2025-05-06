@@ -6,17 +6,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.JStudio.SettingsController;
 
-public class MainEqualizer{
+public class MainEqualizer {
 
     public void openEQ() {
         //creates a new stage
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        
+
         //creates an equalizer view for the UI elements
         EqualizerView eqView = new EqualizerView();
         eqView.setStage(stage);
-        
+
         //creates a scene and loads the selected theme (dark/light mode)
         Scene scene = new Scene(eqView);
         if (SettingsController.getStyle()) {
@@ -25,17 +25,23 @@ public class MainEqualizer{
             scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
         }
         stage.setScene(scene);
-        
+
         //stop any audio when the equalizer closes
-        stage.setOnCloseRequest(e ->{
-            try{
-            eqView.getEqualizerController().getEqualizer().stopAudio();
-            } catch(Exception ex){
+        stage.setOnCloseRequest(e -> {
+            try {
+                eqView.getEqualizerController().getEqualizer().stopAudio();
+                if (eqView.getEqualizerController().getEqualizer().getPlayingThread() != null) {
+                    eqView.getEqualizerController().getEqualizer().getPlayingThread().interrupt();
+                }
+                if (eqView.getEqualizerController().getEqualizer().getLine() != null) {
+                    eqView.getEqualizerController().getEqualizer().getLine().close();
+                }
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         });
-        
+
         stage.show();
     }
-    
+
 }

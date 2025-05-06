@@ -32,13 +32,107 @@ public abstract class Plugin {
     protected SourceDataLine line;
     private Thread playingThread;
     private int numOfChannels;
+    private AudioFormat audioFormat;
     
-    public void export(){
-        
+    //getters and setters
+    public float[] getAudioFloatInput(){
+        return audioFloatInput;
+    }
+
+    public String getName() {
+        return "";
+    }
+
+    public SourceDataLine getAudioLine() {
+        return line;
+    }
+    public byte[] getOriginalAudio(){
+        return originalAudio;
     }
     
+    public void setOriginalAudio(byte[] originalAudio){
+        this.originalAudio = originalAudio;
+    }
+    
+    public byte[] getFinalAudio() {
+        return finalAudio;
+    }
+    
+    public String getFileName() {
+            return fileName;
+    }
+    
+    public String getFilePathName() {
+        return filePathName;
+    }
+    
+    public byte[] getAudioByteInput(){
+        return audioByteInput;
+    }
+    
+    public void setFinalAudio(byte[] finalAudio) {
+        this.finalAudio = finalAudio;
+    }
+
+    public void setOutputGain(double outputGain) {
+        this.outputGain = outputGain;
+    }
+
+    public void setFilePathName(String filePathName) {
+        this.filePathName = filePathName;
+    }
+    
+    public Thread getPlayingThread(){
+        return playingThread;
+    }
+
+    public void setFloatOutput(float[] floatOutput) {
+        this.floatOutput = floatOutput;
+    }
+    
+    public void setAudioByteInput(byte[] audioByteInput){
+        this.audioByteInput = audioByteInput;
+    }
+
+    public void clearFinalAudio() {
+        finalAudio = null;
+    }
+    
+    //constructor initializes outputGain
     public Plugin() {
         outputGain = 1;
+    }
+    
+    //exports plugin modifications as a wav file
+    public void export(String pluginName){
+        try {            
+            //create AudioInputStream from the byte array
+            ByteArrayInputStream bais = new ByteArrayInputStream(finalAudio);
+            AudioInputStream audioInputStream = new AudioInputStream(bais, audioFormat, finalAudio.length / audioFormat.getFrameSize());
+            
+            //make sure the file path exists
+            File dir = new File(System.getProperty("user.home") + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files" + File.separator + "Plugins");
+            if (!dir.exists()) {
+                Files.createDirectories(dir.toPath());
+            }
+            
+            File wavFile;
+            
+            //save to wav file
+            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav").exists()) {
+                int i = 1;
+                while(new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav").exists()){
+                    i++;
+                }
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav");
+            } else {
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav");
+            }
+            
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
     
     /**
@@ -56,18 +150,6 @@ public abstract class Plugin {
         return byteOutput;
     }
     
-    public byte[] getAudioByteInput(){
-        return audioByteInput;
-    }
-
-    public void setFloatOutput(float[] floatOutput) {
-        this.floatOutput = floatOutput;
-    }
-    
-    public void setAudioByteInput(byte[] audioByteInput){
-        this.audioByteInput = audioByteInput;
-    }
-    
     /**
      * Applies output gain to audio data
      * @param audioData the audio to apply output gain to
@@ -81,10 +163,6 @@ public abstract class Plugin {
            outputGainedAudio[i] = (short) (outputGainedAudio[i] * outputGain);
         }
         return outputGainedAudio;
-    }
-    
-    public float[] getAudioFloatInput(){
-        return audioFloatInput;
     }
     
     /**
@@ -102,7 +180,7 @@ public abstract class Plugin {
             fileName = file.getName();
             originalAudio = Files.readAllBytes(file.toPath());
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            AudioFormat audioFormat = audioInputStream.getFormat();
+            audioFormat = audioInputStream.getFormat();
             numOfChannels = audioFormat.getChannels();
 
             audioFloatInput = convertByteToFloatArray(originalAudio);
@@ -331,10 +409,6 @@ public abstract class Plugin {
         return converter.process(array);
     }
 
-    public String getName() {
-        return "";
-    }
-
     /**
      * Method to be used in conversion
      *
@@ -356,10 +430,6 @@ public abstract class Plugin {
             placeHolder[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
         }
         return placeHolder;
-    }
-
-    public SourceDataLine getAudioLine() {
-        return line;
     }
 
     public short[] bytesToShorts(byte[] bytes) {
@@ -385,41 +455,5 @@ public abstract class Plugin {
             floats[i] = shorts[i] / 32768f;
         }
         return floats;
-    }
-    
-    public byte[] getOriginalAudio(){
-        return originalAudio;
-    }
-    
-    public void setOriginalAudio(byte[] originalAudio){
-        this.originalAudio = originalAudio;
-    }
-    
-    public byte[] getFinalAudio() {
-        return finalAudio;
-    }
-    
-    public String getFileName() {
-            return fileName;
-    }
-    
-    public void setFinalAudio(byte[] finalAudio) {
-        this.finalAudio = finalAudio;
-    }
-
-    public void setOutputGain(double outputGain) {
-        this.outputGain = outputGain;
-    }
-    
-    public String getFilePathName() {
-        return filePathName;
-    }
-
-    public void setFilePathName(String filePathName) {
-        this.filePathName = filePathName;
-    }
-
-    public void clearFinalAudio() {
-        finalAudio = null;
     }
 }

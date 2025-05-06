@@ -7,11 +7,22 @@ import org.JStudio.Plugins.Models.BitCrush;
 public class BitcrushDistortion extends Distortion {
     private BitCrush bitCrusher;
 
+    /**
+     * initializing the bitcrush distortion plugin
+     * @param gain output gain of the plugin
+     * @param mix mix between original sound and processed sound
+     * @param depth resolution of processed audio
+     */
     public BitcrushDistortion(float gain, float mix, int depth) {
         super(gain, mix);
         this.bitCrusher = new BitCrush(depth);
     }
 
+    /**
+     * processes audio in mono sound
+     * @param inputData input buffer (float)
+     * @return returning the processed audio in mono sound
+     */
     @Override
     public float[] processMono(float[] inputData) {
         float[] gainedData = applyGain(inputData);
@@ -22,6 +33,11 @@ public class BitcrushDistortion extends Distortion {
         return applyMixMono(inputData, output);
     }
 
+    /**
+     * processes audio in stereo sound
+     * @param inputData input buffer (stereo float)
+     * @return returns the processed audio in stereo sound
+     */
     @Override
     public float[][] processStereo(float[][] inputData) {
         float[][] gainedData = applyGain(inputData);
@@ -34,6 +50,9 @@ public class BitcrushDistortion extends Distortion {
         return applyMixStereo(inputData, output);
     }
 
+    /**
+     * @return returns the name of the plugin (set manually)
+     */
     @Override
     public StringProperty getName() {
         return new SimpleStringProperty("Bit Crush Distortion");

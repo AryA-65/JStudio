@@ -11,15 +11,17 @@ import org.JStudio.Plugins.Models.Plugin;
 import org.JStudio.Plugins.Models.audioFilters;
 import org.JStudio.Utils.AlertBox;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller class of the base audio filters
+ */
 public class AudioFilterFXMLController extends Plugin {
     private Stage stage;
     private final Map<MenuButton, String> filterType = new HashMap<>();
@@ -39,9 +41,11 @@ public class AudioFilterFXMLController extends Plugin {
     private short[] samples;
     private byte[] audioBytes;
     private AudioFormat format;
-
     public byte[] filteredBytes;
 
+    /**
+     * Method that takes care of the main UI
+     */
     @FXML
     public void initialize() {
         setupMenu(optionsCutOff);
@@ -67,7 +71,7 @@ public class AudioFilterFXMLController extends Plugin {
                 AlertBox.display("Input Error", "Invalid frequency format. Please enter a number.");
                 return;
             }
-
+            //chose filter to apply
             if ("Low".equals(selectedFilter)) {
                 audioFilters.applyLowPassFilter(samples, sampleRate, userFrequency);
             } else if ("High".equals(selectedFilter)) {
@@ -93,11 +97,14 @@ public class AudioFilterFXMLController extends Plugin {
 
         saveBtn.setOnAction(event -> {
             stopAudio();
-            getProcessedAudio();
+            export("Base Audio Filter");
         });
     }
 
-    private void getFile() {
+    /**
+     * Method to get the file
+     */
+    private void getFile() { // this
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
 
@@ -122,6 +129,10 @@ public class AudioFilterFXMLController extends Plugin {
         }
     }
 
+    /**
+     * Method to setup the menu button
+     * @param menuButton the container for the choices
+     */
     private void setupMenu(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             item.setOnAction(event -> {
@@ -132,6 +143,10 @@ public class AudioFilterFXMLController extends Plugin {
         }
     }
 
+    /**
+     * Method to set the default option to low filter
+     * @param menuButton the container of the choices
+     */
     private void setDefaultMenuSelection(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             if (item.getText().equals("Low")) {
@@ -142,20 +157,52 @@ public class AudioFilterFXMLController extends Plugin {
         }
     }
 
-    public byte[] getProcessedAudio() {
-        if (filteredBytes == null || filteredBytes.length == 0) {
-            AlertBox.display("Export Error", "No processed audio to export.");
-            return null;
-        }
-        return filteredBytes;
-    }
 
+    /**
+     * Method that sets the stage
+     * @param stage the stage of the controller
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
 
         this.stage.setOnCloseRequest(event -> {
             stopAudio();
         });
+    }
+
+    /**
+     * Method to export an audio file given a name
+     * @param pluginName the name of the exported audio file
+     */
+    public void export(String pluginName){ // this
+        try {
+            //create AudioInputStream from the byte array
+            ByteArrayInputStream bais = new ByteArrayInputStream(finalAudio);
+            AudioInputStream audioInputStream = new AudioInputStream(bais, format, finalAudio.length / format.getFrameSize());
+
+            //make sure the file path exists
+            File dir = new File(System.getProperty("user.home") + File.separator + "Music" + File.separator + "JStudio" + File.separator + "audio_Files" + File.separator + "Plugins");
+            if (!dir.exists()) {
+                Files.createDirectories(dir.toPath());
+            }
+
+            File wavFile;
+
+            //save to wav file
+            if (new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav").exists()) {
+                int i = 1;
+                while(new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav").exists()){
+                    i++;
+                }
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName + i +".wav");
+            } else {
+                wavFile = new File(dir.toPath() + File.separator + fileName.replace(".wav", "") + "_" + pluginName +".wav");
+            }
+
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, wavFile);
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 
 }

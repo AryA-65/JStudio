@@ -21,6 +21,7 @@ public class TrackIDUI extends Pane {
     private final MutedBTN mutedBtn;
     private PluginRenderer renderer;
 
+    //list of different colors for the trackIDUI background
     public static final List<String> MATTE_COLORS = List.of(
             "#FF6B6B", // Matte Red
             "#FF9F5B", // Matte Orange
@@ -44,6 +45,11 @@ public class TrackIDUI extends Pane {
             "#F4845F"  // Matte Soft Clay
     );
 
+    /**
+     * Creates an id for the track and the user can change the name of the track
+     * @param track reference to the track
+     * @param reference reference to the main controller
+     */
     public TrackIDUI(Track track, UIController reference) {
         this.track = track;
         renderer = new PluginRenderer(reference.plugin_pane);

@@ -36,6 +36,12 @@ public class ChannelUI extends VBox {
     private long nextDrawTime = 0;
     private final long FRAME_RATE_INTER = 41666666L;
 
+    /**
+     * Servers as a class added to the channel rack to control each channel individually or the mixer
+     * @param input can be Mixer or Track, serves as audio input
+     * @param leftAmp left amplitude of the input, divided by 1024 (process chuck size -- temporary)
+     * @param rightAmp right amplitude of the input, divided by 1024 (process chuck size -- temporary)
+     */
     public ChannelUI(Object input, FloatProperty leftAmp, FloatProperty rightAmp) {
         setPrefSize(32, 256);
         setId("track_channel");

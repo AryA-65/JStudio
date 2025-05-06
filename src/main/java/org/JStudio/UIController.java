@@ -1,6 +1,5 @@
 package org.JStudio;
 
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import org.JStudio.Core.*;
 import org.JStudio.Plugins.Views.PianoRun;

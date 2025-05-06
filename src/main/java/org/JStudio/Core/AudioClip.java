@@ -11,12 +11,22 @@ public class AudioClip extends Clip {
     private int sampleRate;
     private double s_pos, e_pos; //s_pos (start) and e_pos (end) is for shifting/cutting audio clips
 
-    AudioClip(double position) {
+    /**
+     * initializing an empty audio clip
+     * @param position position of the clip in seconds
+     */
+    public AudioClip(double position) {
         super(position);
         this.buffer = new float[2][1024];
         super.setLength((double) 1024 / 44100);
     }
 
+    /**
+     * initializing an audio clip using a buffer
+     * @param position position of the clip in seconds
+     * @param buff input buffer, from drag and drop
+     * @param sampleRate sample rate of the audio
+     */
     public AudioClip(double position, float[][] buff, int sampleRate) {
         super(position);
         this.buffer = buff;

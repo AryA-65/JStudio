@@ -27,6 +27,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
 import org.JStudio.Plugins.SynthUtil.Utility;
+import org.JStudio.Utils.AlertBox;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALC;
@@ -78,8 +79,12 @@ public class SynthPianoController {
 
         //plays the notes on the tracks when the play button is clicked
         playButton.setOnAction(e -> {
+            if (playbackLine.isVisible()) {
             playButton.setDisable(true);
             playNotes();
+            } else {
+                AlertBox.display("Play Error", "Please add a track first.");
+            }
         });
 
         //opens the track settings/synthesizer so the user can create their own sounds

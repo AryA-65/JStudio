@@ -165,15 +165,15 @@ public class FileUI extends Pane {
      * Draws the wave line of the sample
      */
     private void drawPoint(GraphicsContext gc, float[] buff, double midY, double step) {
-//        gc.setLineWidth(1.2);
-//        gc.beginPath();
-//        for (int i = 0; i < buff.length; i++) {
-//            double x = i * step;
-//            double y = midY - buff[i] * midY;
-//            if (i == 0) gc.moveTo(x, y);
-//            else gc.lineTo(x, y);
-//        }
-//        gc.stroke();
+        gc.setLineWidth(1.2);
+        gc.beginPath();
+        for (int i = 0; i < buff.length; i++) {
+            double x = i * step;
+            double y = midY - buff[i] * midY;
+            if (i == 0) gc.moveTo(x, y);
+            else gc.lineTo(x, y);
+        }
+        gc.stroke();
     }
 
     public String getFileName() {

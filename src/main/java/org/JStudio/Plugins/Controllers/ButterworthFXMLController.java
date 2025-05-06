@@ -182,7 +182,7 @@ public class ButterworthFXMLController extends Plugin {
      * Method to export an audio file given a name
      * @param pluginName the name of the exported audio file
      */
-    public void export(String pluginName){ // this
+    public void export(String pluginName){
         try {
             //create AudioInputStream from the byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(filteredBytes);

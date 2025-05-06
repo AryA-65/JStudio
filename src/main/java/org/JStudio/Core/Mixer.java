@@ -6,6 +6,9 @@ import org.JStudio.Utils.TimeConverter;
 
 import javax.sound.sampled.*;
 
+/**
+ * Class that takes care of mixing all audio from all tracks and all plugins together
+ */
 public class Mixer {
     private final Song song;
     private final int sampleRate = 44100, chunkSize = 1024;
@@ -22,6 +25,10 @@ public class Mixer {
 
     private volatile StringProperty playBackPos = new SimpleStringProperty(TimeConverter.doubleToString((double) currentSample / sampleRate));
 
+    /**
+     * Initializing the mixer class
+     * @param song reference to the song
+     */
     public Mixer(Song song) {
         this.song = song;
         this.line = setupAudioLine();
@@ -36,6 +43,10 @@ public class Mixer {
         });
     }
 
+    /**
+     * initializing the audio line for audio processing
+     * @return
+     */
     private SourceDataLine setupAudioLine() {
         try {
             AudioFormat format = new AudioFormat(sampleRate, bitDepth, 2, true, false);
@@ -49,23 +60,39 @@ public class Mixer {
         }
     }
 
+    /**
+     * method used to start thread and process audio
+     */
     public void start() {
         processThread = new Thread(this::process);
         processThread.setDaemon(true);
         processThread.start();
     }
 
+    /**
+     * method used to stop the process thread and reset the playback position
+     */
     public void stop() {
         if (processThread != null) {
             try { processThread.join(); } catch (InterruptedException ignored) {}
         }
-//        line.stop();
         line.flush();
         System.gc();
         currentSample = 0;
     }
 
-    //needs to be fixed
+
+    public void shutdown() {
+        processThread.interrupt();
+        processThread = null;
+        line.flush();
+        line.close();
+        System.gc();
+    }
+
+    /**
+     * method that goes through all tracks of the song and processes them
+     */
     private void process() {
         float[][] floatBuffer = new float[2][chunkSize];
         byte[] byteBuffer = new byte[chunkSize * 4];
@@ -78,9 +105,9 @@ public class Mixer {
 
             for (Track track : song.getTracks()) {
                 track.process(floatBuffer, currentSample, chunkSize, sampleRate);
-//                System.out.println(track.getId());
             }
 
+            //temporary values to display the current amplitude (not optimized, not used)
 //            float leftSum = 0, rightSum = 0;
             for (int i = 0; i < chunkSize; i++) {
                 float left = floatBuffer[0][i] * masterGain.get() * (1 - pan.get());
@@ -122,32 +149,16 @@ public class Mixer {
         return currentSample;
     }
 
-    public void setPlaybackSample(int sample) {
-        this.currentSample = Math.max(0, sample);
-    }
-
     public BooleanProperty getMuted() {
         return muted;
-    }
-
-    public void setMuted(boolean muted) {
-        this.muted.set(muted);
     }
 
     public FloatProperty getPitch() {
         return pitch;
     }
 
-    public void setPitch(float pitch) {
-        this.pitch.set(pitch);
-    }
-
     public FloatProperty getPan() {
         return pan;
-    }
-
-    public void setMasterGain(float masterGain) {
-        this.masterGain.set(masterGain);
     }
 
     public FloatProperty getMasterGain() {

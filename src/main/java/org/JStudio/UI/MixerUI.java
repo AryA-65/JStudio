@@ -20,6 +20,10 @@ public class MixerUI extends HBox {
     private final Canvas masterVis = new Canvas();
     private final GraphicsContext gc = masterVis.getGraphicsContext2D(); //add visualization of audio
 
+    /**
+     * used in the channel rack for the mixer class and its outputs
+     * @param mixer input is the mixer
+     */
     public MixerUI(Mixer mixer) {
         setPrefHeight(256);
         setPrefWidth(64);

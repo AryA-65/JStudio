@@ -23,15 +23,25 @@ public class Track implements Serializable {
     private final ArrayList<Plugin> plugins = new ArrayList<>();
     private transient final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
 
+    /**
+     * initializing the track
+     * @param name track name, set by user
+     */
     public Track(String name) {
         this.name.set(name);
         this.id.set(String.valueOf(trackCounter++));
     }
 
+    /**
+     * default track
+     */
     public Track() {
         this("Empty Track");
     }
 
+    /**
+     * @param clip
+     */
     public void addClip(Clip clip) {
         clips.add(clip);
     }

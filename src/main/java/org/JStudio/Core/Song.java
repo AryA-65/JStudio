@@ -18,6 +18,10 @@ public class Song implements Serializable {
     private byte numTracks = MIN_TRACKS;
     private final ArrayList<Track> tracks = new ArrayList<>(numTracks);
 
+    /**
+     * initializing the son
+     * @param name name of the song
+     */
     public Song(String name) {
         this.songName.set(name);
         for (int i = 0; i < numTracks; i++) { //for testing

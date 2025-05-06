@@ -5,7 +5,7 @@ JSTUDIO is a **digital audio workstation (DAW)** that allows users to drag clips
 ## **Getting Started**
 
 1. To get started, simply **drag a sample** from the left side onto the track.
-2. Clicking on one of the **plugins** in the **plugins tab** will allow you to add effects to existing **WAV files**. These files will then appear in the **samples tab** under the **Plugin** folder. These can be be dragged back onto the tracks. To see the new files save simply press CTRL+R.
+2. Clicking on one of the **plugins** in the **plugins tab** will allow you to add effects to existing **WAV files**. These files will then appear in the **samples tab** under the **Plugin** folder. These can be dragged back onto the tracks. To see the new files saved simply press **CTRL+R**.
 3. The **channels tab** allows users to control track parameters, such as stereo (top knob), volume (slider), and pitch (bottom knob).
 4. The **pipeline tab** allows for users to add clipping distortion effects to tracks. **WARNING** Right clicking on the distortion will remove, but it cannot be added back.
 5. Clicking on the **save button** at the top of the screen will allow you to **save** the song you made to your **music folder**.
@@ -17,7 +17,7 @@ JSTUDIO is a **digital audio workstation (DAW)** that allows users to drag clips
 
 
 ## **Testing Functionality**
-Select the checkbox in the settings page. After, run any plugin and press save. This will open a spectrometer visualizer to test the effect.
+Select the **checkbox** in the settings page. After, run any plugin, make your adjustments, and press **save/export**. This will open a **spectrometer visualizer** to test the effect.
 
 ---
 

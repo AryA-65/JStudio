@@ -7,10 +7,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 
+/**
+ * Class to create a directory for the application export function.
+ */
 public class FileLoader {
     private static VBox tab_vbox;
     private static String musicPath;
 
+    /**
+     * Method that initializes the directory
+     * @param vbox to be used to store the audio files
+     */
     public static void init(VBox vbox) {
         tab_vbox = vbox;
 
@@ -50,6 +57,11 @@ public class FileLoader {
         }
     }
 
+    /**
+     * Method that loads files
+     * @param path the path of the directory
+     * @throws Exception for the case if it cant find the path or the searched directory
+     */
     public static void loadFolders(String path) throws Exception {
         File file = new File(path);
         if (file.exists() && file.isDirectory() && file.listFiles() != null) {
@@ -64,11 +76,18 @@ public class FileLoader {
         }
     }
 
+    /**
+     * get the path of the main directory
+     * @return
+     */
     public static String getMusicPath() {
         return musicPath;
     }
 
-    // Method to create the folder only if it doesn't exist
+    /**
+     * Method to create the folder only if it doesn't exist
+     * @param path the path of the directory
+     */
     private static void createFolderIfNeeded(String path) {
         File folder = new File(path);
         if (!folder.exists()) {

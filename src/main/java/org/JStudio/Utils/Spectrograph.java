@@ -4,12 +4,19 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The spectrograph class processes audio data using FFT (Fast Fourier Transform)
+ * and visualizes the resulting frequency spectrum over time on a JavaFX
+ */
 public class Spectrograph {
     private static final int FFT_SIZE = 1024;
     private static final int BANDS = 128;
@@ -26,6 +33,11 @@ public class Spectrograph {
 
     private Thread thread;
 
+
+    /**
+     * Constructs a new Spectrograph instance.
+     * Initializes the FFT engine, magnitude buffers, and color gradient.
+     */
     public Spectrograph() {
         this.fft = new DoubleFFT_1D(FFT_SIZE);
         this.gradient = createColorGradient();
@@ -51,6 +63,12 @@ public class Spectrograph {
         );
     }
 
+    /**
+     * Starts a background thread to compute FFT frames from the provided raw audio byte data.
+     *
+     * @param audioBytes The raw PCM byte array (16-bit mono format).
+     * @param progressBar A JavaFX ProgressBar that is shown/hidden during computation.
+     */
     public void computeFFTFrames(byte[] audioBytes, ProgressBar progressBar) {
         if (isComputing) return;
         isComputing = true;
@@ -83,18 +101,25 @@ public class Spectrograph {
         thread.start();
     }
 
-    private short[] bytesToShorts(byte[] bytes) {
-        short[] shorts = new short[bytes.length / 2];
-        for (int i = 0; i < shorts.length; i++) {
-            shorts[i] = (short)((bytes[2*i] & 0xFF) | (bytes[2*i+1] << 8));
-        }
-        return shorts;
-    }
 
+    /**
+     * Applies a Hamming window function to smooth audio input data.
+     *
+     * @param n Sample index.
+     * @param N Total number of samples in the window.
+     * @return The window coefficient for index {@code n}.
+     */
     private double hammingWindow(int n, int N) {
         return 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1));
     }
 
+    /**
+     * Updates the visual display of the spectrogram for the specified FFT frame.
+     *
+     * @param fftData FFT data array for the current frame.
+     * @param frameIndex The index of the current FFT frame.
+     * @param canvas The JavaFX canvas on which to draw.
+     */
     public void update(double[] fftData, int frameIndex, Canvas canvas) {
         double smoothingFactor = 0.3;
 
@@ -135,6 +160,12 @@ public class Spectrograph {
         drawSpectrogram(frameIndex, canvas);
     }
 
+    /**
+     * Draws the current FFT magnitudes as a colored filled polygon and overlay lines.
+     *
+     * @param frameIndex The index of the current frame being drawn.
+     * @param canvas The JavaFX canvas to draw on.
+     */
     private void drawSpectrogram(int frameIndex, Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         double width = canvas.getWidth();
@@ -180,6 +211,13 @@ public class Spectrograph {
         gc.fillText(String.format("Frame %d", frameIndex), canvas.getWidth() -100, 20);
     }
 
+    /**
+     * Draws horizontal dB level lines on the canvas for visual reference.
+     *
+     * @param gc The graphics context to draw with.
+     * @param height The height of the canvas.
+     * @param canvas The JavaFX canvas.
+     */
     private void drawDBLines(GraphicsContext gc, double height, Canvas canvas) {
         double[] dBLevels = {-20, -40, -60}; // Add or modify levels as needed
         gc.setStroke(Color.GRAY);
@@ -191,7 +229,11 @@ public class Spectrograph {
         }
     }
 
-
+    /**
+     * Starts the animation to display precomputed FFT frames on the canvas.
+     *
+     * @param canvas The JavaFX canvas on which to render the animation.
+     */
     public void startAnimation(Canvas canvas) {
         if (animationTimer != null) animationTimer.stop();
 
@@ -209,24 +251,47 @@ public class Spectrograph {
         animationTimer.start();
     }
 
+    /**
+     * Stops the ongoing animation of FFT frames, if active.
+     */
     public void stopAnimation() {
         if (animationTimer != null) {
             animationTimer.stop();
         }
     }
 
+    /**
+     * Resets the spectrogram view and animation state.
+     *
+     * @param canvas The JavaFX canvas to clear.
+     */
     public void reset(Canvas canvas) {
         stopAnimation();
         currentFrame = 0;
         clear(canvas);
     }
 
+    /**
+     * Clears the contents of the canvas without modifying any animation or FFT state.
+     *
+     * @param canvas The JavaFX canvas to clear.
+     */
     public void clear(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public boolean computationOver() {
-        return isComputing;
+    /**
+     * Converts a byte array (assumed 16-bit PCM) to a short array.
+     *
+     * @param bytes The audio byte array.
+     * @return The resulting array of audio samples as signed shorts.
+     */
+    private short[] bytesToShorts(byte[] bytes) {
+        short[] shorts = new short[bytes.length / 2];
+        for (int i = 0; i < shorts.length; i++) {
+            shorts[i] = (short)((bytes[2*i] & 0xFF) | (bytes[2*i+1] << 8));
+        }
+        return shorts;
     }
 }

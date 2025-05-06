@@ -2,6 +2,9 @@ package org.JStudio.Core;
 
 import java.io.Serializable;
 
+/**
+ * Note model class
+ */
 public class Note implements Serializable {
     private double default_l = 0.5, length, position; //in seconds
     private short note;

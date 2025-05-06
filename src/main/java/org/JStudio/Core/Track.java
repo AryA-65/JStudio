@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import org.JStudio.Plugins.Plugin;
 import org.JStudio.UI.ClipUI;
 
+/**
+ * Track class that handles audio processing
+ * @author theog
+ */
 public class Track implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;

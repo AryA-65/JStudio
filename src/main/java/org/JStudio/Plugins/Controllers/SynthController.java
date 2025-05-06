@@ -1,6 +1,5 @@
 package org.JStudio.Plugins.Controllers;
 
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -28,7 +27,9 @@ import org.JStudio.Plugins.SynthUtil.AudioThread;
 import org.JStudio.Plugins.SynthUtil.Utility;
 import org.JStudio.SettingsController;
 
-
+/**
+ * Controller class for the synthesizer
+ */
 public class SynthController {
     private final StringProperty name = new SimpleStringProperty("Synthesizer");
     public static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
@@ -65,7 +66,6 @@ public class SynthController {
     private double delayFeedback = 0.5;
 
     private boolean glideEnabled = false;
-
 
     @FXML
     public void initialize() {
@@ -123,7 +123,6 @@ public class SynthController {
                 recordingBuffer = null;
             }
         });
-
 
         final AudioThread audioThread = new AudioThread(() -> {
             int bufferSize = AudioThread.SAMPLE_RATE;
@@ -191,6 +190,9 @@ public class SynthController {
 
     }
 
+    /**
+     * Saves the played keys as a wav file
+     */
     public static void saveRecordingAsWav(ByteArrayOutputStream recordingBuffer, String filePath) {
         try {
             byte[] audioBytes = recordingBuffer.toByteArray();
@@ -233,9 +235,6 @@ public class SynthController {
         }
     }
 
-
-
-
     private double generateWaveSample(String waveformType, double frequency, int wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
 
@@ -251,7 +250,6 @@ public class SynthController {
             default -> throw new RuntimeException("Oscillator is set to unknown waveform");
         };
     }
-
 
     private void setupKeyboardListeners() {
         if (tempScene == null) {
@@ -281,7 +279,9 @@ public class SynthController {
         });
     }
 
-
+    /**
+     * Slider updating method
+     */
     private void updateSlider(Slider slider, int index, boolean isToneSlider) {
         slider.valueProperty().addListener((obs, oldValue, newValue) -> {
 
@@ -428,6 +428,4 @@ public class SynthController {
             }
         }
     }
-
-
 }

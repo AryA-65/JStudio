@@ -82,7 +82,6 @@ public class AudioAmplitudeFXMLController {
 
         exportButton.setOnAction(event -> {
             stopAudio();
-//            getProcessedAudio();
 
             if (SettingsController.isTesting()) {
                 stage.close();
@@ -298,5 +297,5 @@ public class AudioAmplitudeFXMLController {
         } catch (IOException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-    } // this
+    }
 }

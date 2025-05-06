@@ -14,6 +14,9 @@ import org.JStudio.SettingsController;
 public class BaseFiltersStage extends Stage {
     public static Scene scene;
 
+    /**
+     * Creates the stage
+     */
     public BaseFiltersStage() {
         setTitle("Base Filters");
         initModality(Modality.APPLICATION_MODAL);
@@ -21,6 +24,9 @@ public class BaseFiltersStage extends Stage {
         initPlugin();
     }
 
+    /**
+     * Initializes the fxml file
+     */
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/low_highCutOffFilter.fxml"));

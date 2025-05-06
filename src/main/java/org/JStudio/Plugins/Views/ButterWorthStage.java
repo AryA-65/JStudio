@@ -14,6 +14,9 @@ import java.io.IOException;
 public class ButterWorthStage extends Stage {
     public static Scene scene;
 
+    /**
+     * Creates the stage
+     */
     public ButterWorthStage() {
         setTitle("Butterworth Filter");
         initModality(Modality.APPLICATION_MODAL);
@@ -21,6 +24,9 @@ public class ButterWorthStage extends Stage {
         initPlugin();
     }
 
+    /**
+     * Initializes the fxml file
+     */
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/ButterworthFilter.fxml"));

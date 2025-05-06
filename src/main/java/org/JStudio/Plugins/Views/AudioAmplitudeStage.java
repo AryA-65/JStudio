@@ -14,6 +14,9 @@ import java.io.IOException;
 public class AudioAmplitudeStage extends Stage {
     public static Scene scene;
 
+    /**
+     * Creates the stage
+     */
     public AudioAmplitudeStage() {
         setTitle("Audio Amplitude");
         initModality(Modality.APPLICATION_MODAL);
@@ -21,6 +24,9 @@ public class AudioAmplitudeStage extends Stage {
         initPlugin();
     }
 
+    /**
+     * Initializes the fxml file
+     */
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/audioAmplitude.fxml"));
@@ -28,7 +34,7 @@ public class AudioAmplitudeStage extends Stage {
             controller.setStage(this);
             fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();
-            scene = new Scene(root, 600, 450);
+            scene = new Scene(root, 600, 600);
             if (SettingsController.getStyle()) {
                 scene.getStylesheets().add(ClassLoader.getSystemResource("darkmode.css").toExternalForm());
             } else {

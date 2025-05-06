@@ -10,6 +10,7 @@ public class TimelineUI {
     private final Canvas timeline_canvas;
     private final GraphicsContext gc;
 
+    //setup parameters
     public TimelineUI(Canvas timeline_canvas) {
         this.timeline_canvas = timeline_canvas;
         gc = this.timeline_canvas.getGraphicsContext2D();
@@ -17,6 +18,7 @@ public class TimelineUI {
         drawTimeline();
     }
 
+    //draws the timeline on a canvas
     public void drawTimeline() {
         Rectangle clip = new Rectangle(timeline_canvas.getWidth(), timeline_canvas.getHeight());
         clip.setArcHeight(10);
@@ -43,6 +45,7 @@ public class TimelineUI {
         }
     }
 
+    //draws the playback line
     public void drawPlaybackMarker(double positionX) {
         drawTimeline();
         gc.setStroke(Color.RED);

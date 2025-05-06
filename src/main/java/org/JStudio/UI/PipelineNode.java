@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import org.JStudio.Core.Track;
 import org.JStudio.Plugins.Plugin;
 
+//Handles the pipeline nodes
 public class PipelineNode extends StackPane {
     private final Label name = new Label();
     private final Circle inputPort = new Circle(), outputPort = new Circle();
@@ -17,10 +18,12 @@ public class PipelineNode extends StackPane {
     private final Object node;
     private final NodeType type;
 
+    //types of nodes
     public enum NodeType {
         IN, OUT, PLUGIN
     }
 
+    //constructor, sets parameters
     public PipelineNode(Object node) {
         this.node = node;
         setPrefSize(108, 32);
@@ -52,6 +55,7 @@ public class PipelineNode extends StackPane {
             throw new IllegalArgumentException("Unsupported node type");
         }
 
+        //get mouse position
         setOnMousePressed(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 offsetX = e.getX();
@@ -59,7 +63,9 @@ public class PipelineNode extends StackPane {
             }
         });
 
+        //dragging logic to move pipeline nodes
         setOnMouseDragged(e -> {
+            //get mouse data
             Point2D localPoint = getParent().sceneToLocal(e.getSceneX(), e.getSceneY());
             double newX = localPoint.getX() - offsetX;
             double newY = localPoint.getY() - offsetY;
@@ -73,11 +79,13 @@ public class PipelineNode extends StackPane {
             newX = Math.max(0, Math.min(newX, parentWidth - nodeWidth));
             newY = Math.max(0, Math.min(newY, parentHeight - nodeHeight));
 
+            //move nodes
             relocate(newX, newY);
             e.consume();
         });
     }
 
+    //getters
     public Circle getInputPort() {
         return inputPort;
     }
@@ -90,6 +98,7 @@ public class PipelineNode extends StackPane {
         return node;
     }
 
+    //checks for input/output
     public boolean hasInput() {
         return type == NodeType.PLUGIN || type == NodeType.OUT;
     }

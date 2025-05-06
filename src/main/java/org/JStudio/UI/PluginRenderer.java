@@ -9,26 +9,31 @@ import org.JStudio.Plugins.Plugin;
 
 import java.util.ArrayList;
 
+//handles the pipeline display window
 public class PluginRenderer {
     private final Pane pluginPane;
     private final ArrayList<PipelineNode> nodes = new ArrayList<>();
     private final ArrayList<ConnectionUI> connections = new ArrayList<>();
     private Track currentTrack;
 
+    //constructor, set pluginPane
     public PluginRenderer(Pane pluginPane) {
         this.pluginPane = pluginPane;
     }
 
+    //clears the pane
     public void clear() {
         pluginPane.getChildren().clear();
         nodes.clear();
         connections.clear();
     }
 
+    //displays the window and it's components
     public void renderGraph(Track track) {
         clear();
         this.currentTrack = track;
 
+        //make sure a track is selected
         if (track == null) {
             Label message = new Label("No Track Selected: Plugins Unavailable");
             message.setLayoutX(pluginPane.getWidth() / 2);
@@ -40,6 +45,7 @@ public class PluginRenderer {
         double startX = 50;
         double startY = pluginPane.getHeight() / 2 - 16;
 
+        //gets the input node
         PipelineNode inputNode = new PipelineNode(track);
         inputNode.setLayoutX(startX);
         inputNode.setLayoutY(startY);
@@ -49,6 +55,7 @@ public class PluginRenderer {
         startX += 200;
         PipelineNode lastNode = inputNode;
 
+        //displays the plugins as pipeline nodes and their connections to eachother
         for (Plugin plugin : track.getPlugins()) {
             PipelineNode pluginNode = new PipelineNode(plugin);
             pluginNode.setLayoutX(startX);
@@ -67,6 +74,7 @@ public class PluginRenderer {
             attachPluginNodeListener(pluginNode);
         }
 
+        //displays the output node
         PipelineNode outputNode = new PipelineNode("OUTPUT_NODE");
         outputNode.setLayoutX(startX);
         outputNode.setLayoutY(startY);
@@ -79,6 +87,7 @@ public class PluginRenderer {
         Platform.runLater(finalConnection::update);
     }
 
+    //delete node on right-click
     private void attachPluginNodeListener(PipelineNode node) {
         node.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
@@ -88,6 +97,7 @@ public class PluginRenderer {
         });
     }
 
+    //deletes node
     public void deleteNode(PipelineNode node) {
         if (node.getNode() instanceof Plugin plugin) {
             int index = currentTrack.getPlugins().indexOf(plugin);
@@ -97,6 +107,7 @@ public class PluginRenderer {
         }
     }
 
+    //getters
     public ArrayList<PipelineNode> getNodes() {
         return nodes;
     }

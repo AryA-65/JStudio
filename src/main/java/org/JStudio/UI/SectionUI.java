@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.Objects;
 
+//The UI behind the different "sections" of audio files
 public class SectionUI extends VBox {
     private final ImageView expand_img = new ImageView(new Image("/icons/arrow.png"));
     private final Button section_btn = new Button("", expand_img);
@@ -22,6 +23,7 @@ public class SectionUI extends VBox {
     private final RotateTransition rotate = new RotateTransition(Duration.millis(150), expand_img);
     private final String sectionName;
 
+    //setup parameters
     public SectionUI(File file) {
         setAlignment(Pos.TOP_CENTER);
 
@@ -43,6 +45,7 @@ public class SectionUI extends VBox {
 
         rotate.setByAngle(-180);
 
+        //collapse section
         section_btn.setOnAction(e -> {
             if (section_content.isVisible()) {
                 rotate.play();
@@ -51,7 +54,7 @@ public class SectionUI extends VBox {
                     section_content.setVisible(false);
                     section_content.setManaged(false);
                 });
-            } else {
+            } else { //expand section
                 rotate.play();
                 section_content.setVisible(true);
                 section_content.setManaged(true);
@@ -61,6 +64,7 @@ public class SectionUI extends VBox {
 
         getChildren().addAll(section_btn, section_content);
 
+        //add audio files to the sections
         for (File f : Objects.requireNonNull(file.listFiles())) {
             if (f.exists() && f.isFile()) {
 //                if (f.getName().endsWith(".mp3")) {continue;} //remove this line of code when mp3 support is added
@@ -69,6 +73,7 @@ public class SectionUI extends VBox {
         }
     }
 
+    //getter
     public String getSectionName() {
         return sectionName;
     }

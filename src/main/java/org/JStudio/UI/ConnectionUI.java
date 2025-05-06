@@ -5,10 +5,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 
+//UI behind the connection lines in the pipeline
 public class ConnectionUI extends CubicCurve {
     private final Circle startNode;
     private final Circle endNode;
 
+    //setup connections
     public ConnectionUI(Circle start, Circle end) {
         this.startNode = start;
         this.endNode = end;
@@ -26,6 +28,7 @@ public class ConnectionUI extends CubicCurve {
         update();
     }
 
+    //update lines
     public void update() {
         double startX = startNode.getParent().getLayoutX() + 108;
         double startY = startNode.getParent().getLayoutY() + 16;
@@ -45,6 +48,7 @@ public class ConnectionUI extends CubicCurve {
         setControlY2(endY);
     }
 
+    //getters
     public Circle getStartNode() {
         return startNode;
     }

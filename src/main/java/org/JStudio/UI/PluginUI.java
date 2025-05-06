@@ -13,14 +13,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.JStudio.Plugins.Models.Plugin;
 
+//handles the plugin UI
 public class PluginUI extends StackPane {
     private final Label plug_name, plug_desc;
     private ImageView background;
     private final VBox content = new VBox();
 //    private final Object plugin;
 
+    //constructor, sets parameters
     public PluginUI(String name, String desc, String imagePath) {
         plug_name = new Label(name);
         plug_desc = new Label(desc);
@@ -57,6 +58,7 @@ public class PluginUI extends StackPane {
         setupMouseHandler();
     }
 
+    // manages zoom and transitions
     private void setupMouseHandler() {
         setOnMouseEntered(e -> {
             ScaleTransition zoomIn = null;

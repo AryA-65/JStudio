@@ -28,6 +28,7 @@ public class TrackUI extends StackPane {
      * @param width the preferred width of the track UI
      * @param track the backend track associated with this UI
      */
+    //handles the track UI
     public TrackUI(double width, Track track) {
         this.track = track;
         setPrefSize(width, 64);
@@ -40,6 +41,7 @@ public class TrackUI extends StackPane {
 
         getChildren().addAll(trackCanvas, clipLayer);
 
+        //remove a clip on right-click
         setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 track.removeClip(e);

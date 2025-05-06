@@ -2,19 +2,16 @@ package org.JStudio.UI;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.JStudio.Core.Track;
 import org.JStudio.UIController;
 
 import java.util.List;
 
+//the UI behind the colored blocks at the beginning of the tracks
 public class TrackIDUI extends Pane {
     private final Track track;
     private final TextField trackName = new TextField();
@@ -50,6 +47,7 @@ public class TrackIDUI extends Pane {
      * @param track reference to the track
      * @param reference reference to the main controller
      */
+    //sets parameters
     public TrackIDUI(Track track, UIController reference) {
         this.track = track;
         renderer = new PluginRenderer(reference.plugin_pane);
@@ -68,6 +66,7 @@ public class TrackIDUI extends Pane {
 
         getChildren().addAll(trackName, mutedBtn);
 
+        //show a track is selected
         setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 1) {
                 for (Node node : getParent().getChildrenUnmodifiable()) {

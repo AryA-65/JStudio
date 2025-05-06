@@ -1,6 +1,5 @@
 package org.JStudio.Utils;
 
-import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import org.JStudio.Core.Mixer;
 import org.JStudio.Core.Song;
@@ -13,6 +12,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
  * Class that export and imports a song
@@ -97,18 +97,21 @@ public class ExporterImporter { //move export audio and file loader to this clas
         final short buff_size = 1024;
         final byte channels = 2;
 
-        Path exportDir = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "exported_Audio");
+        Path exportDir = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "quick_Exports");
+        if (!Checksum.folderExists(exportDir.toString())) {Checksum.createFolder(exportDir.toString());}
 
-        float[][] floatBuffer = new float[2][buff_size];
-        byte[] byteBuffer = new byte[buff_size * 4];
-
-        AudioFormat af = new AudioFormat(sample_rate, 16, channels, true, false);
+        float[][] floatBuffer = new float[channels][buff_size];
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        int total_samples = (int) ((Song.bpm.get() / (Song.bpm.get()) / 60) * sample_rate);
+        int total_samples = (int) (60 * sample_rate); // You must define getLengthInSeconds
         int processed_samples = 0;
 
         while (processed_samples < total_samples) {
+            // Clear buffer
+            for (int ch = 0; ch < channels; ch++) {
+                Arrays.fill(floatBuffer[ch], 0f);
+            }
+
             for (Track track : song.getTracks()) {
                 track.process(floatBuffer, processed_samples, buff_size, sample_rate);
             }
@@ -123,20 +126,24 @@ public class ExporterImporter { //move export audio and file loader to this clas
                 sampleL = Math.max(-32768, Math.min(32767, sampleL));
                 sampleR = Math.max(-32768, Math.min(32767, sampleR));
 
-                int index = i * 4;
-                byteBuffer[index] = (byte) (sampleL & 0xFF);
-                byteBuffer[index + 1] = (byte) ((sampleL >> 8) & 0xFF);
-                byteBuffer[index + 2] = (byte) (sampleR & 0xFF);
-                byteBuffer[index + 3] = (byte) ((sampleR >> 8) & 0xFF);
+                baos.write(sampleL & 0xFF);
+                baos.write((sampleL >> 8) & 0xFF);
+                baos.write(sampleR & 0xFF);
+                baos.write((sampleR >> 8) & 0xFF);
             }
 
-            processed_samples++;
+            processed_samples += buff_size;
         }
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
-        AudioInputStream ais = new AudioInputStream(bais, af, byteBuffer.length / af.getFrameSize());
+        byte[] audioData = baos.toByteArray();
+        AudioFormat format = new AudioFormat(sample_rate, 16, channels, true, false);
+        ByteArrayInputStream bais = new ByteArrayInputStream(audioData);
+        AudioInputStream audioStream = new AudioInputStream(bais, format, audioData.length / (2 * channels));
 
-        AudioSystem.write(ais, AudioFileFormat.Type.WAVE, exportDir.resolve(f_name + ".wav").toFile());
+        File outputFile = exportDir.resolve(f_name + ".wav").toFile();
+        AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, outputFile);
+        audioStream.close();
+        System.gc();
         return true;
     }
 

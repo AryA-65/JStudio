@@ -41,6 +41,13 @@ public class TimelineUI {
                 gc.fillRect(i - 1, timeline_canvas.getHeight() - 10, (i % 32 != 0) ? 1 : 2, 8);
             }
         }
+    }
 
+    public void drawPlaybackMarker(double positionX) {
+        drawTimeline();
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(2);
+        gc.strokeLine(positionX, 0, positionX, timeline_canvas.getHeight());
+        System.out.println(positionX);
     }
 }

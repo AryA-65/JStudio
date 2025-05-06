@@ -1,6 +1,8 @@
 package org.JStudio.UI;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -29,12 +31,18 @@ public class ChannelUI extends VBox {
     private final Canvas canvas = new Canvas(16,40);
     private final MutedBTN mutedBtn;
     private final GraphicsContext gc = canvas.getGraphicsContext2D();
+    private final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
+    private AnimationTimer timer;
+    private long nextDrawTime = 0;
+    private final long FRAME_RATE_INTER = 41666666L;
 
-    public ChannelUI(Object input) {
-
+    public ChannelUI(Object input, FloatProperty leftAmp, FloatProperty rightAmp) {
         setPrefSize(32, 256);
         setId("track_channel");
         setAlignment(Pos.TOP_CENTER);
+
+        this.leftAmp.bindBidirectional(leftAmp);
+        this.rightAmp.bindBidirectional(rightAmp);
 
         if (input instanceof Track) {
             id.setText(((Track) input).getId().get());
@@ -56,6 +64,11 @@ public class ChannelUI extends VBox {
         visBackground.setPrefSize(32, 64);
         visBackground.setClip(clip);
         visBackground.setId("vis_background");
+
+        Rectangle visClip = new Rectangle(18, 42);
+        visClip.setArcHeight(10);
+        visClip.setArcWidth(10);
+        canvas.setClip(visClip);
 
         visContainer.setPrefSize(18, 42);
         visContainer.setLayoutX(7);
@@ -101,5 +114,26 @@ public class ChannelUI extends VBox {
         visBackground.getChildren().addAll(visContainer, pan);
         container.getChildren().addAll(visBackground, spacer, vol, mutedBtn, pitch);
         getChildren().addAll(id, container);
+
+//        timer = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                if (now < nextDrawTime) return;
+//                nextDrawTime = now + FRAME_RATE_INTER;
+//
+//                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//
+//                double midX = visContainer.getWidth() / 2;
+//
+//                gc.setFill(Color.GREEN);
+//
+//                //left amp
+//                gc.fillRect(0, canvas.getHeight() - (canvas.getHeight() * leftAmp.get()), midX, canvas.getHeight() * leftAmp.get() * 2);
+//                //right amp
+//                gc.fillRect(midX, canvas.getHeight() - (canvas.getHeight() * rightAmp.get()), midX, canvas.getHeight() * rightAmp.get() * 2);
+//            }
+//        };
+//
+//        timer.start();
     }
 }

@@ -1,8 +1,12 @@
 package org.JStudio.Core;
 
+import java.io.Serial;
 import java.util.Arrays;
 
 public class AudioClip extends Clip {
+    @Serial
+    private static final long serialVersionUID = 5L;
+
     private float[][] buffer;
     private int sampleRate;
     private double s_pos, e_pos; //s_pos (start) and e_pos (end) is for shifting/cutting audio clips

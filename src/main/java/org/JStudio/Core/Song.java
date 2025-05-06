@@ -16,7 +16,7 @@ public class Song implements Serializable {
 //    public static FloatProperty duration = new SimpleFloatProperty();
     private final byte MIN_TRACKS = 16, MAX_TRACKS = 64;
     private byte numTracks = MIN_TRACKS;
-    private ArrayList<Track> tracks = new ArrayList<>(numTracks);
+    private final ArrayList<Track> tracks = new ArrayList<>(numTracks);
 
     public Song(String name) {
         this.songName.set(name);

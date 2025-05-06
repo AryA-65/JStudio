@@ -17,31 +17,60 @@ public class Note implements Serializable {
         this.volume = 1f;
     }
 
+    /**
+     * Volume setter
+     * @param volume the volume
+     */
     public void setVolume(float volume) {
         this.volume = volume;
     }
 
+    /**
+     * Sets a note
+     * @param note the note to set
+     */
     public void setNote(short note) {
         this.note = note;
     }
 
+    /**
+     * Sets the position of a note
+     * @param position the position of a note
+     */
     public void setPosition(double position) {
         this.position = position;
     }
 
+    /**
+     * Sets the length of a note
+     * @param length the length of a note
+     * @param sample_rate the sample rate of a note
+     */
     public void setLength(double length, int sample_rate) {
         this.length = length * sample_rate;
         this.default_l = length;
     }
 
+    /**
+     * Retrieves a note
+     * @return the note
+     */
     public short getNote() {
         return note;
     }
 
+    /**
+     * Retrieves the position of a note
+     * @return the position of a note
+     */
     public double getPosition() {
         return position;
     }
 
+    /**
+     * Retrieves the volume of a note
+     * @return the volume of a note
+     */
     public String getNote_Volume() {
         return note + "n " + volume + "v";
     }

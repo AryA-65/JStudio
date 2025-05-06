@@ -34,6 +34,7 @@ public class AudioClip extends Clip {
         super.setLength((double) Math.max(buff[0].length, buff[1] == null ? 0 : buff[1].length) / this.sampleRate);
     }
 
+    // Setters
     public void setS_pos(double s_pos) {
         this.s_pos = s_pos;
     }
@@ -42,6 +43,7 @@ public class AudioClip extends Clip {
         this.e_pos = e_pos;
     }
 
+    // Getters
     public double getS_pos() {
         return s_pos;
     }

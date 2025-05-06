@@ -235,6 +235,13 @@ public class SynthController {
         }
     }
 
+    /**
+     * Generates a wave sample
+     * @param waveformType the type of wave form
+     * @param frequency the frequency of the wave
+     * @param wavePosition the position of the wave
+     * @return 
+     */
     private double generateWaveSample(String waveformType, double frequency, int wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);
 
@@ -251,6 +258,9 @@ public class SynthController {
         };
     }
 
+    /**
+     * Sets up listeners for the keyboard
+     */
     private void setupKeyboardListeners() {
         if (tempScene == null) {
             System.err.println("tempScene is not set, cannot set up keyboard listeners");
@@ -304,6 +314,9 @@ public class SynthController {
         });
     }
 
+    /**
+     * Application closing handler
+     */
     private void closeApplication() {
         if (tempStage == null) {
             System.err.println("tempStage is not set, cannot close application");
@@ -317,6 +330,9 @@ public class SynthController {
         });
     }
 
+    /**
+     * Sets up a slider
+     */
     private void sliderSetUp(Slider slider, double border) {
         slider.setMax(border);
         if (border == 1) {
@@ -339,6 +355,10 @@ public class SynthController {
         slider.setShowTickLabels(true);
     }
 
+    /**
+     * Sets up the menu
+     * @param menuButton the menu button to set up
+     */
     private void setupMenu(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             item.setOnAction(event -> {
@@ -355,6 +375,10 @@ public class SynthController {
         }
     }
 
+    /**
+     * Sets up the default menu
+     * @param menuButton the menu button to set up
+     */
     private void setDefaultMenuSelection(MenuButton menuButton) {
         for (MenuItem item : menuButton.getItems()) {
             if (item.getText().equals("Sine")) {
@@ -364,16 +388,27 @@ public class SynthController {
         }
     }
 
+    /**
+     * Sets the scene
+     * @param scene the scene
+     */
     public void setScene(Scene scene) {
         this.tempScene = scene;
         setupKeyboardListeners();
     }
 
+    /**
+     * Sets the stage
+     * @param stage the stage
+     */
     public void setStage(Stage stage) {
         this.tempStage = stage;
         closeApplication();
     }
 
+    /**
+     * Draws the generated wave
+     */
     private void drawWaveform(short[] audioBuffer) {
         gc = waveformCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, waveformCanvas.getWidth(), waveformCanvas.getHeight()); // Clear previous waveform
@@ -412,10 +447,17 @@ public class SynthController {
         }
     }
 
+    /**
+     * Sets the speed factor
+     * @param speedFactor the speed factor
+     */
     public void setSpeedFactor(double speedFactor) {
         this.speedFactor = speedFactor;
     }
 
+    /**
+     * Updates frequencies
+     */
     private void updateOscillatorFrequencies() {
         int index = 0;
         for (char key : pressedKeys) {

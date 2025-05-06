@@ -4,6 +4,9 @@ package org.JStudio.Plugins.SynthUtil;
 import static java.lang.Math.*;
 import static java.lang.Math.log;
 
+/**
+ * Handles different actions
+ */
 public class Utility {
     public static void handleProcedure(Procedure procedure, boolean printStackTrace) {
         try {

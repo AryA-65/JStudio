@@ -135,17 +135,10 @@ public class UIController {
     @FXML
     public void initialize() throws Exception {
         timelineUI = new TimelineUI(timeline_canvas);
-
-//        plugins_tab.setOnSelectionChanged(e -> {
-//            FileLoader.init(tab_vbox);
-//        });
         
         reverbBtn.setOnAction(e -> {
             ReverbStage reverb = new ReverbStage();
             reverb.show();
-//            reverb.setOnCloseRequest(ex ->{
-//                FileLoader.init(tab_vbox);
-//            });
         });
 
         flangerBtn.setOnAction(e -> {

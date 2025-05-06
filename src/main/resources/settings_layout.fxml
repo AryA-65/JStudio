@@ -7,13 +7,12 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="5.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="5.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox prefHeight="24.0" prefWidth="200.0" spacing="5.0">
          <children>
@@ -32,27 +31,6 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </VBox.margin>
       </HBox>
-      <VBox spacing="5.0">
-         <children>
-            <Label text="Quick Export:">
-               <font>
-                  <Font name="Inter 24pt Regular" size="18.0" />
-               </font>
-            </Label>
-            <HBox maxWidth="400.0" prefWidth="286.0">
-               <children>
-                  <TextField maxHeight="24.0" prefHeight="24.0" HBox.hgrow="ALWAYS" />
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-               <padding>
-                  <Insets left="5.0" right="5.0" />
-               </padding>
-            </HBox>
-         </children>
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </VBox>
       <VBox spacing="5.0">
          <children>
             <Label text="Appearance:">
@@ -129,22 +107,6 @@
                   </CheckBox>
                </children>
             </HBox>
-            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </ImageView>
-            <Label text="Investigate crash logs:">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0" />
-            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-               <VBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </VBox.margin>
-            </ImageView>
          </children>
          <VBox.margin>
             <Insets left="5.0" right="5.0" />

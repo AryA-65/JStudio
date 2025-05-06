@@ -19,6 +19,7 @@ import org.JStudio.Utils.AlertBox;
  * Controller class for the login page
  */
 public class LoginController {
+
     @FXML
     private TextField userIdField, userPasswordField, key1Field, key2Field;
     @FXML
@@ -36,8 +37,7 @@ public class LoginController {
     private User user;
 
     /**
-     * Method that initializes UI elements
-     * Allows for user creation.
+     * Method that initializes UI elements Allows for user creation.
      */
     @FXML
     public void initialize() {
@@ -49,21 +49,23 @@ public class LoginController {
         // Create an account
         createAccount.setOnAction(event -> {
             if (userId == null || userPass == null || userId.length() < 6 || userPass.length() < 6) {
-                AlertBox.display("Credentials do not meet expectations","The username / password is too short ( minimum of 6 characters).");
+                AlertBox.display("Credentials do not meet expectations", "The username / password is too short ( minimum of 6 characters).");
                 return;
             }
             if (userId.length() >= 20 || userPass.length() >= 20) {
-                AlertBox.display("Credentials do not meet expectations","The username / password is too long ( maximum of 10 characters).");
+                AlertBox.display("Credentials do not meet expectations", "The username / password is too long ( maximum of 20 characters).");
                 return;
             }
             if (key1 == 0 && key2 == 0) {
-                AlertBox.display("Credentials do not meet expectations","Both keys cannot be zero.");
+                AlertBox.display("Credentials do not meet expectations", "Both keys cannot be zero.");
                 return;
             }
             encryptionAndDecryption = new EncryptionAndDecryption(userPass, key1, key2);
-            user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
-            userDataController.writeToFile(user);
-            launchMainApp();
+            if (encryptionAndDecryption.isValidKeys) {
+                user = new User(userId, encryptionAndDecryption.encryption(), key1, key2);
+                userDataController.writeToFile(user);
+                launchMainApp();
+            }
         });
 
         // Validate an existing user
@@ -85,7 +87,8 @@ public class LoginController {
     }
 
     /**
-     * Method to lunch the main application once either an account has been created or the user has been validated.
+     * Method to lunch the main application once either an account has been
+     * created or the user has been validated.
      */
     private void launchMainApp() {
         try {
@@ -148,13 +151,14 @@ public class LoginController {
             } else if (!newText.isEmpty()) {
                 try {
                     int value = Integer.parseInt(newText);
-                    if (value > 15) {
-                        key1Field.setText("20");
-                        key1 = 15;
+                    if (value > 25) {
+                        key1Field.setText("25");
+                        key1 = 25;
                     } else {
                         key1 = value;
                     }
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         });
 
@@ -165,19 +169,21 @@ public class LoginController {
             } else if (!newText.isEmpty()) {
                 try {
                     int value = Integer.parseInt(newText);
-                    if (value > 15) {
-                        key2Field.setText("20");
-                        key2 = 15;
+                    if (value > 25) {
+                        key2Field.setText("25");
+                        key2 = 25;
                     } else {
                         key2 = value;
                     }
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         });
     }
 
     /**
      * Method that allows to set a stage
+     *
      * @param stage the current stage
      */
     public void setRootStage(Stage stage) {
@@ -187,6 +193,7 @@ public class LoginController {
 
     /**
      * Method that allows to set a scene
+     *
      * @param rootScene the current scene
      */
     public void setRootScene(Scene rootScene) {

@@ -84,6 +84,7 @@ public class AudioAmplitudeFXMLController {
 
         exportButton.setOnAction(event -> {
             stopAudio();
+            export("Amplitude");
 
             if (SettingsController.isTesting()) {
                 stage.close();

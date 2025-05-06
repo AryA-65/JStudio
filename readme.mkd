@@ -54,7 +54,52 @@ This plugin creates a roomy environment. Adjusting the knobs allows for differen
 - Deviation is the amplitude of the oscillating modulation function
 - Wet/Dry mix is the amount of original (dry) and modified (wet) audio
 
-*******AHMET DO FILTERS HERE*******
+*Basic Filter: This plugin allows for certain frequencies to be cut of given a base frequency
+- An array of samples that the filter will be applied to
+- The sample rate of the audio file
+- The cut-off frequencies determines the range of applied frequency values
+    Filter Types:
+      -Low-Pass Filter: Remove all lower frequencies then the cut-off frequency
+      -High-Pass Filter: Remove all the higher frequencies than the given cut-off frequency
+
+*Biquad Filter: This plugin allows for precise frequency shaping using various filter types.
+- Array of Samples: The audio signal (samples) to which the filter will be applied.
+- Sample Rate: The sample rate of the audio file (measured in Hz).
+- Cut-off Frequency: The frequency threshold that determines the point at which the filter begins to attenuate the signal (for LPF, HPF, etc.).
+- Quality Factor (Q): A double value that controls the resonance or sharpness of the filter (how narrow or broad the frequency attenuation is).
+    Filter Types:
+       -Low-Pass Filter (LPF):
+            Allows frequencies below the cut-off frequency to pass
+            Removes all frequencies higher than the cut-off frequency
+            Useful for removing high-frequency noise
+       -High-Pass Filter (HPF):
+            Allows frequencies above the cut-off frequency to pass
+            Removes all frequencies lower than the cut-off frequency
+            Ideal for removing low-end rumble
+       -Band-Pass Filter (BPF):
+            Allows a specific range of frequencies centered around a given frequency to pass
+            Attenuates frequencies outside of the selected range
+       -Band-Stop (Notch) Filter:
+            Attenuates a specific frequency band around a given center frequency
+            Allows frequencies outside of the notch to pass
+
+*Audio Amplitude: This plugin enhances the audio by multiplying the amplitude of the signal by a given factor.
+- Array of Samples: The audio signal (samples) to which the amplitude enhancement will be applied
+- Sample Rate: The sample rate of the audio file (measured in Hz)
+- Amplification Factor: A double value that multiplies the amplitude of the audio signal (increasing or decreasing its volume)
+
+*Stereo: This plugin requires a mono channel audio file,
+- Sample Rate: The sample rate of the audio file (measured in Hz).
+- Stereo Effect Type: The stereo effect to be applied, determined by the user's selection.
+        Filter Types:
+            -HAAS Stereo Effect (HAASStereo):
+                A delay is applied to create the Haas effect, creating the perception of a wider field.
+            -LFO Stereo Effect (LFOStereo):
+                Uses a low-frequency oscillator (LFO) to modulate stereo balance, creating a dynamic, evolving stereo effect.
+            -Inverted Stereo Effect (InvertedStereo):
+                Inverts the left and right stereo channels to create a flipped stereo image.
+
+
 
 *******ALEX/AHMET DO PIANO/SYNTH PIANO/SYNTH HERE*******
 

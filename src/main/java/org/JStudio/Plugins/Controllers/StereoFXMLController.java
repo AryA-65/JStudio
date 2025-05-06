@@ -13,6 +13,9 @@ import org.JStudio.Utils.AlertBox;
 import javax.sound.sampled.*;
 import java.io.*;
 
+/**
+ * Class that determines the logic of stereo plugin
+ */
 public class StereoFXMLController extends Plugin {
     private Stage stage;
     @FXML private Button playButton, exportButton;
@@ -27,9 +30,11 @@ public class StereoFXMLController extends Plugin {
     private byte[] filteredBytes;
     private byte[] audioBytes;
     private int delay;
-
     private float[][] processedStereoOutput;
 
+    /**
+     * Method that implements the logic of the controller
+     */
     @FXML
     public void initialize() {
         group = new ToggleGroup();
@@ -45,6 +50,9 @@ public class StereoFXMLController extends Plugin {
         });
     }
 
+    /**
+     * Import the audio file
+     */
     private void importAudio() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -75,6 +83,9 @@ public class StereoFXMLController extends Plugin {
         }
     }
 
+    /**
+     * Method that applies the stereo affect
+     */
     private void applyStereoEffect() {
         stopAudio();
         if (samples == null || format == null) {
@@ -115,10 +126,11 @@ public class StereoFXMLController extends Plugin {
         return filteredBytes;
     }
 
-    public float[][] getProcessedStereoOutput() {
-        return processedStereoOutput;
-    }
-
+    /**
+     * Parses the delay sample value from the associated input field.
+     *
+     * @return The delay value in samples as an integer.
+     */
     private int parseDelaySample() {
         try {
             return Integer.parseInt(delaySample.getText());
@@ -128,6 +140,13 @@ public class StereoFXMLController extends Plugin {
         }
     }
 
+    /**
+     * Interleaves two stereo channels (left and right) into a single array of short values.
+     *
+     * @param stereo A 2D float array representing the left and right stereo channels.
+     *               stereo[0] is the left channel and stereo[1] is the right channel.
+     * @return A short array containing the interleaved stereo samples.
+     */
     private short[] interleaveStereo(float[][] stereo) {
         int length = Math.min(stereo[0].length, stereo[1].length);
         short[] interleaved = new short[length * 2];
@@ -138,6 +157,10 @@ public class StereoFXMLController extends Plugin {
         return interleaved;
     }
 
+    /**
+     * Method that sets the stage
+     * @param stage the stage of the plugin
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
         this.stage.setOnCloseRequest(event -> stopAudio());

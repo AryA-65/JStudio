@@ -1,19 +1,19 @@
 package org.JStudio.Plugins.Models;
 
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-
+/**
+ * Class that determines all the audio filters
+ */
 public class audioFilters {
     private StringProperty name = new SimpleStringProperty("Audio Filters");
 
-    /*
-    removes high frequencies
+    /**
+     * Method that remove high frequencies given a cut-off frequency
+     * @param samples the array that the filter will be applied to
+     * @param sampleRate the sample rate of the audio file
+     * @param cutoffFreq the given cut-off frequency
      */
     public static void applyLowPassFilter(short[] samples, float sampleRate, float cutoffFreq) {
         double RC = 1.0 / (2 * Math.PI * cutoffFreq);
@@ -26,8 +26,11 @@ public class audioFilters {
         }
     }
 
-    /*
-    removes low frequencies
+    /**
+     * Method that remove low frequencies given a cut-off frequency
+     * @param samples the array that the filter will be applied to
+     * @param sampleRate the sample rate of the audio file
+     * @param cutoffFreq the given cut-off frequency
      */
     public static void applyHighPassFilter(short[] samples, float sampleRate, float cutoffFreq) {
         double RC = 1.0 / (2 * Math.PI * cutoffFreq);
@@ -43,6 +46,11 @@ public class audioFilters {
         }
     }
 
+    /**
+     * Convert byte array back to 16-bit PCM short array
+     * @param audioBytes the given array of inputs
+     * @return and array of shorts
+     */
     public static short[] bytesToShorts(byte[] audioBytes) {
         short[] samples = new short[audioBytes.length / 2];
         for (int i = 0; i < samples.length; i++) {
@@ -51,7 +59,13 @@ public class audioFilters {
         return samples;
     }
 
-    // Convert short array back to 16-bit PCM byte array
+    //
+
+    /**
+     * Convert short array back to 16-bit PCM byte array
+     * @param samples the given array of inputs
+     * @return and array of bytes
+     */
     public static byte[] shortsToBytes(short[] samples) {
         byte[] audioBytes = new byte[samples.length * 2];
         for (int i = 0; i < samples.length; i++) {
@@ -62,6 +76,9 @@ public class audioFilters {
     }
 
 
+    /**
+     * Parent class that defines biquad filters
+     */
     public class BiquadFilter {
 
         // These are calculated based on filter type and configuration

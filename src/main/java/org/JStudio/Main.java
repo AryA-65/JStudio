@@ -1,5 +1,7 @@
 package org.JStudio;
 
+import org.JStudio.Controllers.UIController;
+import org.JStudio.Controllers.SettingsController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

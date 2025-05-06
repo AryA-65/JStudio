@@ -25,7 +25,7 @@ import javafx.scene.paint.Color;
 
 import org.JStudio.Plugins.SynthUtil.AudioThread;
 import org.JStudio.Plugins.SynthUtil.Utility;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 /**
  * Controller class for the synthesizer

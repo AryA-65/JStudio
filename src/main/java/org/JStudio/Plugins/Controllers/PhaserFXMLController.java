@@ -8,9 +8,9 @@ import org.JStudio.Plugins.Models.Phaser;
 import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
-import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
+import static org.JStudio.Views.Knob.Type.REG;
 import org.JStudio.Utils.AlertBox;
 
 /**

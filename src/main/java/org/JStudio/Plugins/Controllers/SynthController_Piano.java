@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
 import org.JStudio.Plugins.SynthUtil.Utility;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 
 public class SynthController_Piano {

@@ -3,7 +3,7 @@ package org.JStudio.Plugins.Views;
 import org.JStudio.Plugins.Models.SynthPianoNote;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class SynthPianoNoteView extends Rectangle {
     private SynthPianoNote note;

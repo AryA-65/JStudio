@@ -14,8 +14,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.JStudio.UI.Knob.Type.REG;
+import static org.JStudio.Views.Knob.Type.REG;
 
 /**
  * Class that applies the basic audio filters

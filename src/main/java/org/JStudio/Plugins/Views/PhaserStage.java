@@ -8,7 +8,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.PhaserFXMLController;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 /**
  * Phaser Window

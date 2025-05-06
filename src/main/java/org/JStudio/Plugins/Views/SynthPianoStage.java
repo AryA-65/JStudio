@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class SynthPianoStage {
 

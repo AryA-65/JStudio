@@ -1,9 +1,9 @@
 package org.JStudio.Utils;
 
 import javafx.stage.FileChooser;
-import org.JStudio.Core.Mixer;
-import org.JStudio.Core.Song;
-import org.JStudio.Core.Track;
+import org.JStudio.Models.Core.Mixer;
+import org.JStudio.Models.Core.Song;
+import org.JStudio.Models.Core.Track;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;

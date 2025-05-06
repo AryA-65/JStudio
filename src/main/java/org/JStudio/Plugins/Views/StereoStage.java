@@ -10,7 +10,7 @@ import org.JStudio.Plugins.Controllers.FlangerFXMLController;
 import org.JStudio.Plugins.Controllers.StereoFXMLController;
 
 import java.io.IOException;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class StereoStage extends Stage {
     public static Scene scene;

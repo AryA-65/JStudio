@@ -9,7 +9,7 @@ import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioFilterFXMLController;
 
 import java.io.IOException;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class BaseFiltersStage extends Stage {
     public static Scene scene;

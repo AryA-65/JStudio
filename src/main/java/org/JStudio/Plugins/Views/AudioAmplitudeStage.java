@@ -7,7 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioAmplitudeFXMLController;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 import java.io.IOException;
 

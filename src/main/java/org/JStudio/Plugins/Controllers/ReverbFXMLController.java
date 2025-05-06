@@ -6,8 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Reverb;
 import org.JStudio.Plugins.Views.ReverbStage;
+import org.JStudio.Plugins.Views.SpectrographStage;
+import org.JStudio.SettingsController;
 import org.JStudio.UI.Knob;
 import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Utils.AlertBox;
 
 /**
  * FXML controller class for the Reverb UI
@@ -98,6 +101,21 @@ public class ReverbFXMLController {
             reverb.setReverbEffect();
             reverb.stopAudio();
             reverb.setFloatOutput(reverb.convertByteToFloatArray(reverb.getFinalAudio()));
+            reverb.export("Reverb");
+            
+            //runs visualizer if testing
+            if (SettingsController.isTesting()) {
+                SpectrographStage spectrographStage = new SpectrographStage();
+                try {
+                    if (SpectrographStage.controller != null) {
+                        SpectrographStage.controller.setArrays(reverb.getOriginalAudio(), reverb.getFinalAudio());
+                    }
+                } catch (Exception ex) {
+                    AlertBox.display("Export Error", "Failed to load Unit Testing interface.");
+                }
+                spectrographStage.show();
+            }
+            
             ReverbFXMLController.window.close();
         });
         

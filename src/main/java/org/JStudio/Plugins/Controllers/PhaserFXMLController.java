@@ -92,6 +92,7 @@ public class PhaserFXMLController {
             phaser.setPhaserEffect();
             phaser.stopAudio();
             phaser.setFloatOutput(phaser.convertByteToFloatArray(phaser.getFinalAudio()));
+            phaser.export("Phaser");
             
             //runs visualizer if testing
             if (SettingsController.isTesting()) {

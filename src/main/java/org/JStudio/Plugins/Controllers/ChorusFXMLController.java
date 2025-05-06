@@ -92,6 +92,7 @@ public class ChorusFXMLController {
             chorus.setModulationEffect();
             chorus.stopAudio();
             chorus.setFloatOutput(chorus.convertByteToFloatArray(chorus.getFinalAudio()));
+            chorus.export("Chorus");
             
             //runs visualizer if testing
             if (SettingsController.isTesting()) {

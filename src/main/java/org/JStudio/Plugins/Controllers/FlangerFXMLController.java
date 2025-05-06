@@ -7,9 +7,9 @@ import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Modulation;
 import org.JStudio.Plugins.Views.FlangerStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
-import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
+import static org.JStudio.Views.Knob.Type.REG;
 import org.JStudio.Utils.AlertBox;
 
 /**
@@ -18,7 +18,7 @@ import org.JStudio.Utils.AlertBox;
  */
 public class FlangerFXMLController {
     @FXML
-    private Button resetButton, playButton, saveButton;
+    private Button playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
@@ -27,6 +27,11 @@ public class FlangerFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static FlangerStage window;
     private Modulation flanger;
+    
+    //gets flanger plugin
+    public Modulation getFlanger(){
+        return flanger;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons
@@ -74,17 +79,6 @@ public class FlangerFXMLController {
         playButton.setOnAction(e -> {
             flanger.setModulationEffect();
             flanger.play();
-        });
-        
-        // Reset to initial values
-        resetButton.setOnAction(e -> {
-            flanger.stopAudio();
-            flanger.clearFinalAudio();
-            flanger = new Modulation(100000, 100, 0.5);
-            frequencyKnob.setValue(0.2);
-            deviationKnob.setValue(0.2);
-            wetDryKnob.setValue(0.5);
-            outputGainKnob.setValue(1);
         });
         
         // Saving

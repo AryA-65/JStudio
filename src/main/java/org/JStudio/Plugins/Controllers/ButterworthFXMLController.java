@@ -142,10 +142,15 @@ public class ButterworthFXMLController extends Plugin {
      */
     public void getFile() { // this
         try {
+            setIsFileSelected(false);
             FileChooser fileChooser = new FileChooser();
-            inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
+            File file = fileChooser.showOpenDialog(null);
+            if (file == null) {
+                return;
+            }
+            setIsFileSelected(true);
+            inputFile = file.getAbsolutePath();
             setFilePathName(inputFile);
-            File file = new File(inputFile);
             fileName = file.getName();
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             format = audioStream.getFormat();
@@ -177,7 +182,7 @@ public class ButterworthFXMLController extends Plugin {
      * Method to export an audio file given a name
      * @param pluginName the name of the exported audio file
      */
-    public void export(String pluginName){ // this
+    public void export(String pluginName){
         try {
             //create AudioInputStream from the byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(filteredBytes);

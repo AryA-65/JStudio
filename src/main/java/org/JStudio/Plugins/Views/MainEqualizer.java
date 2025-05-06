@@ -4,17 +4,22 @@ import org.JStudio.Plugins.Views.EqualizerView;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class MainEqualizer {
+    
+    private EqualizerView eqView = new EqualizerView();
+    
+    public EqualizerView getEQView(){
+        return eqView;
+    }
 
     public void openEQ() {
         //creates a new stage
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
 
-        //creates an equalizer view for the UI elements
-        EqualizerView eqView = new EqualizerView();
+        //sets the view in the EQView
         eqView.setStage(stage);
 
         //creates a scene and loads the selected theme (dark/light mode)

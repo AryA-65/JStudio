@@ -7,9 +7,9 @@ import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Echo;
 import org.JStudio.Plugins.Views.EchoStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
-import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
+import static org.JStudio.Views.Knob.Type.REG;
 import org.JStudio.Utils.AlertBox;
 
 /**
@@ -18,7 +18,7 @@ import org.JStudio.Utils.AlertBox;
  */
 public class EchoFXMLController {
     @FXML
-    private Button resetButton, playButton, saveButton;
+    private Button playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob preDelayKnob = new Knob(100, true, 0.1, REG);
@@ -29,6 +29,11 @@ public class EchoFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static EchoStage window;
     private Echo echo;
+    
+    //gets echo plugin
+    public Echo getEcho(){
+        return echo;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons
@@ -91,19 +96,6 @@ public class EchoFXMLController {
         playButton.setOnAction(e -> {
             echo.setEchoEffect();
             echo.play();
-        });
-        
-        // Reset to initial values
-        resetButton.setOnAction(e -> {
-            echo.stopAudio();
-            echo.clearFinalAudio();
-            echo = new Echo(1000, 1/11, 10000, 5, 0.5);
-            preDelayKnob.setValue(0.1);
-            decayTimeKnob.setValue(0.1);
-            diffusionKnob.setValue(0.2);
-            echoNumKnob.setValue(0.5);
-            wetDryKnob.setValue(0.5);
-            outputGainKnob.setValue(1);
         });
         
         // Saving

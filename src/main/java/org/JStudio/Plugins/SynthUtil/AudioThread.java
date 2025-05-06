@@ -8,7 +8,9 @@ import java.util.function.Supplier;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 
-
+/**
+ * Audio thread
+ */
 public class AudioThread extends Thread {
     public static final int SAMPLE_RATE = 44100; // or whatever sample rate you use
     public static final int BUFFER_SIZE = 512; // how many samples each buffer will contain. common usage in DAWs
@@ -29,19 +31,33 @@ public class AudioThread extends Thread {
         return running;
     }
 
+    /**
+     * Creates an AudioThread that streams audio using OpenA
+     *
+     * @param bufferSupplier a supplier that provides audio sample buffers
+     */
     public AudioThread(Supplier<short[]> bufferSupplier) {
         this.bufferSupplier = bufferSupplier;
+        // Make OpenAL context current and initialize capabilities
         alcMakeContextCurrent(context);
         AL.createCapabilities(ALC.createCapabilities(device));
+        // Generate the OpenAL source
         source = alGenSources();
+        // Pre-fill the audio source with empty buffers to initialize
         for (int i = 0; i < BUFFER_COUNT; i++) {
             bufferSamples(new short[0]);
         }
+        // Start playback
         alSourcePlay(source);
+        // Catch and report any OpenAL-related exceptions
         catchInternalException();
+        // Start the thread
         start();
     }
 
+    /**
+     * Method that continuously processes and streams audio using OpenAL until the thread is closed.
+     */
     @Override
     public synchronized void run() {
         while (!closed) {
@@ -72,17 +88,27 @@ public class AudioThread extends Thread {
         alcCloseDevice(device);
     }
 
+    /**
+     * Starts playback
+     */
     public synchronized void triggerPlayback() {
         running = true;
         notify();
     }
 
+    /**
+     * Closing actions
+     */
     public void close() {
         closed = true; // break out of the loop
         triggerPlayback();
 
     }
 
+    /**
+     * Creates a temporary buffer sample
+     * @param samples given array
+     */
     private void bufferSamples(short[] samples) {
         int buf = buffers[bufferIndex++];
         alBufferData(buf, AL_FORMAT_MONO16, samples, Utility.AudioInfo.SAMPLE_RATE);
@@ -90,6 +116,9 @@ public class AudioThread extends Thread {
         bufferIndex %= BUFFER_COUNT; // Reset the bufferIndex
     }
 
+    /**
+     * Exception handler
+     */
     private void catchInternalException() {
         int err = alcGetError(device);
         if (err != ALC_NO_ERROR) {

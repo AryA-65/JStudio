@@ -7,12 +7,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.JStudio.Plugins.Controllers.AudioAmplitudeFXMLController;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 import java.io.IOException;
 
 public class AudioAmplitudeStage extends Stage {
     public static Scene scene;
+    public static AudioAmplitudeFXMLController controller = new AudioAmplitudeFXMLController();
 
     /**
      * Creates the stage
@@ -30,7 +31,6 @@ public class AudioAmplitudeStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/other_fxmls/audioAmplitude.fxml"));
-            AudioAmplitudeFXMLController controller = new AudioAmplitudeFXMLController();
             controller.setStage(this);
             fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();

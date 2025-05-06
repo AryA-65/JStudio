@@ -1,4 +1,4 @@
-import org.JStudio.Login.EncryptionAndDecryption;
+import org.JStudio.Models.EncryptionAndDecryption;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

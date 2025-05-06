@@ -7,7 +7,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class PopUpController {
     //show a popup with a text field for the user to input text

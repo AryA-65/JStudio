@@ -1,7 +1,7 @@
 package org.JStudio.Utils;
 
 import javafx.scene.layout.VBox;
-import org.JStudio.UI.SectionUI;
+import org.JStudio.Views.SectionUI;
 
 import java.io.*;
 import java.nio.file.Files;

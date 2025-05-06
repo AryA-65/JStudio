@@ -1,18 +1,13 @@
 package org.JStudio;
 
+import org.JStudio.Controllers.UIController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.JStudio.Plugins.Models.Reverb;
-import org.JStudio.Plugins.Views.EchoStage;
-import org.JStudio.Plugins.Views.FlangerStage;
-import org.JStudio.Plugins.Views.ReverbStage;
-import org.JStudio.TESTING.UnitTestingController;
+import org.JStudio.Controllers.LoginController;
 
 public class Main extends Application {
     private UIController controller;
@@ -40,38 +35,38 @@ public class Main extends Application {
 //            stage.show();
 //
 //        } else {
-            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-            Parent root = loader.load();
-
-            controller = loader.getController();
-            controller.setStage(stage);
-
-            scene = new Scene(root);
-            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-            controller.setScene(scene);
-            stage.getIcons().add(new Image("/JS_ico.png"));
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setResizable(true);
-            stage.show();
-
-            SettingsController.setController(controller);
+//            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+//            Parent root = loader.load();
+//
+//            controller = loader.getController();
+//            controller.setStage(stage);
+//
+//            scene = new Scene(root);
+//            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+//            controller.setScene(scene);
+//            stage.getIcons().add(new Image("/JS_ico.png"));
+//            stage.setScene(scene);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//            stage.setResizable(true);
+//            stage.show();
+//
+//            SettingsController.setController(controller);
 
         /**
          * to initialize the login page
          */
-//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
-//        Parent root = loader.load();
-//
-//        LoginController loginController = loader.getController();
-//        loginController.setRootStage(stage);
-//
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.getIcons().add(new Image("/JS_ico.png"));
-//        loginController.setRootScene(scene);
-//        stage.setResizable(false);
-//        stage.show();
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
+        Parent root = loader.load();
+
+        LoginController loginController = loader.getController();
+        loginController.setRootStage(stage);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.getIcons().add(new Image("/JS_ico.png"));
+        loginController.setRootScene(scene);
+        stage.setResizable(false);
+        stage.show();
 //        }
     }
 

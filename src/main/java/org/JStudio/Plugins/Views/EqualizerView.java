@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.JStudio.Plugins.Models.Equalizer;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 import org.JStudio.Utils.AlertBox;
 
 public class EqualizerView extends Pane {

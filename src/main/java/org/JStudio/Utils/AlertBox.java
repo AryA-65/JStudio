@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 /**
  * Class that provides functionality to display a modal alert window with a title and message

@@ -14,8 +14,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
 import org.JStudio.Utils.AlertBox;
 
 import javax.sound.sampled.*;
@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.JStudio.UI.Knob.Type.REG;
+import static org.JStudio.Views.Knob.Type.REG;
 
 /**
  * Class that applies the basic audio filters
@@ -51,6 +51,8 @@ public class AudioAmplitudeFXMLController {
     private double amp;
     private SourceDataLine line;
     private AudioFormat format;
+    
+    public static boolean isFileSelected = false;
 
     /**
      * Method that determines the logic of the basic audio filter plugin
@@ -82,7 +84,7 @@ public class AudioAmplitudeFXMLController {
 
         exportButton.setOnAction(event -> {
             stopAudio();
-//            getProcessedAudio();
+            export("Amplitude");
 
             if (SettingsController.isTesting()) {
                 stage.close();
@@ -125,6 +127,7 @@ public class AudioAmplitudeFXMLController {
      * Method that imports the audio file and analyzes it
      */
     private void handleImportAudio() {
+        isFileSelected = false;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Audio File");
         fileChooser.getExtensionFilters().add(
@@ -135,6 +138,7 @@ public class AudioAmplitudeFXMLController {
         fileName = selectedFile.getName();
 
         if (selectedFile != null) {
+            isFileSelected = true;
             audioFile = selectedFile;
             try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile)) {
                 format = audioInputStream.getFormat();
@@ -298,5 +302,5 @@ public class AudioAmplitudeFXMLController {
         } catch (IOException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-    } // this
+    }
 }

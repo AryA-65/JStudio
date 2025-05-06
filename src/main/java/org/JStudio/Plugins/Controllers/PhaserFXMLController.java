@@ -7,9 +7,9 @@ import javafx.scene.layout.GridPane;
 import org.JStudio.Plugins.Models.Phaser;
 import org.JStudio.Plugins.Views.PhaserStage;
 import org.JStudio.Plugins.Views.SpectrographStage;
-import org.JStudio.SettingsController;
-import org.JStudio.UI.Knob;
-import static org.JStudio.UI.Knob.Type.REG;
+import org.JStudio.Controllers.SettingsController;
+import org.JStudio.Views.Knob;
+import static org.JStudio.Views.Knob.Type.REG;
 import org.JStudio.Utils.AlertBox;
 
 /**
@@ -18,7 +18,7 @@ import org.JStudio.Utils.AlertBox;
  */
 public class PhaserFXMLController {
     @FXML
-    private Button resetButton, playButton, saveButton;
+    private Button playButton, saveButton;
     @FXML
     private GridPane grid;
     private final Knob frequencyKnob = new Knob(100, false, 0, REG);
@@ -27,6 +27,11 @@ public class PhaserFXMLController {
     private final Knob outputGainKnob = new Knob(100, false, 0, REG);
     private static PhaserStage window;
     private Phaser phaser;
+    
+    //gets phaser plugin
+    public Phaser getPhaser(){
+        return phaser;
+    }
     
     /**
      * Initializes the UI and sets actions for the knobs and buttons
@@ -74,17 +79,6 @@ public class PhaserFXMLController {
         playButton.setOnAction(e -> {
             phaser.setPhaserEffect();
             phaser.play();
-        });
-        
-        // Reset to initial values
-        resetButton.setOnAction(e -> {
-            phaser.stopAudio();
-            phaser.clearFinalAudio();
-            phaser = new Phaser(100000, 8, 0.5);
-            frequencyKnob.setValue(0.2);
-            deviationKnob.setValue(0.8);
-            wetDryKnob.setValue(0.5);
-            outputGainKnob.setValue(1);
         });
         
         // Saving

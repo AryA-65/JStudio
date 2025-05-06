@@ -10,10 +10,11 @@ import org.JStudio.Plugins.Controllers.FlangerFXMLController;
 import org.JStudio.Plugins.Controllers.StereoFXMLController;
 
 import java.io.IOException;
-import org.JStudio.SettingsController;
+import org.JStudio.Controllers.SettingsController;
 
 public class StereoStage extends Stage {
     public static Scene scene;
+    public static StereoFXMLController controller = new StereoFXMLController();
 
     /**
      * Creates the stage
@@ -31,7 +32,6 @@ public class StereoStage extends Stage {
     private void initPlugin() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/stereo.fxml"));
-            StereoFXMLController controller = new StereoFXMLController();
             controller.setStage(this);
             fxmlLoader.setController(controller);
             Parent root = fxmlLoader.load();

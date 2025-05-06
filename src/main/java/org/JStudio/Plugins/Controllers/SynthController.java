@@ -240,7 +240,7 @@ public class SynthController {
      * @param waveformType the type of wave form
      * @param frequency the frequency of the wave
      * @param wavePosition the position of the wave
-     * @return 
+     * @return the calculated waveform
      */
     private double generateWaveSample(String waveformType, double frequency, int wavePosition) {
         double tDivP = (wavePosition / (double) Utility.AudioInfo.SAMPLE_RATE) / (1d / frequency);

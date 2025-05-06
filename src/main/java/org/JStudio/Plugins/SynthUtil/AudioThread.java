@@ -31,19 +31,33 @@ public class AudioThread extends Thread {
         return running;
     }
 
+    /**
+     * Creates an AudioThread that streams audio using OpenA
+     *
+     * @param bufferSupplier a supplier that provides audio sample buffers
+     */
     public AudioThread(Supplier<short[]> bufferSupplier) {
         this.bufferSupplier = bufferSupplier;
+        // Make OpenAL context current and initialize capabilities
         alcMakeContextCurrent(context);
         AL.createCapabilities(ALC.createCapabilities(device));
+        // Generate the OpenAL source
         source = alGenSources();
+        // Pre-fill the audio source with empty buffers to initialize
         for (int i = 0; i < BUFFER_COUNT; i++) {
             bufferSamples(new short[0]);
         }
+        // Start playback
         alSourcePlay(source);
+        // Catch and report any OpenAL-related exceptions
         catchInternalException();
+        // Start the thread
         start();
     }
 
+    /**
+     * Method that continuously processes and streams audio using OpenAL until the thread is closed.
+     */
     @Override
     public synchronized void run() {
         while (!closed) {
@@ -91,6 +105,10 @@ public class AudioThread extends Thread {
 
     }
 
+    /**
+     * Creates a temporary buffer sample
+     * @param samples given array
+     */
     private void bufferSamples(short[] samples) {
         int buf = buffers[bufferIndex++];
         alBufferData(buf, AL_FORMAT_MONO16, samples, Utility.AudioInfo.SAMPLE_RATE);

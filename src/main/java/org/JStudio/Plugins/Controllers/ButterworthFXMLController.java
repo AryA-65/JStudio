@@ -140,7 +140,7 @@ public class ButterworthFXMLController extends Plugin {
     /**
      * Method that gets the file and analyzes it
      */
-    public void getFile() {
+    public void getFile() { // this
         try {
             FileChooser fileChooser = new FileChooser();
             inputFile = fileChooser.showOpenDialog(null).getAbsolutePath();
@@ -160,17 +160,6 @@ public class ButterworthFXMLController extends Plugin {
         }
     }
 
-    /**
-     * Method that returns the processes audio
-     * @return the array with the applied plugin effect
-     */
-    public byte[] getProcessedAudio() {
-        if (filteredBytes == null || filteredBytes.length == 0) {
-            AlertBox.display("Export Error", "No processed audio to export.");
-            return null;
-        }
-        return filteredBytes;
-    }
 
     /**
      * Method that sets the stage
@@ -188,7 +177,7 @@ public class ButterworthFXMLController extends Plugin {
      * Method to export an audio file given a name
      * @param pluginName the name of the exported audio file
      */
-    public void export(String pluginName){
+    public void export(String pluginName){ // this
         try {
             //create AudioInputStream from the byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(filteredBytes);

@@ -217,7 +217,7 @@ public class AudioAmplitudeFXMLController {
     /**
      * Method that plays the byte array
      */
-    private void playAudio() {
+    private void playAudio() { // this
         if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
             AlertBox.display("Playback Error", "No processed audio data available.");
             return;
@@ -253,22 +253,11 @@ public class AudioAmplitudeFXMLController {
         this.stage.setOnCloseRequest(event -> stopAudio());
     }
 
-    /**
-     * Method that returns the array that contains the applied plugin effects
-     * @return the filtered array
-     */
-    public byte[] getProcessedAudio() {
-        if (audioBytesProcessed == null || audioBytesProcessed.length == 0) {
-            AlertBox.display("Export Error", "No processed audio to export.");
-            return null;
-        }
-        return audioBytesProcessed;
-    }
 
     /**
      * Method that stops audio from playing
      */
-    public void stopAudio() {
+    public void stopAudio() { // this
         if (line != null && line.isOpen()) {
             line.flush();
             line.stop();
@@ -309,5 +298,5 @@ public class AudioAmplitudeFXMLController {
         } catch (IOException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-    }
+    } // this
 }

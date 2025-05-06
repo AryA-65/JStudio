@@ -97,7 +97,6 @@ public class AudioFilterFXMLController extends Plugin {
 
         saveBtn.setOnAction(event -> {
             stopAudio();
-            getProcessedAudio();
             export("Base Audio Filter");
         });
     }
@@ -105,7 +104,7 @@ public class AudioFilterFXMLController extends Plugin {
     /**
      * Method to get the file
      */
-    private void getFile() {
+    private void getFile() { // this
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
 
@@ -158,17 +157,6 @@ public class AudioFilterFXMLController extends Plugin {
         }
     }
 
-    /**
-     * Method that returns a final output
-     * @return returns the filtered array
-     */
-    public byte[] getProcessedAudio() {
-        if (filteredBytes == null || filteredBytes.length == 0) {
-            AlertBox.display("Export Error", "No processed audio to export.");
-            return null;
-        }
-        return filteredBytes;
-    }
 
     /**
      * Method that sets the stage
@@ -186,7 +174,7 @@ public class AudioFilterFXMLController extends Plugin {
      * Method to export an audio file given a name
      * @param pluginName the name of the exported audio file
      */
-    public void export(String pluginName){
+    public void export(String pluginName){ // this
         try {
             //create AudioInputStream from the byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(finalAudio);

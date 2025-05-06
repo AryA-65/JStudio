@@ -22,14 +22,13 @@ import org.JStudio.Core.Song;
 import org.JStudio.Core.Track;
 import org.JStudio.Plugins.Views.*;
 import org.JStudio.UI.*;
-import org.JStudio.Utils.FileLoader;
-import org.JStudio.Utils.SystemMonitor;
+import org.JStudio.Utils.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import javafx.scene.Scene;
 import org.JStudio.Plugins.Views.MainEqualizer;
-import org.JStudio.Utils.TimeConverter;
 
 public class UIController {
     private Scene scene;
@@ -209,6 +208,32 @@ public class UIController {
             synthesizerStage.synth();
         });
 
+        open_song_btn.setOnMouseClicked(e -> {
+            try {
+                this.song = ExporterImporter.loadSong();
+            } catch (IOException | ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        save_song_btn.setOnMouseClicked(e -> {
+            try {
+                if (ExporterImporter.saveSong(this.song, this.song.getSongName().get())) AlertBox.display("Save Status", "Song Saved Successfully");
+                else AlertBox.display("Save Status", "Song Saved Failed");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        export_song_btn.setOnMouseClicked(e -> {
+            try {
+                if (ExporterImporter.exportSong(this.song, this.song.getSongName().get(), this.mixer)) AlertBox.display("Export Status", "Song Exported Successfully");
+                else AlertBox.display("Export Status", "Song Exported Failed");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         // TODO: make a method or something to load a song, either here or in the song class itself (the ladder most likely)
 
         //initializing nodes (loading images and other stuff)
@@ -224,14 +249,14 @@ public class UIController {
         minim_btn.getParent().setCursor(Cursor.HAND);
         maxim_btn.setImage(new Image("/icons/minimize.png"));
         maxim_btn.getParent().setCursor(Cursor.HAND);
-        metronome_control.setImage(new Image("/icons/metronome.png"));
-        metronome_control.getParent().setCursor(Cursor.HAND);
+//        metronome_control.setImage(new Image("/icons/metronome.png"));
+//        metronome_control.getParent().setCursor(Cursor.HAND);
         settings_btn.setImage(new Image("/icons/settings.png"));
         settings_btn.getParent().setCursor(Cursor.HAND);
         snap_btn.setImage(new Image("/icons/snap.png"));
         snap_btn.getParent().setCursor(Cursor.HAND);
-        record_control.setImage(new Image("/icons/record.png"));
-        record_control.getParent().setCursor(Cursor.HAND);
+//        record_control.setImage(new Image("/icons/record.png"));
+//        record_control.getParent().setCursor(Cursor.HAND);
         playback_btn.setImage(new Image("/icons/play.png"));
         playback_btn.getParent().setCursor(Cursor.HAND);
 
@@ -244,8 +269,8 @@ public class UIController {
         save_song_btn.getParent().setId("save_song_btn_parent");
         export_song_btn.getParent().setId("export_song_btn_parent");
         bpm_control.setId("bpm_control");
-        record_control.getParent().setId("record_control_parent");
-        metronome_control.getParent().setId("metronome_control_parent");
+//        record_control.getParent().setId("record_control_parent");
+//        metronome_control.getParent().setId("metronome_control_parent");
         playback_pos.setId("playback_pos");
         audio_vis_top.getParent().setId("audio_vis_top_parent");
         amp_audio_top.getParent().setId("amp_audio_top_parent");
@@ -257,13 +282,13 @@ public class UIController {
         snap_btn.getParent().getStyleClass().add("iactive");
         song_name.setText("New Song");
 
-        metronome_control.getParent().setOnMousePressed(e -> {
-            if (metronome_control.getParent().getStyleClass().contains("iactive")) {
-                metronome_control.getParent().getStyleClass().remove("iactive");
-            } else {
-                metronome_control.getParent().getStyleClass().add("iactive");
-            }
-        });
+//        metronome_control.getParent().setOnMousePressed(e -> {
+//            if (metronome_control.getParent().getStyleClass().contains("iactive")) {
+//                metronome_control.getParent().getStyleClass().remove("iactive");
+//            } else {
+//                metronome_control.getParent().getStyleClass().add("iactive");
+//            }
+//        });
 
         playback_btn.getParent().setOnMousePressed(e -> {
             if (playback_btn.getParent().getStyleClass().contains("iactive")) {
@@ -289,13 +314,13 @@ public class UIController {
             }
         });
 
-        record_control.getParent().setOnMousePressed(event -> {
-            if (record_control.getParent().getStyleClass().contains("iactive")) {
-                record_control.getParent().getStyleClass().remove("iactive");
-            } else {
-                record_control.getParent().getStyleClass().add("iactive");
-            }
-        });
+//        record_control.getParent().setOnMousePressed(event -> {
+//            if (record_control.getParent().getStyleClass().contains("iactive")) {
+//                record_control.getParent().getStyleClass().remove("iactive");
+//            } else {
+//                record_control.getParent().getStyleClass().add("iactive");
+//            }
+//        });
 
         info_panel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             xOffset = rootStage.getX() - event.getScreenX();
@@ -307,9 +332,9 @@ public class UIController {
             rootStage.setY(event.getScreenY() + yOffset);
         });
 
-        bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            //to resize the playback
-        });
+//        bpm_control.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+//            //to resize the playback
+//        });
 
         grid_root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             xResize = event.getSceneX();

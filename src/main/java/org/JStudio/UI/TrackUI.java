@@ -84,6 +84,12 @@ public class TrackUI extends StackPane {
                 double dropX = e.getX();
                 if (UIController.snap.get()) dropX = Math.round(dropX / 8) * 8;
 
+                if (dropX < 0 || dropX > getWidth() || isOverlappingClip(dropX)) {
+                    e.setDropCompleted(false);
+                    e.consume();
+                    return;
+                }
+
                 double pixelsPerBeat = 32.0;
                 double bpm = 120;
 
@@ -116,5 +122,18 @@ public class TrackUI extends StackPane {
             e.setDropCompleted(success);
             e.consume();
         });
+    }
+
+    private boolean isOverlappingClip(double dropX) {
+        for (var node : clipLayer.getChildren()) {
+            if (node instanceof ClipUI clip) {
+                double x = clip.getLayoutX();
+                double w = clip.getWidth();
+                if (dropX >= x && dropX <= x + w) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

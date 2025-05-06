@@ -68,7 +68,7 @@ public class Mixer {
     private void process() {
         float[][] floatBuffer = new float[2][chunkSize];
         byte[] byteBuffer = new byte[chunkSize * 4];
-        long lastUiUpdateTime = System.nanoTime();
+        long lastUIUpdateTime = System.nanoTime();
 
         while (running.get()) {
             for (int ch = 0; ch < 2; ch++) {
@@ -98,12 +98,15 @@ public class Mixer {
             }
 
             line.write(byteBuffer, 0, byteBuffer.length);
-            currentSample += chunkSize;
+
+            if (currentSample <= (Song.bpm.get() / (Song.bpm.get() / 60) * sampleRate)) {
+                currentSample += chunkSize;
+            } else running.set(false);
 
             long now = System.nanoTime();
-            if ((now - lastUiUpdateTime) > 100_000_000L) { //about every 100 milliseconds
+            if ((now - lastUIUpdateTime) > 100_000_000L) { //about every 100 milliseconds
                 Platform.runLater(() -> playBackPos.set(TimeConverter.doubleToString((double) currentSample / sampleRate)));
-                lastUiUpdateTime = now;
+                lastUIUpdateTime = now;
             }
         }
     }

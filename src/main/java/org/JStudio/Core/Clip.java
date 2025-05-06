@@ -1,9 +1,13 @@
 package org.JStudio.Core;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public abstract class Clip implements Serializable {
     private double position, length;
+
+    @Serial
+    private static final long serialVersionUID = 3L;
 
     Clip(double position) {
         this.position = position;

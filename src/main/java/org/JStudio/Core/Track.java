@@ -3,6 +3,7 @@ package org.JStudio.Core;
 import javafx.beans.property.*;
 import javafx.event.Event;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,14 +11,18 @@ import org.JStudio.Plugins.Plugin;
 import org.JStudio.UI.ClipUI;
 
 public class Track implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2L;
+
     private static short trackCounter = 0;
 
-    private final StringProperty name = new SimpleStringProperty(), id = new SimpleStringProperty();
-    private final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0), pan = new SimpleDoubleProperty(0);
-    public final BooleanProperty muted = new SimpleBooleanProperty(false);
-    private final ArrayList<Clip> clips = new ArrayList<>();
+    private transient final StringProperty name = new SimpleStringProperty(), id = new SimpleStringProperty();
+    private transient final DoubleProperty amplitude = new SimpleDoubleProperty(1), pitch = new SimpleDoubleProperty(0), pan = new SimpleDoubleProperty(0);
+    public transient final BooleanProperty muted = new SimpleBooleanProperty(false);
+    private transient final ArrayList<Clip> clips = new ArrayList<>();
+//    private final ArrayList<Plugin> plugins = new ArrayList<>();
     private final ArrayList<Plugin> plugins = new ArrayList<>();
-    private final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
+    private transient final FloatProperty leftAmp = new SimpleFloatProperty(0), rightAmp = new SimpleFloatProperty(0);
 
     public Track(String name) {
         this.name.set(name);
@@ -53,6 +58,8 @@ public class Track implements Serializable {
     public float[][] process(float[][] outBuff, int chunkStartSample, int chunkSize, int sampleRate) {
         if (muted.get()) return new float[2][chunkSize];
 
+        float[][] trackBuff = new float[2][chunkSize];
+
         for (Clip baseClip : clips) {
             if (!(baseClip instanceof AudioClip clip)) continue;
 
@@ -76,21 +83,31 @@ public class Track implements Serializable {
             double leftGain = panning <= 0 ? 1.0 : 1.0 - panning;
             double rightGain = panning >= 0 ? 1.0 : 1.0 + panning;
 
-            float sumLeft = 0, sumRight = 0;
+//            float sumLeft = 0, sumRight = 0;
             for (int i = 0; i < length; i++) {
                 float tempL = buffer[0][clipOffset + i] * (float) (amp * leftGain);
                 float tempR = 0;
                 if (buffer[1] != null) {
                     tempR += buffer[1][clipOffset + i] * (float) (amp * rightGain);
                 }
-                sumLeft += Math.abs(tempL);
-                sumRight += Math.abs(tempR);
-                outBuff[0][chunkOffset + i] += tempL;
-                outBuff[1][chunkOffset + i] += tempR;
+//                sumLeft += Math.abs(tempL);
+//                sumRight += Math.abs(tempR);
+                trackBuff[0][chunkOffset + i] += tempL;
+                trackBuff[1][chunkOffset + i] += tempR;
             }
 
-            leftAmp.set((float)(sumLeft / chunkSize));
-            rightAmp.set((float)(sumRight / chunkSize));
+//            leftAmp.set((float)(sumLeft / chunkSize));
+//            rightAmp.set((float)(sumRight / chunkSize));
+        }
+
+        for (Plugin plugin : plugins) {
+//            System.out.println(plugin.getPlugName().get());
+            trackBuff = plugin.processStereo(trackBuff);
+        }
+
+        for (int i = 0; i < chunkSize; i++) {
+            outBuff[0][i] += trackBuff[0][i];
+            outBuff[1][i] += trackBuff[1][i];
         }
 
         return outBuff;

@@ -59,15 +59,15 @@
          <ImageView fx:id="playback_btn" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true"
                     preserveRatio="true"/>
       </StackPane>
-      <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0">
-         <ImageView fx:id="record_control" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true"
-                    preserveRatio="true"/>
-      </StackPane>
-      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                 prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">
-         <ImageView id="tempo_control_btn" fx:id="metronome_control" fitHeight="18.0" fitWidth="18.0"
-                    pickOnBounds="true" preserveRatio="true"/>
-      </StackPane>
+<!--      <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0">-->
+<!--         <ImageView fx:id="record_control" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true"-->
+<!--                    preserveRatio="true"/>-->
+<!--      </StackPane>-->
+<!--      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"-->
+<!--                 prefHeight="24.0" prefWidth="24.0" HBox.hgrow="NEVER">-->
+<!--         <ImageView id="tempo_control_btn" fx:id="metronome_control" fitHeight="18.0" fitWidth="18.0"-->
+<!--                    pickOnBounds="true" preserveRatio="true"/>-->
+<!--      </StackPane>-->
       <Label id="playback_pos" fx:id="playback_pos" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
              minHeight="-Infinity" minWidth="64.0" prefHeight="24.0" prefWidth="64.0" text="Playback Position"/>
       <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" HBox.hgrow="NEVER">

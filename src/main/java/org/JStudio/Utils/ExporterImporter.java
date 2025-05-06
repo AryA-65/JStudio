@@ -1,9 +1,16 @@
 package org.JStudio.Utils;
 
+import javafx.application.Platform;
+import javafx.stage.FileChooser;
+import org.JStudio.Core.Mixer;
 import org.JStudio.Core.Song;
+import org.JStudio.Core.Track;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,14 +28,16 @@ public class ExporterImporter { //move export audio and file loader to this clas
      * @param f_name The file name (without an extension) under which the song will be saved
      * @throws IOException If an I/O error occurs during writing the file
      */
-    public static void exportSong(Song song, String f_name) throws IOException {
+    public static boolean saveSong(Song song, String f_name) throws IOException {
         Path musicDir = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "saved_songs");
-        if (!musicDir.toFile().exists()) Files.createDirectories(musicDir);
+
+        if (!Checksum.folderExists(musicDir.toString())) {Checksum.createFolder(musicDir.toString());}
 
         File song_f = musicDir.resolve(f_name + ".song").toFile();
 
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(song_f))) {
                 out.writeObject(song);
+                return true;
         }
     }
 
@@ -42,11 +51,75 @@ public class ExporterImporter { //move export audio and file loader to this clas
      * @throws IOException            If an I/O error occurs during file access
      * @throws ClassNotFoundException If the class definition of the serialized object is not found
      */
-    public static Song importSong(String f_name) throws IOException, ClassNotFoundException {
+    public static Song loadSong(String f_name) throws IOException, ClassNotFoundException {
         Path song_f = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "saved_songs", f_name + ".song");
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(song_f.toFile()))) {
             return (Song) in.readObject();
         }
+    }
+
+    public static Song loadSong() throws IOException, ClassNotFoundException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Song");
+
+        File dir = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "saved_songs").toFile();
+
+        if (!Checksum.folderExists(dir.getAbsolutePath())) Checksum.createFolder(dir.getAbsolutePath());
+
+        fileChooser.setInitialDirectory(dir);
+
+        File file = fileChooser.showOpenDialog(null);
+        if (file == null) return null;
+
+        return loadSong(file.getName().substring(0, file.getName().length() - 5));
+    }
+
+    public static boolean exportSong(Song song, String f_name, Mixer mixer) throws IOException {
+        final int sample_rate = 44100;
+        final short buff_size = 1024;
+        final byte channels = 2;
+
+        Path exportDir = Paths.get(System.getProperty("user.home"), "Music", "JStudio", "exported_Audio");
+
+        float[][] floatBuffer = new float[2][buff_size];
+        byte[] byteBuffer = new byte[buff_size * 4];
+
+        AudioFormat af = new AudioFormat(sample_rate, 16, channels, true, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        int total_samples = (int) ((Song.bpm.get() / (Song.bpm.get()) / 60) * sample_rate);
+        int processed_samples = 0;
+
+        while (processed_samples < total_samples) {
+            for (Track track : song.getTracks()) {
+                track.process(floatBuffer, processed_samples, buff_size, sample_rate);
+            }
+
+            for (int i = 0; i < buff_size; i++) {
+                float left = floatBuffer[0][i] * mixer.getMasterGain().get() * (1 - mixer.getPan().get());
+                float right = floatBuffer[1][i] * mixer.getMasterGain().get() * (1 - mixer.getPan().get());
+
+                int sampleL = (int) (left * 32767.0);
+                int sampleR = (int) (right * 32767.0);
+
+                sampleL = Math.max(-32768, Math.min(32767, sampleL));
+                sampleR = Math.max(-32768, Math.min(32767, sampleR));
+
+                int index = i * 4;
+                byteBuffer[index] = (byte) (sampleL & 0xFF);
+                byteBuffer[index + 1] = (byte) ((sampleL >> 8) & 0xFF);
+                byteBuffer[index + 2] = (byte) (sampleR & 0xFF);
+                byteBuffer[index + 3] = (byte) ((sampleR >> 8) & 0xFF);
+            }
+
+            processed_samples++;
+        }
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
+        AudioInputStream ais = new AudioInputStream(bais, af, byteBuffer.length / af.getFrameSize());
+
+        AudioSystem.write(ais, AudioFileFormat.Type.WAVE, exportDir.resolve(f_name + ".wav").toFile());
+        return true;
     }
 
     //testing (hierachical format)

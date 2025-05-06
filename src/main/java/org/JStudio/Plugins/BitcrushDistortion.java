@@ -2,10 +2,14 @@ package org.JStudio.Plugins;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.JStudio.Plugins.Models.BitCrush;
 
-public class AliasingDistortion extends Distortion {
-    public AliasingDistortion(float gain, float mix) {
+public class BitcrushDistortion extends Distortion {
+    private BitCrush bitCrusher;
+
+    public BitcrushDistortion(float gain, float mix, int depth) {
         super(gain, mix);
+        this.bitCrusher = new BitCrush(depth);
     }
 
     @Override
@@ -13,7 +17,7 @@ public class AliasingDistortion extends Distortion {
         float[] gainedData = applyGain(inputData);
         float[] output = new float[gainedData.length];
         for (int i = 0; i < gainedData.length; i++) {
-            output[i] = (float) Math.sin(gainedData[i] * Math.PI);
+            output[i] = bitCrusher.process(gainedData[i]);
         }
         return applyMixMono(inputData, output);
     }
@@ -24,7 +28,7 @@ public class AliasingDistortion extends Distortion {
         float[][] output = new float[2][gainedData[0].length];
         for (byte ch = 0; ch < 2; ch++) {
             for (int i = 0; i < inputData.length; i++) {
-                output[ch][i] = (float) Math.sin(gainedData[ch][i] * Math.PI);
+                output[ch][i] = bitCrusher.process(gainedData[ch][i]);
             }
         }
         return applyMixStereo(inputData, output);
@@ -32,6 +36,6 @@ public class AliasingDistortion extends Distortion {
 
     @Override
     public StringProperty getName() {
-        return new SimpleStringProperty("Aliasing Distortion");
+        return new SimpleStringProperty("Bit Crush Distortion");
     }
 }

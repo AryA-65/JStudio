@@ -1,8 +1,8 @@
 package org.JStudio.Plugins.Models;
 
-import java.util.ArrayList;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
+import java.util.ArrayList;
 
 /**
  * Reverb plugin that takes in audio data and applies a reverb effect to it
@@ -14,7 +14,6 @@ public class Reverb extends Plugin {
     private int preDelay;
     private int diffusion;
     private ArrayList<short[]> delayLines;
-    private StringProperty name = new SimpleStringProperty("Reverb");
 
     /**
      * Creates a reverb plugin
@@ -28,19 +27,20 @@ public class Reverb extends Plugin {
         this.decay = decay;
         this.diffusion = diffusion;
         this.wetDryFactor = wetDryFactor;
-        convertAudioFileToByteArray();
+//        convertAudioFileToByteArray();
         delayLines = new ArrayList<>();
+//        super.setName("Reverb");
     }
 
     /**
      * Applies the reverb effect to the audio data array
      */
-    private float[][] applyReverbEffect() {
-        byte[][] byteReverb = new byte[2][audioByteInput2D[0].length*4];
-        for (int i = 0; i < audioByteInput2D.length; i++) {
+    public float[][] processStereo(float[][] input) {
+        byte[][] byteReverb = convert2DFloatTo2DByte(input);
+        for (int i = 0; i < input.length; i++) {
             delayLines = new ArrayList<>();
             short[] audioToReverb = convertToShortArray(byteReverb[i]);
-            int numOfDelayLines = 0;
+            int numOfDelayLines;
             if (audioToReverb.length < 200000) {
                 numOfDelayLines =  5;
             } else {
@@ -48,7 +48,7 @@ public class Reverb extends Plugin {
             }
 
 
-             double decayNumber;
+            double decayNumber;
             double initialDecay = decay/35000;
             // Loop repeats for the number of delay lines
             for (int delayLine = 0; delayLine < numOfDelayLines; delayLine++) {
@@ -73,12 +73,13 @@ public class Reverb extends Plugin {
             }
 
             short[] mixedAudio = dryWetMixing(audioToReverb, delayLineAudio, audioToReverb.length, delayLineAudio.length);
+            mixedAudio = outputGainAudio(mixedAudio);
             byte[] byteData = convertToByteArrayGood(mixedAudio, (delayLineAudio.length+preDelay) * 2);
             byteReverb[i] = byteData;
         }
         return convert2DByteTo2DFloat(byteReverb);
     }
-    
+
     /**
      * Mixes the dry and wet audio data
      * @param dryAudio the original audio
@@ -91,24 +92,24 @@ public class Reverb extends Plugin {
         // Dry Wet Mixing
         short[] dryAudioToMix = new short[dryAudioSize];
         short[] wetAudioToMix = new short[wetAudioSize];
-        
+
         // Setup dry sound
         for (int i = 0; i < dryAudioToMix.length; i++) {
             dryAudioToMix[i] = (short) (dryAudio[i]*wetDryFactor);
         }
-        
+
         // Setup wet sound
         for (int i = 0; i < wetAudio.length; i++) {
             wetAudioToMix[i] = (short) (wetAudio[i] * (1-wetDryFactor));
         }
-        
+
         // Mix dry and wet
-        short[] mixedAudio = new short[wetAudioToMix.length+preDelay];
+        short[] mixedAudio = new short[wetAudioToMix.length + preDelay];
         int wetPos = 0;
         for (int i = 0; i < mixedAudio.length; i++) {
             if (i<=preDelay) {
                 mixedAudio[i] = dryAudioToMix[i];
-            } else if (i>preDelay && i<dryAudioToMix.length) {
+            } else if (i<dryAudioToMix.length) {
                 mixedAudio[i] = (short) (dryAudioToMix[i] + wetAudioToMix[wetPos]);
                 mixedAudio[i] = capMaxAmplitude(mixedAudio[i]);
                 wetPos++;
@@ -117,10 +118,11 @@ public class Reverb extends Plugin {
                 wetPos++;
             }
         }
-        
-        return mixedAudio;
+
+//        return mixedAudio;
+        return dryAudio;
     }
-    
+
     /**
      * Decays the audio over its duration
      * @param audioData the audio data to be decayed
@@ -138,14 +140,14 @@ public class Reverb extends Plugin {
         }
         return volumeControlledAudio;
     }
-    
-    /** 
+
+    /**
      * Wrapper class to set reverb effect
      */
     public float[][] setReverbEffect() {
-        return applyReverbEffect();
+        return new float[2][1024]; //fix this back to what it use to be
     }
-    
+
     /**
      * Assigns a value for decay
      * @param decay the value of decay to be assigned
@@ -177,4 +179,14 @@ public class Reverb extends Plugin {
     public void setDiffusion(int diffusion) {
         this.diffusion = diffusion;
     }
+
+//    @Override
+//    public float[] processMono(float[] input) {
+//        return new float[0];
+//    }
+//
+//    @Override
+//    public StringProperty getPlugName() {
+//        return super.getName();
+//    }
 }

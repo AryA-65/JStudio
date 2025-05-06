@@ -1,5 +1,8 @@
 package org.JStudio.Plugins;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Class that applies a third-order polynomial distortion effect to an audio signal, introducing harmonic overtones.
  */
@@ -50,5 +53,10 @@ public class HarmonicDistortion extends Distortion {
             }
         }
         return applyMixStereo(inputData, output);
+    }
+
+    @Override
+    public StringProperty getName() {
+        return new SimpleStringProperty("Harmonic Distortion");
     }
 }

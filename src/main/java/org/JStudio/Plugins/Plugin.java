@@ -1,7 +1,13 @@
 package org.JStudio.Plugins;
 
-public interface Plugin {
-    public float[] processMono(float[] input);
+import javafx.beans.property.StringProperty;
 
-    public float[][] processStereo(float[][] input);
+import java.io.Serializable;
+
+public interface Plugin extends Serializable {
+    float[] processMono(float[] input);
+
+    float[][] processStereo(float[][] input);
+
+    StringProperty getName();
 }

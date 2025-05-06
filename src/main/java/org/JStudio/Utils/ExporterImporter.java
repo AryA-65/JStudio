@@ -58,6 +58,14 @@ public class ExporterImporter { //move export audio and file loader to this clas
         }
     }
 
+    /**
+     * Loads a Song object by prompting the user to select a file through a file chooser dialog
+     * The selected file must be located in the user's "Music/JStudio/saved_songs" directory
+     *
+     * @return The loaded Song object
+     * @throws IOException If there is an error reading the file
+     * @throws ClassNotFoundException If the class of the serialized object cannot be found
+     */
     public static Song loadSong() throws IOException, ClassNotFoundException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Song");
@@ -74,6 +82,16 @@ public class ExporterImporter { //move export audio and file loader to this clas
         return loadSong(file.getName().substring(0, file.getName().length() - 5));
     }
 
+    /**
+     * Exports the given Song as a stereo WAV file using the specified mixer settings.
+     * The file is written to the user's "Music/JStudio/exported_Audio" directory.
+     *
+     * @param song The Song to export.
+     * @param f_name The desired filename (without extension)
+     * @param mixer The Mixer containing gain and panning informatio
+     * @return true if the export is successful.
+     * @throws IOException If an error occurs while writing the WAV file.
+     */
     public static boolean exportSong(Song song, String f_name, Mixer mixer) throws IOException {
         final int sample_rate = 44100;
         final short buff_size = 1024;

@@ -77,8 +77,8 @@ public class FileLoader {
     }
 
     /**
-     * get the path of the main directory
-     * @return
+     * Get the path of the main directory
+     * @return the music path
      */
     public static String getMusicPath() {
         return musicPath;

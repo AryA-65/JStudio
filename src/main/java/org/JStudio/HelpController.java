@@ -111,6 +111,9 @@ public class HelpController {
             ),
     };
 
+    /**
+     * Method that initializes the Help UI
+     */
     public void initialize() {
         toolBox.setSpacing(20);
 

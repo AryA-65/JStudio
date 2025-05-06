@@ -107,12 +107,12 @@
                      <Button fx:id="echoBtn" mnemonicParsing="false" text="Echo" />
                      <Button fx:id="phaserBtn" mnemonicParsing="false" text="Phaser" />
                      <Button fx:id="equalizerBtn" mnemonicParsing="false" text="Equalizer" />
-                     <Button fx:id="pianoBtn" mnemonicParsing="false" text="Piano" />
-                     <Button fx:id="synthPianoBtn" mnemonicParsing="false" text="Synth Piano" />
-                     <Button fx:id="stereoBtn" mnemonicParsing="false" text="Stereo" />
                      <Button fx:id="butterworthBtn" mnemonicParsing="false" text="Butterworth" />
                      <Button fx:id="basicFilterBtn" mnemonicParsing="false" text="Basic Filter" />
+                     <Button fx:id="stereoBtn" mnemonicParsing="false" text="Stereo" />
                      <Button fx:id="amplitudeBtn" mnemonicParsing="false" text="Amplitude" />
+                     <Button fx:id="pianoBtn" mnemonicParsing="false" text="Piano" />
+                     <Button fx:id="synthPianoBtn" mnemonicParsing="false" text="Synth Piano" />
                      <Button fx:id="synthesizerBtn" mnemonicParsing="false" text="Synthesizer" />
                      <padding>
                         <Insets top="20.0" />

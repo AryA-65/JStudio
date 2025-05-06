@@ -21,6 +21,9 @@ import org.JStudio.Core.Track;
 
 import java.util.function.Function;
 
+/**
+ * Sets UI for the channels
+ */
 public class ChannelUI extends VBox {
     private final Slider vol = new Slider(0,1,1);
     private final Knob pitch = new Knob(24, false, 0, Knob.Type.BIP), pan = new Knob(32, false, 0, Knob.Type.BIP);

@@ -23,6 +23,9 @@ import org.JStudio.Utils.AudioFileExtractor;
 import java.io.*;
 import java.util.List;
 
+/**
+ * Handles drawing of samples
+ */
 public class FileUI extends Pane {
     private final HBox file_info = new HBox();
     private final Canvas canvas = new Canvas(192, 48);
@@ -119,6 +122,9 @@ public class FileUI extends Pane {
         getChildren().addAll(canvas, file_info);
     }
 
+   /**
+    * Draws the data of the sample
+    */
     private void draw_data(float[] left, float[] right) {
         double midY = canvas.getHeight() / 2.0;
         double step = canvas.getWidth() / (double) left.length;
@@ -155,16 +161,19 @@ public class FileUI extends Pane {
         drawPoint(gc, right, midY, step);
     }
 
+    /**
+     * Draws the wave line of the sample
+     */
     private void drawPoint(GraphicsContext gc, float[] buff, double midY, double step) {
-        gc.setLineWidth(1.2);
-        gc.beginPath();
-        for (int i = 0; i < buff.length; i++) {
-            double x = i * step;
-            double y = midY - buff[i] * midY;
-            if (i == 0) gc.moveTo(x, y);
-            else gc.lineTo(x, y);
-        }
-        gc.stroke();
+//        gc.setLineWidth(1.2);
+//        gc.beginPath();
+//        for (int i = 0; i < buff.length; i++) {
+//            double x = i * step;
+//            double y = midY - buff[i] * midY;
+//            if (i == 0) gc.moveTo(x, y);
+//            else gc.lineTo(x, y);
+//        }
+//        gc.stroke();
     }
 
     public String getFileName() {

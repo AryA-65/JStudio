@@ -15,6 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.JStudio.Core.Song.bpm;
 
+/**
+ * Sets the UI for a clip as well as actions (drag, etc)
+ */
 public class ClipUI extends Canvas {
     private final Clip clip;
     private final GraphicsContext gc;
@@ -46,6 +49,9 @@ public class ClipUI extends Canvas {
 //
 //    }
 
+    /**
+     * Sets up dragging of clips
+     */
     private void setupDrag() {
         AtomicBoolean isDragged = new AtomicBoolean(false);
 
@@ -84,15 +90,26 @@ public class ClipUI extends Canvas {
         });
     }
 
+    /**
+     * Sets if a clip is selected or not
+     * @param selected selected or not
+     */
     public void setSelected(boolean selected) {
         this.selected = selected;
         redraw();
     }
 
+    /**
+     * Checks if a clip is selected or not
+     * @return if a clip is selected or not
+     */
     public boolean isSelected() {
         return selected;
     }
 
+    /**
+     * Redraws the clip
+     */
     public void redraw() {
         gc.clearRect(0, 0, getWidth(), getHeight());
 
@@ -105,6 +122,11 @@ public class ClipUI extends Canvas {
         if (selected) drawOutline();
     }
 
+    /**
+     * Draws the audio clip
+     * @param gc the graphics context of the clip
+     * @param audioClip the audio clip
+     */
     private void drawAudioClip(GraphicsContext gc, AudioClip audioClip) {
         float[][] buffer = audioClip.getBuffer();
         if (buffer == null || buffer[0] == null) return;
@@ -146,6 +168,11 @@ public class ClipUI extends Canvas {
         gc.stroke();
     }
 
+    /**
+     * Draws the synth clip
+     * @param gc the graphics context of the synth clip
+     * @param synthClip the synth clip
+     */
     private void drawSynthClip(GraphicsContext gc, SynthClip synthClip) {
         int height = (int) getHeight();
 
@@ -163,6 +190,9 @@ public class ClipUI extends Canvas {
         }
     }
 
+    /**
+     * Draws an outline
+     */
     private void drawOutline() {
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(2.0);

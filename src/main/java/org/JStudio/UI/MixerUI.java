@@ -12,6 +12,9 @@ import javafx.scene.text.Font;
 import org.JStudio.Core.Mixer;
 import org.JStudio.UIController;
 
+/**
+ * UI handler for the mixer
+ */
 public class MixerUI extends HBox {
     private final ChannelUI channel;
     private final VBox leftContainer = new VBox();

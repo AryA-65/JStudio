@@ -4,46 +4,6 @@ import javafx.beans.property.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.ScrollEvent;
-
-//public class Knob extends StackPane { //Needs more time to think (maybe interface class?)
-//    private final double MIN_VAL, MAX_VAL;
-//    private final DoubleProperty value = new SimpleDoubleProperty();
-//
-//    private Canvas canvas;
-//    private double centerX, centerY, radius;
-//
-//    enum TYPE {
-//        REG, ARC, MIX
-//    }
-//
-//    Knob() {
-//        this.MIN_VAL = 0.0;
-//        this.MAX_VAL = 1.0;
-//        this.value.set(this.MAX_VAL);
-//
-//    }
-//
-//    Knob(double minVal, double maxVal, double initVal, double radius) {
-//        MIN_VAL = minVal;
-//        MAX_VAL = maxVal;
-//
-//        value.set(initVal);
-//
-//        canvas = new Canvas(radius * 1.1, radius * 1.1);
-//    }
-//
-//    Knob(double radius) {
-//        this();
-//
-//        canvas = new Canvas(radius * 1.1, radius * 1.1);
-//    }
-//
-//
-//
-//
-//}
-
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.GraphicsContext;
@@ -52,6 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+/**
+ * Knob class (acts like slider but in circle)
+ * @author theog
+ */
 public class Knob extends Canvas {
     private static final double DEFAULT_SIZE = 100;
     private static final double MIN_ANGLE = -135;
@@ -109,11 +73,17 @@ public class Knob extends Canvas {
         draw();
     }
 
+    /**
+     * Mouse pressed action
+     */
     private void onMousePressed(MouseEvent e) {
         dragStartY = e.getSceneY();
         dragStartValue = getValue();
     }
 
+    /**
+     * Mouse drag action
+     */
     private void onMouseDragged(MouseEvent e) {
         double delta = dragStartY - e.getSceneY();
         double sensitivity = 0.005;
@@ -121,6 +91,9 @@ public class Knob extends Canvas {
         setValue(clamp(dragStartValue + delta * sensitivity * range, min.get(), max.get()));
     }
 
+    /**
+     * Mouse wheel scroll action
+     */
     private void onMouseWheelScrolled(ScrollEvent e) {
         double delta = e.getDeltaY();
         double sensitivity = (snapEnabled.get() ? snapStep.get() / (delta * 1) : 0.00025);
@@ -130,6 +103,9 @@ public class Knob extends Canvas {
         setValue(clamp(newValue, min.get(), max.get()));
     }
 
+    /**
+     * Draws the knob
+     */
     private void draw() {
         double w = getWidth();
         double h = getHeight();
@@ -192,6 +168,8 @@ public class Knob extends Canvas {
         tooltip.setText(String.format("Value: %.2f\nMin: %.2f, Max: %.2f", getValue(), min.get(), max.get()));
     }
 
+    // Getters and setters
+    
     private double getNormalizedValue() {
         return (value.get() - min.get()) / (max.get() - min.get());
     }

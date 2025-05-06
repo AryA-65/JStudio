@@ -5,6 +5,9 @@ import javafx.scene.layout.Pane;
 import org.JStudio.Core.Mixer;
 import org.JStudio.Core.Track;
 
+/**
+ * UI handler for the muted button
+ */
 public class MutedBTN extends Pane {
     public MutedBTN(double layoutX, double layoutY, Object input) {
         setPrefSize(8, 8);

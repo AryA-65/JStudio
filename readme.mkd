@@ -1,115 +1,180 @@
-JSTUDIO User Guide
+# **JSTUDIO User Guide**
 
-JSTUDIO is a digital audio workstation (DAW) that allows users to drag clips onto a track, apply effects, and create music.
+JSTUDIO is a **digital audio workstation (DAW)** that allows users to drag clips onto a track, apply effects, and create music.
 
-To get started, simply drag a sample from the left side onto the track. From there, double clicking on a track will allow the user to add effects in the form of plugins.
+## **Getting Started**
 
-*The following plugins are available:
-- Reverb
-- Echo
-- Flanger
-- Chorus
-- Phaser
-- Equalizer
-- Stereo
-- Basic Filter
-- Butterworth Filter
-- Amplitude Adjustor
+1. To get started, simply **drag a sample** from the left side onto the track.
+2. Double-clicking on a track will allow you to **add effects** in the form of **plugins**.
 
-*Other available features are:
-- Piano
-- Custom Synth Piano
-- Synthesizer
+---
 
-Plugin user guide:
+## **Available Plugins**
 
-Adjust the knobs/sliders to set paramaters for the desired effects for the following plugins
+- **Reverb**
+- **Echo**
+- **Flanger**
+- **Chorus**
+- **Phaser**
+- **Equalizer**
+- **Stereo**
+- **Basic Filter**
+- **Butterworth Filter**
+- **Amplitude Adjustor**
 
-*Reverb:
-This plugin creates a roomy environment. Adjusting the knobs allows for different reverbs to be heard.
-- Pre Delay is the amount of time before the first reflection is heard
-- Decay is the amount of time for a reflected wave to decay
-- Diffusion is the spacing of the reflected waves
-- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+---
 
-*Echo: This plugin creates reflected audio waves spaced far apart
-- Pre Delay is the amount of time before the first reflection is heard
-- Decay is the amount of time for a reflected wave to decay
-- Diffusion is the spacing of the reflected waves
-- The number of echos determines the amount of reflected waves
-- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+## **Other Available Features:**
 
-*Flanger: This plugin creates wooshing effect by copying the audio, and delaying it with modulated delays
-- Frequency is the rate at which the delays are modulated
-- Deviation is the amplitude of the oscillating modulation function
-- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+- **Piano**
+- **Custom Synth Piano**
+- **Synthesizer**
 
-*Chorus: This plugin creates a multiple instrument/voice effect by copying the audio, and delaying it with modulated delays
-- Frequency is the rate at which the delays are modulated
-- Deviation is the amplitude of the oscillating modulation function
-- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+---
 
-*Phaser: This plugin creates a sweeping sound by copying the audio, and shifting the phase with modulated phase shifts
-- Frequency is the rate at which the delays are modulated
-- Deviation is the amplitude of the oscillating modulation function
-- Wet/Dry mix is the amount of original (dry) and modified (wet) audio
+## **Plugin User Guide:**
 
-*Basic Filter: This plugin allows for certain frequencies to be cut of given a base frequency
-- An array of samples that the filter will be applied to
-- The sample rate of the audio file
-- The cut-off frequencies determines the range of applied frequency values
-    Filter Types:
-      -Low-Pass Filter: Remove all lower frequencies then the cut-off frequency
-      -High-Pass Filter: Remove all the higher frequencies than the given cut-off frequency
+### **Adjust the knobs/sliders to set parameters for the desired effects for the following plugins:**
 
-*Biquad Filter: This plugin allows for precise frequency shaping using various filter types.
-- Array of Samples: The audio signal (samples) to which the filter will be applied.
-- Sample Rate: The sample rate of the audio file (measured in Hz).
-- Cut-off Frequency: The frequency threshold that determines the point at which the filter begins to attenuate the signal (for LPF, HPF, etc.).
-- Quality Factor (Q): A double value that controls the resonance or sharpness of the filter (how narrow or broad the frequency attenuation is).
-    Filter Types:
-       -Low-Pass Filter (LPF):
-            Allows frequencies below the cut-off frequency to pass
-            Removes all frequencies higher than the cut-off frequency
-            Useful for removing high-frequency noise
-       -High-Pass Filter (HPF):
-            Allows frequencies above the cut-off frequency to pass
-            Removes all frequencies lower than the cut-off frequency
-            Ideal for removing low-end rumble
-       -Band-Pass Filter (BPF):
-            Allows a specific range of frequencies centered around a given frequency to pass
-            Attenuates frequencies outside of the selected range
-       -Band-Stop (Notch) Filter:
-            Attenuates a specific frequency band around a given center frequency
-            Allows frequencies outside of the notch to pass
+---
 
-*Audio Amplitude: This plugin enhances the audio by multiplying the amplitude of the signal by a given factor.
-- Array of Samples: The audio signal (samples) to which the amplitude enhancement will be applied
-- Sample Rate: The sample rate of the audio file (measured in Hz)
-- Amplification Factor: A double value that multiplies the amplitude of the audio signal (increasing or decreasing its volume)
+### **Reverb:**
+This plugin creates a **roomy environment**. Adjusting the knobs allows for different reverbs to be heard.
 
-*Stereo: This plugin requires a mono channel audio file,
-- Sample Rate: The sample rate of the audio file (measured in Hz).
-- Stereo Effect Type: The stereo effect to be applied, determined by the user's selection.
-        Filter Types:
-            -HAAS Stereo Effect (HAASStereo):
-                A delay is applied to create the Haas effect, creating the perception of a wider field.
-            -LFO Stereo Effect (LFOStereo):
-                Uses a low-frequency oscillator (LFO) to modulate stereo balance, creating a dynamic, evolving stereo effect.
-            -Inverted Stereo Effect (InvertedStereo):
-                Inverts the left and right stereo channels to create a flipped stereo image.
+- **Pre Delay:** The amount of time before the first reflection is heard.
+- **Decay:** The amount of time for a reflected wave to decay.
+- **Diffusion:** The spacing of the reflected waves.
+- **Wet/Dry Mix:** The amount of **original (dry)** and **modified (wet)** audio.
 
+---
 
+### **Echo:**
+This plugin creates reflected audio waves spaced far apart.
 
-*******ALEX/AHMET DO PIANO/SYNTH PIANO/SYNTH HERE*******
+- **Pre Delay:** The amount of time before the first reflection is heard.
+- **Decay:** The amount of time for a reflected wave to decay.
+- **Diffusion:** The spacing of the reflected waves.
+- **Number of Echoes:** Determines the amount of reflected waves.
+- **Wet/Dry Mix:** The amount of **original (dry)** and **modified (wet)** audio.
 
+---
 
+### **Flanger:**
+This plugin creates a **wooshing effect** by copying the audio and delaying it with **modulated delays**.
 
+- **Frequency:** The rate at which the delays are modulated.
+- **Deviation:** The amplitude of the oscillating modulation function.
+- **Wet/Dry Mix:** The amount of **original (dry)** and **modified (wet)** audio.
 
+---
 
+### **Chorus:**
+This plugin creates a **multiple instrument/voice effect** by copying the audio and delaying it with modulated delays.
 
+- **Frequency:** The rate at which the delays are modulated.
+- **Deviation:** The amplitude of the oscillating modulation function.
+- **Wet/Dry Mix:** The amount of **original (dry)** and **modified (wet)** audio.
 
+---
 
+### **Phaser:**
+This plugin creates a **sweeping sound** by copying the audio and shifting the phase with **modulated phase shifts**.
 
+- **Frequency:** The rate at which the delays are modulated.
+- **Deviation:** The amplitude of the oscillating modulation function.
+- **Wet/Dry Mix:** The amount of **original (dry)** and **modified (wet)** audio.
 
+---
 
+### **Basic Filter:**
+This plugin allows for certain frequencies to be cut off, given a base frequency.
+
+- **Array of Samples:** The audio signal (samples) to which the filter will be applied.
+- **Sample Rate:** The sample rate of the audio file.
+- **Cut-off Frequencies:** Determines the range of applied frequency values.
+
+#### **Filter Types:**
+- **Low-Pass Filter:** Removes all lower frequencies than the cut-off frequency.
+- **High-Pass Filter:** Removes all higher frequencies than the given cut-off frequency.
+
+---
+
+### **Biquad Filter:**
+This plugin allows for **precise frequency shaping** using various filter types.
+
+- **Array of Samples:** The audio signal (samples) to which the filter will be applied.
+- **Sample Rate:** The sample rate of the audio file (measured in Hz).
+- **Cut-off Frequency:** The frequency threshold that determines the point at which the filter begins to attenuate the signal.
+- **Quality Factor (Q):** A **double value** that controls the resonance or sharpness of the filter.
+
+#### **Filter Types:**
+- **Low-Pass Filter (LPF):** Allows frequencies below the cut-off frequency to pass. Removes all frequencies higher than the cut-off frequency. Ideal for removing high-frequency noise.
+- **High-Pass Filter (HPF):** Allows frequencies above the cut-off frequency to pass. Removes all frequencies lower than the cut-off frequency. Ideal for removing low-end rumble.
+- **Band-Pass Filter (BPF):** Allows a specific range of frequencies centered around a given frequency to pass. Attenuates frequencies outside of the selected range.
+- **Band-Stop (Notch) Filter:** Attenuates a specific frequency band around a given center frequency. Allows frequencies outside of the notch to pass.
+
+---
+
+### **Audio Amplitude:**
+This plugin enhances the audio by multiplying the amplitude of the signal by a given factor.
+
+- **Array of Samples:** The audio signal (samples) to which the amplitude enhancement will be applied.
+- **Sample Rate:** The sample rate of the audio file.
+- **Amplification Factor:** A **double value** that multiplies the amplitude of the audio signal (increasing or decreasing its volume).
+
+---
+
+### **Stereo:**
+This plugin requires a **mono channel audio file** and applies stereo effects to it.
+
+- **Sample Rate:** The sample rate of the audio file (measured in Hz).
+- **Stereo Effect Type:** The stereo effect to be applied, determined by the user's selection.
+
+#### **Filter Types:**
+- **HAAS Stereo Effect (HAASStereo):** A delay is applied to create the **Haas effect**, creating the perception of a wider stereo field.
+- **LFO Stereo Effect (LFOStereo):** Uses a **low-frequency oscillator (LFO)** to modulate stereo balance, creating a dynamic, evolving stereo effect.
+- **Inverted Stereo Effect (InvertedStereo):** Inverts the **left** and **right** stereo channels to create a flipped stereo image.
+
+---
+
+### **Synthesizer:**
+Generates **sound waves** based on keyboard inputs with set frequencies, allowing for the creation of synthesized sounds. The plugin also supports adding a **glide effect** and a **speed modifier** to control the pitch transition and speed of the sound.
+
+- **3 Different Oscillators:** Each oscillator has an individual waveform selection (e.g., **sine**, **square**, **triangle**, **saw**).
+- **Tone (frequency)** and **Volume** of Each Oscillator: Customize the tone and volume for each of the three oscillators to shape the overall sound.
+- **Glide Effect:** A smooth pitch transition between notes for a **legato** feel.
+- **Speed Modifier:** Adjust the speed of the sound, altering how quickly or slowly the sound evolves.
+
+#### **Output:**
+An audio file (WAV type) containing the played synth sounds.
+
+---
+
+### **Equalizer:**
+Modifies the volume of certain frequencies by using an **FFT algorithm** to analyze the amplitude of all frequencies in the audio and adjusting the amplitudes accordingly.
+
+- **Center Frequency Factor:** The factor that multiplies the range around the center frequencies of each slider, allowing for **precise frequency adjustments**.
+
+#### **Output:**
+Equalized Audio with enhanced frequency balance.
+
+---
+
+### **Piano:**
+Allows the user to create a **custom song** using piano keys.
+
+- **Notes:** Place notes on the track for each key to add them to the custom song.
+
+#### **Output:**
+A **Custom Song With Piano Keys** created by arranging the notes on the track.
+
+---
+
+### **Synthesizer Piano:**
+Allows the user to create a **custom song** using custom sounds generated by a synthesizer.
+
+- **Add Track:** Create a new track with a new synthesizer preset.
+- **Notes:** Place notes on the track of each generated key to play the sound of the synthesizer preset.
+
+#### **Output:**
+A **Custom Song With Custom Sounds** generated from the synthesizer.

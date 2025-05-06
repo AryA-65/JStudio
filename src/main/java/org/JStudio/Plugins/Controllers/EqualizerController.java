@@ -18,8 +18,10 @@ public class EqualizerController {
         this.equalizer = equalizer;
     }
 
-    public void processAudio(float[] floatInput) {
+    public void processAudio(float[] floatInput) {        
         equalizer.setAudioByteInput(equalizer.convertFloatToByteArray(floatInput));
+        
+        equalizer.setOriginalAudio(equalizer.getAudioByteInput());
         
         equalizer.setOutputGain(equalizer.getEqView().getOutputGainSlider().getValue());
 

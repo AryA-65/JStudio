@@ -36,6 +36,10 @@ public abstract class Plugin {
     protected float[][] audioFloatInput2D;
     protected byte[][] audioByteInput2D;
     protected float[][] audioOutput2D;
+    
+    public void export(){
+        
+    }
 
     public void inputAudioData(float[][] audioData) {
         audioByteInput2D = convert2DFloatTo2DByte(audioData);
@@ -450,6 +454,14 @@ public abstract class Plugin {
             floats[i] = shorts[i] / 32768f;
         }
         return floats;
+    }
+    
+    public byte[] getOriginalAudio(){
+        return originalAudio;
+    }
+    
+    public void setOriginalAudio(byte[] originalAudio){
+        this.originalAudio = originalAudio;
     }
     
     public byte[] getFinalAudio() {

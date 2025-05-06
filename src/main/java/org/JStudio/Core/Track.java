@@ -60,7 +60,6 @@ public class Track implements Serializable {
     }
 
     public void removeClip(Event e) {
-        System.out.println("Removing clip: " + ((ClipUI) e.getTarget()).getNodeClip().getInfo());
         clips.remove(((ClipUI) e.getTarget()).getNodeClip());
     }
 

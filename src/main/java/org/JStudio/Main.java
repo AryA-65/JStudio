@@ -1,5 +1,7 @@
 package org.JStudio;
 
+import javafx.stage.StageStyle;
+import org.JStudio.Controllers.SettingsController;
 import org.JStudio.Controllers.UIController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,67 +9,67 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.JStudio.Controllers.LoginController;
+import org.JStudio.TESTING.UnitTestingController;
 
 public class Main extends Application {
     private UIController controller;
 
     private Scene scene;
 
-    boolean isTesting = false;
+    boolean isTesting = true;
 
     @Override
     public void start(Stage stage) throws Exception {
-//        if (isTesting) {
-//            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
-//            Parent root = testLoader.load();
-//
-//            UnitTestingController testController = testLoader.getController();
-//            testController.setStage(stage);
-//
-//            scene = new Scene(root);
-////            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-//            testController.setScene(scene);
-////            stage.getIcons().add(new Image("/JS_ico.png"));
-//            stage.setScene(scene);
-////            stage.initStyle(StageStyle.TRANSPARENT);
-////            stage.setResizable(true);
-//            stage.show();
-//
-//        } else {
-//            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
-//            Parent root = loader.load();
-//
-//            controller = loader.getController();
-//            controller.setStage(stage);
-//
-//            scene = new Scene(root);
+        if (isTesting) {
+            FXMLLoader testLoader = new FXMLLoader(ClassLoader.getSystemResource("JStudioTestUI.fxml"));
+            Parent root = testLoader.load();
+
+            UnitTestingController testController = testLoader.getController();
+            testController.setStage(stage);
+
+            scene = new Scene(root);
 //            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
-//            controller.setScene(scene);
+            testController.setScene(scene);
 //            stage.getIcons().add(new Image("/JS_ico.png"));
-//            stage.setScene(scene);
+            stage.setScene(scene);
 //            stage.initStyle(StageStyle.TRANSPARENT);
 //            stage.setResizable(true);
-//            stage.show();
-//
-//            SettingsController.setController(controller);
+            stage.show();
+
+        } else {
+            FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("JStudio-UI.fxml"));
+            Parent root = loader.load();
+
+            controller = loader.getController();
+            controller.setStage(stage);
+
+            scene = new Scene(root);
+            scene.getStylesheets().add(ClassLoader.getSystemResource("styles.css").toExternalForm());
+            controller.setScene(scene);
+            stage.getIcons().add(new Image("/JS_ico.png"));
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setResizable(true);
+            stage.show();
+
+            SettingsController.setController(controller);
 
         /**
          * to initialize the login page
          */
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
-        Parent root = loader.load();
-
-        LoginController loginController = loader.getController();
-        loginController.setRootStage(stage);
-
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image("/JS_ico.png"));
-        loginController.setRootScene(scene);
-        stage.setResizable(false);
-        stage.show();
-//        }
+//        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("other_fxmls/loginLayout.fxml"));
+//        Parent root = loader.load();
+//
+//        LoginController loginController = loader.getController();
+//        loginController.setRootStage(stage);
+//
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.getIcons().add(new Image("/JS_ico.png"));
+//        loginController.setRootScene(scene);
+//        stage.setResizable(false);
+//        stage.show();
+        }
     }
 
     public static void main(String[] args) {
